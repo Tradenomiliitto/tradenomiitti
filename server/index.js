@@ -2,7 +2,7 @@ const express = require('express');
 
 const app = express();
 app.get('/', (req, res) => {
-  res.send('Tervetuloa Tradenomiittiin');
+  res.send('Tervetuloa Tradenomiittiin. Kysy. Löydä. Kohtaa.');
 });
 
 app.listen(3000, () => {
