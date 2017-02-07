@@ -1,0 +1,49 @@
+---
+- hosts: [ dev ]
+  remote_user: ubuntu
+  become: yes
+  tasks:
+    - name: install system dependencies
+      apt: pkg={{item}} state=present
+      with_items: [ nginx, postgresql, nodejs, nodejs-legacy, npm, git ]
+
+
+    - name: ensure base services are running
+      service: name={{item}} state=started enabled=yes
+      with_items: [ nginx ]
+
+    - name: install nginx basic auth password file
+      template: src=passwd dest=/etc/nginx/passwd
+      notify:
+        - restart nginx
+
+    - name: install nginx.conf
+      template: src=nginx.conf dest=/etc/nginx/nginx.conf
+      notify:
+        - restart nginx
+
+    # Set up deployment by git push env master
+    - name: make base directories
+      file: path={{item}} state=directory mode=0755 owner=ubuntu
+      with_items: [ /srv, /srv/checkout ]
+    - name: create bare git repo
+      become: no
+      command: git --bare init tradenomiitti.git
+      args:
+        chdir: /srv
+        creates: /srv/tradenomiitti.git
+
+    - name: do initial clone
+      become: no
+      command: git clone /srv/tradenomiitti.git
+      args:
+        chdir: /srv/checkout
+        creates: /srv/checkout/tradenomiitti
+
+    - name: add deploy hook
+      copy: src=deploy.sh dest=/srv/tradenomiitti.git/hooks/post-receive mode=0755
+
+      
+  handlers:
+    - name: restart nginx
+      service: name=nginx state=restarted

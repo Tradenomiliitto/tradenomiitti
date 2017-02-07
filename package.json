@@ -1,0 +1,24 @@
+{
+  "name": "tradenomiitti",
+  "version": "1.0.0",
+  "description": "Löydä elämäsi tradenomi",
+  "main": "index.js",
+  "scripts": {
+    "serverinstallbase": "./conf/serverinstallbase.sh",
+    "serverinstallpm2": "ansible-playbook conf/pm2install.yml -i conf/inventory.ini",
+    "start": "node --harmony server/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/futurice/tradenomiitti.git"
+  },
+  "author": "",
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/futurice/tradenomiitti/issues"
+  },
+  "homepage": "https://github.com/futurice/tradenomiitti#readme",
+  "dependencies": {
+    "express": "^4.14.1"
+  }
+}
