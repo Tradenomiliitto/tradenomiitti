@@ -2,7 +2,7 @@
 - hosts: [ dev ]
   remote_user: ubuntu
   become: yes
-  tasks:
+  pre_tasks:
     - name: install system dependencies
       apt: pkg={{item}} state=present
       with_items: [ nginx, postgresql, nodejs, nodejs-legacy, npm, git ]
@@ -51,7 +51,7 @@
     pm2_apps:
       - run: server/index.js
         path: /srv/checkout/tradenomiitti
-        cmd: startOrGracefulReload
+        cmd: start
 
       
   handlers:
