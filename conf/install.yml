@@ -49,7 +49,7 @@
   vars:
     pm2_service_name: pm2
     pm2_apps:
-      - run: server/index.js
+      - run: server/app.json
         path: /srv/checkout/tradenomiitti
         cmd: start
 
