@@ -14,7 +14,10 @@ You can install servers by running
 ```sh
 npm install
 $EDITOR conf/inventory.ini
-npm run serverinstall
+npm run serverinstallbase
+git remote add ENV ubuntu@SERVER/srv/tradenomiitti.git # for each ENV
+git push ENV master # for each ENV
+npm run serverinstallpm2
 ```
 
 ### Actual deployment

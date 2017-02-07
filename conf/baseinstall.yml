@@ -2,7 +2,7 @@
 - hosts: [ dev ]
   remote_user: ubuntu
   become: yes
-  pre_tasks:
+  tasks:
     - name: install system dependencies
       apt: pkg={{item}} state=present
       with_items: [ nginx, postgresql, nodejs, nodejs-legacy, npm, git ]
@@ -42,17 +42,6 @@
 
     - name: add deploy hook
       copy: src=deploy.sh dest=/srv/tradenomiitti.git/hooks/post-receive mode=0755
-
-  roles:
-    - weareinteractive.pm2
-
-  vars:
-    pm2_service_name: pm2
-    pm2_apps:
-      - run: server/app.json
-        path: /srv/checkout/tradenomiitti
-        cmd: start
-    pm2_user: ubuntu
 
       
   handlers:

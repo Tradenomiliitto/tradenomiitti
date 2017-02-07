@@ -1,13 +1,5 @@
 #!/bin/bash
 
-cd $(git rev-parse --show-toplevel)
-
-# don't run on servers
-if [[ $(id -un) = ubuntu ]]
-then
-   exit 0
-fi
-
 if [[ ! -f conf/inventory.ini ]]
 then
   for env in dev
