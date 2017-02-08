@@ -1,26 +1,20 @@
 import Html exposing (..)
 import Html.Events exposing (onClick)
 import Navigation
+import Nav exposing (..)
 
 main =
-  Navigation.program UrlChange 
+  Navigation.program (\location -> UrlChange location)
     { init = init
     , view = view
     , update = update
     , subscriptions = subscriptions
     }
 
-type alias Model = {}
-model : Model
-model =
-     {}
+type alias Model = { route : Route}
 
 init : Navigation.Location -> ( Model, Cmd Msg )
-init location =
-    ( {}, Cmd.none  
-    )
-
-type Route = User Int | Questions | Info
+init location = ( {route = Home }, Cmd.none )
 
 -- UPDATE
 
@@ -32,19 +26,10 @@ update : Msg -> Model -> (Model, Cmd msg)
 update msg model =
     case msg of 
         NewUrl route ->
-            ( model, Navigation.newUrl (routeToUrl route) )
+            ( { model | route = route } , Navigation.newUrl (routeToPath route) )
 
-        UrlChange location -> ( model, Cmd.none )
+        UrlChange location -> ( { model | route = (parseLocation location)}, Cmd.none )
 
-routeToUrl : Route -> String
-routeToUrl route =
-    case route of
-        User userId ->
-            "/user/" ++ (toString userId)
-        Questions ->
-            "/questions"
-        Info ->
-            "/info"
 
 --SUBSCRIPTIONS
 
@@ -56,8 +41,15 @@ subscriptions model =
 
 view : Model -> Html Msg
 view model =
+    div []
+    [ navigation model
+    , div [] [text ("Current page: " ++ (routeToString model.route))] ]
+
+
+navigation : Model -> Html Msg
+navigation model =
     ul []
-        (List.map viewLink [User 1, Questions, Info])
+        (List.map viewLink [User 1, Home, Info])
 
 viewLink : Route -> Html Msg
 viewLink route = li [ onClick (NewUrl route) ] [ text (routeToString route) ]
@@ -65,6 +57,7 @@ viewLink route = li [ onClick (NewUrl route) ] [ text (routeToString route) ]
 routeToString : Route -> String
 routeToString route = 
     case route of 
-        User userId -> "Profile"
-        Questions -> "Questions"
+        User userId -> "User"
+        Home -> "Home"
         Info -> "Info"
+        NotFound -> "Not Found"
