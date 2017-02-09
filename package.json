@@ -7,7 +7,8 @@
     "preansible": "./conf/preinstall.sh",
     "serverinstallbase": "./conf/serverinstallbase.sh",
     "serverinstallpm2": "ansible-playbook conf/pm2install.yml -i conf/inventory.ini",
-    "start": "node --harmony server/index.js"
+    "start": "node --harmony server/index.js",
+    "compilefrontend": "cd frontend && elm-make --yes Main.elm"
   },
   "repository": {
     "type": "git",
@@ -20,6 +21,7 @@
   },
   "homepage": "https://github.com/futurice/tradenomiitti#readme",
   "dependencies": {
+    "elm": "^0.18.0",
     "express": "^4.14.1"
   }
 }
