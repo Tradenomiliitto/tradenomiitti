@@ -1,5 +1,7 @@
 #!/bin/bash
 
+cd $(git rev-parse --show-toplevel)
+
 if [[ ! -f conf/inventory.ini ]]
 then
   for env in dev
