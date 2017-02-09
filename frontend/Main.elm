@@ -14,7 +14,7 @@ main =
 type alias Model = { route : Route }
 
 init : Navigation.Location -> ( Model, Cmd Msg )
-init location = ( { route = Home }, Cmd.none )
+init location = ( { route = parseLocation location }, Cmd.none )
 
 -- UPDATE
 
