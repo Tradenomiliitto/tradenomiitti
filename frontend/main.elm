@@ -4,22 +4,22 @@ import Navigation
 import Nav exposing (..)
 
 main =
-  Navigation.program (\location -> UrlChange location)
+  Navigation.program UrlChange
     { init = init
     , view = view
     , update = update
     , subscriptions = subscriptions
     }
 
-type alias Model = { route : Route}
+type alias Model = { route : Route }
 
 init : Navigation.Location -> ( Model, Cmd Msg )
-init location = ( {route = Home }, Cmd.none )
+init location = ( { route = Home }, Cmd.none )
 
 -- UPDATE
 
-type Msg =
-    NewUrl Route 
+type Msg
+    = NewUrl Route 
     | UrlChange Navigation.Location
 
 update : Msg -> Model -> (Model, Cmd msg)
@@ -28,7 +28,7 @@ update msg model =
         NewUrl route ->
             ( { model | route = route } , Navigation.newUrl (routeToPath route) )
 
-        UrlChange location -> ( { model | route = (parseLocation location)}, Cmd.none )
+        UrlChange location -> ( { model | route = (parseLocation location) }, Cmd.none )
 
 
 --SUBSCRIPTIONS
