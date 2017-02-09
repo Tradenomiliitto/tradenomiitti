@@ -13,6 +13,7 @@ You can install servers by running
 
 ```sh
 npm install
+npm run preansible
 $EDITOR conf/inventory.ini
 npm run serverinstallbase
 git remote add ENV ubuntu@SERVER/srv/tradenomiitti.git # for each ENV

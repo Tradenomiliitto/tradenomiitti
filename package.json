@@ -4,6 +4,7 @@
   "description": "Löydä elämäsi tradenomi",
   "main": "index.js",
   "scripts": {
+    "preansible": "./conf/preinstall.sh",
     "serverinstallbase": "./conf/serverinstallbase.sh",
     "serverinstallpm2": "ansible-playbook conf/pm2install.yml -i conf/inventory.ini",
     "start": "node --harmony server/index.js"
