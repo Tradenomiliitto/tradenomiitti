@@ -1,6 +1,6 @@
 const express = require('express');
 
-const rootDir = "../frontend"
+const rootDir = "./frontend"
 
 const app = express();
 app.get('*', (req, res) => {
