@@ -1,7 +1,8 @@
 import Html exposing (..)
+import Html.Attributes exposing (href)
 import Html.Events exposing (onClick)
-import Navigation
 import Nav exposing (..)
+import Navigation
 
 main =
   Navigation.program UrlChange
@@ -42,7 +43,10 @@ subscriptions model =
 view : Model -> Html Msg
 view model =
     div []
-    [ navigation model
+    [ a
+      [ href "https://tunnistus.avoine.fi/sso-login/?service=tradenomiitti&return=http%3A%2F%2Flocalhost%3A3000%2Flogin" ]
+      [ text "Kirjaudu sisään" ]
+    , navigation model
     , div [] [text ("Current page: " ++ (routeToString model.route))] ]
 
 
