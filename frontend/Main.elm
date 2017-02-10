@@ -19,12 +19,12 @@ init location = ( { route = parseLocation location }, Cmd.none )
 -- UPDATE
 
 type Msg
-    = NewUrl Route 
+    = NewUrl Route
     | UrlChange Navigation.Location
 
 update : Msg -> Model -> (Model, Cmd msg)
 update msg model =
-    case msg of 
+    case msg of
         NewUrl route ->
             ( { model | route = route } , Navigation.newUrl (routeToPath route) )
 
@@ -55,8 +55,8 @@ viewLink : Route -> Html Msg
 viewLink route = li [ onClick (NewUrl route) ] [ text (routeToString route) ]
 
 routeToString : Route -> String
-routeToString route = 
-    case route of 
+routeToString route =
+    case route of
         User userId -> "User"
         Home -> "Home"
         Info -> "Info"
