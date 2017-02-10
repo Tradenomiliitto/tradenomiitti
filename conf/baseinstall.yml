@@ -5,7 +5,7 @@
   tasks:
     - name: install system dependencies
       apt: pkg={{item}} state=present
-      with_items: [ nginx, postgresql, nodejs, nodejs-legacy, npm, git ]
+      with_items: [ nginx, postgresql, nodejs, nodejs-legacy, npm, git, python-psycopg2 ]
 
 
     - name: ensure base services are running
@@ -21,6 +21,19 @@
       template: src=nginx.conf dest=/etc/nginx/nginx.conf
       notify:
         - restart nginx
+      
+    - name: create database user
+      become_user: postgres
+      postgresql_user:
+        name : "{{db_user}}"
+        password : "{{db_password}}"
+
+    - name: create database
+      become_user: postgres
+      postgresql_db:
+        name: tradenomiitti
+        owner: "{{db_user}}"
+
 
     # Set up deployment by git push env master
     - name: make base directories
@@ -42,8 +55,11 @@
 
     - name: add deploy hook
       copy: src=deploy.sh dest=/srv/tradenomiitti.git/hooks/post-receive mode=0755
+    
+    # database configuration
+    - name: database configuration
+      template: src=app.json dest=/srv/app.json 
 
-      
   handlers:
     - name: restart nginx
       service: name=nginx state=restarted

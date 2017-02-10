@@ -9,7 +9,7 @@
   vars:
     pm2_service_name: pm2
     pm2_apps:
-      - run: server/app.json
+      - run: /srv/app.json
         path: /srv/checkout/tradenomiitti
         cmd: start
     pm2_user: ubuntu

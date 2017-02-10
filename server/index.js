@@ -2,8 +2,11 @@ const express = require('express');
 
 const rootDir = "./frontend"
 const app = express();
-const knex_config = require('../knexfile.js')
-const knex = require('knex')(knex_config.local)
+
+// knex 
+const knex_config = require('../knexfile.js');
+const knex = require('knex')(knex_config[process.env.environment]);
+knex.migrate.latest(knex_config[process.env.environment]);
 
 app.get('/api/user/:id', (req, res) => {
   knex('users').where('id', req.params.id)
