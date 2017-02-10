@@ -1,7 +1,8 @@
 import Html exposing (..)
+import Html.Attributes exposing (href)
 import Html.Events exposing (onClick)
-import Navigation
 import Nav exposing (..)
+import Navigation
 
 main =
   Navigation.program UrlChange
@@ -19,12 +20,12 @@ init location = ( { route = parseLocation location }, Cmd.none )
 -- UPDATE
 
 type Msg
-    = NewUrl Route 
+    = NewUrl Route
     | UrlChange Navigation.Location
 
 update : Msg -> Model -> (Model, Cmd msg)
 update msg model =
-    case msg of 
+    case msg of
         NewUrl route ->
             ( { model | route = route } , Navigation.newUrl (routeToPath route) )
 
@@ -42,7 +43,10 @@ subscriptions model =
 view : Model -> Html Msg
 view model =
     div []
-    [ navigation model
+    [ a
+      [ href "https://tunnistus.avoine.fi/sso-login/?service=tradenomiitti&return=http%3A%2F%2Flocalhost%3A3000%2Flogin" ]
+      [ text "Kirjaudu sisään" ]
+    , navigation model
     , div [] [text ("Current page: " ++ (routeToString model.route))] ]
 
 
@@ -55,8 +59,8 @@ viewLink : Route -> Html Msg
 viewLink route = li [ onClick (NewUrl route) ] [ text (routeToString route) ]
 
 routeToString : Route -> String
-routeToString route = 
-    case route of 
+routeToString route =
+    case route of
         User userId -> "User"
         Home -> "Home"
         Info -> "Info"
