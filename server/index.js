@@ -22,6 +22,7 @@ app.get('/api/user/:id', (req, res) => {
     })
     .then(rows => res.send(rows[0]))
     .catch(e => res.sendStatus(404))
+});
 
 const communicationsKey = process.env.COMMUNICATIONS_KEY;
 
