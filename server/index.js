@@ -4,13 +4,31 @@ const uuid = require('uuid');
 const request = require('request');
 
 const rootDir = "./frontend"
+
+const app = express();
+
+// knex 
+const knex_config = require('../knexfile.js');
+const knex = require('knex')(knex_config[process.env.environment]);
+knex.migrate.latest(knex_config[process.env.environment]);
+
+app.get('/api/user/:id', (req, res) => {
+  knex('users').where('id', req.params.id)
+    .then(function(rows){
+      if(rows.length === 0){
+         return Promise.reject("Not Found");
+      }
+      else return rows;
+    })
+    .then(rows => res.send(rows[0]))
+    .catch(e => res.sendStatus(404))
+});
+
 const communicationsKey = process.env.COMMUNICATIONS_KEY;
 
 if (!communicationsKey) {
   console.warn("You should have COMMUNICATIONS_KEY for avoine in ENV");
 }
-
-const app = express();
 
 const urlEncoded = bodyParser.urlencoded();
 

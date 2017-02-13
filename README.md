@@ -36,3 +36,13 @@ To deploy:
 ```sh
 git push ENV master
 ```
+
+### Local development with SQLite
+
+```
+environment=local node server/index.js
+```
+To seed the database:
+```
+knex seed:run --env local
+```
