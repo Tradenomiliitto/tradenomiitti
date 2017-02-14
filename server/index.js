@@ -2,15 +2,31 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const uuid = require('uuid');
 const request = require('request');
+const cookieSession = require('cookie-session');
 
 const rootDir = "./frontend"
 
 const app = express();
 
-// knex 
+// knex
 const knex_config = require('../knexfile.js');
 const knex = require('knex')(knex_config[process.env.environment]);
 knex.migrate.latest(knex_config[process.env.environment]);
+
+
+const secret = process.env.NON_LOCAL ? process.env.COOKIE_SECRET : 'local';
+
+app.use(cookieSession({
+  name: 'session',
+  secret: secret,
+  httpOnly: true,
+  secure: process.env.NON_LOCAL,
+  maxAge: 365 * 24 * 60 * 60 * 1000
+}));
+
+if (process.env.NON_LOCAL) {
+  app.set('trust proxy', 'loopback');
+}
 
 app.get('/api/user/:id', (req, res) => {
   knex('users').where('id', req.params.id)
@@ -54,9 +70,12 @@ app.post('/login', urlEncoded, (req, res) => {
 
     if (body.error) {
       console.log(body);
+      req.session = null;
       return res.status(400).send('Kirjautuminen epäonnistui');
     }
 
+    const sessionId = uuid.v4();
+    req.session.id = sessionId;
     return res.send(`Hei ${body.result.name}, olet kirjautunut onnistuneesti`);
   });
   // TODO persistent session

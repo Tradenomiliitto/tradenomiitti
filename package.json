@@ -22,6 +22,7 @@
   "homepage": "https://github.com/futurice/tradenomiitti#readme",
   "dependencies": {
     "body-parser": "^1.16.0",
+    "cookie-session": "^2.0.0-alpha.3",
     "elm": "^0.18.0",
     "express": "^4.14.1",
     "knex": "^0.12.6",
