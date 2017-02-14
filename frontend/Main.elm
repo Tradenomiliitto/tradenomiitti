@@ -3,6 +3,7 @@ import Html.Attributes exposing (href)
 import Html.Events exposing (onClick)
 import Nav exposing (..)
 import Navigation
+import Window
 
 main =
   Navigation.program UrlChange
@@ -12,10 +13,16 @@ main =
     , subscriptions = subscriptions
     }
 
-type alias Model = { route : Route }
+type alias Model =
+  { route : Route
+  , rootUrl : String
+  }
 
 init : Navigation.Location -> ( Model, Cmd Msg )
-init location = ( { route = parseLocation location }, Cmd.none )
+init location =
+  ({ route = parseLocation location
+   , rootUrl = location.origin
+   }, Cmd.none )
 
 -- UPDATE
 
@@ -42,9 +49,15 @@ subscriptions model =
 
 view : Model -> Html Msg
 view model =
+  let
+    loginUrl = model.rootUrl ++ "/login"
+    returnParameter = Window.encodeURIComponent loginUrl
+  in
     div []
     [ a
-      [ href "https://tunnistus.avoine.fi/sso-login/?service=tradenomiitti&return=http%3A%2F%2Flocalhost%3A3000%2Flogin" ]
+      [ href
+          <| "https://tunnistus.avoine.fi/sso-login/?service=tradenomiitti&return="
+          ++ returnParameter ]
       [ text "Kirjaudu sisään" ]
     , navigation model
     , div [] [text ("Current page: " ++ (routeToString model.route))] ]
