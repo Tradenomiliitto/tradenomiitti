@@ -2,8 +2,9 @@
       "name"      : "app",
       "script"    : "server/index.js",
       "env"       : {
-            "environment" : "{{ db_environment }}",
-            "db_user"     : "{{ db_user }}",
-            "db_password" : "{{ db_password }}"    
+        "environment" : "{{ db_environment }}",
+        "db_user"     : "{{ db_user }}",
+        "db_password" : "{{ db_password }}",
+        "COMMUNICATIONS_KEY": "{{ avoine_communications_key }}"
       }
 }
