@@ -97,6 +97,18 @@ app.post('/login', urlEncoded, (req, res) => {
   });
 });
 
+app.get('/api/me', (req, res) => {
+  if (!req.session || !req.session.id) {
+    return res.sendStatus(403);
+  }
+
+  return knex('sessions')
+    .where({ id: req.session.id })
+    .then(resp => resp[0].user_id)
+    .then(id => knex('users').where({ id }))
+    .then(resp => res.json(resp[0]));
+});
+
 app.get('*', (req, res) => {
   res.sendFile('./index.html', {root: rootDir})
 });
