@@ -11,3 +11,4 @@ then
 fi
 
 ansible-galaxy install weareinteractive.pm2 --roles-path conf/roles
+ansible-galaxy install nickjj.letsencrypt --roles-path conf/roles
