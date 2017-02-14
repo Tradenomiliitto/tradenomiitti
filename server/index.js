@@ -75,10 +75,26 @@ app.post('/login', urlEncoded, (req, res) => {
     }
 
     const sessionId = uuid.v4();
-    req.session.id = sessionId;
-    return res.send(`Hei ${body.result.name}, olet kirjautunut onnistuneesti`);
+    return knex('users').where({ remote_id: body.result.id })
+      .then((resp) => {
+        if (resp.length === 0) {
+          return knex('users')
+            .insert({ remote_id: body.result.id })
+            .then(insertResp => ({ id: insertResp[0] }))
+        } else {
+          return resp[0];
+        }
+      })
+      .then((user) => {
+        return knex('sessions').insert({
+          id: sessionId,
+          user_id: user.id
+        }).then(() => {
+          req.session.id = sessionId;
+          return res.send(`Hei ${body.result.name}, olet kirjautunut onnistuneesti`);
+        });
+      })
   });
-  // TODO persistent session
 });
 
 app.get('*', (req, res) => {
