@@ -1,2 +1,4 @@
 conf/inventory.ini
 node_modules/
+elm-stuff/
+dev.sqlite3
