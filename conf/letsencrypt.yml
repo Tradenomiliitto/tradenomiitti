@@ -1,0 +1,11 @@
+---
+- hosts: [ dev ]
+  remote_user: ubuntu
+  become: yes
+
+  roles:
+    - { role: nickjj.letsencrypt, tags: letsencrypt }
+
+  vars:
+    letsencrypt_domains: [ "{{server_name}}" ]
+    letsencrypt_default_ca: 'https://acme-v01.api.letsencrypt.org'
