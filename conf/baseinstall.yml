@@ -59,6 +59,10 @@
     # database configuration
     - name: database configuration
       template: src=app.json dest=/srv/app.json 
+    
+    # create folder for static files
+    - name: static folder creation
+      file: path=/srv/static state=directory mode=0755 owner=ubuntu
 
   handlers:
     - name: restart nginx

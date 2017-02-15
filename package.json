@@ -8,8 +8,8 @@
     "serverinstallbase": "./conf/serverinstallbase.sh",
     "serverinstallpm2": "ansible-playbook conf/pm2install.yml -i conf/inventory.ini",
     "start": "environment=local node --harmony server/index.js",
-    "compilefrontend": "cd frontend && elm-make --yes Main.elm",
-    "compile-scss": "node-sass -r frontend/stylesheets/ frontend/"
+    "compilefrontend": "cd frontend && elm-make --yes Main.elm --output /srv/static/main.js",
+    "compilescss": "node-sass -r frontend/stylesheets/ -o /srv/static/"
   },
   "repository": {
     "type": "git",
