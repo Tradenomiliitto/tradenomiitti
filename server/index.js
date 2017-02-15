@@ -13,6 +13,12 @@ const knex_config = require('../knexfile.js');
 const knex = require('knex')(knex_config[process.env.environment]);
 knex.migrate.latest(knex_config[process.env.environment]);
 
+//serve static files if developing locally
+if(process.env.environment === "local"){
+  console.log("using static")
+  app.use('/static', express.static(rootDir));
+}
+
 
 const secret = process.env.NON_LOCAL ? process.env.COOKIE_SECRET : 'local';
 
