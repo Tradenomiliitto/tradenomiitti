@@ -39,6 +39,12 @@ git push ENV master
 
 ### Local development with SQLite
 
+Compile elm & scss
+```
+elm-make frontend/Main.elm --output frontend/main.js
+node-sass -r frontend/stylesheets/ -o frontend/
+```
+Run the server:
 ```
 environment=local node server/index.js
 ```

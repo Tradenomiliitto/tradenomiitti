@@ -80,7 +80,7 @@ view model =
 
 navigation : Model -> Html Msg
 navigation model =
-    ul []
+    ul [Html.Attributes.id "nav"]
         (List.map viewLink [User 1, Home, Info])
 
 viewLink : Route -> Html Msg
