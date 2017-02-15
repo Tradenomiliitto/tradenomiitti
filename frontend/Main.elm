@@ -21,7 +21,7 @@ type alias Model =
     }
 
 init : Navigation.Location -> ( Model, Cmd Msg )
-init location = ( { route = parseLocation location, user = Nothing }, Cmd.none)
+init location = ( { route = parseLocation location, user = Nothing }, Navigation.newUrl (routeToPath (parseLocation location)) )
 
 -- UPDATE
 
@@ -34,9 +34,14 @@ update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
     case msg of
         NewUrl route ->
-            ( { model | route = route } , Cmd.batch [ Navigation.newUrl (routeToPath route), Cmd.map UserMessage <| User.getUser 5])
+            ( model ,  Navigation.newUrl (routeToPath route) )
 
-        UrlChange location -> ( { model | route = (parseLocation location) }, Cmd.none )
+        UrlChange location -> 
+            case (parseLocation location) of
+                User userId ->
+                    ( { model | route = (parseLocation location) }, Cmd.map UserMessage <| User.getUser userId)
+                newRoute ->
+                    ( { model | route = newRoute }, Cmd.none )
 
         UserMessage msg -> 
             let

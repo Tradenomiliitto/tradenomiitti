@@ -31,7 +31,7 @@ update msg user =
             (Just updatedUser, Cmd.none) 
 
         UpdateUser (Err _) -> 
-            (user, Cmd.none)
+            (Nothing, Cmd.none)
 
 getUser : Int -> Cmd Msg
 getUser userId =
