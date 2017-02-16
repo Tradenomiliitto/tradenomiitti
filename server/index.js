@@ -80,7 +80,7 @@ app.post('/login', urlEncoded, (req, res) => {
     }
 
     const sessionId = uuid.v4();
-    return knex('users').where({ remote_id: body.result.id })
+    return knex('users').where({ remote_id: body.result.local_id })
       .then((resp) => {
         if (resp.length === 0) {
           return knex('users')
