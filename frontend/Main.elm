@@ -84,36 +84,31 @@ navigation : Model -> Html Msg
 navigation model =
   nav [Html.Attributes.class "navbar navbar-default navbar-fixed-top"]
     [ div [] 
-    [ div [Html.Attributes.class "container"] [
-      (div [Html.Attributes.class "navbar-header"]
-      [ logo ]),
-      navigationList model
-    ]]]
+    [ navigationList model ]]
 
 logo : Html Msg
 logo =
-  a [ Html.Attributes.href "/"] [text "Tradenomiitti" ]
+  li [Html.Attributes.class "navbar-left"]
+  [a [ Html.Attributes.id "logo",
+  Html.Attributes.href "/"] [text "Tradenomiitti" ]]
 
 
 navigationList : Model -> Html Msg
 navigationList model =
-  div [Html.Attributes.id "navbar",
-      Html.Attributes.class "navbar-collapse collapse"] 
-    [ navigationListCenter model
-    , navigationListRight model]
-
-navigationListCenter : Model -> Html Msg
-navigationListCenter model =
-  ul [Html.Attributes.class "nav navbar-nav navbar-center"]
-    (List.map viewLink [Home, NotFound])
-
-navigationListRight : Model -> Html Msg
-navigationListRight model =
-  ul [Html.Attributes.class "nav navbar-nav navbar-right"]
-    (List.map viewLink [Info, User 1])
+  ul [Html.Attributes.class "nav navbar-nav"]
+    (List.concat 
+      [[logo]
+      ,(List.map viewLink [ListUsers, ListAds, CreateAd])
+      ,(List.map viewLinkRight [Profile, Info])
+      ])
 
 viewLink : Route -> Html Msg
 viewLink route = li [] 
+  [(a [onClick (NewUrl route)]
+   [text (routeToString route)])]
+
+viewLinkRight : Route -> Html Msg
+viewLinkRight route = li [Html.Attributes.class "navbar-right"] 
   [(a [onClick (NewUrl route)]
    [text (routeToString route)])]
 
@@ -129,7 +124,20 @@ viewPage model =
 routeToString : Route -> String
 routeToString route =
   case route of
-    User userId -> "User"
-    Home -> "Home"
-    Info -> "Info"
-    NotFound -> "Not Found"
+    User userId ->
+      "Käyttäjä " ++ (toString userId)
+    Profile ->
+      "Oma Profiili"
+    Home ->
+      "Home"
+    Info ->
+      "Tietoa"
+    NotFound ->
+      "Ei löytynyt"
+    ListUsers ->
+      "Tradenomit"
+    ListAds ->
+      "Hakuilmoitukset"
+    CreateAd ->
+      "Jätä ilmoitus"
+
