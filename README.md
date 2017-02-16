@@ -45,7 +45,7 @@ npm run compilelocal
 ```
 Run the server:
 ```
-npm run start
+npm start
 ```
 To seed the database:
 ```
