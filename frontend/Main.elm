@@ -78,14 +78,44 @@ view model =
     , viewPage model 
     ]
 
+--TODO move navbar code to Nav.elm
 
 navigation : Model -> Html Msg
 navigation model =
-  ul [Html.Attributes.id "nav"]
-    (List.map viewLink [User 1, Home, Info])
+  nav [Html.Attributes.class "navbar navbar-default navbar-fixed-top"]
+    [ div [] 
+    [ div [Html.Attributes.class "container"] [
+      (div [Html.Attributes.class "navbar-header"]
+      [ logo ]),
+      navigationList model
+    ]]]
+
+logo : Html Msg
+logo =
+  a [ Html.Attributes.href "/"] [text "Tradenomiitti" ]
+
+
+navigationList : Model -> Html Msg
+navigationList model =
+  div [Html.Attributes.id "navbar",
+      Html.Attributes.class "navbar-collapse collapse"] 
+    [ navigationListCenter model
+    , navigationListRight model]
+
+navigationListCenter : Model -> Html Msg
+navigationListCenter model =
+  ul [Html.Attributes.class "nav navbar-nav navbar-center"]
+    (List.map viewLink [Home, NotFound])
+
+navigationListRight : Model -> Html Msg
+navigationListRight model =
+  ul [Html.Attributes.class "nav navbar-nav navbar-right"]
+    (List.map viewLink [Info, User 1])
 
 viewLink : Route -> Html Msg
-viewLink route = li [ onClick (NewUrl route) ] [ text (routeToString route) ]
+viewLink route = li [] 
+  [(a [onClick (NewUrl route)]
+   [text (routeToString route)])]
 
 
 viewPage : Model -> Html Msg
