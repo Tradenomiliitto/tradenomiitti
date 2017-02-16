@@ -15,8 +15,7 @@ knex.migrate.latest(knex_config[process.env.environment]);
 
 //serve static files if developing locally
 if(process.env.environment === "local"){
-  console.log("using static")
-  app.use('/static', express.static(rootDir));
+  app.use('/static', express.static(rootDir + '/static'));
 }
 
 

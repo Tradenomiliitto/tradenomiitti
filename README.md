@@ -41,12 +41,11 @@ git push ENV master
 
 Compile elm & scss
 ```
-elm-make frontend/Main.elm --output frontend/main.js
-node-sass -r frontend/stylesheets/ -o frontend/
+npm run compilelocal
 ```
 Run the server:
 ```
-environment=local node server/index.js
+npm run start
 ```
 To seed the database:
 ```

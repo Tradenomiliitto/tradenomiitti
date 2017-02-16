@@ -1,4 +1,7 @@
 conf/inventory.ini
+conf/baseinstall.retry
+conf/roles/
 node_modules/
 elm-stuff/
 dev.sqlite3
+frontend/static/
