@@ -3,6 +3,7 @@ import Html.Attributes exposing (href)
 import Html.Events exposing (onClick)
 import Nav exposing (..)
 import Navigation
+import User
 import Window
 
 main =
@@ -13,32 +14,45 @@ main =
     , subscriptions = subscriptions
     }
 
-type alias Model =
-  { route : Route
-  , rootUrl : String
-  }
+type alias Model = 
+    { route : Route
+    , rootUrl : String
+    , user : Maybe User.User
+    }
 
 init : Navigation.Location -> ( Model, Cmd Msg )
 init location =
-  ({ route = parseLocation location
-   , rootUrl = location.origin
-   }, Cmd.none )
+    ({ route = parseLocation location
+     , rootUrl = location.origin
+     , user = Nothing }
+    , Navigation.newUrl (routeToPath (parseLocation location)))
 
 -- UPDATE
 
 type Msg
     = NewUrl Route
     | UrlChange Navigation.Location
+    | UserMessage User.Msg
 
-update : Msg -> Model -> (Model, Cmd msg)
+update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
     case msg of
         NewUrl route ->
-            ( { model | route = route } , Navigation.newUrl (routeToPath route) )
+            ( model ,  Navigation.newUrl (routeToPath route) )
 
-        UrlChange location -> ( { model | route = (parseLocation location) }, Cmd.none )
+        UrlChange location -> 
+            case (parseLocation location) of
+                User userId ->
+                    ( { model | route = (parseLocation location) }, Cmd.map UserMessage <| User.getUser userId)
+                newRoute ->
+                    ( { model | route = newRoute }, Cmd.none )
 
-
+        UserMessage msg -> 
+            let
+                (userModel, cmd) = User.update msg model.user
+            in 
+                ( {model | user = userModel}, Cmd.map UserMessage cmd )
+ 
 --SUBSCRIPTIONS
 
 subscriptions : Model -> Sub Msg
@@ -60,7 +74,8 @@ view model =
           ++ returnParameter ]
       [ text "Kirjaudu sisään" ]
     , navigation model
-    , div [] [text ("Current page: " ++ (routeToString model.route))] ]
+    , viewPage model 
+    ]
 
 
 navigation : Model -> Html Msg
@@ -70,6 +85,15 @@ navigation model =
 
 viewLink : Route -> Html Msg
 viewLink route = li [ onClick (NewUrl route) ] [ text (routeToString route) ]
+
+
+viewPage : Model -> Html Msg
+viewPage model =
+    case model.route of
+        User userId -> map UserMessage <| User.view model.user
+        route -> div [] [text (routeToString route)]
+
+
 
 routeToString : Route -> String
 routeToString route =
