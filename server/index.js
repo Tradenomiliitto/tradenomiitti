@@ -102,6 +102,13 @@ app.post('/login', urlEncoded, (req, res) => {
   });
 });
 
+app.get('/logout', (req, res) => {
+  const sessionId = req.session.id || 'nosession';
+  req.session = null;
+  return knex('sessions').where({id: sessionId}).del()
+    .then(() => res.redirect('https://tunnistus.avoine.fi/sso-logout/'));
+});
+
 app.get('/api/me', (req, res) => {
   if (!req.session || !req.session.id) {
     return res.sendStatus(403);
