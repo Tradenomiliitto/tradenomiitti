@@ -39,8 +39,13 @@ git push ENV master
 
 ### Local development with SQLite
 
+Compile elm & scss
 ```
-environment=local node server/index.js
+npm run compilelocal
+```
+Run the server:
+```
+npm start
 ```
 To seed the database:
 ```
