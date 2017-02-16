@@ -1,8 +1,10 @@
 import Html exposing (..)
 import Html.Attributes exposing (href)
 import Html.Events exposing (onClick)
+import Http
 import Nav exposing (..)
 import Navigation
+import Profile
 import User
 import Window
 
@@ -17,16 +19,28 @@ main =
 type alias Model = 
   { route : Route
   , rootUrl : String
+  , path : String
   , user : Maybe User.User
+  , profile : Maybe User.User
   }
 
 init : Navigation.Location -> ( Model, Cmd Msg )
 init location =
-  ({ route = parseLocation location
-   , rootUrl = location.origin
-   , user = Nothing }
-   -- url is modified on init to send UrlChange message
-   , Navigation.modifyUrl (routeToPath (parseLocation location)))
+  let
+    model = 
+      { route = parseLocation location
+      , rootUrl = location.origin
+      , path = location.pathname
+      , user = Nothing
+      , profile = Nothing
+      }
+
+   -- We want to react initially to UrlChange as well
+    urlCmd = Navigation.modifyUrl (routeToPath (parseLocation location))
+    profileCmd = Profile.getMe GetProfile
+  in
+    model ! [ urlCmd, profileCmd ]
+
 
 -- UPDATE
 
@@ -34,6 +48,7 @@ type Msg
   = NewUrl Route
   | UrlChange Navigation.Location
   | UserMessage User.Msg
+  | GetProfile (Result Http.Error User.User)
 
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
@@ -44,15 +59,27 @@ update msg model =
     UrlChange location -> 
       case (parseLocation location) of
         User userId ->
-          ( { model | route = (parseLocation location) }, Cmd.map UserMessage <| User.getUser userId)
+          ( { model
+              | route = (parseLocation location)
+              , path = location.pathname
+            }, Cmd.map UserMessage <| User.getUser userId)
         newRoute ->
-          ( { model | route = newRoute }, Cmd.none )
+          ( { model
+              | route = newRoute
+              , path = location.pathname
+            }, Cmd.none )
 
     UserMessage msg -> 
       let
         (userModel, cmd) = User.update msg model.user
       in 
         ( {model | user = userModel}, Cmd.map UserMessage cmd )
+
+    GetProfile (Err _) ->
+      { model | profile = Nothing } ! []
+
+    GetProfile (Ok user) ->
+      { model | profile = Just user } ! []
  
 --SUBSCRIPTIONS
 
@@ -64,19 +91,28 @@ subscriptions model =
 
 view : Model -> Html Msg
 view model =
-  let
-    loginUrl = model.rootUrl ++ "/login"
-    returnParameter = Window.encodeURIComponent loginUrl
-  in
-    div []
-    [ a
-      [ href
-        <| "https://tunnistus.avoine.fi/sso-login/?service=tradenomiitti&return="
-        ++ returnParameter ]
-      [ text "Kirjaudu sisään" ]
+  div []
+    [ loginHandler model
     , navigation model
     , viewPage model 
     ]
+
+
+loginHandler : Model -> Html Msg
+loginHandler model =
+  let
+    loginUrl = model.rootUrl ++ "/login?path=" ++ model.path
+    returnParameter = Window.encodeURIComponent loginUrl
+  in
+    case model.profile of
+      Just _ ->
+        a [ href "/logout" ]
+          [ text "Kirjaudu ulos" ]
+      Nothing ->
+        a [ href
+              <| "https://tunnistus.avoine.fi/sso-login/?service=tradenomiitti&return="
+              ++ returnParameter ]
+          [ text "Kirjaudu sisään" ]
 
 
 navigation : Model -> Html Msg

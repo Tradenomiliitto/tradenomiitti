@@ -83,8 +83,9 @@ app.post('/login', urlEncoded, (req, res) => {
     return knex('users').where({ remote_id: body.result.id })
       .then((resp) => {
         if (resp.length === 0) {
+          // TODO get actual name and description
           return knex('users')
-            .insert({ remote_id: body.result.id })
+            .insert({ remote_id: body.result.id, first_name: '', description: '' })
             .then(insertResp => ({ id: insertResp[0] }))
         } else {
           return resp[0];
@@ -96,7 +97,7 @@ app.post('/login', urlEncoded, (req, res) => {
           user_id: user.id
         }).then(() => {
           req.session.id = sessionId;
-          return res.send(`Hei ${body.result.name}, olet kirjautunut onnistuneesti`);
+          return res.redirect(req.query.path || '/');
         });
       })
   });
