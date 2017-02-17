@@ -57,15 +57,18 @@ update msg model =
       ( model ,  Navigation.newUrl (routeToPath route) )
 
     UrlChange location ->
-      case (parseLocation location) of
-        User userId ->
-          ( { model
-              | route = (parseLocation location)
-            }, Cmd.map UserMessage <| User.getUser userId)
-        newRoute ->
-          ( { model
-              | route = newRoute
-            }, Cmd.none )
+      let
+        newRoute = parseLocation location
+        modelWithRoute = { model | route = newRoute }
+        cmd =
+          case newRoute of
+            User userId ->
+              [ Cmd.map UserMessage <| User.getUser userId ]
+
+            newRoute ->
+              []
+      in
+        modelWithRoute ! cmd
 
     UserMessage msg ->
       let
