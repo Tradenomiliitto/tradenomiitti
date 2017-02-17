@@ -1,9 +1,11 @@
-import Html as H 
+import Html as H
 import Html.Attributes as A
 import Html.Events as E
+import Http
 import Json.Decode as Json
 import Nav exposing (..)
 import Navigation
+import Profile
 import User
 import Window
 
@@ -20,15 +22,25 @@ type alias Model =
   { route : Route
   , rootUrl : String
   , user : Maybe User.User
+  , profile : Maybe User.User
   }
 
 init : Navigation.Location -> ( Model, Cmd Msg )
 init location =
-  ({ route = parseLocation location
-   , rootUrl = location.origin
-   , user = Nothing }
-   -- url is modified on init to send UrlChange message
-   , Navigation.modifyUrl (routeToPath (parseLocation location)))
+  let
+    model =
+      { route = parseLocation location
+      , rootUrl = location.origin
+      , user = Nothing
+      , profile = Nothing
+      }
+
+   -- We want to react initially to UrlChange as well
+    urlCmd = Navigation.modifyUrl (routeToPath (parseLocation location))
+    profileCmd = Profile.getMe GetProfile
+  in
+    model ! [ urlCmd, profileCmd ]
+
 
 -- UPDATE
 
@@ -36,6 +48,7 @@ type Msg
   = NewUrl Route
   | UrlChange Navigation.Location
   | UserMessage User.Msg
+  | GetProfile (Result Http.Error User.User)
 
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
@@ -46,15 +59,25 @@ update msg model =
     UrlChange location ->
       case (parseLocation location) of
         User userId ->
-          ( { model | route = (parseLocation location) }, Cmd.map UserMessage <| User.getUser userId)
+          ( { model
+              | route = (parseLocation location)
+            }, Cmd.map UserMessage <| User.getUser userId)
         newRoute ->
-          ( { model | route = newRoute }, Cmd.none )
+          ( { model
+              | route = newRoute
+            }, Cmd.none )
 
     UserMessage msg ->
       let
         (userModel, cmd) = User.update msg model.user
       in
         ( {model | user = userModel}, Cmd.map UserMessage cmd )
+
+    GetProfile (Err _) ->
+      { model | profile = Nothing } ! []
+
+    GetProfile (Ok user) ->
+      { model | profile = Just user } ! []
 
 --SUBSCRIPTIONS
 
@@ -66,21 +89,29 @@ subscriptions model =
 
 view : Model -> H.Html Msg
 view model =
-  let
-    loginUrl = model.rootUrl ++ "/login"
-    returnParameter = Window.encodeURIComponent loginUrl
-  in
-    H.div []
-    [ H.a
-      [ A.href
-        <| "https://tunnistus.avoine.fi/sso-login/?service=tradenomiitti&return="
-        ++ returnParameter ]
-      [ H.text "Kirjaudu sisään" ]
-    , navigation model
+  H.div []
+    [ navigation model
     , viewPage model
     ]
 
 --TODO move navbar code to Nav.elm
+
+loginHandler : Model -> H.Html Msg
+loginHandler model =
+  let
+    loginUrl = model.rootUrl ++ "/login?path=" ++ (routeToPath model.route)
+    returnParameter = Window.encodeURIComponent loginUrl
+  in
+    case model.profile of
+      Just _ ->
+        H.a [ A.href "/logout" ]
+          [ H.text "Kirjaudu ulos" ]
+      Nothing ->
+        H.a [ A.href
+              <| "https://tunnistus.avoine.fi/sso-login/?service=tradenomiitti&return="
+              ++ returnParameter ]
+          [ H.text "Kirjaudu sisään" ]
+
 
 navigation : Model -> H.Html Msg
 navigation model =
@@ -121,22 +152,22 @@ viewLink route =
 
 viewLinkRight : Route -> H.Html Msg
 viewLinkRight route =
-  H.li 
+  H.li
     [ A.class "navbar-right" ]
     [ link route ]
 
 link : Route -> H.Html Msg
-link route = 
-  let 
-    action = 
+link route =
+  let
+    action =
       E.onWithOptions
         "click"
         { stopPropagation = False
         , preventDefault = True
         }
         (Json.succeed <| NewUrl route)
-  in 
-    H.a 
+  in
+    H.a
       [ action
       , A.href (routeToPath route)
       ]
@@ -144,13 +175,21 @@ link route =
 
 viewPage : Model -> H.Html Msg
 viewPage model =
-  case model.route of
-    User userId ->
-      H.map UserMessage <| User.view model.user
-    route ->
-      H.div
-        []
-        [ H.text (routeToString route) ]
+  let
+    content =
+      case model.route of
+        User userId ->
+          H.map UserMessage <| User.view model.user
+        Profile ->
+          loginHandler model
+        route ->
+          H.div
+            []
+            [ H.text (routeToString route) ]
+  in
+    H.div
+      [ A.class "container app-content" ]
+      [ content ]
 
 
 
@@ -173,5 +212,3 @@ routeToString route =
       "Hakuilmoitukset"
     CreateAd ->
       "Jätä ilmoitus"
-
-

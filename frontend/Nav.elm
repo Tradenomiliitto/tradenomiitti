@@ -19,9 +19,9 @@ routeToPath route =
     Info ->
       "/info"
     NotFound ->
-      "/notfound"   
+      "/notfound"
     Profile ->
-      "/user/1"
+      "/profile"
     User userId ->
       "/user/" ++ (toString userId)
 
@@ -29,14 +29,14 @@ routeToPath route =
 parseLocation : Navigation.Location -> Route
 parseLocation location =
   let route = U.parsePath routeParser location
-  in 
-    case route of 
+  in
+    case route of
       Just route -> route
       Nothing -> NotFound
 
 routeParser : U.Parser (Route -> a) a
 routeParser =
-  U.oneOf 
+  U.oneOf
     [ U.map CreateAd (U.s "ad" </> U.s "create")
     , U.map ListAds (U.s "ads")
     , U.map ListUsers (U.s "users")
@@ -45,4 +45,3 @@ routeParser =
     , U.map Profile (U.s "profile")
     , U.map User (U.s "user" </> U.int)
     ]
- 
