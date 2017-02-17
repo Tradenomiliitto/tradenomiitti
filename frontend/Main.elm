@@ -90,8 +90,7 @@ subscriptions model =
 view : Model -> H.Html Msg
 view model =
   H.div []
-    [ loginHandler model
-    , navigation model
+    [ navigation model
     , viewPage model
     ]
 
@@ -176,13 +175,21 @@ link route =
 
 viewPage : Model -> H.Html Msg
 viewPage model =
-  case model.route of
-    User userId ->
-      H.map UserMessage <| User.view model.user
-    route ->
-      H.div
-        []
-        [ H.text (routeToString route) ]
+  let
+    content =
+      case model.route of
+        User userId ->
+          H.map UserMessage <| User.view model.user
+        Profile ->
+          loginHandler model
+        route ->
+          H.div
+            []
+            [ H.text (routeToString route) ]
+  in
+    H.div
+      [ A.class "container app-content" ]
+      [ content ]
 
 
 
