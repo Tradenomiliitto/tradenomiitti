@@ -51,7 +51,6 @@ view userMaybe =
 viewUser : User -> Html Msg
 viewUser user =
   div [] 
-  [
-    div [] [ text user.name ],
-    div [] [ text user.description ]
+  [ div [] [ text user.name ]
+  , div [] [ text user.description ]
   ]

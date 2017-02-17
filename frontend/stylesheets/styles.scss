@@ -1,13 +1,28 @@
-#nav {
 
-  ul {
-    margin: 0;
-    padding: 0;
-    list-style: none;
-    }
+//color definitions
+$pink: rgb(255, 105, 138);
+$green:  rgb(74, 97, 97);
+$medium_grey: rgb(207, 208, 207);
+$dark_gey: rgb(99, 99, 99);
 
-  li {
-    display: inline-block;
-    margin: 10px; 
-    }
+.navbar {
+  background-color: $pink;
+}
+
+.navbar-default .navbar-nav > li > a{
+  color: white;
+}
+
+.navbar-nav {
+  width: 100%;
+  text-align:center;
+}
+
+.navbar-nav > li {
+  float: none;
+  display: inline-block;
+}
+
+.navbar-nav > li.navbar-right {
+  float: right !important;
 }
