@@ -19,7 +19,6 @@ main =
 type alias Model = 
   { route : Route
   , rootUrl : String
-  , path : String
   , user : Maybe User.User
   , profile : Maybe User.User
   }
@@ -30,7 +29,6 @@ init location =
     model = 
       { route = parseLocation location
       , rootUrl = location.origin
-      , path = location.pathname
       , user = Nothing
       , profile = Nothing
       }
@@ -61,12 +59,10 @@ update msg model =
         User userId ->
           ( { model
               | route = (parseLocation location)
-              , path = location.pathname
             }, Cmd.map UserMessage <| User.getUser userId)
         newRoute ->
           ( { model
               | route = newRoute
-              , path = location.pathname
             }, Cmd.none )
 
     UserMessage msg -> 
@@ -101,7 +97,7 @@ view model =
 loginHandler : Model -> Html Msg
 loginHandler model =
   let
-    loginUrl = model.rootUrl ++ "/login?path=" ++ model.path
+    loginUrl = model.rootUrl ++ "/login?path=" ++ (routeToPath model.route)
     returnParameter = Window.encodeURIComponent loginUrl
   in
     case model.profile of
