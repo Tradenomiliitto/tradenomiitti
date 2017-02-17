@@ -3,27 +3,27 @@ module Nav exposing (..)
 import UrlParser as U exposing ((</>))
 import Navigation
 
-type Route = Home | ListUsers | ListAds | CreateAd | Info | Profile | User Int | NotFound
+type Route = CreateAd | ListAds | ListUsers | Home | Info | NotFound | Profile | User Int
 
 routeToPath : Route -> String
 routeToPath route =
   case route of
-    User userId ->
-      "/user/" ++ (toString userId)
-    Profile ->
-      "/user/1"
+    CreateAd ->
+      "/ad/create"
+    ListAds ->
+      "/ads"
+    ListUsers ->
+      "/users"
     Home ->
       "/"
     Info ->
       "/info"
     NotFound ->
-      "/notfound"
-    ListUsers ->
-      "/users"
-    ListAds ->
-      "/ads"
-    CreateAd ->
-      "/ad/create"
+      "/notfound"   
+    Profile ->
+      "/user/1"
+    User userId ->
+      "/user/" ++ (toString userId)
 
 
 parseLocation : Navigation.Location -> Route
@@ -37,8 +37,12 @@ parseLocation location =
 routeParser : U.Parser (Route -> a) a
 routeParser =
   U.oneOf 
-    [ U.map Home (U.s "")
+    [ U.map CreateAd (U.s "ad" </> U.s "create")
+    , U.map ListAds (U.s "ads")
+    , U.map ListUsers (U.s "users")
+    , U.map Home (U.s "")
     , U.map Info (U.s "info")
+    , U.map Profile (U.s "profile")
     , U.map User (U.s "user" </> U.int)
     ]
  
