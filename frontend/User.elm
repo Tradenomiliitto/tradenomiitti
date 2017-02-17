@@ -5,7 +5,7 @@ import Json.Decode.Pipeline exposing (decode, required, optional)
 import Http
 import Html exposing (Html, div, text)
 
-type alias User = 
+type alias User =
   {
     name: String,
     description: String
@@ -17,7 +17,7 @@ userDecoder =
     |> required "first_name" string
     |> required "description" string
 
--- UPDATE 
+-- UPDATE
 
 type Msg = UpdateUser (Result Http.Error User)
 
@@ -25,14 +25,14 @@ update : Msg -> Maybe User -> ( Maybe User, Cmd Msg)
 update msg user =
   case msg of
     UpdateUser (Ok updatedUser) ->
-      (Just updatedUser, Cmd.none) 
+      (Just updatedUser, Cmd.none)
     -- TODO: show error instead of spinning in case of user not found
-    UpdateUser (Err _) -> 
+    UpdateUser (Err _) ->
       (Nothing, Cmd.none)
 
 getUser : Int -> Cmd Msg
 getUser userId =
-  let 
+  let
     url = "/api/user/" ++ (toString userId)
     request = Http.get url userDecoder
   in
@@ -41,16 +41,16 @@ getUser userId =
 
 -- VIEW
 
-view : Maybe User -> Html Msg 
+view : Maybe User -> Html Msg
 view userMaybe =
   userMaybe
     |> Maybe.map viewUser
     |> Maybe.withDefault (div [] [text "spinning"])
 
-  
+
 viewUser : User -> Html Msg
 viewUser user =
-  div [] 
+  div []
   [ div [] [ text user.name ]
   , div [] [ text user.description ]
   ]
