@@ -1,10 +1,12 @@
-import Html as H exposing (..)
-import Html.Attributes as A exposing (href)
-import Html.Events as E exposing (onClick)
+import Html as H 
+import Html.Attributes as A
+import Html.Events as E
+import Json.Decode as Json
 import Nav exposing (..)
 import Navigation
 import User
 import Window
+
 
 main =
   Navigation.program UrlChange
@@ -62,75 +64,93 @@ subscriptions model =
 
 -- VIEW
 
-view : Model -> Html Msg
+view : Model -> H.Html Msg
 view model =
   let
     loginUrl = model.rootUrl ++ "/login"
     returnParameter = Window.encodeURIComponent loginUrl
   in
-    div []
-    [ a
-      [ href
+    H.div []
+    [ H.a
+      [ A.href
         <| "https://tunnistus.avoine.fi/sso-login/?service=tradenomiitti&return="
         ++ returnParameter ]
-      [ text "Kirjaudu sisään" ]
+      [ H.text "Kirjaudu sisään" ]
     , navigation model
     , viewPage model
     ]
 
 --TODO move navbar code to Nav.elm
 
-navigation : Model -> Html Msg
+navigation : Model -> H.Html Msg
 navigation model =
   H.nav
-    [ Html.Attributes.class "navbar navbar-default navbar-fixed-top" ]
-    [ div
-        []
-        [ navigationList model ]
+    [ A.class "navbar navbar-default navbar-fixed-top" ]
+    [ H.div
+      []
+      [ navigationList model ]
     ]
 
-logo : Html Msg
+logo : H.Html Msg
 logo =
   H.li
     [ A.class "navbar-left" ]
     [ H.a
-        [ A.id "logo"
-        , A.href "/"
-        ]
-        [ text "Tradenomiitti" ]
+      [ A.id "logo"
+      , A.href "/"
+      ]
+      [ H.text "Tradenomiitti" ]
     ]
 
 
-navigationList : Model -> Html Msg
+navigationList : Model -> H.Html Msg
 navigationList model =
   H.ul
     [ A.class "nav navbar-nav" ]
     (List.concat
       [ [logo]
-      , List.map viewLink [ListUsers, ListAds, CreateAd]
-      , List.map viewLinkRight [Profile, Info]
+      , List.map viewLink [ ListUsers, ListAds, CreateAd ]
+      , List.map viewLinkRight [ Profile, Info ]
       ])
 
-viewLink : Route -> Html Msg
+viewLink : Route -> H.Html Msg
 viewLink route =
   H.li
     []
-    [ H.a
-        [ E.onClick (NewUrl route)]
-        [ H.text (routeToString route)]
-    ]
+    [ link route ]
 
-viewLinkRight : Route -> Html Msg
-viewLinkRight route = li [Html.Attributes.class "navbar-right"]
-  [(a [onClick (NewUrl route)]
-   [text (routeToString route)])]
+viewLinkRight : Route -> H.Html Msg
+viewLinkRight route =
+  H.li 
+    [ A.class "navbar-right" ]
+    [ link route ]
 
+link : Route -> H.Html Msg
+link route = 
+  let 
+    action = 
+      E.onWithOptions
+        "click"
+        { stopPropagation = False
+        , preventDefault = True
+        }
+        (Json.succeed <| NewUrl route)
+  in 
+    H.a 
+      [ action
+      , A.href (routeToPath route)
+      ]
+      [ H.text (routeToString route) ]
 
-viewPage : Model -> Html Msg
+viewPage : Model -> H.Html Msg
 viewPage model =
   case model.route of
-    User userId -> map UserMessage <| User.view model.user
-    route -> div [] [text (routeToString route)]
+    User userId ->
+      H.map UserMessage <| User.view model.user
+    route ->
+      H.div
+        []
+        [ H.text (routeToString route) ]
 
 
 
@@ -153,3 +173,5 @@ routeToString route =
       "Hakuilmoitukset"
     CreateAd ->
       "Jätä ilmoitus"
+
+
