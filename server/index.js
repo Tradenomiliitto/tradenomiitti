@@ -4,6 +4,8 @@ const uuid = require('uuid');
 const request = require('request');
 const cookieSession = require('cookie-session');
 
+const sebacon = require('./sebaconService');
+
 const rootDir = "./frontend"
 
 const app = express();
@@ -46,10 +48,21 @@ app.get('/api/user/:id', (req, res) => {
 });
 
 const communicationsKey = process.env.COMMUNICATIONS_KEY;
+if (!communicationsKey) console.warn("You should have COMMUNICATIONS_KEY for avoine in ENV");
 
-if (!communicationsKey) {
-  console.warn("You should have COMMUNICATIONS_KEY for avoine in ENV");
+const sebaconAuth = process.env.SEBACON_AUTH;
+const sebaconCustomer = process.env.SEBACON_CUSTOMER;
+const sebaconUser = process.env.SEBACON_USER;
+const sebaconPassword = process.env.SEBACON_PASSWORD;
+if (!sebaconAuth ||
+    !sebaconCustomer ||
+    !sebaconUser ||
+    !sebaconPassword) {
+  console.warn("You should have SEBACON_* parameters for avoine in ENV");
 }
+
+sebacon.initialize({ customer: sebaconCustomer, user: sebaconUser,
+                     password: sebaconPassword, auth: sebaconAuth});
 
 const urlEncoded = bodyParser.urlencoded();
 
@@ -80,7 +93,7 @@ app.post('/login', urlEncoded, (req, res) => {
     }
 
     const sessionId = uuid.v4();
-    return knex('users').where({ remote_id: body.result.id })
+    return knex('users').where({ remote_id: body.result.local_id })
       .then((resp) => {
         if (resp.length === 0) {
           // TODO get actual name and description
@@ -121,6 +134,15 @@ app.get('/api/me', (req, res) => {
     .then(id => knex('users').where({ id }))
     .then(resp => res.json(resp[0]));
 });
+
+app.get('/api/me/positions', (req, res) => {
+  if (!req.session || !req.session.id) {
+    return res.sendStatus(403);
+  }
+
+  // TODO get the actual logged in user's details once we have API and SSO to the same place
+  return sebacon.getUserPositions('19258').then(titles => res.json(titles));
+})
 
 app.get('*', (req, res) => {
   res.sendFile('./index.html', {root: rootDir})

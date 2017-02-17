@@ -1,37 +1,48 @@
 module Nav exposing (..)
 
-import UrlParser exposing (Parser, (</>), int, oneOf, s, map)
+import UrlParser as U exposing ((</>))
 import Navigation
 
-type Route = User Int | Home | Info | NotFound
+type Route = CreateAd | ListAds | ListUsers | Home | Info | NotFound | Profile | User Int
 
 routeToPath : Route -> String
 routeToPath route =
   case route of
-    User userId ->
-      "/user/" ++ (toString userId)
+    CreateAd ->
+      "/ad/create"
+    ListAds ->
+      "/ads"
+    ListUsers ->
+      "/users"
     Home ->
       "/"
     Info ->
       "/info"
     NotFound ->
-      "/notfound"
-
+      "/notfound"   
+    Profile ->
+      "/user/1"
+    User userId ->
+      "/user/" ++ (toString userId)
 
 
 parseLocation : Navigation.Location -> Route
 parseLocation location =
-  let route = UrlParser.parsePath routeParser location
+  let route = U.parsePath routeParser location
   in 
     case route of 
       Just route -> route
       Nothing -> NotFound
 
-routeParser : Parser (Route -> a) a
+routeParser : U.Parser (Route -> a) a
 routeParser =
-  oneOf 
-    [ map Home (s "")
-    , map Info (s "info")
-    , map User (s "user" </> int)
+  U.oneOf 
+    [ U.map CreateAd (U.s "ad" </> U.s "create")
+    , U.map ListAds (U.s "ads")
+    , U.map ListUsers (U.s "users")
+    , U.map Home (U.s "")
+    , U.map Info (U.s "info")
+    , U.map Profile (U.s "profile")
+    , U.map User (U.s "user" </> U.int)
     ]
  
