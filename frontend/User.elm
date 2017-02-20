@@ -25,10 +25,10 @@ update : Msg -> Maybe User -> ( Maybe User, Cmd Msg)
 update msg user =
   case msg of
     UpdateUser (Ok updatedUser) ->
-      (Just updatedUser, Cmd.none)
+      Just updatedUser ! []
     -- TODO: show error instead of spinning in case of user not found
     UpdateUser (Err _) ->
-      (Nothing, Cmd.none)
+      Nothing ! []
 
 getUser : Int -> Cmd Msg
 getUser userId =
