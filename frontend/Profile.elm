@@ -10,11 +10,10 @@ getMe toMsg =
     |> Http.send toMsg
 
 
-
-view : Maybe User.User -> H.Html msg -> (User.Msg -> msg) -> H.Html msg
-view userMaybe loginHandler toMsg =
+view : User.Model -> H.Html msg -> (User.Msg -> msg) -> H.Html msg
+view userModel loginHandler toMsg =
   H.div
     []
     [ loginHandler
-    , H.map toMsg <| User.view userMaybe
+    , H.map toMsg <| User.view userModel
     ]
