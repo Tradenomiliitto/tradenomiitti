@@ -2,6 +2,7 @@ module User exposing (..)
 
 import Html exposing (Html, div, text, input)
 import Html.Attributes as A
+import Html.Events as E
 import Http
 import Json.Decode exposing (Decoder, string, list)
 import Json.Decode.Pipeline exposing (decode, required, optional)
@@ -21,7 +22,7 @@ userDecoder =
 
 -- UPDATE
 
-type Msg = UpdateUser (Result Http.Error User)
+type Msg = UpdateUser (Result Http.Error User) | NoOp
 
 update : Msg -> Maybe User -> ( Maybe User, Cmd Msg)
 update msg user =
@@ -31,6 +32,9 @@ update msg user =
     -- TODO: show error instead of spinning in case of user not found
     UpdateUser (Err _) ->
       Nothing ! []
+
+    NoOp ->
+      user ! []
 
 getUser : Int -> Cmd Msg
 getUser userId =
@@ -55,12 +59,19 @@ viewUser user =
   div [] <|
   [ div
       []
-      [ input [ A.value user.name ] [] ]
+      [ input [ A.value user.name
+              , E.onInput <| always NoOp
+              ] [] ]
   , div
       []
-      [ text user.description ]
+      [ input [ A.value user.description
+              , E.onInput <| always NoOp
+              ] [] ]
   ] ++ (viewPositions user.positions)
 
 viewPositions : List String -> List (Html Msg)
 viewPositions positions =
-  List.map (\position -> input [ A.value position ] []) positions
+  List.map (\position -> input
+              [ A.value position
+              , E.onInput <| always NoOp
+              ] []) positions
