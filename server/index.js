@@ -132,7 +132,12 @@ app.get('/api/me', (req, res) => {
     .where({ id: req.session.id })
     .then(resp => resp[0].user_id)
     .then(id => knex('users').where({ id }))
-    .then(resp => res.json(resp[0]));
+    .then(resp => res.json(resp[0]))
+    .catch((err) => {
+      console.error('Error in /api/me', err);
+      req.session = null;
+      res.sendStatus(500);
+    });
 });
 
 app.get('/api/me/positions', (req, res) => {
