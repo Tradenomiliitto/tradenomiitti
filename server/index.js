@@ -96,7 +96,8 @@ app.post('/login', urlEncoded, (req, res) => {
         if (resp.length === 0) {
           // TODO get actual name and description
           return knex('users')
-            .insert({ remote_id: body.result.id, first_name: '', description: '' })
+            // postgres does not automatically return the id, ask for it explicitly
+            .insert({ remote_id: body.result.id, first_name: '', description: '' }, 'id')
             .then(insertResp => ({ id: insertResp[0] }))
         } else {
           return resp[0];
