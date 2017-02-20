@@ -184,7 +184,7 @@ viewPage model =
         User userId ->
           H.map UserMessage <| User.view model.user
         Profile ->
-          loginHandler model
+          Profile.view model.profile (loginHandler model) UserMessage
         route ->
           notImplementedYet
   in

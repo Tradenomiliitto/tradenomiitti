@@ -1,14 +1,15 @@
 module User exposing (..)
 
-import Json.Decode exposing (Decoder, string)
-import Json.Decode.Pipeline exposing (decode, required, optional)
+import Html exposing (Html, div, text, input)
+import Html.Attributes as A
 import Http
-import Html exposing (Html, div, text)
+import Json.Decode exposing (Decoder, string, list)
+import Json.Decode.Pipeline exposing (decode, required, optional)
 
 type alias User =
-  {
-    name: String,
-    description: String
+  { name : String
+  , description : String
+  , positions : List String
   }
 
 userDecoder : Decoder User
@@ -16,6 +17,7 @@ userDecoder =
   decode User
     |> required "first_name" string
     |> required "description" string
+    |> required "positions" (list string)
 
 -- UPDATE
 
@@ -50,7 +52,15 @@ view userMaybe =
 
 viewUser : User -> Html Msg
 viewUser user =
-  div []
-  [ div [] [ text user.name ]
-  , div [] [ text user.description ]
-  ]
+  div [] <|
+  [ div
+      []
+      [ input [ A.value user.name ] [] ]
+  , div
+      []
+      [ text user.description ]
+  ] ++ (viewPositions user.positions)
+
+viewPositions : List String -> List (Html Msg)
+viewPositions positions =
+  List.map (\position -> input [ A.value position ] []) positions
