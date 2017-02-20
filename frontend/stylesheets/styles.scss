@@ -5,12 +5,19 @@ $green:  rgb(74, 97, 97);
 $medium_grey: rgb(207, 208, 207);
 $dark_gey: rgb(99, 99, 99);
 
+//fonts
+@font-face  {
+  font-family: mundoSansRegular;
+  src: url("/static/MundoSansStd.otf");
+}
+
 .navbar {
   background-color: $pink;
 }
 
 .navbar-default .navbar-nav > li > a{
   color: white;
+  font-family: mundoSansRegular;
 }
 
 .navbar-nav {
