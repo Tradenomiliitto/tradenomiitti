@@ -15,10 +15,8 @@ const knex_config = require('../knexfile.js');
 const knex = require('knex')(knex_config[process.env.environment]);
 knex.migrate.latest(knex_config[process.env.environment]);
 
-//serve static files if developing locally
-if(process.env.environment === "local"){
-  app.use('/static', express.static(rootDir + '/static'));
-}
+//serve static files if developing locally (this route is not reached on servers)
+app.use('/static', express.static(rootDir + '/static'));
 
 
 const secret = process.env.NON_LOCAL ? process.env.COOKIE_SECRET : 'local';
@@ -98,7 +96,8 @@ app.post('/login', urlEncoded, (req, res) => {
         if (resp.length === 0) {
           // TODO get actual name and description
           return knex('users')
-            .insert({ remote_id: body.result.id, first_name: '', description: '' })
+            // postgres does not automatically return the id, ask for it explicitly
+            .insert({ remote_id: body.result.id, first_name: '', description: '' }, 'id')
             .then(insertResp => ({ id: insertResp[0] }))
         } else {
           return resp[0];
@@ -132,7 +131,12 @@ app.get('/api/me', (req, res) => {
     .where({ id: req.session.id })
     .then(resp => resp[0].user_id)
     .then(id => knex('users').where({ id }))
-    .then(resp => res.json(resp[0]));
+    .then(resp => res.json(resp[0]))
+    .catch((err) => {
+      console.error('Error in /api/me', err);
+      req.session = null;
+      res.sendStatus(500);
+    });
 });
 
 app.get('/api/me/positions', (req, res) => {
