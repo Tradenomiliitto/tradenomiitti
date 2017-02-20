@@ -9,7 +9,7 @@ import Profile
 import User
 import Window
 
-
+main : Program Never Model Msg
 main =
   Navigation.program UrlChange
     { init = init
