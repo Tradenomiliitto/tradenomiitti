@@ -97,7 +97,7 @@ app.post('/login', urlEncoded, (req, res) => {
           // TODO get actual name and description
           return knex('users')
             // postgres does not automatically return the id, ask for it explicitly
-            .insert({ remote_id: body.result.id, first_name: '', description: '' }, 'id')
+            .insert({ remote_id: body.result.local_id, first_name: '', description: '' }, 'id')
             .then(insertResp => ({ id: insertResp[0] }))
         } else {
           return resp[0];
@@ -126,12 +126,20 @@ app.get('/api/me', (req, res) => {
   if (!req.session || !req.session.id) {
     return res.sendStatus(403);
   }
-
-  return knex('sessions')
-    .where({ id: req.session.id })
-    .then(resp => resp[0].user_id)
-    .then(id => knex('users').where({ id }))
-    .then(resp => res.json(resp[0]))
+  return userForSession(req)
+    .then(user => {
+      return Promise.all([
+        sebacon.getUserFirstName(user.remote_id),
+        sebacon.getUserPositions(user.remote_id),
+        user
+      ])
+    })
+    .then(([ firstname, positions, user ]) => {
+      // TODO not like this
+      user.first_name = firstname;
+      user.positions = positions;
+      return res.json(user);
+    })
     .catch((err) => {
       console.error('Error in /api/me', err);
       req.session = null;
@@ -144,8 +152,9 @@ app.get('/api/me/positions', (req, res) => {
     return res.sendStatus(403);
   }
 
-  // TODO get the actual logged in user's details once we have API and SSO to the same place
-  return sebacon.getUserPositions('19258').then(titles => res.json(titles));
+  return userForSession(req)
+    .then(user => sebacon.getUserPositions(user.remote_id))
+    .then(titles => res.json(titles));
 })
 
 app.get('*', (req, res) => {
@@ -155,3 +164,11 @@ app.get('*', (req, res) => {
 app.listen(3000, () => {
   console.log('Listening on 3000');
 });
+
+function userForSession(req) {
+  return knex('sessions')
+    .where({ id: req.session.id })
+    .then(resp => resp[0].user_id)
+    .then(id => knex('users').where({ id }))
+    .then(resp => resp[0]);
+}

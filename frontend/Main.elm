@@ -9,7 +9,7 @@ import Profile
 import User
 import Window
 
-
+main : Program Never Model Msg
 main =
   Navigation.program UrlChange
     { init = init
@@ -21,8 +21,8 @@ main =
 type alias Model =
   { route : Route
   , rootUrl : String
-  , user : Maybe User.User
-  , profile : Maybe User.User
+  , user : User.Model
+  , profile : User.Model
   }
 
 init : Navigation.Location -> ( Model, Cmd Msg )
@@ -31,8 +31,8 @@ init location =
     model =
       { route = parseLocation location
       , rootUrl = location.origin
-      , user = Nothing
-      , profile = Nothing
+      , user = User.init
+      , profile = { user = Nothing, spinning = True }
       }
 
    -- We want to react initially to UrlChange as well
@@ -57,27 +57,40 @@ update msg model =
       ( model ,  Navigation.newUrl (routeToPath route) )
 
     UrlChange location ->
-      case (parseLocation location) of
-        User userId ->
-          ( { model
-              | route = (parseLocation location)
-            }, Cmd.map UserMessage <| User.getUser userId)
-        newRoute ->
-          ( { model
-              | route = newRoute
-            }, Cmd.none )
+      let
+        newRoute = parseLocation location
+        modelWithRoute = { model | route = newRoute }
+        ( newModel, cmd ) =
+          case newRoute of
+            User userId ->
+              let
+                (userModel, cmd) =
+                  User.update (User.GetUser userId) modelWithRoute.user
+              in
+                ({ modelWithRoute | user = userModel }, Cmd.map UserMessage cmd)
+
+            newRoute ->
+              (modelWithRoute, Cmd.none)
+      in
+        newModel ! [ cmd ]
 
     UserMessage msg ->
       let
         (userModel, cmd) = User.update msg model.user
       in
-        ( {model | user = userModel}, Cmd.map UserMessage cmd )
+        ( { model | user = userModel}, Cmd.map UserMessage cmd )
 
     GetProfile (Err _) ->
-      { model | profile = Nothing } ! []
+      let
+        profile = model.profile
+      in
+        { model | profile = { profile | spinning = False } } ! []
 
     GetProfile (Ok user) ->
-      { model | profile = Just user } ! []
+      let
+        profile = model.profile
+      in
+        { model | profile = { profile | user = Just user, spinning = False } } ! []
 
 --SUBSCRIPTIONS
 
@@ -102,7 +115,7 @@ loginHandler model =
     loginUrl = model.rootUrl ++ "/login?path=" ++ (routeToPath model.route)
     returnParameter = Window.encodeURIComponent loginUrl
   in
-    case model.profile of
+    case model.profile.user of
       Just _ ->
         H.a [ A.href "/logout" ]
           [ H.text "Kirjaudu ulos" ]
@@ -181,7 +194,7 @@ viewPage model =
         User userId ->
           H.map UserMessage <| User.view model.user
         Profile ->
-          loginHandler model
+          Profile.view model.profile (loginHandler model) UserMessage
         route ->
           notImplementedYet
   in

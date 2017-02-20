@@ -55,7 +55,26 @@ function getUserPositions(id) {
   ]).then(([ titles, res ]) => res.result.map(o => titles[o.tehtavanimike_val]));
 }
 
+function getUserFirstName(id) {
+  return request.post({
+    url: url(),
+    auth: {
+      user: `${params.customer}\\${params.user}`,
+      pass: `${params.password}`
+    },
+    json: {
+      id: uuid.v4(),
+      jsonrpc: '2.0',
+      method: 'getPersonObject',
+      params: [
+        id
+      ]
+    }
+  }).then(res => res.result.kutsumanimi || res.result.firstname);
+}
+
 module.exports = {
   getUserPositions,
+  getUserFirstName,
   initialize
 }
