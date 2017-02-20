@@ -1,6 +1,6 @@
 module User exposing (..)
 
-import Html exposing (Html, div, text, input)
+import Html as H exposing (Html)
 import Html.Attributes as A
 import Html.Events as E
 import Http
@@ -51,27 +51,31 @@ view : Maybe User -> Html Msg
 view userMaybe =
   userMaybe
     |> Maybe.map viewUser
-    |> Maybe.withDefault (div [] [text "spinning"])
+    |> Maybe.withDefault (H.div [] [ H.text "spinning"])
 
 
 viewUser : User -> Html Msg
 viewUser user =
-  div [] <|
-  [ div
+  H.div [] <|
+  [ H.div
       []
-      [ input [ A.value user.name
-              , E.onInput <| always NoOp
-              ] [] ]
-  , div
+      [ H.input
+          [ A.value user.name
+          , E.onInput <| always NoOp
+          ] []
+      ]
+  , H.div
       []
-      [ input [ A.value user.description
-              , E.onInput <| always NoOp
-              ] [] ]
+      [ H.input
+          [ A.value user.description
+          , E.onInput <| always NoOp
+          ] []
+      ]
   ] ++ (viewPositions user.positions)
 
 viewPositions : List String -> List (Html Msg)
 viewPositions positions =
-  List.map (\position -> input
+  List.map (\position -> H.input
               [ A.value position
               , E.onInput <| always NoOp
               ] []) positions
