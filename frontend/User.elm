@@ -56,26 +56,44 @@ view userMaybe =
 
 viewUser : User -> Html Msg
 viewUser user =
-  H.div [] <|
-  [ H.div
-      []
-      [ H.input
+  H.div
+    []
+    [ H.h1 [] [ H.text "Profiili" ]
+    , viewProfileForm user
+    ]
+
+viewProfileForm : User -> Html Msg
+viewProfileForm user =
+  H.form
+    []
+    [ H.div
+        [ A.class "form-group"]
+        [ H.label [] [ H.text "Millä nimellä meidän tulisi kutsua sinua?" ]
+        , H.input
           [ A.value user.name
+          , A.class "form-control"
           , E.onInput <| always NoOp
           ] []
+        ]
+    , H.div
+      [ A.class "form-group" ]
+      [ H.label [] [ H.text "Kuvaile itseäsi" ]
+      , H.input
+        [ A.value user.description
+        , A.class "form-control"
+        , E.onInput <| always NoOp
+        ] []
       ]
-  , H.div
-      []
-      [ H.input
-          [ A.value user.description
-          , E.onInput <| always NoOp
-          ] []
-      ]
-  ] ++ (viewPositions user.positions)
+    , H.div
+      [ A.class "form-group" ]
+      ([ H.label [] [ H.text "Tehtävät, joista sinulla on kokemusta" ]] ++
+         viewPositions user.positions)
+    ]
 
 viewPositions : List String -> List (Html Msg)
 viewPositions positions =
   List.map (\position -> H.input
               [ A.value position
+              , A.class "form-control"
               , E.onInput <| always NoOp
               ] []) positions
