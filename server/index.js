@@ -126,12 +126,8 @@ app.get('/api/me', (req, res) => {
   if (!req.session || !req.session.id) {
     return res.sendStatus(403);
   }
-
-  return knex('sessions')
-    .where({ id: req.session.id })
-    .then(resp => resp[0].user_id)
-    .then(id => knex('users').where({ id }))
-    .then(resp => res.json(resp[0]))
+  return userForSession(req)
+    .then(user => res.json(user))
     .catch((err) => {
       console.error('Error in /api/me', err);
       req.session = null;
@@ -144,8 +140,9 @@ app.get('/api/me/positions', (req, res) => {
     return res.sendStatus(403);
   }
 
-  // TODO get the actual logged in user's details once we have API and SSO to the same place
-  return sebacon.getUserPositions('19258').then(titles => res.json(titles));
+  return userForSession(req)
+    .then(user => {console.log(user); return sebacon.getUserPositions(user.remote_id) })
+    .then(titles => res.json(titles));
 })
 
 app.get('*', (req, res) => {
@@ -155,3 +152,11 @@ app.get('*', (req, res) => {
 app.listen(3000, () => {
   console.log('Listening on 3000');
 });
+
+function userForSession(req) {
+  return knex('sessions')
+    .where({ id: req.session.id })
+    .then(resp => resp[0].user_id)
+    .then(id => knex('users').where({ id }))
+    .then(resp => resp[0]);
+}
