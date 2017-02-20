@@ -127,7 +127,19 @@ app.get('/api/me', (req, res) => {
     return res.sendStatus(403);
   }
   return userForSession(req)
-    .then(user => res.json(user))
+    .then(user => {
+      return Promise.all([
+        sebacon.getUserFirstName(user.remote_id),
+        sebacon.getUserPositions(user.remote_id),
+        user
+      ])
+    })
+    .then(([ firstname, positions, user ]) => {
+      // TODO not like this
+      user.first_name = firstname;
+      user.positions = positions;
+      return res.json(user);
+    })
     .catch((err) => {
       console.error('Error in /api/me', err);
       req.session = null;
@@ -141,7 +153,7 @@ app.get('/api/me/positions', (req, res) => {
   }
 
   return userForSession(req)
-    .then(user => {console.log(user); return sebacon.getUserPositions(user.remote_id) })
+    .then(user => sebacon.getUserPositions(user.remote_id))
     .then(titles => res.json(titles));
 })
 
