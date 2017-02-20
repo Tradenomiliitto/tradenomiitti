@@ -3,9 +3,19 @@
   remote_user: ubuntu
   become: yes
   tasks:
+    - name: copy node repo key
+      copy: src=nodesource.gpg.key dest=/var/cache/nodesource.gpg.key
+
+    - name: install node repo key
+      apt_key: file=/var/cache/nodesource.gpg.key state=present
+
+    - name: install node repo
+      apt_repository:
+        repo: deb https://deb.nodesource.com/node_7.x xenial main
+
     - name: install system dependencies
       apt: pkg={{item}} state=present
-      with_items: [ nginx, postgresql, nodejs, nodejs-legacy, npm, git, python-psycopg2 ]
+      with_items: [ nginx, postgresql, nodejs, git, python-psycopg2 ]
 
 
     - name: ensure base services are running
