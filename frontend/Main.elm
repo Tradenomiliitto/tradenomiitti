@@ -186,14 +186,17 @@ viewPage model =
         Profile ->
           loginHandler model
         route ->
-          H.div
-            []
-            [ H.text (routeToString route) ]
+          notImplementedYet
   in
     H.div
       [ A.class "container app-content" ]
       [ content ]
 
+notImplementedYet : H.Html Msg
+notImplementedYet =
+  H.div
+    [ A.id "not-implemented" ]
+    [ H.text "Tätä ominaisuutta ei ole vielä toteutettu" ]
 
 
 routeToString : Route -> String
