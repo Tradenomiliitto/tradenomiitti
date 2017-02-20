@@ -13,6 +13,7 @@ You can install servers by running
 
 ```sh
 npm install
+cp /path/to/MundoSansStd.otf conf/assets/ # we don't want fonts in repo
 npm run preansible
 $EDITOR conf/inventory.ini
 npm run serverinstallbase
