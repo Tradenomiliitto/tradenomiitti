@@ -36,10 +36,22 @@ $font-size-base: 14px;
   }
 }
 
-.navbar__vertical-bar {
+.navbar__vertical-bar,
+.navbar__vertical-bar--right > div {
   width: 1px;
   height: 26px;
   background-color: white;
+}
+
+.navbar__vertical-bar--right {
+  position: relative;
+  height: $navbar-height;
+
+  & > div {
+    position: absolute;
+    top: 50%;
+    margin-top: -13px;
+  }
 }
 
 .app-content {

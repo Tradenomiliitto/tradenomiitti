@@ -151,18 +151,29 @@ navigationList model =
     [ A.class "nav navbar-nav" ]
     [ logo
     , viewLink ListUsers
-    , verticalBar "navbar-center"
+    , verticalBar
     , viewLink ListAds
     , viewLink CreateAd
-    , viewLinkRight Info
+    -- Right aligned elements are float: right, ergo reverse order in DOM
     , viewLinkRight Profile
+    , verticalBarRight
+    , viewLinkRight Info
     ]
 
-verticalBar : String -> H.Html msg
-verticalBar positionClass =
+verticalBar : H.Html msg
+verticalBar =
   H.li
-    [ A.class <| "navbar__vertical-bar " ++ positionClass ]
+    [ A.class <| "navbar__vertical-bar navbar-center" ]
     []
+
+verticalBarRight : H.Html msg
+verticalBarRight =
+  H.li
+    [ A.class "navbar__vertical-bar--right navbar-right" ]
+    [ H.div
+        []
+        []
+    ]
 
 viewLink : Route -> H.Html Msg
 viewLink route =
