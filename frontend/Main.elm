@@ -130,9 +130,7 @@ navigation : Model -> H.Html Msg
 navigation model =
   H.nav
     [ A.class "navbar navbar-default navbar-fixed-top" ]
-    [ H.div
-      []
-      [ navigationList model ]
+    [ navigationList model
     ]
 
 logo : H.Html Msg
@@ -160,7 +158,7 @@ navigationList model =
 viewLink : Route -> H.Html Msg
 viewLink route =
   H.li
-    []
+    [ A.class "navbar-center" ]
     [ link route ]
 
 viewLinkRight : Route -> H.Html Msg
