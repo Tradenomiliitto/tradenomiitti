@@ -25,6 +25,8 @@ $font-family-sans-serif: mundoSansRegular;
 $font-size-base: 14px;
 $navbar-height: 66px;
 
+$icon-font-path: "/static/";
+
 #logo {
   text-transform: uppercase;
 }
@@ -64,9 +66,11 @@ $navbar-height: 66px;
   }
 }
 
+$navbar-element-height: 35px;
+
 .navbar__inverse-button {
   height: $navbar-height;
-  $inverse-button-height: 35px;
+  $inverse-button-height: $navbar-element-height;
 
   @include gotham-bold;
 
@@ -84,6 +88,21 @@ $navbar-height: 66px;
     top: 50%;
     margin-top: #{-$inverse-button-height / 2};
   }
+}
+
+.navbar__profile-lock,
+.navbar__profile-pic {
+  margin-left: 10px;
+}
+
+.navbar__profile-pic {
+  width: $navbar-element-height;
+  height: $navbar-element-height;
+  border-radius: #{$navbar-element-height / 2};
+  margin-top: #{-$navbar-element-height / 4};
+  background-color: $white;
+  display: inline-block;
+  float: right;
 }
 
 .app-content {

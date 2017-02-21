@@ -215,6 +215,20 @@ viewProfileLink model =
       model.profile.user
         |> Maybe.map .name
         |> Maybe.withDefault "Kirjaudu"
+
+    linkGraphic =
+      model.profile.user
+        |> Maybe.map
+          (\u ->
+             H.span
+             [ A.class "navbar__profile-pic" ]
+             [ {- here an img tag? -}]
+          )
+        |> Maybe.withDefault
+          (H.span
+            [ A.class "navbar__profile-lock glyphicon glyphicon-lock" ]
+            [])
+
   in
     H.li
       [ A.class "navbar-right" ]
@@ -222,7 +236,9 @@ viewProfileLink model =
           [ action
           , A.href (routeToPath route)
           ]
-          [ H.text linkText ]
+          [ H.text linkText
+          , linkGraphic
+          ]
       ]
 
 

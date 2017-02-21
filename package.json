@@ -7,11 +7,11 @@
     "preansible": "./conf/preinstall.sh",
     "serverinstallbase": "./conf/serverinstallbase.sh",
     "serverinstallpm2": "ansible-playbook conf/pm2install.yml -i conf/inventory.ini",
-    "compilelocal": "cd frontend && mkdir -p static && elm-make --yes Main.elm --output static/main.js && node-sass --precision 8 --include-path ../node_modules/bootstrap-sass/assets/stylesheets -r stylesheets/ -o static/ && cp assets/* static/",
+    "compilelocal": "cd frontend && mkdir -p static && elm-make --yes Main.elm --output static/main.js && node-sass --precision 8 --include-path ../node_modules/bootstrap-sass/assets/stylesheets -r stylesheets/ -o static/ && cp assets/* ../node_modules/bootstrap-sass/assets/fonts/bootstrap/* static/",
     "start": "environment=local node --harmony server/index.js",
     "compilefrontend": "cd frontend && elm-make --yes Main.elm --output /srv/static/main.js",
     "compilescss": "node-sass --precision 8 --include-path node_modules/bootstrap-sass/assets/stylesheets -r frontend/stylesheets/ -o /srv/static/",
-    "compileassets": "cp frontend/assets/* /srv/static/"
+    "compileassets": "cp frontend/assets/* node_modules/bootstrap-sass/assets/fonts/bootstrap/* /srv/static/"
   },
   "repository": {
     "type": "git",
