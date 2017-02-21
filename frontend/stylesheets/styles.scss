@@ -105,6 +105,15 @@ $navbar-element-height: 35px;
   float: right;
 }
 
+.splash-screen {
+  background-color: $pink;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100vw;
+  height: 100vh;
+}
+
 .app-content {
   padding-top: $navbar-height;
 }

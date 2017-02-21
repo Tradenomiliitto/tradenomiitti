@@ -23,6 +23,7 @@ type alias Model =
   , rootUrl : String
   , user : User.Model
   , profile : User.Model
+  , initialLoading : Bool
   }
 
 init : Navigation.Location -> ( Model, Cmd Msg )
@@ -33,6 +34,7 @@ init location =
       , rootUrl = location.origin
       , user = User.init
       , profile = { user = Nothing, spinning = True }
+      , initialLoading = True
       }
 
    -- We want to react initially to UrlChange as well
@@ -84,13 +86,19 @@ update msg model =
       let
         profile = model.profile
       in
-        { model | profile = { profile | spinning = False } } ! []
+        { model
+          | profile = { profile | spinning = False }
+          , initialLoading = False
+        } ! []
 
     GetProfile (Ok user) ->
       let
         profile = model.profile
       in
-        { model | profile = { profile | user = Just user, spinning = False } } ! []
+        { model
+          | profile = { profile | user = Just user, spinning = False }
+          , initialLoading = False
+        } ! []
 
 --SUBSCRIPTIONS
 
@@ -102,10 +110,16 @@ subscriptions model =
 
 view : Model -> H.Html Msg
 view model =
-  H.div []
-    [ navigation model
-    , viewPage model
-    ]
+  if model.initialLoading
+  then
+    H.div
+      [ A.class "splash-screen" ]
+      [ logoImage 400 ]
+  else
+    H.div []
+      [ navigation model
+      , viewPage model
+      ]
 
 --TODO move navbar code to Nav.elm
 
@@ -136,14 +150,19 @@ logo =
       [ A.id "logo"
       , A.href "/"
       ]
-      [ H.img
-          [ A.alt "Tradenomiitti"
-          , A.src "/static/tradenomiitti_logo.svg"
-          , A.width 163
-          ]
-          []
+      [ logoImage 163
       ]
     ]
+
+
+logoImage : Int -> H.Html msg
+logoImage width =
+  H.img
+    [ A.alt "Tradenomiitti"
+    , A.src "/static/tradenomiitti_logo.svg"
+    , A.width width
+    ]
+    []
 
 
 navigationList : Model -> H.Html Msg
