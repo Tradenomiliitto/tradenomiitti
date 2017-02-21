@@ -3,6 +3,7 @@ $pink: rgb(255, 105, 138);
 $green:  rgb(74, 97, 97);
 $medium_grey: rgb(207, 208, 207);
 $dark_gey: rgb(99, 99, 99);
+$white: #FFF;
 
 //fonts
 @font-face  {
@@ -11,10 +12,13 @@ $dark_gey: rgb(99, 99, 99);
 }
 
 $navbar-default-bg: $pink;
-$navbar-default-color: white;
-$navbar-default-link-color: white;
+$navbar-default-color: #EEE;
+$navbar-default-link-color: $navbar-default-color;
+$navbar-default-link-active-color: $white;
+$navbar-default-link-hover-color: $white;
 $font-family-sans-serif: mundoSansRegular;
 $font-size-base: 14px;
+$navbar-height: 66px;
 
 #logo {
   text-transform: uppercase;
@@ -51,6 +55,24 @@ $font-size-base: 14px;
     position: absolute;
     top: 50%;
     margin-top: -13px;
+  }
+}
+
+.navbar__inverse-button {
+  height: $navbar-height;
+  $inverse-button-height: 35px;
+  & > a {
+    height: $inverse-button-height;
+    color: $pink !important;
+    background-color: $white;
+    &:hover {
+      background-color: $white !important;
+    }
+
+    padding-bottom: 7px !important;
+    padding-top: 7px !important;
+    top: 50%;
+    margin-top: #{-$inverse-button-height / 2};
   }
 }
 

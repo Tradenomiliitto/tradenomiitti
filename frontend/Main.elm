@@ -153,7 +153,7 @@ navigationList model =
     , viewLink ListUsers
     , verticalBar
     , viewLink ListAds
-    , viewLink CreateAd
+    , viewLinkInverse CreateAd
     -- Right aligned elements are float: right, ergo reverse order in DOM
     , viewLinkRight Profile
     , verticalBarRight
@@ -174,6 +174,12 @@ verticalBarRight =
         []
         []
     ]
+
+viewLinkInverse : Route -> H.Html Msg
+viewLinkInverse route =
+  H.li
+    [ A.class "navbar-center navbar__inverse-button" ]
+    [ link route ]
 
 viewLink : Route -> H.Html Msg
 viewLink route =
