@@ -10,7 +10,7 @@
     "compilelocal": "cd frontend && mkdir -p static && elm-make --yes Main.elm --output static/main.js && node-sass --precision 8 --include-path ../node_modules/bootstrap-sass/assets/stylesheets -r stylesheets/ -o static/",
     "start": "environment=local node --harmony server/index.js",
     "compilefrontend": "cd frontend && elm-make --yes Main.elm --output /srv/static/main.js",
-    "compilescss": "node-sass -r frontend/stylesheets/ -o /srv/static/"
+    "compilescss": "node-sass --precision 8 --include-path ../node_modules/bootstrap-sass/assets/stylesheets -r frontend/stylesheets/ -o /srv/static/"
   },
   "repository": {
     "type": "git",
