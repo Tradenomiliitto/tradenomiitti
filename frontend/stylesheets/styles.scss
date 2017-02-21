@@ -14,6 +14,7 @@ $navbar-default-bg: $pink;
 $navbar-default-color: white;
 $navbar-default-link-color: white;
 $font-family-sans-serif: mundoSansRegular;
+$font-size-base: 14px;
 
 #logo {
   text-transform: uppercase;
@@ -27,9 +28,18 @@ $font-family-sans-serif: mundoSansRegular;
   padding-right: 15px;
 }
 
-.navbar-nav > li.navbar-center {
-  float: none;
-  display: inline-block;
+.navbar-nav > li {
+  vertical-align: middle;
+  &.navbar-center {
+    float: none;
+    display: inline-block;
+  }
+}
+
+.navbar__vertical-bar {
+  width: 1px;
+  height: 26px;
+  background-color: white;
 }
 
 .app-content {

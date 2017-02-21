@@ -149,11 +149,20 @@ navigationList : Model -> H.Html Msg
 navigationList model =
   H.ul
     [ A.class "nav navbar-nav" ]
-    (List.concat
-      [ [logo]
-      , List.map viewLink [ ListUsers, ListAds, CreateAd ]
-      , List.map viewLinkRight [ Profile, Info ]
-      ])
+    [ logo
+    , viewLink ListUsers
+    , verticalBar "navbar-center"
+    , viewLink ListAds
+    , viewLink CreateAd
+    , viewLinkRight Info
+    , viewLinkRight Profile
+    ]
+
+verticalBar : String -> H.Html msg
+verticalBar positionClass =
+  H.li
+    [ A.class <| "navbar__vertical-bar " ++ positionClass ]
+    []
 
 viewLink : Route -> H.Html Msg
 viewLink route =
