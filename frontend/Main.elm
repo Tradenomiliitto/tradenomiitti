@@ -111,19 +111,14 @@ view model =
 
 loginHandler : Model -> H.Html Msg
 loginHandler model =
-  let
-    loginUrl = model.rootUrl ++ "/login?path=" ++ (routeToPath model.route)
-    returnParameter = Window.encodeURIComponent loginUrl
-  in
-    case model.profile.user of
-      Just _ ->
-        H.a [ A.href "/logout" ]
-          [ H.text "Kirjaudu ulos" ]
-      Nothing ->
-        H.a [ A.href
-              <| "https://tunnistus.avoine.fi/sso-login/?service=tradenomiitti&return="
-              ++ returnParameter ]
-          [ H.text "Kirjaudu sisään" ]
+  case model.profile.user of
+    Just _ ->
+      H.a [ A.href "/logout" ]
+        [ H.text "Kirjaudu ulos" ]
+    Nothing ->
+      H.a
+        [ A.href <| ssoUrl model.rootUrl model.route ]
+        [ H.text "Kirjaudu sisään" ]
 
 
 navigation : Model -> H.Html Msg
@@ -205,12 +200,22 @@ viewProfileLink model =
   let
     route = Profile
     action =
-      E.onWithOptions
-        "click"
-        { stopPropagation = False
-        , preventDefault = True
-        }
-        (Json.succeed <| NewUrl route)
+      if isJust model.profile.user
+      then
+        [
+         E.onWithOptions
+           "click"
+           { stopPropagation = False
+           , preventDefault = True
+           }
+           (Json.succeed <| NewUrl route)
+        ]
+      else
+        []
+
+    endpoint = if isJust model.profile.user
+               then routeToPath route
+               else ssoUrl model.rootUrl route
     linkText =
       model.profile.user
         |> Maybe.map .name
@@ -233,9 +238,9 @@ viewProfileLink model =
     H.li
       [ A.class "navbar-right" ]
       [ H.a
-          [ action
-          , A.href (routeToPath route)
-          ]
+          ( action ++
+          [ A.href endpoint
+          ])
           [ H.text linkText
           , linkGraphic
           ]
@@ -301,3 +306,16 @@ routeToString route =
       "Hakuilmoitukset"
     CreateAd ->
       "Jätä ilmoitus"
+
+isJust : Maybe a -> Bool
+isJust = Maybe.map (always True) >> Maybe.withDefault False
+
+
+ssoUrl : String -> Route -> String
+ssoUrl rootUrl route =
+  let
+    loginUrl = rootUrl ++ "/login?path=" ++ (routeToPath route)
+    returnParameter = Window.encodeURIComponent loginUrl
+  in
+    "https://tunnistus.avoine.fi/sso-login/?service=tradenomiitti&return=" ++
+      returnParameter
