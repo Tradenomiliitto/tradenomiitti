@@ -5,6 +5,11 @@ $medium_grey: rgb(207, 208, 207);
 $dark_gey: rgb(99, 99, 99);
 $white: #FFF;
 
+@mixin gotham-bold {
+  font-family: "Gotham A","Gotham B",Arial,sans-serif;
+  font-weight: 700;
+}
+
 //fonts
 @font-face  {
   font-family: mundoSansRegular;
@@ -61,7 +66,11 @@ $navbar-height: 66px;
 .navbar__inverse-button {
   height: $navbar-height;
   $inverse-button-height: 35px;
+
+  @include gotham-bold;
+
   & > a {
+    text-transform: uppercase;
     height: $inverse-button-height;
     color: $pink !important;
     background-color: $white;
