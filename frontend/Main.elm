@@ -161,7 +161,7 @@ navigationList model =
     , viewLink ListAds
     , viewLinkInverse CreateAd
     -- Right aligned elements are float: right, ergo reverse order in DOM
-    , viewLinkRight Profile
+    , viewProfileLink model
     , verticalBarRight
     , viewLinkRight Info
     ]
@@ -171,6 +171,7 @@ verticalBar =
   H.li
     [ A.class <| "navbar__vertical-bar navbar-center" ]
     []
+
 
 verticalBarRight : H.Html msg
 verticalBarRight =
@@ -198,6 +199,32 @@ viewLinkRight route =
   H.li
     [ A.class "navbar-right" ]
     [ link route ]
+
+viewProfileLink : Model -> H.Html Msg
+viewProfileLink model =
+  let
+    route = Profile
+    action =
+      E.onWithOptions
+        "click"
+        { stopPropagation = False
+        , preventDefault = True
+        }
+        (Json.succeed <| NewUrl route)
+    linkText =
+      model.profile.user
+        |> Maybe.map .name
+        |> Maybe.withDefault "Kirjaudu"
+  in
+    H.li
+      [ A.class "navbar-right" ]
+      [ H.a
+          [ action
+          , A.href (routeToPath route)
+          ]
+          [ H.text linkText ]
+      ]
+
 
 link : Route -> H.Html Msg
 link route =
