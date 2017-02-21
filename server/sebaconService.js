@@ -52,7 +52,7 @@ function getUserPositions(id) {
         ]
       }
     })
-  ]).then(([ titles, res ]) => res.result.map(o => titles[o.tehtavanimike_val]));
+  ]).then(([ titles, res ]) => res.result.map(o => titles[o.tehtavanimike_val] || 'Tuntematon'));
 }
 
 function getUserFirstName(id) {
