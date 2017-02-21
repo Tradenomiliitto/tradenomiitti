@@ -13,4 +13,6 @@ git reset --hard origin/master
 npm install
 npm run compilefrontend
 npm run compilescss
+npm run compileassets
+
 pm2 gracefulReload all
