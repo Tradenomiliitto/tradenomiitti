@@ -141,7 +141,13 @@ logo =
       [ A.id "logo"
       , A.href "/"
       ]
-      [ H.text "Tradenomiitti" ]
+      [ H.img
+          [ A.alt "Tradenomiitti"
+          , A.src "/static/tradenomiitti_logo.svg"
+          , A.width 163
+          ]
+          []
+      ]
     ]
 
 
