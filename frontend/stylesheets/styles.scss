@@ -78,7 +78,7 @@ $navbar-element-height: 35px;
     text-transform: uppercase;
     height: $inverse-button-height;
     color: $pink !important;
-    background-color: $white;
+    background-color: $white !important;
     &:hover {
       background-color: $white !important;
     }
