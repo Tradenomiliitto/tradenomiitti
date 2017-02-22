@@ -4,6 +4,7 @@ import Html as H
 import Html.Attributes as A
 import Html.Events as E
 import Http
+import Maybe.Extra as Maybe
 import Nav
 import State.Main as RootState
 import State.Profile exposing (Model)
@@ -37,15 +38,15 @@ view : Model -> RootState.Model ->  H.Html Msg
 view model rootState =
   H.div
     []
-    [ profileTopRow rootState
+    [ profileTopRow model rootState
     , viewUserMaybe model
     ]
 
-profileTopRow : RootState.Model -> H.Html msg
-profileTopRow model =
+profileTopRow : Model -> RootState.Model -> H.Html msg
+profileTopRow model rootState =
   let
     link =
-      case model.profile.user of
+      case model.user of
         Just _ ->
           H.a
             [ A.href "/logout"
@@ -54,10 +55,19 @@ profileTopRow model =
             [ H.text "Kirjaudu ulos" ]
         Nothing ->
           H.a
-            [ A.href <| Nav.ssoUrl model.rootUrl model.route
+            [ A.href <| Nav.ssoUrl rootState.rootUrl Nav.Profile
             , A.class "btn"
             ]
             [ H.text "Kirjaudu sisään" ]
+
+    saveOrEdit =
+      if Maybe.isJust model.user
+      then
+        H.button
+          [ A.class "btn btn-primary" ]
+          [ H.text "Tallenna profiili" ]
+      else
+        H.div [] []
   in
     H.div
       [ A.class "row profile__top-row" ]
@@ -72,9 +82,7 @@ profileTopRow model =
                 [ H.text "Oma profiili" ] ]
           , H.div
             [ A.class "col-xs-8 profile__buttons" ]
-            [ H.button
-                [ A.class "btn btn-primary" ]
-                [ H.text "Tallenna profiili" ]
+            [ saveOrEdit
             , link
             ]
           ]

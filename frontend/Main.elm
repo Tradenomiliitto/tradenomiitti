@@ -2,11 +2,12 @@ import Html as H
 import Html.Attributes as A
 import Html.Events as E
 import Json.Decode as Json
+import Maybe.Extra as Maybe
 import Nav exposing (..)
 import Navigation
 import Profile
-import User
 import State.Main exposing (..)
+import User
 
 main : Program Never Model Msg
 main =
@@ -188,7 +189,7 @@ viewProfileLink model =
   let
     route = Profile
     action =
-      if isJust model.profile.user
+      if Maybe.isJust model.profile.user
       then
         [
          E.onWithOptions
@@ -201,7 +202,7 @@ viewProfileLink model =
       else
         []
 
-    endpoint = if isJust model.profile.user
+    endpoint = if Maybe.isJust model.profile.user
                then routeToPath route
                else ssoUrl model.rootUrl route
     linkText =
@@ -295,5 +296,3 @@ routeToString route =
     CreateAd ->
       "Jätä ilmoitus"
 
-isJust : Maybe a -> Bool
-isJust = Maybe.map (always True) >> Maybe.withDefault False
