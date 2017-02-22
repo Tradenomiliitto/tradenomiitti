@@ -20,6 +20,6 @@ initState location =
   { route = parseLocation location
   , rootUrl = location.origin
   , user = User.init
-  , profile = { user = Nothing }
+  , profile = ProfileState.init
   , initialLoading = True
   }

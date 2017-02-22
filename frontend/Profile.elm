@@ -13,6 +13,8 @@ import User
 
 type Msg
   = GetMe (Result Http.Error User.User)
+  | Save
+  | Edit
   | NoOp
 
 
@@ -30,6 +32,12 @@ update msg model =
     GetMe (Ok user) ->
       { model | user = Just user } ! []
 
+    Save ->
+      { model | editing = False } ! [] -- TODO
+
+    Edit ->
+      { model | editing = True } ! []
+
     NoOp ->
       model ! []
 
@@ -42,7 +50,7 @@ view model rootState =
     , viewUserMaybe model
     ]
 
-profileTopRow : Model -> RootState.Model -> H.Html msg
+profileTopRow : Model -> RootState.Model -> H.Html Msg
 profileTopRow model rootState =
   let
     link =
@@ -64,8 +72,10 @@ profileTopRow model rootState =
       if Maybe.isJust model.user
       then
         H.button
-          [ A.class "btn btn-primary" ]
-          [ H.text "Tallenna profiili" ]
+          [ A.class "btn btn-primary"
+          , E.onClick <| if model.editing then Save else Edit
+          ]
+          [ H.text (if model.editing then "Tallenna profiili" else "Muokkaa profiilia") ]
       else
         H.div [] []
   in
