@@ -123,29 +123,65 @@ view model =
 
 --TODO move navbar code to Nav.elm
 
-loginHandler : Model -> H.Html Msg
-loginHandler model =
-  case model.profile.user of
-    Just _ ->
-      H.a [ A.href "/logout" ]
-        [ H.text "Kirjaudu ulos" ]
-    Nothing ->
-      H.a
-        [ A.href <| ssoUrl model.rootUrl model.route ]
-        [ H.text "Kirjaudu sisään" ]
+-- TODO reorganize
+profileTopRow : Model -> H.Html Msg
+profileTopRow model =
+  let
+    link =
+      case model.profile.user of
+        Just _ ->
+          H.a
+            [ A.href "/logout" ]
+            [ H.text "Kirjaudu ulos" ]
+        Nothing ->
+          H.a
+            [ A.href <| ssoUrl model.rootUrl model.route ]
+            [ H.text "Kirjaudu sisään" ]
+  in
+    H.div
+      [ A.class "row" ]
+      [ H.div
+        [ A.class "col-md-8" ]
+        [ H.text "Oma profiili" ]
+      , H.div
+        [ A.class "col-md-4" ]
+        [ H.button
+            [ A.class "btn" ]
+            [ H.text "Tallenna profiili" ]
+        , link
+        ]
+      ]
 
 
 navigation : Model -> H.Html Msg
 navigation model =
   H.nav
     [ A.class "navbar navbar-default navbar-fixed-top" ]
-    [ navigationList model
+    [ H.div
+        [ A.class "navbar-header" ]
+        [ H.button
+          [ A.class "navbar-toggle collapsed"
+          , A.attribute "data-toggle" "collapse"
+          , A.attribute "data-target" "#navigation"
+          ]
+          [ H.span [ A.class "sr-only" ] [ H.text "Navigaation avaus" ]
+          , H.span [ A.class "icon-bar" ] []
+          , H.span [ A.class "icon-bar" ] []
+          , H.span [ A.class "icon-bar" ] []
+          ]
+        , logo
+        ]
+    , H.div
+        [ A.class "collapse navbar-collapse"
+        , A.id "navigation"
+        ]
+        (navigationList model)
     ]
 
 logo : H.Html Msg
 logo =
-  H.li
-    [ A.class "navbar-left" ]
+  H.div
+    [ A.class "navbar-brand" ]
     [ H.a
       [ A.id "logo"
       , A.href "/"
@@ -165,53 +201,40 @@ logoImage width =
     []
 
 
-navigationList : Model -> H.Html Msg
+navigationList : Model -> List (H.Html Msg)
 navigationList model =
-  H.ul
-    [ A.class "nav navbar-nav" ]
-    [ logo
-    , viewLink ListUsers
+  [ H.ul
+    [ A.class "nav navbar-nav nav-center" ]
+    [ viewLink ListUsers
     , verticalBar
     , viewLink ListAds
     , viewLinkInverse CreateAd
-    -- Right aligned elements are float: right, ergo reverse order in DOM
-    , viewProfileLink model
-    , verticalBarRight
-    , viewLinkRight Info
     ]
+  , H.ul
+    [ A.class "nav navbar-nav navbar-right" ]
+    [ viewLink Info
+    , verticalBar
+    , viewProfileLink model
+    ]
+  ]
 
 verticalBar : H.Html msg
 verticalBar =
   H.li
-    [ A.class <| "navbar__vertical-bar navbar-center" ]
-    []
+    [ A.class <| "navbar__vertical-bar" ]
+    [ H.div [] []]
 
-
-verticalBarRight : H.Html msg
-verticalBarRight =
-  H.li
-    [ A.class "navbar__vertical-bar--right navbar-right" ]
-    [ H.div
-        []
-        []
-    ]
 
 viewLinkInverse : Route -> H.Html Msg
 viewLinkInverse route =
   H.li
-    [ A.class "navbar-center navbar__inverse-button" ]
+    [ A.class "navbar__inverse-button" ]
     [ link route ]
 
 viewLink : Route -> H.Html Msg
 viewLink route =
   H.li
-    [ A.class "navbar-center" ]
-    [ link route ]
-
-viewLinkRight : Route -> H.Html Msg
-viewLinkRight route =
-  H.li
-    [ A.class "navbar-right" ]
+    []
     [ link route ]
 
 viewProfileLink : Model -> H.Html Msg
@@ -255,7 +278,7 @@ viewProfileLink model =
 
   in
     H.li
-      [ A.class "navbar-right" ]
+      []
       [ H.a
           ( action ++
           [ A.href endpoint
@@ -291,7 +314,7 @@ viewPage model =
         User userId ->
           H.map UserMessage <| User.view model.user
         Profile ->
-          Profile.view model.profile (loginHandler model) UserMessage
+          Profile.view model.profile (profileTopRow model) UserMessage
         route ->
           notImplementedYet
   in

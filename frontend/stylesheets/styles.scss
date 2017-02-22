@@ -24,46 +24,47 @@ $navbar-default-link-hover-color: $white;
 $font-family-sans-serif: mundoSansRegular;
 $font-size-base: 14px;
 $navbar-height: 66px;
+$grid-float-breakpoint: 850px;
 
 $icon-font-path: "/static/";
 
-#logo {
-  text-transform: uppercase;
+#logo > img {
+  margin-top: -5px;
 }
 
 @import "bootstrap";
 
-.navbar-nav {
-  width: 100%;
-  text-align:center;
+.navbar-right {
   padding-right: 40px;
-  padding-left: 40px;
 }
 
 .navbar-nav > li {
   vertical-align: middle;
-  &.navbar-center {
-    float: none;
-    display: inline-block;
-  }
 }
 
-.navbar__vertical-bar,
-.navbar__vertical-bar--right > div {
-  width: 1px;
-  height: 26px;
-  background-color: white;
-}
-
-.navbar__vertical-bar--right {
-  position: relative;
-  height: $navbar-height;
-
-  & > div {
+.nav-center {
+  @media (min-width: $grid-float-breakpoint) {
     position: absolute;
-    top: 50%;
-    margin-top: -13px;
+    left: 50%;
+    transform: translateX(-50%);
   }
+}
+
+.navbar__vertical-bar {
+    position: relative;
+    height: $navbar-height;
+    @media (max-width: #{ $grid-float-breakpoint - 1 }) {
+      display: none !important;
+    }
+
+    & > div {
+      width: 1px;
+      height: 26px;
+      background-color: white;
+      position: absolute;
+      top: 50%;
+      margin-top: -13px;
+    }
 }
 
 $navbar-element-height: 35px;
