@@ -47,6 +47,17 @@ $icon-font-path: "/static/";
     padding-top: 8px;
     padding-bottom: 8px;
     background-color: $medium-grey;
+    &--editing {
+      background-color: $dark-grey;
+
+      color: $white;
+      & a {
+        color: $white;
+      }
+    }
+    &-edit-button {
+      min-width: 16em;
+    }
   }
   &__heading {
     @include gotham-bold;

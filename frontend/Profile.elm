@@ -72,7 +72,7 @@ profileTopRow model rootState =
       if Maybe.isJust model.user
       then
         H.button
-          [ A.class "btn btn-primary"
+          [ A.class "btn btn-primary profile__top-row-edit-button"
           , E.onClick <| if model.editing then Save else Edit
           ]
           [ H.text (if model.editing then "Tallenna profiili" else "Muokkaa profiilia") ]
@@ -80,7 +80,12 @@ profileTopRow model rootState =
         H.div [] []
   in
     H.div
-      [ A.class "row profile__top-row" ]
+      [ A.classList
+          [ ("row", True)
+          , ("profile__top-row", True)
+          , ("profile__top-row--editing", model.editing)
+          ]
+      ]
       [ H.div
         [ A.class "container" ]
         [ H.div
