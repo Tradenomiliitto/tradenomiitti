@@ -149,12 +149,12 @@ profileTopRow model =
         [ H.div
           [ A.class "row" ]
           [ H.div
-            [ A.class "col-md-8" ]
+            [ A.class "col-xs-4" ]
             [ H.h4
                 [ A.class "profile__heading" ]
                 [ H.text "Oma profiili" ] ]
           , H.div
-            [ A.class "col-md-4 profile__buttons" ]
+            [ A.class "col-xs-8 profile__buttons" ]
             [ H.button
                 [ A.class "btn btn-primary" ]
                 [ H.text "Tallenna profiili" ]
