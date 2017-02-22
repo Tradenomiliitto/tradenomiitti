@@ -131,22 +131,28 @@ profileTopRow model =
       case model.profile.user of
         Just _ ->
           H.a
-            [ A.href "/logout" ]
+            [ A.href "/logout"
+            , A.class "btn"
+            ]
             [ H.text "Kirjaudu ulos" ]
         Nothing ->
           H.a
-            [ A.href <| ssoUrl model.rootUrl model.route ]
+            [ A.href <| ssoUrl model.rootUrl model.route
+            , A.class "btn"
+            ]
             [ H.text "Kirjaudu sisään" ]
   in
     H.div
-      [ A.class "row" ]
+      [ A.class "row profile__top-row" ]
       [ H.div
         [ A.class "col-md-8" ]
-        [ H.text "Oma profiili" ]
+        [ H.h4
+            [ A.class "profile__heading" ]
+            [ H.text "Oma profiili" ] ]
       , H.div
-        [ A.class "col-md-4" ]
+        [ A.class "col-md-4 profile__buttons" ]
         [ H.button
-            [ A.class "btn" ]
+            [ A.class "btn btn-primary" ]
             [ H.text "Tallenna profiili" ]
         , link
         ]

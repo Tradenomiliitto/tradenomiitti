@@ -26,7 +26,32 @@ $font-size-base: 14px;
 $navbar-height: 66px;
 $grid-float-breakpoint: 850px;
 
+$btn-border-radius-small: 0;
+$btn-border-radius-large: 0;
+$btn-border-radius-base: 0;
+$btn-primary-bg: $pink;
+
 $icon-font-path: "/static/";
+
+.profile {
+  &__buttons {
+    text-align: right;
+    height: 100%;
+    margin-top: 5px;
+  }
+
+  &__top-row {
+    padding-top: 8px;
+    padding-bottom: 8px;
+  }
+  &__heading {
+    @include gotham-bold;
+  }
+}
+
+.btn-primary {
+  @include gotham-bold;
+}
 
 #logo > img {
   margin-top: -5px;
