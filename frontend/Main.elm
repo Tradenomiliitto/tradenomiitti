@@ -1,7 +1,6 @@
 import Html as H
 import Html.Attributes as A
 import Html.Events as E
-import Http
 import Json.Decode as Json
 import Nav exposing (..)
 import Navigation
@@ -25,7 +24,7 @@ init location =
 
    -- We want to react initially to UrlChange as well
     urlCmd = Navigation.modifyUrl (routeToPath (parseLocation location))
-    profileCmd = Profile.getMe GetProfile
+    profileCmd = Cmd.map ProfileMessage Profile.getMe
   in
     model ! [ urlCmd, profileCmd ]
 
@@ -36,8 +35,7 @@ type Msg
   = NewUrl Route
   | UrlChange Navigation.Location
   | UserMessage User.Msg
-  | ProfileMessage User.Msg
-  | GetProfile (Result Http.Error User.User)
+  | ProfileMessage Profile.Msg
 
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
@@ -71,27 +69,12 @@ update msg model =
 
     ProfileMessage msg ->
       let
-        (userModel, cmd) = User.update msg model.profile
-      in
-        ( { model | profile = userModel}, Cmd.map ProfileMessage cmd )
-
-    GetProfile (Err _) ->
-      let
-        profile = model.profile
+        (profileModel, cmd) = Profile.update msg model.profile
       in
         { model
-          | profile = { profile | spinning = False }
+          | profile = profileModel
           , initialLoading = False
-        } ! []
-
-    GetProfile (Ok user) ->
-      let
-        profile = model.profile
-      in
-        { model
-          | profile = { profile | user = Just user, spinning = False }
-          , initialLoading = False
-        } ! []
+        } ! [ Cmd.map ProfileMessage cmd ]
 
 --SUBSCRIPTIONS
 
@@ -277,7 +260,7 @@ viewPage model =
         User userId ->
           H.map UserMessage <| User.view model.user
         Profile ->
-          Profile.view model.profile model ProfileMessage
+          H.map ProfileMessage <| Profile.view model.profile model
         route ->
           notImplementedYet
   in
