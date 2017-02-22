@@ -1,7 +1,8 @@
 module Nav exposing (..)
 
-import UrlParser as U exposing ((</>))
 import Navigation
+import UrlParser as U exposing ((</>))
+import Window
 
 type Route = CreateAd | ListAds | ListUsers | Home | Info | NotFound | Profile | User Int
 
@@ -45,3 +46,13 @@ routeParser =
     , U.map Profile (U.s "profile")
     , U.map User (U.s "user" </> U.int)
     ]
+
+
+ssoUrl : String -> Route -> String
+ssoUrl rootUrl route =
+  let
+    loginUrl = rootUrl ++ "/login?path=" ++ (routeToPath route)
+    returnParameter = Window.encodeURIComponent loginUrl
+  in
+    "https://tunnistus.avoine.fi/sso-login/?service=tradenomiitti&return=" ++
+      returnParameter

@@ -7,7 +7,7 @@ import Nav exposing (..)
 import Navigation
 import Profile
 import User
-import Window
+import State.Main exposing (..)
 
 main : Program Never Model Msg
 main =
@@ -18,24 +18,10 @@ main =
     , subscriptions = subscriptions
     }
 
-type alias Model =
-  { route : Route
-  , rootUrl : String
-  , user : User.Model
-  , profile : User.Model
-  , initialLoading : Bool
-  }
-
 init : Navigation.Location -> ( Model, Cmd Msg )
 init location =
   let
-    model =
-      { route = parseLocation location
-      , rootUrl = location.origin
-      , user = User.init
-      , profile = { user = Nothing, spinning = True }
-      , initialLoading = True
-      }
+    model = initState location
 
    -- We want to react initially to UrlChange as well
     urlCmd = Navigation.modifyUrl (routeToPath (parseLocation location))
@@ -50,6 +36,7 @@ type Msg
   = NewUrl Route
   | UrlChange Navigation.Location
   | UserMessage User.Msg
+  | ProfileMessage User.Msg
   | GetProfile (Result Http.Error User.User)
 
 update : Msg -> Model -> (Model, Cmd Msg)
@@ -81,6 +68,12 @@ update msg model =
         (userModel, cmd) = User.update msg model.user
       in
         ( { model | user = userModel}, Cmd.map UserMessage cmd )
+
+    ProfileMessage msg ->
+      let
+        (userModel, cmd) = User.update msg model.profile
+      in
+        ( { model | profile = userModel}, Cmd.map ProfileMessage cmd )
 
     GetProfile (Err _) ->
       let
@@ -123,46 +116,6 @@ view model =
 
 --TODO move navbar code to Nav.elm
 
--- TODO reorganize
-profileTopRow : Model -> H.Html Msg
-profileTopRow model =
-  let
-    link =
-      case model.profile.user of
-        Just _ ->
-          H.a
-            [ A.href "/logout"
-            , A.class "btn"
-            ]
-            [ H.text "Kirjaudu ulos" ]
-        Nothing ->
-          H.a
-            [ A.href <| ssoUrl model.rootUrl model.route
-            , A.class "btn"
-            ]
-            [ H.text "Kirjaudu sisään" ]
-  in
-    H.div
-      [ A.class "row profile__top-row" ]
-      [ H.div
-        [ A.class "container" ]
-        [ H.div
-          [ A.class "row" ]
-          [ H.div
-            [ A.class "col-xs-4" ]
-            [ H.h4
-                [ A.class "profile__heading" ]
-                [ H.text "Oma profiili" ] ]
-          , H.div
-            [ A.class "col-xs-8 profile__buttons" ]
-            [ H.button
-                [ A.class "btn btn-primary" ]
-                [ H.text "Tallenna profiili" ]
-            , link
-            ]
-          ]
-        ]
-      ]
 navigation : Model -> H.Html Msg
 navigation model =
   H.nav
@@ -324,7 +277,7 @@ viewPage model =
         User userId ->
           H.map UserMessage <| User.view model.user
         Profile ->
-          Profile.view model.profile (profileTopRow model) UserMessage
+          Profile.view model.profile model ProfileMessage
         route ->
           notImplementedYet
   in
@@ -361,13 +314,3 @@ routeToString route =
 
 isJust : Maybe a -> Bool
 isJust = Maybe.map (always True) >> Maybe.withDefault False
-
-
-ssoUrl : String -> Route -> String
-ssoUrl rootUrl route =
-  let
-    loginUrl = rootUrl ++ "/login?path=" ++ (routeToPath route)
-    returnParameter = Window.encodeURIComponent loginUrl
-  in
-    "https://tunnistus.avoine.fi/sso-login/?service=tradenomiitti&return=" ++
-      returnParameter
