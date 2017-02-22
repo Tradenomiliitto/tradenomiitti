@@ -7,10 +7,11 @@
     "preansible": "./conf/preinstall.sh",
     "serverinstallbase": "./conf/serverinstallbase.sh",
     "serverinstallpm2": "ansible-playbook conf/pm2install.yml -i conf/inventory.ini",
-    "compilelocal": "cd frontend && mkdir -p static && elm-make --yes Main.elm --output static/main.js && ../node_modules/.bin/node-sass -r stylesheets/ -o static/",
+    "compilelocal": "cd frontend && mkdir -p static && elm-make --yes Main.elm --output static/main.js && node-sass --precision 8 --include-path ../node_modules/bootstrap-sass/assets/stylesheets -r stylesheets/ -o static/ && cp assets/* ../node_modules/bootstrap-sass/assets/fonts/bootstrap/* ../conf/assets/* static/",
     "start": "environment=local node --harmony server/index.js",
     "compilefrontend": "cd frontend && elm-make --yes Main.elm --output /srv/static/main.js",
-    "compilescss": "node-sass -r frontend/stylesheets/ -o /srv/static/"
+    "compilescss": "node-sass --precision 8 --include-path node_modules/bootstrap-sass/assets/stylesheets -r frontend/stylesheets/ -o /srv/static/",
+    "compileassets": "cp frontend/assets/* node_modules/bootstrap-sass/assets/fonts/bootstrap/* /srv/static/"
   },
   "repository": {
     "type": "git",
@@ -24,6 +25,7 @@
   "homepage": "https://github.com/futurice/tradenomiitti#readme",
   "dependencies": {
     "body-parser": "^1.16.0",
+    "bootstrap-sass": "^3.3.7",
     "cookie-session": "^2.0.0-alpha.3",
     "elm": "^0.18.0",
     "express": "^4.14.1",

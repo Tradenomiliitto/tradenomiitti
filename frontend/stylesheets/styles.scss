@@ -1,9 +1,15 @@
-
 //color definitions
 $pink: rgb(255, 105, 138);
 $green:  rgb(74, 97, 97);
-$medium_grey: rgb(207, 208, 207);
-$dark_gey: rgb(99, 99, 99);
+$medium-grey: rgb(207, 208, 207);
+$dark-grey: rgb(99, 99, 99);
+$white: #FFF;
+$black: #000;
+
+@mixin gotham-bold {
+  font-family: "Gotham A","Gotham B",Arial,sans-serif;
+  font-weight: 700 !important;
+}
 
 //fonts
 @font-face  {
@@ -11,32 +17,136 @@ $dark_gey: rgb(99, 99, 99);
   src: url("/static/MundoSansStd.otf");
 }
 
-.navbar {
-  background-color: $pink;
+$navbar-default-bg: $pink;
+$navbar-default-color: $white;
+$navbar-default-link-color: $navbar-default-color;
+$navbar-default-link-active-color: $white;
+$navbar-default-link-hover-color: $white;
+$font-family-sans-serif: mundoSansRegular;
+$font-size-base: 14px;
+$navbar-height: 66px;
+$grid-float-breakpoint: 850px;
+
+$btn-border-radius-small: 0;
+$btn-border-radius-large: 0;
+$btn-border-radius-base: 0;
+$btn-primary-bg: $pink;
+
+$link-color: $black;
+
+$icon-font-path: "/static/";
+
+.profile {
+  &__buttons {
+    text-align: right;
+    height: 100%;
+    margin-top: 5px;
+  }
+
+  &__top-row {
+    padding-top: 8px;
+    padding-bottom: 8px;
+    background-color: $medium-grey;
+  }
+  &__heading {
+    @include gotham-bold;
+  }
 }
 
-.navbar-default .navbar-nav > li > a{
-  color: white;
-  font-family: mundoSansRegular;
+.btn-primary {
+  @include gotham-bold;
+  text-transform: uppercase;
 }
 
-.navbar-nav {
-  width: 100%;
-  text-align:center;
+#logo > img {
+  margin-top: -5px;
+}
+
+@import "bootstrap";
+
+.navbar-right {
+  padding-right: 40px;
 }
 
 .navbar-nav > li {
-  float: none;
-  display: inline-block;
+  vertical-align: middle;
 }
 
-.navbar-nav > li.navbar-right {
-  float: right !important;
-  margin-right: 10px;
+.nav-center {
+  @media (min-width: $grid-float-breakpoint) {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+}
+
+.navbar__vertical-bar {
+    position: relative;
+    height: $navbar-height;
+    @media (max-width: #{ $grid-float-breakpoint - 1 }) {
+      display: none !important;
+    }
+
+    & > div {
+      width: 1px;
+      height: 26px;
+      background-color: white;
+      position: absolute;
+      top: 50%;
+      margin-top: -13px;
+    }
+}
+
+$navbar-element-height: 35px;
+
+.navbar__inverse-button {
+  height: $navbar-height;
+  $inverse-button-height: $navbar-element-height;
+
+  @include gotham-bold;
+
+  & > a {
+    text-transform: uppercase;
+    height: $inverse-button-height;
+    color: $pink !important;
+    background-color: $white !important;
+    &:hover {
+      background-color: $white !important;
+    }
+
+    padding-bottom: 7px !important;
+    padding-top: 7px !important;
+    top: 50%;
+    margin-top: #{-$inverse-button-height / 2};
+  }
+}
+
+.navbar__profile-lock,
+.navbar__profile-pic {
+  margin-left: 10px;
+}
+
+.navbar__profile-pic {
+  width: $navbar-element-height;
+  height: $navbar-element-height;
+  border-radius: #{$navbar-element-height / 2};
+  margin-top: #{-$navbar-element-height / 4};
+  background-color: $white;
+  display: inline-block;
+  float: right;
+}
+
+.splash-screen {
+  background-color: $pink;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100vw;
+  height: 100vh;
 }
 
 .app-content {
-  padding-top: 70px;
+  padding-top: $navbar-height;
 }
 
 div#not-implemented {

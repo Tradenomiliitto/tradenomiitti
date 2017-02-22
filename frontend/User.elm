@@ -79,7 +79,7 @@ view model =
 viewUser : User -> Html Msg
 viewUser user =
   H.div
-    []
+    [ A.class "container" ]
     [ H.h1 [] [ H.text "Profiili" ]
     , H.p [] [ H.text "Alla olevat tiedot on täytetty jäsentiedoistasi" ]
     , viewProfileForm user
