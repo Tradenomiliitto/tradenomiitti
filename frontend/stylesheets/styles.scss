@@ -1,8 +1,8 @@
 //color definitions
 $pink: rgb(255, 105, 138);
 $green:  rgb(74, 97, 97);
-$medium_grey: rgb(207, 208, 207);
-$dark_gey: rgb(99, 99, 99);
+$medium-grey: rgb(207, 208, 207);
+$dark-grey: rgb(99, 99, 99);
 $white: #FFF;
 
 @mixin gotham-bold {
@@ -43,6 +43,7 @@ $icon-font-path: "/static/";
   &__top-row {
     padding-top: 8px;
     padding-bottom: 8px;
+    background-color: $medium-grey;
   }
   &__heading {
     @include gotham-bold;

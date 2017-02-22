@@ -145,20 +145,24 @@ profileTopRow model =
     H.div
       [ A.class "row profile__top-row" ]
       [ H.div
-        [ A.class "col-md-8" ]
-        [ H.h4
-            [ A.class "profile__heading" ]
-            [ H.text "Oma profiili" ] ]
-      , H.div
-        [ A.class "col-md-4 profile__buttons" ]
-        [ H.button
-            [ A.class "btn btn-primary" ]
-            [ H.text "Tallenna profiili" ]
-        , link
+        [ A.class "container" ]
+        [ H.div
+          [ A.class "row" ]
+          [ H.div
+            [ A.class "col-md-8" ]
+            [ H.h4
+                [ A.class "profile__heading" ]
+                [ H.text "Oma profiili" ] ]
+          , H.div
+            [ A.class "col-md-4 profile__buttons" ]
+            [ H.button
+                [ A.class "btn btn-primary" ]
+                [ H.text "Tallenna profiili" ]
+            , link
+            ]
+          ]
         ]
       ]
-
-
 navigation : Model -> H.Html Msg
 navigation model =
   H.nav
@@ -325,7 +329,7 @@ viewPage model =
           notImplementedYet
   in
     H.div
-      [ A.class "container app-content" ]
+      [ A.class "container-fluid app-content" ]
       [ content ]
 
 notImplementedYet : H.Html Msg
