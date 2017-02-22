@@ -4,10 +4,11 @@ $green:  rgb(74, 97, 97);
 $medium-grey: rgb(207, 208, 207);
 $dark-grey: rgb(99, 99, 99);
 $white: #FFF;
+$black: #000;
 
 @mixin gotham-bold {
   font-family: "Gotham A","Gotham B",Arial,sans-serif;
-  font-weight: 700;
+  font-weight: 700 !important;
 }
 
 //fonts
@@ -31,6 +32,8 @@ $btn-border-radius-large: 0;
 $btn-border-radius-base: 0;
 $btn-primary-bg: $pink;
 
+$link-color: $black;
+
 $icon-font-path: "/static/";
 
 .profile {
@@ -52,6 +55,7 @@ $icon-font-path: "/static/";
 
 .btn-primary {
   @include gotham-bold;
+  text-transform: uppercase;
 }
 
 #logo > img {
