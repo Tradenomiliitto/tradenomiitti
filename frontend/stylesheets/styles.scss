@@ -169,16 +169,32 @@ div#not-implemented {
 
 .user-page {
   &__section {
-    margin-top: 40px;
+    margin-top: 70px;
+  }
+  &__pic-container {
+    margin-right: 20px;
   }
   &__pic {
-    $size: 67px;
+    $size: 90px;
     width: $size;
     height: $size;
     border-radius: #{$size / 2};
     background-color: #ccc;
     display: inline-block;
   }
+  &__name {
+    @include gotham-bold;
+  }
+  &__work-details {
+    color: $pink;
+    font-weight: bold;
+  }
+
+  &__description {
+    margin-top: 22px;
+    font-size: 17px;
+  }
+
   &__membership-info {
     border: 1px solid $medium-grey;
     $padding: 33px;

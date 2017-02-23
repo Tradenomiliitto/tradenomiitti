@@ -122,17 +122,24 @@ viewUser user =
         [ H.div
           [ A.class "row" ]
           [ H.div
-            [ A.class "col-xs-2" ]
-            [ H.span [ A.class "user-page__pic" ] [] ]
-          , H.div
-            [ A.class "col-xs-2" ]
-            [ H.p [] [ H.text user.name ]
-            , H.p [] [ H.text user.primaryDomain ]
-            , H.p [] [ H.text user.primaryPosition ]
+            [ A.class "col-xs-12"]
+            [ H.div
+              [ A.class "pull-left user-page__pic-container" ]
+              [ H.span [ A.class "user-page__pic" ] [] ]
+            , H.div
+              [ A.class "pull-left" ]
+              [ H.h4 [ A.class "user-page__name" ] [ H.text user.name ]
+              , H.p
+                [ A.class "user-page__work-details" ]
+                [ H.text user.primaryDomain
+                , H.br [] []
+                , H.text user.primaryPosition
+                ]
+              ]
             ]
           ]
         , H.div
-          [ A.class "row" ]
+          [ A.class "row user-page__description" ]
           [ H.p [ A.class "col-xs-12" ] [ H.text user.description ]
           ]
         ]
