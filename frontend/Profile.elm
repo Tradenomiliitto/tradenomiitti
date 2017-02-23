@@ -18,6 +18,8 @@ type Msg
   | Edit
   | DomainSkillMessage Int Skill.SkillLevel
   | PositionSkillMessage Int Skill.SkillLevel
+  | AddDomain
+  | AddPosition
   | NoOp
 
 
@@ -53,6 +55,12 @@ update msg model =
 
     PositionSkillMessage index skillLevel ->
       { model | positions = updateSkillList index skillLevel model.positions } ! []
+
+    AddDomain ->
+      model ! []
+
+    AddPosition ->
+      model ! []
 
     NoOp ->
       model ! []
@@ -198,20 +206,40 @@ viewUser model user =
           [ A.class "col-xs-12 col-sm-6"
           ]
           ([ H.h3 [ A.class "user-page__competences-header" ] [ H.text "Toimiala" ]
-          ] ++ (List.indexedMap
-                 (\i x -> H.map (DomainSkillMessage i) <|
-                    Skill.view model.editing x)
-                 model.domains
-              )
+          ] ++
+             (List.indexedMap
+                (\i x -> H.map (DomainSkillMessage i) <|
+                   Skill.view model.editing x)
+                model.domains
+             ) ++
+             (if model.editing
+              then
+                [ H.button
+                  [ A.class "btn"
+                  , E.onClick AddDomain
+                  ]
+                  [ H.text "Lisää toimiala"]
+                ]
+              else [])
           )
       , H.div
           [ A.class "col-xs-12 col-sm-6"
           ]
           ([ H.h3 [ A.class "user-page__competences-header" ] [ H.text "Tehtäväluokka" ]
-           ] ++ (List.indexedMap
-                 (\i x -> H.map (PositionSkillMessage i) <| Skill.view model.editing x)
-                  model.positions
-               )
+           ] ++
+             (List.indexedMap
+                (\i x -> H.map (PositionSkillMessage i) <| Skill.view model.editing x)
+                model.positions
+             ) ++
+             (if model.editing
+              then
+                [ H.button
+                  [ A.class "btn"
+                  , E.onClick AddPosition
+                  ]
+                  [ H.text "Lisää tehtäväluokka"]
+                ]
+              else [])
           )
       ]
     ]
