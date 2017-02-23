@@ -36,6 +36,10 @@ $link-color: $black;
 
 $icon-font-path: "/static/";
 
+body {
+  overflow-x: hidden;
+}
+
 .profile {
   &__buttons {
     text-align: right;
@@ -220,5 +224,12 @@ div#not-implemented {
         }
       }
     }
+  }
+
+  & hr {
+    width: 100vw;
+    margin-left: -$grid-gutter-width;
+    border-color: rgba(0, 0, 0, 0.35);
+    margin-top: 70px;
   }
 }

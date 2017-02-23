@@ -44,11 +44,10 @@ update msg model =
 
 view : Model -> RootState.Model ->  H.Html Msg
 view model rootState =
-  H.div
-    []
+  H.div [ A.class "user-page" ] <|
     [ profileTopRow model rootState
-    , viewUserMaybe model
-    ]
+    ] ++ (viewUserMaybe model)
+
 
 profileTopRow : Model -> RootState.Model -> H.Html Msg
 profileTopRow model rootState =
@@ -104,16 +103,16 @@ profileTopRow model rootState =
         ]
       ]
 
-viewUserMaybe : Model -> H.Html Msg
+viewUserMaybe : Model -> List (H.Html Msg)
 viewUserMaybe model =
   model.user
     |> Maybe.map viewUser
-    |> Maybe.withDefault (H.div [] [])
+    |> Maybe.withDefault []
 
 
-viewUser : User.User -> H.Html Msg
+viewUser : User.User -> List (H.Html Msg)
 viewUser user =
-  H.div
+  [ H.div
     [ A.class "container" ]
     [ H.div
       [ A.class "row user-page__section" ]
@@ -174,6 +173,11 @@ viewUser user =
         ]
       ]
     ]
+  , H.hr [] []
+  , H.div
+    [ A.class "container" ]
+    [ H.p [] [ H.text "TBD"]]
+  ]
 
 
 viewProfileForm : User.User -> H.Html Msg
