@@ -106,12 +106,12 @@ profileTopRow model rootState =
 viewUserMaybe : Model -> List (H.Html Msg)
 viewUserMaybe model =
   model.user
-    |> Maybe.map viewUser
+    |> Maybe.map (viewUser model.editing)
     |> Maybe.withDefault []
 
 
-viewUser : User.User -> List (H.Html Msg)
-viewUser user =
+viewUser : Bool -> User.User -> List (H.Html Msg)
+viewUser editing user =
   [ H.div
     [ A.class "container" ]
     [ H.div
@@ -182,12 +182,12 @@ viewUser user =
           [ A.class "col-xs-12 col-sm-6"
           ]
           ([ H.h3 [ A.class "user-page__competences-header" ] [ H.text "Toimiala" ]
-          ] ++ (List.map skill [ ("Teollisuus", Pro), ("IT", Interested) ]) )
+          ] ++ (List.map (skill editing) [ ("Teollisuus", Pro), ("IT", Interested) ]) )
       , H.div
           [ A.class "col-xs-12 col-sm-6"
           ]
           ([ H.h3 [ A.class "user-page__competences-header" ] [ H.text "Tehtäväluokka" ]
-          ] ++ (List.map skill [ ("Kirjanpito", Experienced), ("Ohjelmointi", Beginner)]))
+          ] ++ (List.map (skill editing) [ ("Kirjanpito", Experienced), ("Ohjelmointi", Beginner)]))
       ]
     ]
   ]
@@ -195,8 +195,8 @@ viewUser user =
 
 type SkillLevel = Interested | Beginner | There | Experienced | Pro
 
-skill : (String, SkillLevel) -> H.Html msg
-skill (heading, skillLevel) =
+skill : Bool -> (String, SkillLevel) -> H.Html Msg
+skill editing (heading, skillLevel) =
   let
     skillText =
       case skillLevel of
@@ -216,8 +216,13 @@ skill (heading, skillLevel) =
 
     circle type_ =
       H.span
-        [ A.class <| "skill__circle-container skill__circle-container--" ++ type_ ]
-        [ H.span [ A.class <| "skill__circle skill__circle--" ++ type_ ] [] ]
+        [ A.class <| "skill__circle-container skill__circle-container--" ++ type_
+        ]
+        [ H.span
+            ([ A.class <| "skill__circle skill__circle--" ++ type_
+             ]++ if editing then [ E.onClick NoOp ] else [])
+            []
+        ]
     filledCircle = circle "filled"
     activeCircle = circle "active"
     unFilledCircle = circle "unfilled"

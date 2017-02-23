@@ -292,15 +292,15 @@ div#not-implemented {
 
     &--filled {
       background-color: $pink;
-      @include circle(8px);
+      @include circle(13px);
     }
     &--unfilled {
       background-color: #CCC;
-      @include circle(8px);
+      @include circle(13px);
     }
     &--active {
       background-color: $dark-grey;
-      @include circle(13px);
+      @include circle(18px);
     }
   }
 }
