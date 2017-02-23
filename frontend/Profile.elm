@@ -176,8 +176,54 @@ viewUser user =
   , H.hr [] []
   , H.div
     [ A.class "container" ]
-    [ H.p [] [ H.text "TBD"]]
+    [ H.div
+      [ A.class "row" ]
+      [ H.div
+          [ A.class "col-xs-12 col-sm-6"
+          ]
+          ([ H.h3 [ A.class "user-page__competences-header" ] [ H.text "Toimiala" ]
+          ] ++ (List.map skill [ ("Teollisuus", Pro), ("IT", Interested) ]) )
+      , H.div
+          [ A.class "col-xs-12 col-sm-6"
+          ]
+          ([ H.h3 [ A.class "user-page__competences-header" ] [ H.text "Tehtäväluokka" ]
+          ] ++ (List.map skill [ ("Kirjanpito", Experienced), ("Ohjelmointi", Beginner)]))
+      ]
+    ]
   ]
+
+
+type SkillLevel = Interested | Beginner | There | Experienced | Pro
+
+skill : (String, SkillLevel) -> H.Html msg
+skill (heading, skillLevel) =
+  let
+    skillText =
+      case skillLevel of
+        Interested -> "Kiinnostunut"
+        Beginner -> "Aloittelija"
+        There -> "Alalla"
+        Experienced -> "Kokenut"
+        Pro -> "Konkari"
+
+    skillNumber =
+      case skillLevel of
+        Interested -> 1
+        Beginner -> 2
+        There -> 3
+        Experienced -> 4
+        Pro -> 5
+
+  in
+    H.div
+      []
+      [ H.p
+          []
+          [ H.span [ A.class "skill__heading" ] [ H.text heading ]
+          , H.span [ A.class "skill__level-text" ] [ H.text skillText ]
+          ]
+      , H.p [] [ H.text <| "Liukuri: " ++ toString skillNumber ]
+      ]
 
 
 viewProfileForm : User.User -> H.Html Msg

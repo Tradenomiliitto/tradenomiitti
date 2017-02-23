@@ -232,4 +232,25 @@ div#not-implemented {
     border-color: rgba(0, 0, 0, 0.35);
     margin-top: 70px;
   }
+
+  &__competences-header {
+    @include gotham-bold;
+    text-transform: uppercase;
+    margin-bottom: 70px;
+  }
+}
+
+.skill {
+  &__heading {
+    &:after {
+      content: ':';
+    }
+    font-weight: bold;
+    padding-right: 1em;
+  }
+
+  &__level-text {
+    color: $pink;
+    font-weight: bold;
+  }
 }
