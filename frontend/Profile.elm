@@ -115,10 +115,59 @@ viewUser : User.User -> H.Html Msg
 viewUser user =
   H.div
     [ A.class "container" ]
-    [ H.h1 [] [ H.text "Profiili" ]
-    , H.p [] [ H.text "Alla olevat tiedot on täytetty jäsentiedoistasi" ]
-    , viewProfileForm user
+    [ H.div
+      [ A.class "row user-page__section" ]
+      [ H.div
+        [ A.class "col-md-6" ]
+        [ H.div
+          [ A.class "row" ]
+          [ H.div
+            [ A.class "col-xs-2" ]
+            [ H.span [ A.class "user-page__pic" ] [] ]
+          , H.div
+            [ A.class "col-xs-2" ]
+            [ H.p [] [ H.text user.name ]
+            , H.p [] [ H.text user.primaryDomain ]
+            , H.p [] [ H.text user.primaryPosition ]
+            ]
+          ]
+        , H.div
+          [ A.class "row" ]
+          [ H.p [ A.class "col-xs-12" ] [ H.text user.description ]
+          ]
+        ]
+      , H.div
+        [ A.class "col-md-6 user-page__membership-info" ]
+        [ H.h3 [ A.class "user-page__membership-info-heading" ] [ H.text "Jäsentiedot:" ]
+        , H.span [] [ H.text "(eivät näy muille)"]
+        , H.table
+          [ A.class "user-page__membership-info-definitions" ]
+          [ H.tr []
+              [ H.td [] [ H.text "Kutsumanimi" ]
+              , H.td [] [ H.text "Make"]
+              ]
+          , H.tr []
+            [ H.td [] [ H.text "Etunimi" ]
+            , H.td [] [ H.text "Matti" ]
+            ]
+          , H.tr []
+            [ H.td [] [ H.text "Tehtäväluokat" ]
+            , H.td [] [ H.text (String.join ", " user.positions)]
+            ]
+          , H.tr []
+            [ H.td [] [ H.text "Toimiala" ]
+            , H.td [] [ H.text "Teollisuus, mitäliä, kaikkee muuta" ]
+            ]
+          ]
+        , H.p [] [ H.text "Ovathan jäentietosi ajan tasalla?" ]
+        , H.p [] [ H.a
+                     [ A.href "https://asiointi.tral.fi/" ]
+                     [ H.text "Päivitä tiedot" ]
+                 ]
+        ]
+      ]
     ]
+
 
 viewProfileForm : User.User -> H.Html Msg
 viewProfileForm user =

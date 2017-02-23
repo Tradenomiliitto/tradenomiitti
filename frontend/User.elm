@@ -1,16 +1,15 @@
 module User exposing (..)
 
-import Html as H exposing (Html)
-import Html.Attributes as A
-import Html.Events as E
 import Http
 import Json.Decode exposing (Decoder, string, list)
-import Json.Decode.Pipeline exposing (decode, required, optional)
+import Json.Decode.Pipeline as P
 
 type alias User =
   { name : String
   , description : String
   , positions : List String
+  , primaryDomain : String
+  , primaryPosition : String
   }
 
 
@@ -27,10 +26,12 @@ init =
 
 userDecoder : Decoder User
 userDecoder =
-  decode User
-    |> required "first_name" string
-    |> required "description" string
-    |> required "positions" (list string)
+  P.decode User
+    |> P.required "first_name" string
+    |> P.required "description" string
+    |> P.required "positions" (list string)
+    |> P.hardcoded "Teollisuus"
+    |> P.hardcoded "Kirjanpito"
 
 -- UPDATE
 

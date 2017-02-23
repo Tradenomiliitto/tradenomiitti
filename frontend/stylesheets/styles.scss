@@ -166,3 +166,43 @@ div#not-implemented {
   color: $pink;
   text-align: center;
 }
+
+.user-page {
+  &__section {
+    margin-top: 40px;
+  }
+  &__pic {
+    $size: 67px;
+    width: $size;
+    height: $size;
+    border-radius: #{$size / 2};
+    background-color: #ccc;
+    display: inline-block;
+  }
+  &__membership-info {
+    border: 1px solid $medium-grey;
+    $padding: 33px;
+    padding: 8px $padding $padding $padding;
+    &-heading {
+      display: inline-block;
+      margin-right: 18px;
+    }
+    &-definitions {
+      width: 100%;
+      margin-bottom: 10px;
+      & td {
+        border-bottom: 1px solid $dark-grey;
+        $padding: 8px;
+        padding-top: $padding;
+        padding-bottom: $padding;
+      }
+      & td:first-child {
+        font-weight: bold;
+        padding-right: 2em;
+        &:after {
+          content: ':';
+        }
+      }
+    }
+  }
+}
