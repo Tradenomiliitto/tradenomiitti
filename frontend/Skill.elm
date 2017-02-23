@@ -6,14 +6,23 @@ import Html.Events as E
 
 type SkillLevel = Interested | Beginner | There | Experienced | Pro
 
+type alias Model =
+  { heading : String
+  , skillLevel : SkillLevel
+  }
+
 allSkills : List SkillLevel
 allSkills = [ Interested, Beginner, There, Experienced, Pro ]
 
-view : Bool -> (String, SkillLevel) -> H.Html SkillLevel
-view editing (heading, skillLevel) =
+update : SkillLevel -> Model -> Model
+update skillLevel model =
+  { model | skillLevel = skillLevel }
+
+view : Bool -> Model -> H.Html SkillLevel
+view editing model =
   let
     skillText =
-      case skillLevel of
+      case model.skillLevel of
         Interested -> "Kiinnostunut"
         Beginner -> "Aloittelija"
         There -> "Alalla"
@@ -21,7 +30,7 @@ view editing (heading, skillLevel) =
         Pro -> "Konkari"
 
     skillNumber =
-      case skillLevel of
+      case model.skillLevel of
         Interested -> 1
         Beginner -> 2
         There -> 3
@@ -48,7 +57,7 @@ view editing (heading, skillLevel) =
       []
       [ H.p
           []
-          [ H.span [ A.class "skill__heading" ] [ H.text heading ]
+          [ H.span [ A.class "skill__heading" ] [ H.text model.heading ]
           , H.span [ A.class "skill__level-text" ] [ H.text skillText ]
           ]
       , H.p

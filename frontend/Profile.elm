@@ -16,7 +16,8 @@ type Msg
   = GetMe (Result Http.Error User.User)
   | Save
   | Edit
-  | SkillMessage Skill.SkillLevel
+  | DomainSkillMessage Int Skill.SkillLevel
+  | PositionSkillMessage Int Skill.SkillLevel
   | NoOp
 
 
@@ -24,6 +25,13 @@ getMe : Cmd Msg
 getMe =
   Http.get "/api/me" User.userDecoder
     |> Http.send GetMe
+
+
+updateSkillList : Int -> Skill.SkillLevel -> List Skill.Model -> List Skill.Model
+updateSkillList index skillLevel list =
+  List.indexedMap
+    (\i x -> if i == index then Skill.update skillLevel x else x)
+    list
 
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
@@ -40,9 +48,11 @@ update msg model =
     Edit ->
       { model | editing = True } ! []
 
-    SkillMessage skillLevel ->
-      let _ = Debug.log "skill" skillLevel
-      in model ! []
+    DomainSkillMessage index skillLevel ->
+      { model | domains = updateSkillList index skillLevel model.domains } ! []
+
+    PositionSkillMessage index skillLevel ->
+      { model | positions = updateSkillList index skillLevel model.positions } ! []
 
     NoOp ->
       model ! []
@@ -112,12 +122,12 @@ profileTopRow model rootState =
 viewUserMaybe : Model -> List (H.Html Msg)
 viewUserMaybe model =
   model.user
-    |> Maybe.map (viewUser model.editing)
+    |> Maybe.map (viewUser model)
     |> Maybe.withDefault []
 
 
-viewUser : Bool -> User.User -> List (H.Html Msg)
-viewUser editing user =
+viewUser : Model -> User.User -> List (H.Html Msg)
+viewUser model user =
   [ H.div
     [ A.class "container" ]
     [ H.div
@@ -188,12 +198,21 @@ viewUser editing user =
           [ A.class "col-xs-12 col-sm-6"
           ]
           ([ H.h3 [ A.class "user-page__competences-header" ] [ H.text "Toimiala" ]
-          ] ++ (List.map (H.map SkillMessage << Skill.view editing) [ ("Teollisuus", Skill.Pro), ("IT", Skill.Interested) ]) )
+          ] ++ (List.indexedMap
+                 (\i x -> H.map (DomainSkillMessage i) <|
+                    Skill.view model.editing x)
+                 model.domains
+              )
+          )
       , H.div
           [ A.class "col-xs-12 col-sm-6"
           ]
           ([ H.h3 [ A.class "user-page__competences-header" ] [ H.text "Tehtäväluokka" ]
-          ] ++ (List.map (H.map SkillMessage << Skill.view editing) [ ("Kirjanpito", Skill.Experienced), ("Ohjelmointi", Skill.Beginner)]))
+           ] ++ (List.indexedMap
+                 (\i x -> H.map (PositionSkillMessage i) <| Skill.view model.editing x)
+                  model.positions
+               )
+          )
       ]
     ]
   ]
