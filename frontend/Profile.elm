@@ -214,18 +214,13 @@ skill (heading, skillLevel) =
         Experienced -> 4
         Pro -> 5
 
-    filledCircle =
+    circle type_ =
       H.span
-        [ A.class "skill__circle-container skill__circle-container--filled" ]
-        [ H.span [ A.class "skill__circle skill__circle--filled" ] [] ]
-    activeCircle =
-      H.span
-        [ A.class "skill__circle-container skill__circle-container--active" ]
-        [ H.span [ A.class "skill__circle skill__circle--active" ] [] ]
-    unFilledCircle =
-      H.span
-        [ A.class "skill__circle-container skill__circle-container--unfilled" ]
-        [ H.span [ A.class "skill__circle skill__circle--unfilled" ] [] ]
+        [ A.class <| "skill__circle-container skill__circle-container--" ++ type_ ]
+        [ H.span [ A.class <| "skill__circle skill__circle--" ++ type_ ] [] ]
+    filledCircle = circle "filled"
+    activeCircle = circle "active"
+    unFilledCircle = circle "unfilled"
 
   in
     H.div
