@@ -6,6 +6,7 @@ import Html.Events as E
 import Http
 import Maybe.Extra as Maybe
 import Nav
+import Skill
 import State.Main as RootState
 import State.Profile exposing (Model)
 import User
@@ -15,6 +16,7 @@ type Msg
   = GetMe (Result Http.Error User.User)
   | Save
   | Edit
+  | SkillMessage Skill.SkillLevel
   | NoOp
 
 
@@ -37,6 +39,10 @@ update msg model =
 
     Edit ->
       { model | editing = True } ! []
+
+    SkillMessage skillLevel ->
+      let _ = Debug.log "skill" skillLevel
+      in model ! []
 
     NoOp ->
       model ! []
@@ -182,75 +188,16 @@ viewUser editing user =
           [ A.class "col-xs-12 col-sm-6"
           ]
           ([ H.h3 [ A.class "user-page__competences-header" ] [ H.text "Toimiala" ]
-          ] ++ (List.map (skill editing) [ ("Teollisuus", Pro), ("IT", Interested) ]) )
+          ] ++ (List.map (H.map SkillMessage << Skill.view editing) [ ("Teollisuus", Skill.Pro), ("IT", Skill.Interested) ]) )
       , H.div
           [ A.class "col-xs-12 col-sm-6"
           ]
           ([ H.h3 [ A.class "user-page__competences-header" ] [ H.text "Tehtäväluokka" ]
-          ] ++ (List.map (skill editing) [ ("Kirjanpito", Experienced), ("Ohjelmointi", Beginner)]))
+          ] ++ (List.map (H.map SkillMessage << Skill.view editing) [ ("Kirjanpito", Skill.Experienced), ("Ohjelmointi", Skill.Beginner)]))
       ]
     ]
   ]
 
-
-type SkillLevel = Interested | Beginner | There | Experienced | Pro
-
-skill : Bool -> (String, SkillLevel) -> H.Html Msg
-skill editing (heading, skillLevel) =
-  let
-    skillText =
-      case skillLevel of
-        Interested -> "Kiinnostunut"
-        Beginner -> "Aloittelija"
-        There -> "Alalla"
-        Experienced -> "Kokenut"
-        Pro -> "Konkari"
-
-    skillNumber =
-      case skillLevel of
-        Interested -> 1
-        Beginner -> 2
-        There -> 3
-        Experienced -> 4
-        Pro -> 5
-
-    circle type_ =
-      H.span
-        [ A.class <| "skill__circle-container skill__circle-container--" ++ type_
-        ]
-        [ H.span
-            ([ A.class <|
-                 (if editing then "skill__circle--clickable " else "") ++
-                 "skill__circle skill__circle--" ++ type_
-             ]++ if editing then [ E.onClick NoOp ] else [])
-            []
-        ]
-    filledCircle = circle "filled"
-    activeCircle = circle "active"
-    unFilledCircle = circle "unfilled"
-
-  in
-    H.div
-      []
-      [ H.p
-          []
-          [ H.span [ A.class "skill__heading" ] [ H.text heading ]
-          , H.span [ A.class "skill__level-text" ] [ H.text skillText ]
-          ]
-      , H.p
-        []
-        [ H.input
-            [ A.value (toString skillNumber)
-            , A.type_ "text"
-            , A.class "skill__input"
-            ] []
-        , H.span [] <|
-          (List.repeat (skillNumber - 1) filledCircle ++
-            [ activeCircle ] ++
-              (List.repeat (5 - skillNumber) unFilledCircle))
-
-        ]
-      ]
 
 
 viewProfileForm : User.User -> H.Html Msg
