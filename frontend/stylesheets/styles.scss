@@ -253,4 +253,54 @@ div#not-implemented {
     color: $pink;
     font-weight: bold;
   }
+
+  &__input {
+    display: none;
+  }
+
+  &__circle {
+    @mixin circle($diameter) {
+      width: $diameter;
+      height: $diameter;
+      border-radius: #{$diameter / 2};
+      position: relative;
+      top: -9px; // By trial and error
+
+    }
+    display: inline-block;
+    vertical-align: middle;
+
+    &-container {
+      width: 50px;
+      display: inline-block;
+      height: 1px;
+      margin: 20px 0;
+      &:last-child {
+        width: 0;
+      }
+
+      &--filled {
+        background-color: $pink;
+      }
+      &--unfilled {
+        background-color: #CCC;
+      }
+      &--active {
+        background-color: #CCC;
+      }
+    }
+
+    &--filled {
+      background-color: $pink;
+      @include circle(8px);
+    }
+    &--unfilled {
+      background-color: #CCC;
+      @include circle(8px);
+    }
+    &--active {
+      background-color: $dark-grey;
+      @include circle(13px);
+    }
+  }
 }
