@@ -219,7 +219,9 @@ skill editing (heading, skillLevel) =
         [ A.class <| "skill__circle-container skill__circle-container--" ++ type_
         ]
         [ H.span
-            ([ A.class <| "skill__circle skill__circle--" ++ type_
+            ([ A.class <|
+                 (if editing then "skill__circle--clickable " else "") ++
+                 "skill__circle skill__circle--" ++ type_
              ]++ if editing then [ E.onClick NoOp ] else [])
             []
         ]

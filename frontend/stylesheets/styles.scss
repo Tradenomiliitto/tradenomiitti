@@ -270,6 +270,10 @@ div#not-implemented {
     display: inline-block;
     vertical-align: middle;
 
+    &--clickable {
+      cursor: pointer;
+    }
+
     &-container {
       width: 50px;
       display: inline-block;
