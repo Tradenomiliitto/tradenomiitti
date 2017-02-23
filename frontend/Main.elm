@@ -191,13 +191,12 @@ viewProfileLink model =
     action =
       if Maybe.isJust model.profile.user
       then
-        [
-         E.onWithOptions
-           "click"
-           { stopPropagation = False
-           , preventDefault = True
-           }
-           (Json.succeed <| NewUrl route)
+        [ E.onWithOptions
+            "click"
+            { stopPropagation = False
+            , preventDefault = True
+            }
+            (Json.succeed <| NewUrl route)
         ]
       else
         []
