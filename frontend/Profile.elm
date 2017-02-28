@@ -19,6 +19,8 @@ type Msg
   | Edit
   | DomainSkillMessage Int Skill.SkillLevel
   | PositionSkillMessage Int Skill.SkillLevel
+  | ChangeDomainSelect String
+  | ChangePositionSelect String
   | AddDomain
   | AddPosition
   | GetDomainOptions (Result Http.Error (List String))
@@ -77,11 +79,17 @@ update msg model =
     PositionSkillMessage index skillLevel ->
       updateUser (\u -> { u | domains = updateSkillList index skillLevel u.positions }) model ! []
 
+    ChangeDomainSelect str ->
+      { model | selectedDomainOption = str } ! []
+
+    ChangePositionSelect str ->
+      { model | selectedPositionOption = str } ! []
+
     AddDomain ->
-      model ! []
+      updateUser (\u -> { u | domains = u.domains ++ [ Skill.Model model.selectedDomainOption Skill.Interested ] }) model ! []
 
     AddPosition ->
-      model ! []
+      updateUser (\u -> { u | positions = u.positions ++ [ Skill.Model model.selectedPositionOption Skill.Interested ] }) model ! []
 
     GetPositionOptions (Ok list) ->
       { model | positionOptions = list } ! []
@@ -197,12 +205,12 @@ viewUser model user =
                 [ A.class "user-page__work-details" ]
                 [ if model.editing
                   then H.select [ A.value user.primaryDomain ]
-                    (List.map (\skill -> H.option [] [ H.text skill.heading ]) user.domains)
+                    (H.option [] [ H.text "Valitse päätoimiala" ] :: List.map (\skill -> H.option [] [ H.text skill.heading ]) user.domains)
                   else H.text user.primaryDomain
                 , H.br [] []
                 , if model.editing
                   then H.select [ A.value user.primaryPosition ]
-                    (List.map (\skill -> H.option [] [ H.text skill.heading ]) user.positions)
+                    (H.option [] [ H.text "Valitse päätehtäväluokka" ] :: List.map (\skill -> H.option [] [ H.text skill.heading ]) user.positions)
                   else H.text user.primaryPosition
                 ]
               ]
@@ -270,7 +278,9 @@ viewUser model user =
              ) ++
              (if model.editing
               then
-                [ H.select [] <| List.map (\o -> H.option [] [ H.text o ]) model.domainOptions
+                [ H.select
+                    [ E.on "change" (Json.map ChangeDomainSelect E.targetValue)] <|
+                    H.option [] [ H.text "Valitse toimiala"] :: List.map (\o -> H.option [] [ H.text o ]) model.domainOptions
                 , H.button
                   [ A.class "btn"
                   , E.onClick AddDomain
@@ -290,7 +300,9 @@ viewUser model user =
              ) ++
              (if model.editing
               then
-                [ H.select [] <| List.map (\o -> H.option [] [ H.text o ]) model.positionOptions
+                [ H.select
+                    [ E.on "change" (Json.map ChangePositionSelect E.targetValue)] <|
+                    H.option [] [ H.text "Valitse tehtäväluokka"] :: List.map (\o -> H.option [] [ H.text o ]) model.positionOptions
                 , H.button
                   [ A.class "btn"
                   , E.onClick AddPosition

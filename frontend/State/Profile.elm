@@ -7,6 +7,8 @@ type alias Model =
   , editing : Bool
   , positionOptions : List String
   , domainOptions : List String
+  , selectedPositionOption : String
+  , selectedDomainOption : String
   }
 
 init : Model
@@ -15,4 +17,6 @@ init =
   , editing = False
   , positionOptions = []
   , domainOptions = []
+  , selectedDomainOption = ""
+  , selectedPositionOption = ""
   }
