@@ -52,6 +52,10 @@ updateSkillList index skillLevel list =
     (\i x -> if i == index then Skill.update skillLevel x else x)
     list
 
+updateUser : (User.User -> User.User) -> Model -> Model
+updateUser update model =
+  { model | user = Maybe.map update model.user }
+
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
   case msg of
@@ -68,10 +72,10 @@ update msg model =
       { model | editing = True } ! []
 
     DomainSkillMessage index skillLevel ->
-      { model | domains = updateSkillList index skillLevel model.domains } ! []
+      updateUser (\u -> { u | domains = updateSkillList index skillLevel u.domains }) model ! []
 
     PositionSkillMessage index skillLevel ->
-      { model | positions = updateSkillList index skillLevel model.positions } ! []
+      updateUser (\u -> { u | domains = updateSkillList index skillLevel u.positions }) model ! []
 
     AddDomain ->
       model ! []
@@ -256,7 +260,7 @@ viewUser model user =
              (List.indexedMap
                 (\i x -> H.map (DomainSkillMessage i) <|
                    Skill.view model.editing x)
-                model.domains
+                user.domains
              ) ++
              (if model.editing
               then
@@ -276,7 +280,7 @@ viewUser model user =
            ] ++
              (List.indexedMap
                 (\i x -> H.map (PositionSkillMessage i) <| Skill.view model.editing x)
-                model.positions
+                user.positions
              ) ++
              (if model.editing
               then
