@@ -1,7 +1,7 @@
 module User exposing (..)
 
 import Http
-import Json.Decode exposing (Decoder, string, list)
+import Json.Decode exposing (Decoder, string, list, bool)
 import Json.Decode.Pipeline as P
 import Json.Encode as JS
 import Skill
@@ -20,6 +20,7 @@ type alias User =
   , primaryPosition : String
   , domains : List Skill.Model
   , positions : List Skill.Model
+  , profileCreated : Bool
   , extra : Extra
   }
 
@@ -44,6 +45,7 @@ userDecoder =
     |> P.required "primary_position" string
     |> P.required "domains" (list Skill.decoder)
     |> P.required "positions" (list Skill.decoder)
+    |> P.required "profile_creation_consented" bool
     |> P.required "extra" userExtraDecoder
 
 encode : User -> JS.Value
@@ -55,6 +57,7 @@ encode user =
     , ("primary_position", JS.string user.primaryPosition)
     , ("domains", JS.list (List.map Skill.encode user.domains) )
     , ("positions", JS.list (List.map Skill.encode user.positions) )
+    , ("profile_creation_consented", JS.bool user.profileCreated)
     ]
 
 userExtraDecoder : Decoder Extra

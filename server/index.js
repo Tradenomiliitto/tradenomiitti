@@ -108,7 +108,8 @@ app.post('/login', urlEncoded, (req, res) => {
                 data: {
                   name: nickname || firstname,
                   domains: domains.map(d => ({ heading: d, skill_level: 1 })),
-                  positions: positions.map(d => ({ heading: d, skill_level: 1 }))
+                  positions: positions.map(d => ({ heading: d, skill_level: 1 })),
+                  profile_creation_consented: false
                 }
               }, 'id') // postgres does not automatically return the id, ask for it explicitly
           })
@@ -165,6 +166,7 @@ app.get('/api/me', (req, res) => {
       user.primary_position = userData.primary_position || 'Ei valittua tehtäväluokkaa';
       user.domains = userData.domains || [];
       user.positions = userData.positions || [];
+      user.profile_creation_consented = userData.profile_creation_consented || false;
 
       return res.json(user);
     })

@@ -36,6 +36,14 @@ $link-color: $black;
 
 $icon-font-path: "/static/";
 
+@mixin inverse-button-colors {
+  color: $pink !important;
+  background-color: $white !important;
+  &:hover {
+    background-color: $white !important;
+  }
+}
+
 body {
   overflow-x: hidden;
 }
@@ -65,6 +73,29 @@ body {
   }
   &__heading {
     @include gotham-bold;
+  }
+
+  &__consent-needed {
+    text-align: center;
+    color: $white;
+    padding: 85px;
+    border: 1px solid $white;
+    & h1 {
+      @include gotham-bold;
+      text-transform: uppercase;
+    }
+
+    & p {
+      margin-top: 40px;
+      font-size: 20px;
+    }
+  }
+
+  &__consent-btn-inverse {
+    margin-top: 50px;
+    @include inverse-button-colors;
+    @include gotham-bold;
+    text-transform: uppercase;
   }
 }
 
@@ -123,11 +154,8 @@ $navbar-element-height: 35px;
   & > a {
     text-transform: uppercase;
     height: $inverse-button-height;
-    color: $pink !important;
-    background-color: $white !important;
-    &:hover {
-      background-color: $white !important;
-    }
+
+    @include inverse-button-colors;
 
     padding-bottom: 7px !important;
     padding-top: 7px !important;
@@ -152,6 +180,10 @@ $navbar-element-height: 35px;
 }
 
 .splash-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 9001;
   background-color: $pink;
   display: flex;
   justify-content: center;
