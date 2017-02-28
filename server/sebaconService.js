@@ -11,7 +11,7 @@ function url() {
   return `https://voltage.sebacon.net/SebaconAPI/?auth=${params.auth}`;
 }
 
-function getPositionTitles() {
+function getMetaList(meta) {
   return request.post({
     url: url(),
     auth: {
@@ -22,7 +22,7 @@ function getPositionTitles() {
       id: uuid.v4(),
       jsonrpc: '2.0',
       method: 'getApplicationObjectMeta',
-      params: ['tehtavanimikkeet']
+      params: [ meta ]
     }
   }).then(res => {
     const obj = {};
@@ -33,29 +33,51 @@ function getPositionTitles() {
   })
 }
 
+function getPositionTitles() {
+  return getMetaList('tehtavanimikkeet');
+}
+
+function getDomainTitles() {
+  return getMetaList('sopimusalat');
+}
+
+function getUserEmploymentHistory(id) {
+  return request.post({
+    url: url(),
+    auth: {
+      user: `${params.customer}\\${params.user}`,
+      pass: `${params.password}`
+    },
+    json: {
+      id: uuid.v4(),
+      jsonrpc: '2.0',
+      method: 'getPersonObject',
+      params: [
+        id,
+        'tyosuhteet'
+      ]
+    }
+  });
+}
+
+function getUserDomains(id) {
+  return Promise.all([
+    getDomainTitles(),
+    getUserEmploymentHistory(id)
+  ]).then(([ titles, res ]) =>
+          res.result.map(o => titles[o.sopimusala] || 'Tuntematon'));
+}
+
+
 function getUserPositions(id) {
   return Promise.all([
     getPositionTitles(),
-    request.post({
-      url: url(),
-      auth: {
-        user: `${params.customer}\\${params.user}`,
-        pass: `${params.password}`
-      },
-      json: {
-        id: uuid.v4(),
-        jsonrpc: '2.0',
-        method: 'getPersonObject',
-        params: [
-          id,
-          'tyosuhteet'
-        ]
-      }
-    })
-  ]).then(([ titles, res ]) => res.result.map(o => titles[o.tehtavanimike_val] || 'Tuntematon'));
+    getUserEmploymentHistory(id)
+  ]).then(([ titles, res ]) =>
+          res.result.map(o => titles[o.tehtavanimike_val] || 'Tuntematon'));
 }
 
-function getUserFirstName(id) {
+function getUser(id) {
   return request.post({
     url: url(),
     auth: {
@@ -70,11 +92,23 @@ function getUserFirstName(id) {
         id
       ]
     }
-  }).then(res => res.result.kutsumanimi || res.result.firstname);
+  });
+}
+
+function getUserFirstName(id) {
+  return getUser(id)
+    .then(res => res.result.firstname || '');
+}
+
+function getUserNickName(id) {
+  return getUser(id)
+    .then(res => res.result.kutsumanimi || '');
 }
 
 module.exports = {
   getUserPositions,
   getUserFirstName,
+  getUserNickName,
+  getUserDomains,
   initialize
 }

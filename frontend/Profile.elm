@@ -191,19 +191,19 @@ viewUser model user =
           [ A.class "user-page__membership-info-definitions" ]
           [ H.tr []
               [ H.td [] [ H.text "Kutsumanimi" ]
-              , H.td [] [ H.text "Make"]
+              , H.td [] [ H.text user.extra.nick_name ]
               ]
           , H.tr []
             [ H.td [] [ H.text "Etunimi" ]
-            , H.td [] [ H.text "Matti" ]
+            , H.td [] [ H.text user.extra.first_name ]
             ]
           , H.tr []
             [ H.td [] [ H.text "Tehtäväluokat" ]
-            , H.td [] [ H.text (String.join ", " user.positions)]
+            , H.td [] [ H.text (String.join ", " user.extra.positions)]
             ]
           , H.tr []
             [ H.td [] [ H.text "Toimiala" ]
-            , H.td [] [ H.text "Teollisuus, mitäliä, kaikkee muuta" ]
+            , H.td [] [ H.text (String.join ", " user.extra.domains) ]
             ]
           ]
         , H.p [] [ H.text "Ovathan jäentietosi ajan tasalla?" ]
@@ -289,7 +289,7 @@ viewProfileForm user =
     , H.div
       [ A.class "form-group" ]
       ([ H.label [] [ H.text "Tehtävät, joista sinulla on kokemusta" ]] ++
-         viewPositions user.positions)
+         viewPositions user.extra.positions)
     ]
 
 viewPositions : List String -> List (H.Html Msg)

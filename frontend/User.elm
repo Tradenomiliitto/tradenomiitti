@@ -4,12 +4,19 @@ import Http
 import Json.Decode exposing (Decoder, string, list)
 import Json.Decode.Pipeline as P
 
+type alias Extra =
+  { first_name : String
+  , nick_name : String
+  , domains : List String
+  , positions : List String
+  }
+
 type alias User =
   { name : String
   , description : String
-  , positions : List String
   , primaryDomain : String
   , primaryPosition : String
+  , extra : Extra
   }
 
 
@@ -29,9 +36,17 @@ userDecoder =
   P.decode User
     |> P.required "first_name" string
     |> P.required "description" string
-    |> P.required "positions" (list string)
     |> P.hardcoded "Teollisuus"
     |> P.hardcoded "Kirjanpito"
+    |> P.required "extra" userExtraDecoder
+
+userExtraDecoder : Decoder Extra
+userExtraDecoder =
+  P.decode Extra
+    |> P.required "first_name" string
+    |> P.required "nick_name" string
+    |> P.required "positions" (list string)
+    |> P.required "domains" (list string)
 
 -- UPDATE
 

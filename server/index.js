@@ -130,14 +130,20 @@ app.get('/api/me', (req, res) => {
     .then(user => {
       return Promise.all([
         sebacon.getUserFirstName(user.remote_id),
+        sebacon.getUserNickName(user.remote_id),
         sebacon.getUserPositions(user.remote_id),
+        sebacon.getUserDomains(user.remote_id),
         user
       ])
     })
-    .then(([ firstname, positions, user ]) => {
+    .then(([ firstname, nickname, positions, domains, user ]) => {
       // TODO not like this
-      user.first_name = firstname;
-      user.positions = positions;
+      user.extra = {
+        first_name: firstname,
+        nick_name: nickname,
+        positions: positions,
+        domains: domains
+      }
       return res.json(user);
     })
     .catch((err) => {
