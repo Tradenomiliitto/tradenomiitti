@@ -74,10 +74,17 @@ update msg model =
     ProfileMessage msg ->
       let
         (profileModel, cmd) = Profile.update msg model.profile
+        initialLoading =
+          case msg of
+            Profile.GetMe _ ->
+              False
+            _ ->
+              model.initialLoading
+
       in
         { model
           | profile = profileModel
-          , initialLoading = False
+          , initialLoading = initialLoading
         } ! [ Cmd.map ProfileMessage cmd ]
 
 --SUBSCRIPTIONS
