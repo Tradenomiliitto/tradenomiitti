@@ -5,6 +5,7 @@ import Html.Attributes as A
 import Html.Events as E
 import Json.Decode as Json
 import Json.Decode.Pipeline as P
+import Json.Encode as JS
 
 type SkillLevel = Interested | Beginner | Experienced | Pro
 
@@ -18,6 +19,13 @@ decoder =
   P.decode Model
     |> P.required "heading" Json.string
     |> P.required "skill_level" skillLevelDecoder
+
+encode : Model -> JS.Value
+encode model =
+  JS.object
+    [ ("heading", JS.string model.heading)
+    , ("skill_level", JS.int (skillToInt model.skillLevel))
+    ]
 
 skillLevelDecoder : Json.Decoder SkillLevel
 skillLevelDecoder =
@@ -40,6 +48,13 @@ update : SkillLevel -> Model -> Model
 update skillLevel model =
   { model | skillLevel = skillLevel }
 
+skillToInt skillLevel =
+  case skillLevel of
+    Interested -> 1
+    Beginner -> 2
+    Experienced -> 3
+    Pro -> 4
+
 view : Bool -> Model -> H.Html SkillLevel
 view editing model =
   let
@@ -50,12 +65,7 @@ view editing model =
         Experienced -> "Osaaja"
         Pro -> "Konkari"
 
-    skillNumber =
-      case model.skillLevel of
-        Interested -> 1
-        Beginner -> 2
-        Experienced -> 3
-        Pro -> 4
+    skillNumber = skillToInt model.skillLevel
 
     circle type_ skillLevel =
       H.span

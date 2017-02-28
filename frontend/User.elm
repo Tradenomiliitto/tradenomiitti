@@ -3,6 +3,7 @@ module User exposing (..)
 import Http
 import Json.Decode exposing (Decoder, string, list)
 import Json.Decode.Pipeline as P
+import Json.Encode as JS
 import Skill
 
 type alias Extra =
@@ -37,13 +38,24 @@ init =
 userDecoder : Decoder User
 userDecoder =
   P.decode User
-    |> P.required "first_name" string
+    |> P.required "name" string
     |> P.required "description" string
     |> P.required "primary_domain" string
     |> P.required "primary_position" string
     |> P.required "domains" (list Skill.decoder)
     |> P.required "positions" (list Skill.decoder)
     |> P.required "extra" userExtraDecoder
+
+encode : User -> JS.Value
+encode user =
+  JS.object
+    [ ("name", JS.string user.name)
+    , ("description", JS.string user.description)
+    , ("primary_domain", JS.string user.primaryDomain)
+    , ("primary_position", JS.string user.primaryPosition)
+    , ("domains", JS.list (List.map Skill.encode user.domains) )
+    , ("positions", JS.list (List.map Skill.encode user.positions) )
+    ]
 
 userExtraDecoder : Decoder Extra
 userExtraDecoder =

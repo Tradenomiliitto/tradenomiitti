@@ -63,6 +63,7 @@ sebacon.initialize({ customer: sebaconCustomer, user: sebaconUser,
                      password: sebaconPassword, auth: sebaconAuth});
 
 const urlEncoded = bodyParser.urlencoded();
+const jsonParser = bodyParser.json();
 
 app.post('/login', urlEncoded, (req, res) => {
   const ssoId = req.body.ssoid;
@@ -136,18 +137,21 @@ app.get('/api/me', (req, res) => {
         user
       ])
     })
-    .then(([ firstname, nickname, positions, domains, user ]) => {
-      // TODO not like this
+    .then(([ firstname, nickname, positions, domains, databaseUser ]) => {
+      const user = {};
       user.extra = {
         first_name: firstname,
         nick_name: nickname,
         positions: positions,
         domains: domains
       }
-      user.primary_domain = user.primary_domain || 'Ei valittua toimialaa';
-      user.primary_position = user.primary_position || 'Ei valittua tehtäväluokkaa';
-      user.domains = [];
-      user.positions = [];
+      const userData = databaseUser.data;
+      user.name = userData.name || '';
+      user.description = userData.description || '';
+      user.primary_domain = userData.primary_domain || 'Ei valittua toimialaa';
+      user.primary_position = userData.primary_position || 'Ei valittua tehtäväluokkaa';
+      user.domains = userData.domains || [];
+      user.positions = userData.positions || [];
 
       return res.json(user);
     })
@@ -158,14 +162,20 @@ app.get('/api/me', (req, res) => {
     });
 });
 
-app.get('/api/me/positions', (req, res) => {
+app.put('/api/me', jsonParser, (req, res) => {
   if (!req.session || !req.session.id) {
     return res.sendStatus(403);
   }
 
   return userForSession(req)
-    .then(user => sebacon.getUserPositions(user.remote_id))
-    .then(titles => res.json(titles));
+    .then(user => {
+      return knex('users').where({ id: user.id }).update('data', req.body)
+    }).then(resp => {
+      res.sendStatus(200);
+    }).catch(err => {
+      console.error(err);
+      res.sendStatus(500);
+    })
 });
 
 app.get('/api/positions', (req, res) => {

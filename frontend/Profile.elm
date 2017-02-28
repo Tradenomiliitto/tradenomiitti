@@ -5,7 +5,7 @@ import Html.Attributes as A
 import Html.Events as E
 import Http
 import Json.Decode as Json
-import Maybe.Extra as Maybe
+import Json.Encode as JS
 import Nav
 import Skill
 import State.Main as RootState
@@ -15,7 +15,7 @@ import User
 
 type Msg
   = GetMe (Result Http.Error User.User)
-  | Save
+  | Save User.User
   | Edit
   | DomainSkillMessage Int Skill.SkillLevel
   | PositionSkillMessage Int Skill.SkillLevel
@@ -29,6 +29,7 @@ type Msg
   | ChangePrimaryPosition String
   | ChangeNickname String
   | ChangeDescription String
+  | UpdateUser (Result Http.Error ())
   | NoOp
 
 
@@ -51,6 +52,22 @@ getPositionOptions =
   Http.get "/api/positions" (Json.list Json.string)
     |> Http.send GetPositionOptions
 
+updateMe : User.User -> Cmd Msg
+updateMe user =
+  put "/api/me" (User.encode user)
+    |> Http.send UpdateUser
+
+put : String -> JS.Value -> Http.Request ()
+put url body =
+  Http.request
+    { method = "PUT"
+    , headers = []
+    , url = url
+    , body = Http.jsonBody body
+    , expect = Http.expectStringResponse (\_ -> Ok ())
+    , timeout = Nothing
+    , withCredentials = False
+    }
 
 updateSkillList : Int -> Skill.SkillLevel -> List Skill.Model -> List Skill.Model
 updateSkillList index skillLevel list =
@@ -71,8 +88,8 @@ update msg model =
     GetMe (Ok user) ->
       { model | user = Just user } ! []
 
-    Save ->
-      { model | editing = False } ! [] -- TODO
+    Save user ->
+      model ! [ updateMe user ]
 
     Edit ->
       { model | editing = True } ! []
@@ -81,7 +98,7 @@ update msg model =
       updateUser (\u -> { u | domains = updateSkillList index skillLevel u.domains }) model ! []
 
     PositionSkillMessage index skillLevel ->
-      updateUser (\u -> { u | domains = updateSkillList index skillLevel u.positions }) model ! []
+      updateUser (\u -> { u | positions = updateSkillList index skillLevel u.positions }) model ! []
 
     ChangeDomainSelect str ->
       { model | selectedDomainOption = str } ! []
@@ -119,6 +136,12 @@ update msg model =
     GetDomainOptions (Err _) ->
       model ! [] -- TODO error handling
 
+    UpdateUser (Err _) ->
+      model ! [] -- TODO error handling
+
+    UpdateUser (Ok _) ->
+      { model | editing = False } ! []
+
     NoOp ->
       model ! []
 
@@ -149,15 +172,15 @@ profileTopRow model rootState =
             [ H.text "Kirjaudu sisään" ]
 
     saveOrEdit =
-      if Maybe.isJust model.user
-      then
-        H.button
-          [ A.class "btn btn-primary profile__top-row-edit-button"
-          , E.onClick <| if model.editing then Save else Edit
-          ]
-          [ H.text (if model.editing then "Tallenna profiili" else "Muokkaa profiilia") ]
-      else
-        H.div [] []
+      case model.user of
+        Just user ->
+          H.button
+            [ A.class "btn btn-primary profile__top-row-edit-button"
+            , E.onClick <| if model.editing then Save user else Edit
+            ]
+            [ H.text (if model.editing then "Tallenna profiili" else "Muokkaa profiilia") ]
+        Nothing ->
+          H.div [] []
   in
     H.div
       [ A.classList
