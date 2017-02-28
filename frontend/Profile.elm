@@ -31,6 +31,7 @@ type Msg
   | ChangeNickname String
   | ChangeDescription String
   | UpdateUser (Result Http.Error ())
+  | UpdateConsent (Result Http.Error ())
   | NoOp
 
 
@@ -57,6 +58,11 @@ updateMe : User.User -> Cmd Msg
 updateMe user =
   put "/api/me" (User.encode user)
     |> Http.send UpdateUser
+
+updateConsent : User.User -> Cmd Msg
+updateConsent user =
+  put "/api/me" (User.encode user)
+    |> Http.send UpdateConsent
 
 put : String -> JS.Value -> Http.Request ()
 put url body =
@@ -101,9 +107,12 @@ update msg model =
     AllowProfileCreation user ->
       let
         newUser = { user | profileCreated = True }
-        newModel = { model | user = Just newUser }
+        newModel = { model
+                     | user = Just newUser
+                     , editing = True
+                   }
       in
-        newModel ! [ updateMe newUser ]
+        newModel ! [ updateConsent newUser ]
 
     Edit ->
       { model | editing = True } ! []
@@ -161,6 +170,12 @@ update msg model =
 
     UpdateUser (Ok _) ->
       { model | editing = False } ! []
+
+    UpdateConsent (Err _) ->
+      model ! [] -- TODO error handling
+
+    UpdateConsent (Ok _) ->
+      model ! []
 
     NoOp ->
       model ! []
