@@ -314,4 +314,9 @@ div#not-implemented {
       @include circle(18px);
     }
   }
+
+  &__delete {
+    position: relative;
+    top: 1em;
+  }
 }

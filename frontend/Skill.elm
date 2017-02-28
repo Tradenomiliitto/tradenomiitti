@@ -9,6 +9,8 @@ import Json.Encode as JS
 
 type SkillLevel = Interested | Beginner | Experienced | Pro
 
+type Msg = LevelChange SkillLevel | Delete
+
 type alias Model =
   { heading : String
   , skillLevel : SkillLevel
@@ -48,6 +50,7 @@ update : SkillLevel -> Model -> Model
 update skillLevel model =
   { model | skillLevel = skillLevel }
 
+skillToInt : SkillLevel -> Int
 skillToInt skillLevel =
   case skillLevel of
     Interested -> 1
@@ -55,7 +58,7 @@ skillToInt skillLevel =
     Experienced -> 3
     Pro -> 4
 
-view : Bool -> Model -> H.Html SkillLevel
+view : Bool -> Model -> H.Html Msg
 view editing model =
   let
     skillText =
@@ -75,7 +78,7 @@ view editing model =
             ([ A.class <|
                  (if editing then "skill__circle--clickable " else "") ++
                  "skill__circle skill__circle--" ++ type_
-             ]++ if editing then [ E.onClick skillLevel ] else [])
+             ] ++ if editing then [ E.onClick (LevelChange skillLevel) ] else [])
             []
         ]
     filledCircle = circle "filled"
@@ -84,23 +87,39 @@ view editing model =
 
   in
     H.div
-      []
-      [ H.p
-          []
-          [ H.span [ A.class "skill__heading" ] [ H.text model.heading ]
-          , H.span [ A.class "skill__level-text" ] [ H.text skillText ]
-          ]
-      , H.p
-        []
-        [ H.input
-            [ A.value (toString skillNumber)
-            , A.type_ "text"
-            , A.class "skill__input"
-            ] []
-        , H.span [] <|
-          (List.take (skillNumber - 1) allSkills |> List.map filledCircle) ++
-            (List.drop (skillNumber - 1) allSkills |> List.take 1 |> List.map activeCircle) ++
-              (List.drop skillNumber allSkills |> List.map unFilledCircle)
-
-        ]
-      ]
+      [ A.class "row" ] <|
+        [ H.div
+            [ A.class "col-xs-6" ]
+            [ H.p
+                []
+                [ H.span [ A.class "skill__heading" ] [ H.text model.heading ]
+                , H.span [ A.class "skill__level-text" ] [ H.text skillText ]
+                ]
+            , H.p
+              []
+              [ H.input
+                  [ A.value (toString skillNumber)
+                  , A.type_ "text"
+                  , A.class "skill__input"
+                  ] []
+              , H.span [] <|
+                (List.take (skillNumber - 1) allSkills |> List.map filledCircle) ++
+                  (List.drop (skillNumber - 1) allSkills |> List.take 1 |> List.map activeCircle) ++
+                    (List.drop skillNumber allSkills |> List.map unFilledCircle)
+              ]
+            ]
+        ] ++
+      (if editing
+       then
+         [ H.div
+             [ A.class "col-xs-4 skill__delete" ]
+             [ H.button
+                 [ A.class "btn btn-danger"
+                 , E.onClick Delete
+                 ]
+                 [ H.text "Poista" ]
+             ]
+         ]
+       else
+         []
+      )

@@ -17,8 +17,8 @@ type Msg
   = GetMe (Result Http.Error User.User)
   | Save User.User
   | Edit
-  | DomainSkillMessage Int Skill.SkillLevel
-  | PositionSkillMessage Int Skill.SkillLevel
+  | DomainSkillMessage Int Skill.Msg
+  | PositionSkillMessage Int Skill.Msg
   | ChangeDomainSelect String
   | ChangePositionSelect String
   | AddDomain
@@ -75,6 +75,12 @@ updateSkillList index skillLevel list =
     (\i x -> if i == index then Skill.update skillLevel x else x)
     list
 
+deleteFromSkillList : Int -> List Skill.Model -> List Skill.Model
+deleteFromSkillList index list =
+  List.indexedMap (\i x -> if i == index then Nothing else Just x) list
+    |> List.filterMap identity
+
+
 updateUser : (User.User -> User.User) -> Model -> Model
 updateUser update model =
   { model | user = Maybe.map update model.user }
@@ -94,11 +100,17 @@ update msg model =
     Edit ->
       { model | editing = True } ! []
 
-    DomainSkillMessage index skillLevel ->
+    DomainSkillMessage index (Skill.LevelChange skillLevel) ->
       updateUser (\u -> { u | domains = updateSkillList index skillLevel u.domains }) model ! []
 
-    PositionSkillMessage index skillLevel ->
+    PositionSkillMessage index (Skill.LevelChange skillLevel) ->
       updateUser (\u -> { u | positions = updateSkillList index skillLevel u.positions }) model ! []
+
+    DomainSkillMessage index Skill.Delete ->
+      updateUser (\u -> { u | domains = deleteFromSkillList index u.domains }) model ! []
+
+    PositionSkillMessage index Skill.Delete ->
+      updateUser (\u -> { u | positions = deleteFromSkillList index u.positions }) model ! []
 
     ChangeDomainSelect str ->
       { model | selectedDomainOption = str } ! []
