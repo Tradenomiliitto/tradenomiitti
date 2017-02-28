@@ -151,7 +151,15 @@ viewUser model user =
               [ H.span [ A.class "user-page__pic" ] [] ]
             , H.div
               [ A.class "pull-left" ]
-              [ H.h4 [ A.class "user-page__name" ] [ H.text user.name ]
+              [ H.h4 [ A.class "user-page__name" ]
+                  [ if model.editing
+                    then
+                      H.input [ A.placeholder "Miksi kutsumme sinua?"
+                              , A.value user.name
+                              ] []
+                    else
+                      H.text user.name
+                  ]
               , H.p
                 [ A.class "user-page__work-details" ]
                 [ H.text user.primaryDomain
@@ -163,7 +171,16 @@ viewUser model user =
           ]
         , H.div
           [ A.class "row user-page__description" ]
-          [ H.p [ A.class "col-xs-12" ] [ H.text user.description ]
+          [ H.p [ A.class "col-xs-12" ]
+              [ if model.editing
+                then
+                  H.textarea [ A.value user.description
+                             , A.placeholder "Kirjoita napakka kuvaus itsestäsi"
+                             , A.class "user-page__description-input"
+                             ] []
+                else
+                  H.text user.description
+              ]
           ]
         ]
       , H.div
