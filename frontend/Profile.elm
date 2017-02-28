@@ -195,9 +195,15 @@ viewUser model user =
                   ]
               , H.p
                 [ A.class "user-page__work-details" ]
-                [ H.text user.primaryDomain
+                [ if model.editing
+                  then H.select [ A.value user.primaryDomain ]
+                    (List.map (\skill -> H.option [] [ H.text skill.heading ]) user.domains)
+                  else H.text user.primaryDomain
                 , H.br [] []
-                , H.text user.primaryPosition
+                , if model.editing
+                  then H.select [ A.value user.primaryPosition ]
+                    (List.map (\skill -> H.option [] [ H.text skill.heading ]) user.positions)
+                  else H.text user.primaryPosition
                 ]
               ]
             ]
