@@ -1,13 +1,13 @@
 import Html as H
 import Html.Attributes as A
 import Html.Events as E
-import Http
 import Json.Decode as Json
+import Maybe.Extra as Maybe
 import Nav exposing (..)
 import Navigation
 import Profile
+import State.Main exposing (..)
 import User
-import Window
 
 main : Program Never Model Msg
 main =
@@ -18,28 +18,14 @@ main =
     , subscriptions = subscriptions
     }
 
-type alias Model =
-  { route : Route
-  , rootUrl : String
-  , user : User.Model
-  , profile : User.Model
-  , initialLoading : Bool
-  }
-
 init : Navigation.Location -> ( Model, Cmd Msg )
 init location =
   let
-    model =
-      { route = parseLocation location
-      , rootUrl = location.origin
-      , user = User.init
-      , profile = { user = Nothing, spinning = True }
-      , initialLoading = True
-      }
+    model = initState location
 
    -- We want to react initially to UrlChange as well
     urlCmd = Navigation.modifyUrl (routeToPath (parseLocation location))
-    profileCmd = Profile.getMe GetProfile
+    profileCmd = Cmd.map ProfileMessage Profile.getMe
   in
     model ! [ urlCmd, profileCmd ]
 
@@ -50,7 +36,7 @@ type Msg
   = NewUrl Route
   | UrlChange Navigation.Location
   | UserMessage User.Msg
-  | GetProfile (Result Http.Error User.User)
+  | ProfileMessage Profile.Msg
 
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
@@ -71,6 +57,9 @@ update msg model =
               in
                 ({ modelWithRoute | user = userModel }, Cmd.map UserMessage cmd)
 
+            Profile ->
+              modelWithRoute ! [ Cmd.map ProfileMessage Profile.initTasks ]
+
             newRoute ->
               (modelWithRoute, Cmd.none)
       in
@@ -82,23 +71,21 @@ update msg model =
       in
         ( { model | user = userModel}, Cmd.map UserMessage cmd )
 
-    GetProfile (Err _) ->
+    ProfileMessage msg ->
       let
-        profile = model.profile
-      in
-        { model
-          | profile = { profile | spinning = False }
-          , initialLoading = False
-        } ! []
+        (profileModel, cmd) = Profile.update msg model.profile
+        initialLoading =
+          case msg of
+            Profile.GetMe _ ->
+              False
+            _ ->
+              model.initialLoading
 
-    GetProfile (Ok user) ->
-      let
-        profile = model.profile
       in
         { model
-          | profile = { profile | user = Just user, spinning = False }
-          , initialLoading = False
-        } ! []
+          | profile = profileModel
+          , initialLoading = initialLoading
+        } ! [ Cmd.map ProfileMessage cmd ]
 
 --SUBSCRIPTIONS
 
@@ -123,46 +110,6 @@ view model =
 
 --TODO move navbar code to Nav.elm
 
--- TODO reorganize
-profileTopRow : Model -> H.Html Msg
-profileTopRow model =
-  let
-    link =
-      case model.profile.user of
-        Just _ ->
-          H.a
-            [ A.href "/logout"
-            , A.class "btn"
-            ]
-            [ H.text "Kirjaudu ulos" ]
-        Nothing ->
-          H.a
-            [ A.href <| ssoUrl model.rootUrl model.route
-            , A.class "btn"
-            ]
-            [ H.text "Kirjaudu sisään" ]
-  in
-    H.div
-      [ A.class "row profile__top-row" ]
-      [ H.div
-        [ A.class "container" ]
-        [ H.div
-          [ A.class "row" ]
-          [ H.div
-            [ A.class "col-xs-4" ]
-            [ H.h4
-                [ A.class "profile__heading" ]
-                [ H.text "Oma profiili" ] ]
-          , H.div
-            [ A.class "col-xs-8 profile__buttons" ]
-            [ H.button
-                [ A.class "btn btn-primary" ]
-                [ H.text "Tallenna profiili" ]
-            , link
-            ]
-          ]
-        ]
-      ]
 navigation : Model -> H.Html Msg
 navigation model =
   H.nav
@@ -252,20 +199,19 @@ viewProfileLink model =
   let
     route = Profile
     action =
-      if isJust model.profile.user
+      if Maybe.isJust model.profile.user
       then
-        [
-         E.onWithOptions
-           "click"
-           { stopPropagation = False
-           , preventDefault = True
-           }
-           (Json.succeed <| NewUrl route)
+        [ E.onWithOptions
+            "click"
+            { stopPropagation = False
+            , preventDefault = True
+            }
+            (Json.succeed <| NewUrl route)
         ]
       else
         []
 
-    endpoint = if isJust model.profile.user
+    endpoint = if Maybe.isJust model.profile.user
                then routeToPath route
                else ssoUrl model.rootUrl route
     linkText =
@@ -324,7 +270,7 @@ viewPage model =
         User userId ->
           H.map UserMessage <| User.view model.user
         Profile ->
-          Profile.view model.profile (profileTopRow model) UserMessage
+          H.map ProfileMessage <| Profile.view model.profile model
         route ->
           notImplementedYet
   in
@@ -359,15 +305,3 @@ routeToString route =
     CreateAd ->
       "Jätä ilmoitus"
 
-isJust : Maybe a -> Bool
-isJust = Maybe.map (always True) >> Maybe.withDefault False
-
-
-ssoUrl : String -> Route -> String
-ssoUrl rootUrl route =
-  let
-    loginUrl = rootUrl ++ "/login?path=" ++ (routeToPath route)
-    returnParameter = Window.encodeURIComponent loginUrl
-  in
-    "https://tunnistus.avoine.fi/sso-login/?service=tradenomiitti&return=" ++
-      returnParameter

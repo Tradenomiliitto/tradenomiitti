@@ -63,6 +63,7 @@ sebacon.initialize({ customer: sebaconCustomer, user: sebaconUser,
                      password: sebaconPassword, auth: sebaconAuth});
 
 const urlEncoded = bodyParser.urlencoded();
+const jsonParser = bodyParser.json();
 
 app.post('/login', urlEncoded, (req, res) => {
   const ssoId = req.body.ssoid;
@@ -91,13 +92,27 @@ app.post('/login', urlEncoded, (req, res) => {
     }
 
     const sessionId = uuid.v4();
-    return knex('users').where({ remote_id: body.result.local_id })
+    const remoteId = body.result.local_id;
+    return knex('users').where({ remote_id: remoteId })
       .then((resp) => {
         if (resp.length === 0) {
-          // TODO get actual name and description
-          return knex('users')
-            // postgres does not automatically return the id, ask for it explicitly
-            .insert({ remote_id: body.result.local_id, first_name: '', description: '' }, 'id')
+          return Promise.all([
+            sebacon.getUserFirstName(remoteId),
+            sebacon.getUserNickName(remoteId),
+            sebacon.getUserPositions(remoteId),
+            sebacon.getUserDomains(remoteId)
+          ]).then(([firstname, nickname, positions, domains]) => {
+            return knex('users')
+              .insert({
+                remote_id: body.result.local_id,
+                data: {
+                  name: nickname || firstname,
+                  domains: domains.map(d => ({ heading: d, skill_level: 1 })),
+                  positions: positions.map(d => ({ heading: d, skill_level: 1 })),
+                  profile_creation_consented: false
+                }
+              }, 'id') // postgres does not automatically return the id, ask for it explicitly
+          })
             .then(insertResp => ({ id: insertResp[0] }))
         } else {
           return resp[0];
@@ -130,14 +145,29 @@ app.get('/api/me', (req, res) => {
     .then(user => {
       return Promise.all([
         sebacon.getUserFirstName(user.remote_id),
+        sebacon.getUserNickName(user.remote_id),
         sebacon.getUserPositions(user.remote_id),
+        sebacon.getUserDomains(user.remote_id),
         user
       ])
     })
-    .then(([ firstname, positions, user ]) => {
-      // TODO not like this
-      user.first_name = firstname;
-      user.positions = positions;
+    .then(([ firstname, nickname, positions, domains, databaseUser ]) => {
+      const user = {};
+      user.extra = {
+        first_name: firstname,
+        nick_name: nickname,
+        positions: positions,
+        domains: domains
+      }
+      const userData = databaseUser.data;
+      user.name = userData.name || '';
+      user.description = userData.description || '';
+      user.primary_domain = userData.primary_domain || 'Ei valittua toimialaa';
+      user.primary_position = userData.primary_position || 'Ei valittua tehtäväluokkaa';
+      user.domains = userData.domains || [];
+      user.positions = userData.positions || [];
+      user.profile_creation_consented = userData.profile_creation_consented || false;
+
       return res.json(user);
     })
     .catch((err) => {
@@ -147,15 +177,30 @@ app.get('/api/me', (req, res) => {
     });
 });
 
-app.get('/api/me/positions', (req, res) => {
+app.put('/api/me', jsonParser, (req, res) => {
   if (!req.session || !req.session.id) {
     return res.sendStatus(403);
   }
 
   return userForSession(req)
-    .then(user => sebacon.getUserPositions(user.remote_id))
-    .then(titles => res.json(titles));
+    .then(user => {
+      return knex('users').where({ id: user.id }).update('data', req.body)
+    }).then(resp => {
+      res.sendStatus(200);
+    }).catch(err => {
+      console.error(err);
+      res.sendStatus(500);
+    })
+});
+
+app.get('/api/positions', (req, res) => {
+  return sebacon.getPositionTitles().then(positions => res.json(Object.values(positions)));
+});
+
+app.get('/api/domains', (req, res) => {
+  return sebacon.getDomainTitles().then(domains => res.json(Object.values(domains)));
 })
+
 
 app.get('*', (req, res) => {
   res.sendFile('./index.html', {root: rootDir})
@@ -168,7 +213,7 @@ app.listen(3000, () => {
 function userForSession(req) {
   return knex('sessions')
     .where({ id: req.session.id })
-    .then(resp => resp[0].user_id)
+    .then(resp => resp.length === 0 ? Promise.rejected('No session found') : resp[0].user_id)
     .then(id => knex('users').where({ id }))
     .then(resp => resp[0]);
 }
