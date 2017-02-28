@@ -92,13 +92,26 @@ app.post('/login', urlEncoded, (req, res) => {
     }
 
     const sessionId = uuid.v4();
-    return knex('users').where({ remote_id: body.result.local_id })
+    const remoteId = body.result.local_id;
+    return knex('users').where({ remote_id: remoteId })
       .then((resp) => {
         if (resp.length === 0) {
-          // TODO get actual name and description
-          return knex('users')
-            // postgres does not automatically return the id, ask for it explicitly
-            .insert({ remote_id: body.result.local_id, first_name: '', description: '' }, 'id')
+          return Promise.all([
+            sebacon.getUserFirstName(remoteId),
+            sebacon.getUserNickName(remoteId),
+            sebacon.getUserPositions(remoteId),
+            sebacon.getUserDomains(remoteId)
+          ]).then(([firstname, nickname, positions, domains]) => {
+            return knex('users')
+              .insert({
+                remote_id: body.result.local_id,
+                data: {
+                  name: nickname || firstname,
+                  domains: domains.map(d => ({ heading: d, skill_level: 1 })),
+                  positions: positions.map(d => ({ heading: d, skill_level: 1 }))
+                }
+              }, 'id') // postgres does not automatically return the id, ask for it explicitly
+          })
             .then(insertResp => ({ id: insertResp[0] }))
         } else {
           return resp[0];
@@ -198,7 +211,7 @@ app.listen(3000, () => {
 function userForSession(req) {
   return knex('sessions')
     .where({ id: req.session.id })
-    .then(resp => resp[0].user_id)
+    .then(resp => resp.length === 0 ? Promise.rejected('No session found') : resp[0].user_id)
     .then(id => knex('users').where({ id }))
     .then(resp => resp[0]);
 }
