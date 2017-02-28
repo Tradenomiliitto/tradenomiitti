@@ -57,6 +57,9 @@ update msg model =
               in
                 ({ modelWithRoute | user = userModel }, Cmd.map UserMessage cmd)
 
+            Profile ->
+              modelWithRoute ! [ Cmd.map ProfileMessage Profile.initTasks ]
+
             newRoute ->
               (modelWithRoute, Cmd.none)
       in

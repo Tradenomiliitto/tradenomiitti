@@ -8,14 +8,19 @@ type alias Model =
   , editing : Bool
   , positions : List Skill.Model
   , domains : List Skill.Model
+  , positionOptions : List String
+  , domainOptions : List String
   }
 
 init : Model
 init =
   { user = Nothing
   , editing = False
+  -- TODO
   , positions = [ Skill.Model "Kirjanpito" Skill.Experienced
                 , Skill.Model "Ohjelmointi" Skill.Beginner]
   , domains = [ Skill.Model "Teollisuus" Skill.Pro
               , Skill.Model "IT" Skill.Interested ]
+  , positionOptions = []
+  , domainOptions = []
   }

@@ -110,5 +110,7 @@ module.exports = {
   getUserFirstName,
   getUserNickName,
   getUserDomains,
+  getPositionTitles,
+  getDomainTitles,
   initialize
 }

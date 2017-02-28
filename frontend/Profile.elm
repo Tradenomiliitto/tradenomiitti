@@ -4,6 +4,7 @@ import Html as H
 import Html.Attributes as A
 import Html.Events as E
 import Http
+import Json.Decode as Json
 import Maybe.Extra as Maybe
 import Nav
 import Skill
@@ -20,6 +21,8 @@ type Msg
   | PositionSkillMessage Int Skill.SkillLevel
   | AddDomain
   | AddPosition
+  | GetDomainOptions (Result Http.Error (List String))
+  | GetPositionOptions (Result Http.Error (List String))
   | NoOp
 
 
@@ -27,6 +30,20 @@ getMe : Cmd Msg
 getMe =
   Http.get "/api/me" User.userDecoder
     |> Http.send GetMe
+
+initTasks : Cmd Msg
+initTasks =
+  Cmd.batch [ getPositionOptions, getDomainOptions ]
+
+getDomainOptions : Cmd Msg
+getDomainOptions =
+  Http.get "/api/domains" (Json.list Json.string)
+    |> Http.send GetDomainOptions
+
+getPositionOptions : Cmd Msg
+getPositionOptions =
+  Http.get "/api/positions" (Json.list Json.string)
+    |> Http.send GetPositionOptions
 
 
 updateSkillList : Int -> Skill.SkillLevel -> List Skill.Model -> List Skill.Model
@@ -61,6 +78,18 @@ update msg model =
 
     AddPosition ->
       model ! []
+
+    GetPositionOptions (Ok list) ->
+      { model | positionOptions = list } ! []
+
+    GetDomainOptions (Ok list) ->
+      { model | domainOptions = list } ! []
+
+    GetPositionOptions (Err _) ->
+      model ! [] -- TODO error handling
+
+    GetDomainOptions (Err _) ->
+      model ! [] -- TODO error handling
 
     NoOp ->
       model ! []
@@ -231,7 +260,8 @@ viewUser model user =
              ) ++
              (if model.editing
               then
-                [ H.button
+                [ H.select [] <| List.map (\o -> H.option [] [ H.text o ]) model.domainOptions
+                , H.button
                   [ A.class "btn"
                   , E.onClick AddDomain
                   ]
@@ -250,7 +280,8 @@ viewUser model user =
              ) ++
              (if model.editing
               then
-                [ H.button
+                [ H.select [] <| List.map (\o -> H.option [] [ H.text o ]) model.positionOptions
+                , H.button
                   [ A.class "btn"
                   , E.onClick AddPosition
                   ]

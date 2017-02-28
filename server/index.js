@@ -161,7 +161,16 @@ app.get('/api/me/positions', (req, res) => {
   return userForSession(req)
     .then(user => sebacon.getUserPositions(user.remote_id))
     .then(titles => res.json(titles));
+});
+
+app.get('/api/positions', (req, res) => {
+  return sebacon.getPositionTitles().then(positions => res.json(Object.values(positions)));
+});
+
+app.get('/api/domains', (req, res) => {
+  return sebacon.getDomainTitles().then(domains => res.json(Object.values(domains)));
 })
+
 
 app.get('*', (req, res) => {
   res.sendFile('./index.html', {root: rootDir})
