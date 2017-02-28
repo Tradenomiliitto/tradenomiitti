@@ -144,8 +144,8 @@ app.get('/api/me', (req, res) => {
         positions: positions,
         domains: domains
       }
-      user.primary_domain = user.primary_domain || '';
-      user.primary_position = user.primary_position || '';
+      user.primary_domain = user.primary_domain || 'Ei valittua toimialaa';
+      user.primary_position = user.primary_position || 'Ei valittua tehtäväluokkaa';
       user.domains = [];
       user.positions = [];
 

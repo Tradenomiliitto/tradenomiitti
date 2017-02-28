@@ -25,6 +25,10 @@ type Msg
   | AddPosition
   | GetDomainOptions (Result Http.Error (List String))
   | GetPositionOptions (Result Http.Error (List String))
+  | ChangePrimaryDomain String
+  | ChangePrimaryPosition String
+  | ChangeNickname String
+  | ChangeDescription String
   | NoOp
 
 
@@ -90,6 +94,18 @@ update msg model =
 
     AddPosition ->
       updateUser (\u -> { u | positions = u.positions ++ [ Skill.Model model.selectedPositionOption Skill.Interested ] }) model ! []
+
+    ChangePrimaryDomain str ->
+      updateUser (\u -> { u | primaryDomain = str }) model ! []
+
+    ChangePrimaryPosition str ->
+      updateUser (\u -> { u | primaryPosition = str }) model ! []
+
+    ChangeNickname str ->
+      updateUser (\u -> { u | name = str }) model ! []
+
+    ChangeDescription str ->
+      updateUser (\u -> { u | description = str }) model ! []
 
     GetPositionOptions (Ok list) ->
       { model | positionOptions = list } ! []
@@ -197,6 +213,7 @@ viewUser model user =
                     then
                       H.input [ A.placeholder "Miksi kutsumme sinua?"
                               , A.value user.name
+                              , E.onInput ChangeNickname
                               ] []
                     else
                       H.text user.name
@@ -204,13 +221,17 @@ viewUser model user =
               , H.p
                 [ A.class "user-page__work-details" ]
                 [ if model.editing
-                  then H.select [ A.value user.primaryDomain ]
-                    (H.option [] [ H.text "Valitse päätoimiala" ] :: List.map (\skill -> H.option [] [ H.text skill.heading ]) user.domains)
+                  then H.select [ A.value user.primaryDomain
+                                , E.on "change" (Json.map ChangePrimaryDomain E.targetValue)
+                                ]
+                    (H.option [A.value "Ei valittua toimialaa"] [ H.text "Valitse päätoimiala" ] :: List.map (\skill -> H.option [] [ H.text skill.heading ]) user.domains)
                   else H.text user.primaryDomain
                 , H.br [] []
                 , if model.editing
-                  then H.select [ A.value user.primaryPosition ]
-                    (H.option [] [ H.text "Valitse päätehtäväluokka" ] :: List.map (\skill -> H.option [] [ H.text skill.heading ]) user.positions)
+                  then H.select [ A.value user.primaryPosition
+                                , E.on "change" (Json.map ChangePrimaryPosition E.targetValue)
+                                ]
+                    (H.option [A.value "Ei valittua tehtäväluokkaa"] [ H.text "Valitse päätehtäväluokka" ] :: List.map (\skill -> H.option [] [ H.text skill.heading ]) user.positions)
                   else H.text user.primaryPosition
                 ]
               ]
@@ -224,6 +245,7 @@ viewUser model user =
                   H.textarea [ A.value user.description
                              , A.placeholder "Kirjoita napakka kuvaus itsestäsi"
                              , A.class "user-page__description-input"
+                             , E.onInput ChangeDescription
                              ] []
                 else
                   H.text user.description
