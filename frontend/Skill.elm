@@ -3,16 +3,38 @@ module Skill exposing (..)
 import Html as H
 import Html.Attributes as A
 import Html.Events as E
+import Json.Decode as Json
+import Json.Decode.Pipeline as P
 
-type SkillLevel = Interested | Beginner | There | Experienced | Pro
+type SkillLevel = Interested | Beginner | Experienced | Pro
 
 type alias Model =
   { heading : String
   , skillLevel : SkillLevel
   }
 
+decoder : Json.Decoder Model
+decoder =
+  P.decode Model
+    |> P.required "heading" Json.string
+    |> P.required "skill_level" skillLevelDecoder
+
+skillLevelDecoder : Json.Decoder SkillLevel
+skillLevelDecoder =
+  let
+    intToSkill num =
+      case num of
+        1 -> Json.succeed Interested
+        2 -> Json.succeed Beginner
+        3 -> Json.succeed Experienced
+        4 -> Json.succeed Pro
+        _ -> Json.fail "Taitotasolle ei löytynyt vastaavuutta"
+  in
+    Json.int
+      |> Json.andThen intToSkill
+
 allSkills : List SkillLevel
-allSkills = [ Interested, Beginner, There, Experienced, Pro ]
+allSkills = [ Interested, Beginner, Experienced, Pro ]
 
 update : SkillLevel -> Model -> Model
 update skillLevel model =
@@ -24,18 +46,16 @@ view editing model =
     skillText =
       case model.skillLevel of
         Interested -> "Kiinnostunut"
-        Beginner -> "Aloittelija"
-        There -> "Alalla"
-        Experienced -> "Kokenut"
+        Beginner -> "Vasta-alkaja"
+        Experienced -> "Osaaja"
         Pro -> "Konkari"
 
     skillNumber =
       case model.skillLevel of
         Interested -> 1
         Beginner -> 2
-        There -> 3
-        Experienced -> 4
-        Pro -> 5
+        Experienced -> 3
+        Pro -> 4
 
     circle type_ skillLevel =
       H.span

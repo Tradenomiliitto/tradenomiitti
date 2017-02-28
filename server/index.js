@@ -144,6 +144,11 @@ app.get('/api/me', (req, res) => {
         positions: positions,
         domains: domains
       }
+      user.primary_domain = user.primary_domain || '';
+      user.primary_position = user.primary_position || '';
+      user.domains = [];
+      user.positions = [];
+
       return res.json(user);
     })
     .catch((err) => {
