@@ -2,11 +2,16 @@ module CreateAd exposing (..)
 
 import Html as H
 import Html.Attributes as A
+import State.CreateAd exposing (Model)
 
 type Msg = NoOp
 
-view : H.Html Msg
-view =
+update : Msg -> Model -> (Model, Cmd Msg)
+update msg model =
+  model ! []
+
+view : Model -> H.Html Msg
+view model =
   H.div
   [ A.class "container"]
   [ H.div

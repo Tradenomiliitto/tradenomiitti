@@ -90,7 +90,10 @@ update msg model =
         } ! [ Cmd.map ProfileMessage cmd ]
 
     CreateAdMessage msg ->
-      model ! []
+      let
+        (createAdModel, cmd) = CreateAd.update msg model.createAd
+      in
+        { model | createAd = createAdModel } ! [ Cmd.map CreateAdMessage cmd]
 
 --SUBSCRIPTIONS
 
@@ -277,7 +280,7 @@ viewPage model =
         Profile ->
           H.map ProfileMessage <| Profile.view model.profile model
         CreateAd ->
-          H.map CreateAdMessage <| CreateAd.view
+          H.map CreateAdMessage <| CreateAd.view model.createAd
         route ->
           notImplementedYet
   in

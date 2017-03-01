@@ -3,6 +3,7 @@ module State.Main exposing (..)
 import Nav exposing (..)
 import Navigation
 import State.Profile as ProfileState
+import State.CreateAd
 import User
 
 
@@ -12,6 +13,7 @@ type alias Model =
   , user : User.Model
   , profile : ProfileState.Model
   , initialLoading : Bool
+  , createAd : State.CreateAd.Model
   }
 
 
@@ -22,4 +24,5 @@ initState location =
   , user = User.init
   , profile = ProfileState.init
   , initialLoading = True
+  , createAd = State.CreateAd.init
   }
