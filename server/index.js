@@ -206,12 +206,13 @@ app.post('/api/ad', jsonParser, (req, res) => {
     return res.sendStatus(403);
   }
 
-  if (req.body.heading === "huono otsikko") {
-    return res.sendStatus(500);
-  }
-  return res.json("123");
-
-
+  return userForSession(req)
+    .then(user => {
+      return knex('ads').insert({
+        user_id: user.id,
+        data: req.body
+      }, 'id');
+    }).then(insertResp => res.json(`${insertResp[0]}`));
 });
 
 
