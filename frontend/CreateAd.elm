@@ -90,10 +90,28 @@ view model =
         ]
 
     Sending ->
-      H.div [ A.class "splash-screen" ] [ H.text "Lähetetään" ]
+      H.div
+        [ A.class "splash-screen" ]
+        [ H.div
+            [ A.class "loader" ]
+            []
+        ]
 
     FinishedSuccess id ->
-      H.div [ A.class "splash-screen" ] [ H.text <| "Lähetys onnistui: " ++ id ]
+      H.div
+        [ A.class "splash-screen " ]
+        [ H.div [ A.class "create-ad__success"]
+          [ H.h1 [] [ H.text "Lähetys onnistui" ]
+          , H.p [] [ H.text <| "Ilmoituksen numero on: " ++ id ]
+          , H.p [] [ H.text "Paina selaimesi päivitä-nappulaa jatkaaksesi" ]
+          ]
+        ]
 
     FinishedFail ->
-      H.div [ A.class "splash-screen" ] [ H.text "Jotain meni pieleen" ]
+      H.div
+        [ A.class "splash-screen" ]
+        [ H.div [ A.class "create-ad__fail"]
+          [ H.h1 [] [ H.text "Jotain meni pieleen" ]
+          , H.p [] [ H.text "Ole hyvä ja lataa sivu uudelleen" ]
+          ]
+        ]
