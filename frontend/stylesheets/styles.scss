@@ -352,3 +352,45 @@ div#not-implemented {
     top: 1em;
   }
 }
+
+.create-ad {
+  $box-padding: 30px;
+  margin-top: 50px;
+  padding: $box-padding;
+  box-shadow: 0 2px 2px 1px #CCC;
+
+  &__inputs {
+    background-color: #fbfbfb;
+    margin-left: -$box-padding;
+    padding-left: $box-padding;
+    margin-top: -$box-padding;
+    padding-top: $box-padding;
+    margin-bottom: -$box-padding;
+    padding-bottom: $box-padding;
+  }
+
+  $input-padding: 8px;
+  &__heading-input {
+    color: $pink;
+    @include gotham-bold;
+    & input {
+      padding: $input-padding;
+      width: 100%;
+    }
+  }
+
+  &__textcontent {
+    padding: $input-padding;
+    width: 100%;
+    min-height: 80px;
+  }
+
+  &__filters-heading {
+    @include gotham-bold;
+  }
+
+  &__submit-button {
+    text-align: right;
+    margin-top: 40px;
+  }
+}
