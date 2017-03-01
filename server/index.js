@@ -199,7 +199,20 @@ app.get('/api/positions', (req, res) => {
 
 app.get('/api/domains', (req, res) => {
   return sebacon.getDomainTitles().then(domains => res.json(Object.values(domains)));
-})
+});
+
+app.post('/api/ad', jsonParser, (req, res) => {
+  if (!req.session || !req.session.id) {
+    return res.sendStatus(403);
+  }
+
+  if (req.body.heading === "huono otsikko") {
+    return res.sendStatus(500);
+  }
+  return res.json("123");
+
+
+});
 
 
 app.get('*', (req, res) => {
