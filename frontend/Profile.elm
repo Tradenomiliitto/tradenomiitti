@@ -364,6 +364,43 @@ viewUser model user =
     [ H.div
       [ A.class "row" ]
       [ H.div
+          [ A.class "col-xs-12"
+          ]
+          [ H.h3 [ A.class "user-page__activity-header" ] [ H.text "Aktiivisuus" ]
+          ]
+      ]
+    , H.div
+      [ A.class "row" ]
+      (List.map
+         (\ {heading, content} ->
+            H.div
+            [ A.class "col-xs-6"]
+            [ H.div
+              [ A.class "user-page__activity-item" ]
+              [ H.h3 [ A.class "user-page__activity-item-heading" ] [ H.text heading ]
+              , H.p [ A.class "user-page__activity-item-content" ] [ H.text content]
+              , H.hr [] []
+              , H.div
+                []
+                [ H.span [ A.class "user-page__activity-item-profile-pic" ] []
+                , H.span
+                  [ A.class "user-page__activity-item-profile-info" ]
+                  [ H.span [ A.class "user-page__activity-item-profile-name"] [ H.text "Dev" ]
+                  , H.br [] []
+                  , H.span [ A.class "user-page__activity-item-profile-title"] [ H.text "Titteli" ]
+                  ]
+                ]
+              ]
+            ]
+         )
+         [{ heading = "Testi", content = "Sed diam.  Curabitur lacinia pulvinar nibh.  Curabitur vulputate vestibulum lorem.  Proin neque massa, cursus ut, gravida ut, lobortis eget, lacus.  Lorem ipsum dolor sit amet, consectetuer adipiscing elit."},{ heading = "Testi", content = "Sed diam.  Curabitur lacinia pulvinar nibh.  Curabitur vulputate vestibulum lorem.  Proin neque massa, cursus ut, gravida ut, lobortis eget, lacus.  Lorem ipsum dolor sit amet, consectetuer adipiscing elit."},{ heading = "Testi", content = "Sed diam.  Curabitur lacinia pulvinar nibh.  Curabitur vulputate vestibulum lorem.  Proin neque massa, cursus ut, gravida ut, lobortis eget, lacus.  Lorem ipsum dolor sit amet, consectetuer adipiscing elit."}])
+    ]
+  , H.hr [] []
+  , H.div
+    [ A.class "container" ]
+    [ H.div
+      [ A.class "row" ]
+      [ H.div
           [ A.class "col-xs-12 col-sm-6"
           ]
           ([ H.h3 [ A.class "user-page__competences-header" ] [ H.text "Toimiala" ]

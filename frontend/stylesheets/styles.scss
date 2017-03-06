@@ -169,13 +169,17 @@ $navbar-element-height: 35px;
   margin-left: 10px;
 }
 
-.navbar__profile-pic {
-  width: $navbar-element-height;
-  height: $navbar-element-height;
-  border-radius: #{$navbar-element-height / 2};
-  margin-top: #{-$navbar-element-height / 4};
-  background-color: $white;
+@mixin round-profile-pic($diameter, $color) {
+  width: $diameter;
+  height: $diameter;
+  border-radius: #{$diameter / 2};
+  background-color: $color;
   display: inline-block;
+}
+
+.navbar__profile-pic {
+  @include round-profile-pic($navbar-element-height, $white);
+  margin-top: #{-$navbar-element-height / 4};
   float: right;
 }
 
@@ -212,11 +216,7 @@ div#not-implemented {
   }
   &__pic {
     $size: 90px;
-    width: $size;
-    height: $size;
-    border-radius: #{$size / 2};
-    background-color: #ccc;
-    display: inline-block;
+    @include round-profile-pic($size, #ccc);
   }
   &__name {
     @include gotham-bold;
@@ -265,17 +265,50 @@ div#not-implemented {
     }
   }
 
-  & hr {
+  & > hr {
     width: 110vw;
     margin-left: -$grid-gutter-width;
     border-color: rgba(0, 0, 0, 0.35);
     margin-top: 70px;
   }
 
+  &__activity-header,
   &__competences-header {
     @include gotham-bold;
     text-transform: uppercase;
     margin-bottom: 70px;
+  }
+
+  &__activity-item {
+    margin-top: 25px;
+    padding: 15px;
+    box-shadow: 0 2px 2px 1px #CCC;
+    &-heading {
+      color: $pink;
+      @include gotham-bold;
+    }
+    &-content {}
+    > hr {
+      border-color: rgba(0, 0, 0, 0.35);
+    }
+    &-profile {
+      &-pic {
+        @include round-profile-pic(40px, #ccc);
+      }
+      &-info {
+        display: inline-block;
+        margin-left: 15px;
+        position: relative;
+        top: -5px;
+      }
+      &-name {
+        font-weight: bold;
+      }
+      &-title {
+        font-weight: bold;
+        color: $pink;
+      }
+    }
   }
 }
 
