@@ -3,6 +3,7 @@ import Html as H
 import Html.Attributes as A
 import Html.Events as E
 import Json.Decode as Json
+import LoginNeeded
 import Maybe.Extra as Maybe
 import Nav exposing (..)
 import Navigation
@@ -280,13 +281,18 @@ viewPage model =
         Profile ->
           H.map ProfileMessage <| Profile.view model.profile model
         CreateAd ->
-          H.map CreateAdMessage <| CreateAd.view model.createAd
+          if Maybe.isJust model.profile.user
+          then
+            H.map CreateAdMessage <| CreateAd.view model.createAd
+          else
+            LoginNeeded.view
         route ->
           notImplementedYet
   in
     H.div
       [ A.class "container-fluid app-content" ]
       [ content ]
+
 
 notImplementedYet : H.Html Msg
 notImplementedYet =
