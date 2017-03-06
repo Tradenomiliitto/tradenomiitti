@@ -369,7 +369,7 @@ viewUser model user =
       (List.map
          (\ {heading, content} ->
             H.div
-            [ A.class "col-xs-6"]
+            [ A.class "col-xs-12 col-sm-6"]
             [ H.div
               [ A.class "user-page__activity-item" ]
               [ H.h3 [ A.class "user-page__activity-item-heading" ] [ H.text heading ]
