@@ -71,8 +71,8 @@ userExtraDecoder =
   P.decode Extra
     |> P.required "first_name" string
     |> P.required "nick_name" string
-    |> P.required "positions" (list string)
     |> P.required "domains" (list string)
+    |> P.required "positions" (list string)
 
 adDecoder : Decoder Ad
 adDecoder =
