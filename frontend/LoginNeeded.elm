@@ -3,8 +3,8 @@ module LoginNeeded exposing (view)
 import Html as H
 import Html.Attributes as A
 
-view : H.Html msg
-view =
+view : String -> H.Html msg
+view loginUrl =
   H.div
     [ A.class "container"
     ]
@@ -22,7 +22,14 @@ view =
                 [ A.class "login-needed__actionable-items-join-link"]
                 [ H.a [ A.href "http://tral.fi"] [ H.text "Liity jäseneksi" ] ]
               ]
-          , H.div [ A.class "login-needed__actionable-items-login" ] [ H.a [ A.class "btn btn-primary btn-lg login-needed__actionable-items-login-button" ] [ H.text "Kirjaudu" ] ]
+          , H.div
+            [ A.class "login-needed__actionable-items-login"
+            ]
+            [ H.a
+                [ A.class "btn btn-primary btn-lg login-needed__actionable-items-login-button"
+                , A.href loginUrl
+                ]
+                [ H.text "Kirjaudu" ] ]
           ]
         ]
       ]

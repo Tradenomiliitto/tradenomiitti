@@ -285,7 +285,7 @@ viewPage model =
           then
             H.map CreateAdMessage <| CreateAd.view model.createAd
           else
-            LoginNeeded.view
+            LoginNeeded.view <| ssoUrl model.rootUrl model.route
         route ->
           notImplementedYet
   in
