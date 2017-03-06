@@ -296,17 +296,12 @@ viewUser model user =
               , H.p
                 [ A.class "user-page__work-details" ]
                 [ if model.editing
-                  then H.select [ A.value user.primaryDomain
-                                , E.on "change" (Json.map ChangePrimaryDomain E.targetValue)
-                                ]
-                    (H.option [A.value "Ei valittua toimialaa"] [ H.text "Valitse päätoimiala" ] :: List.map (\skill -> H.option [] [ H.text skill.heading ]) user.domains)
-                  else H.text user.primaryDomain
-                , H.br [] []
-                , if model.editing
-                  then H.select [ A.value user.primaryPosition
-                                , E.on "change" (Json.map ChangePrimaryPosition E.targetValue)
-                                ]
-                    (H.option [A.value "Ei valittua tehtäväluokkaa"] [ H.text "Valitse päätehtäväluokka" ] :: List.map (\skill -> H.option [] [ H.text skill.heading ]) user.positions)
+                  then
+                    H.input
+                    [ A.value user.primaryPosition
+                    , E.on "change" (Json.map ChangePrimaryPosition E.targetValue)
+                    ]
+                    []
                   else H.text user.primaryPosition
                 ]
               ]
