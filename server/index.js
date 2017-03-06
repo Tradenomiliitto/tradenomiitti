@@ -148,10 +148,11 @@ app.get('/api/me', (req, res) => {
         sebacon.getUserNickName(user.remote_id),
         sebacon.getUserPositions(user.remote_id),
         sebacon.getUserDomains(user.remote_id),
+        userAds(user),
         user
       ])
     })
-    .then(([ firstname, nickname, positions, domains, databaseUser ]) => {
+    .then(([ firstname, nickname, positions, domains, ads, databaseUser ]) => {
       const user = {};
       user.extra = {
         first_name: firstname,
@@ -159,6 +160,8 @@ app.get('/api/me', (req, res) => {
         positions: positions,
         domains: domains
       }
+      user.ads = ads;
+
       const userData = databaseUser.data;
       user.name = userData.name || '';
       user.description = userData.description || '';
@@ -230,4 +233,9 @@ function userForSession(req) {
     .then(resp => resp.length === 0 ? Promise.rejected('No session found') : resp[0].user_id)
     .then(id => knex('users').where({ id }))
     .then(resp => resp[0]);
+}
+
+function userAds(user) {
+  return knex('ads')
+    .where({ user_id: user.id });
 }
