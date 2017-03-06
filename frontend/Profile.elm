@@ -385,9 +385,9 @@ viewUser model user =
                 [ H.span [ A.class "user-page__activity-item-profile-pic" ] []
                 , H.span
                   [ A.class "user-page__activity-item-profile-info" ]
-                  [ H.span [ A.class "user-page__activity-item-profile-name"] [ H.text "Dev" ]
+                  [ H.span [ A.class "user-page__activity-item-profile-name"] [ H.text user.name ]
                   , H.br [] []
-                  , H.span [ A.class "user-page__activity-item-profile-title"] [ H.text "Titteli" ]
+                  , H.span [ A.class "user-page__activity-item-profile-title"] [ H.text user.primaryPosition ]
                   ]
                 ]
               ]
