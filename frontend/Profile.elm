@@ -393,7 +393,7 @@ viewUser model user =
               ]
             ]
          )
-         [{ heading = "Testi", content = "Sed diam.  Curabitur lacinia pulvinar nibh.  Curabitur vulputate vestibulum lorem.  Proin neque massa, cursus ut, gravida ut, lobortis eget, lacus.  Lorem ipsum dolor sit amet, consectetuer adipiscing elit."},{ heading = "Testi", content = "Sed diam.  Curabitur lacinia pulvinar nibh.  Curabitur vulputate vestibulum lorem.  Proin neque massa, cursus ut, gravida ut, lobortis eget, lacus.  Lorem ipsum dolor sit amet, consectetuer adipiscing elit."},{ heading = "Testi", content = "Sed diam.  Curabitur lacinia pulvinar nibh.  Curabitur vulputate vestibulum lorem.  Proin neque massa, cursus ut, gravida ut, lobortis eget, lacus.  Lorem ipsum dolor sit amet, consectetuer adipiscing elit."}])
+         user.ads)
     ]
   , H.hr [] []
   , H.div

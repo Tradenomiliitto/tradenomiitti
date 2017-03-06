@@ -272,11 +272,15 @@ div#not-implemented {
     margin-top: 70px;
   }
 
-  &__activity-header,
   &__competences-header {
     @include gotham-bold;
     text-transform: uppercase;
     margin-bottom: 70px;
+  }
+  &__activity-header {
+    @include gotham-bold;
+    text-transform: uppercase;
+    margin-bottom: 25px;
   }
 
   &__activity-item {
