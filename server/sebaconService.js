@@ -65,7 +65,32 @@ function getUserDomains(id) {
     getDomainTitles(),
     getUserEmploymentHistory(id)
   ]).then(([ titles, res ]) =>
-          res.result.map(o => titles[o.sopimusala] || 'Tuntematon'));
+          res.result
+          .map(o => titles[o.sopimusala])
+          .filter(x => x));
+}
+
+function getUserEmploymentExtras(id) {
+  return Promise.all([
+    getDomainTitles(),
+    getPositionTitles(),
+    getUserEmploymentHistory(id)
+  ]).then(([ domainTitles, positionTitles, res ]) => {
+    const organisations = Promise.all(
+      res.result.map(o => getOrganisation(o.tyonantaja).then(o => o.name || 'Tuntematon')));
+    return Promise.all([ domainTitles, positionTitles, res, organisations ]);
+  }).then(([ domainTitles, positionTitles, res, organisations ]) => {
+    return {
+      domains: res.result
+        .map((o, i) => (domainTitles[o.sopimusala] || 'Tuntematon') +
+             ` (${organisations[i]})`
+            ),
+      positions: res.result
+        .map((o, i) => (positionTitles[o.tehtavanimike_val] || 'Tuntematon') +
+             ` (${organisations[i]})`
+            )
+    }
+  })
 }
 
 
@@ -74,10 +99,21 @@ function getUserPositions(id) {
     getPositionTitles(),
     getUserEmploymentHistory(id)
   ]).then(([ titles, res ]) =>
-          res.result.map(o => titles[o.tehtavanimike_val] || 'Tuntematon'));
+          res.result
+            .map(o => titles[o.tehtavanimike_val])
+            .filter(x => x));
 }
 
 function getUser(id) {
+  return getObject(id, 'getPersonObject');
+}
+
+
+function getOrganisation(id) {
+  return getObject(id, 'getOrganisationObject');
+}
+
+function getObject(id, method) {
   return request.post({
     url: url(),
     auth: {
@@ -87,7 +123,7 @@ function getUser(id) {
     json: {
       id: uuid.v4(),
       jsonrpc: '2.0',
-      method: 'getPersonObject',
+      method,
       params: [
         id
       ]
@@ -110,6 +146,7 @@ module.exports = {
   getUserFirstName,
   getUserNickName,
   getUserDomains,
+  getUserEmploymentExtras,
   getPositionTitles,
   getDomainTitles,
   initialize

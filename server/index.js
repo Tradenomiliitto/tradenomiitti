@@ -146,13 +146,12 @@ app.get('/api/me', (req, res) => {
       return Promise.all([
         sebacon.getUserFirstName(user.remote_id),
         sebacon.getUserNickName(user.remote_id),
-        sebacon.getUserPositions(user.remote_id),
-        sebacon.getUserDomains(user.remote_id),
+        sebacon.getUserEmploymentExtras(user.remote_id),
         userAds(user),
         user
       ])
     })
-    .then(([ firstname, nickname, positions, domains, ads, databaseUser ]) => {
+    .then(([ firstname, nickname, { positions, domains }, ads, databaseUser ]) => {
       const user = {};
       user.extra = {
         first_name: firstname,
