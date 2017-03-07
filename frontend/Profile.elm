@@ -345,7 +345,7 @@ viewUser model user =
             , H.td [] [ H.text (String.join ", " user.extra.domains) ]
             ]
           ]
-        , H.p [] [ H.text "Ovathan jäentietosi ajan tasalla?" ]
+        , H.p [] [ H.text "Ovathan jäsentietosi ajan tasalla?" ]
         , H.p [] [ H.a
                      [ A.href "https://asiointi.tral.fi/" ]
                      [ H.text "Päivitä tiedot" ]
