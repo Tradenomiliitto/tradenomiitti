@@ -4,6 +4,7 @@ import Nav exposing (..)
 import Navigation
 import State.Profile as ProfileState
 import State.CreateAd
+import State.ListAds
 import User
 
 
@@ -14,6 +15,7 @@ type alias Model =
   , profile : ProfileState.Model
   , initialLoading : Bool
   , createAd : State.CreateAd.Model
+  , listAds : State.ListAds.Model
   }
 
 
@@ -25,4 +27,5 @@ initState location =
   , profile = ProfileState.init
   , initialLoading = True
   , createAd = State.CreateAd.init
+  , listAds = State.ListAds.init
   }
