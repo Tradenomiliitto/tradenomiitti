@@ -1,8 +1,19 @@
+module ListAds exposing (..)
+
 import Html as H
 import Html.Attributes as A
 import User
+import State.ListAds exposing (..)
 
 type Msg = NoOp
+
+
+update : Msg -> Model -> (Model, Cmd Msg)
+update msg model = 
+  case msg of
+    NoOp ->
+      (model, Cmd.none)
+
 
 adListView : String -> String -> User.User -> H.Html Msg
 adListView heading content user = 

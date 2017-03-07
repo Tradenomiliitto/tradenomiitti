@@ -3,6 +3,7 @@ import Html as H
 import Html.Attributes as A
 import Html.Events as E
 import Json.Decode as Json
+import ListAds 
 import LoginNeeded
 import Maybe.Extra as Maybe
 import Nav exposing (..)
@@ -40,6 +41,7 @@ type Msg
   | UserMessage User.Msg
   | ProfileMessage Profile.Msg
   | CreateAdMessage CreateAd.Msg
+  | ListAdsMessage ListAds.Msg
 
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
@@ -95,6 +97,13 @@ update msg model =
         (createAdModel, cmd) = CreateAd.update msg model.createAd
       in
         { model | createAd = createAdModel } ! [ Cmd.map CreateAdMessage cmd]
+    
+    ListAdsMessage msg ->
+      let
+        (listAdsModel, cmd) = ListAds.update msg model.listAds
+      in
+        { model | listAds = listAdsModel } ! [ Cmd.map
+        ListAdsMessage cmd ]
 
 --SUBSCRIPTIONS
 
