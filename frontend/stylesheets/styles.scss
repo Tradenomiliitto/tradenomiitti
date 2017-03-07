@@ -56,8 +56,12 @@ body {
   }
 
   &__top-row {
+    position: fixed;
+    width: 100%;
+    top: $navbar-height;
     padding-top: 8px;
     padding-bottom: 8px;
+    z-index: 8001;
     background-color: $medium-grey;
     &--editing {
       background-color: $dark-grey;
@@ -209,7 +213,7 @@ div#not-implemented {
 
 .user-page {
   &__section {
-    margin-top: 70px;
+    margin-top: #{ $navbar-height + 70px };
   }
   &__pic-container {
     margin-right: 20px;
