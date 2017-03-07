@@ -1,7 +1,9 @@
+import CreateAd
 import Html as H
 import Html.Attributes as A
 import Html.Events as E
 import Json.Decode as Json
+import LoginNeeded
 import Maybe.Extra as Maybe
 import Nav exposing (..)
 import Navigation
@@ -37,6 +39,7 @@ type Msg
   | UrlChange Navigation.Location
   | UserMessage User.Msg
   | ProfileMessage Profile.Msg
+  | CreateAdMessage CreateAd.Msg
 
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
@@ -86,6 +89,12 @@ update msg model =
           | profile = profileModel
           , initialLoading = initialLoading
         } ! [ Cmd.map ProfileMessage cmd ]
+
+    CreateAdMessage msg ->
+      let
+        (createAdModel, cmd) = CreateAd.update msg model.createAd
+      in
+        { model | createAd = createAdModel } ! [ Cmd.map CreateAdMessage cmd]
 
 --SUBSCRIPTIONS
 
@@ -271,12 +280,19 @@ viewPage model =
           H.map UserMessage <| User.view model.user
         Profile ->
           H.map ProfileMessage <| Profile.view model.profile model
+        CreateAd ->
+          if Maybe.isJust model.profile.user
+          then
+            H.map CreateAdMessage <| CreateAd.view model.createAd
+          else
+            LoginNeeded.view <| ssoUrl model.rootUrl model.route
         route ->
           notImplementedYet
   in
     H.div
       [ A.class "container-fluid app-content" ]
       [ content ]
+
 
 notImplementedYet : H.Html Msg
 notImplementedYet =

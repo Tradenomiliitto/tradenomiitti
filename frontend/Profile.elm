@@ -296,17 +296,12 @@ viewUser model user =
               , H.p
                 [ A.class "user-page__work-details" ]
                 [ if model.editing
-                  then H.select [ A.value user.primaryDomain
-                                , E.on "change" (Json.map ChangePrimaryDomain E.targetValue)
-                                ]
-                    (H.option [A.value "Ei valittua toimialaa"] [ H.text "Valitse päätoimiala" ] :: List.map (\skill -> H.option [] [ H.text skill.heading ]) user.domains)
-                  else H.text user.primaryDomain
-                , H.br [] []
-                , if model.editing
-                  then H.select [ A.value user.primaryPosition
-                                , E.on "change" (Json.map ChangePrimaryPosition E.targetValue)
-                                ]
-                    (H.option [A.value "Ei valittua tehtäväluokkaa"] [ H.text "Valitse päätehtäväluokka" ] :: List.map (\skill -> H.option [] [ H.text skill.heading ]) user.positions)
+                  then
+                    H.input
+                    [ A.value user.primaryPosition
+                    , E.on "change" (Json.map ChangePrimaryPosition E.targetValue)
+                    ]
+                    []
                   else H.text user.primaryPosition
                 ]
               ]
@@ -364,6 +359,43 @@ viewUser model user =
     [ H.div
       [ A.class "row" ]
       [ H.div
+          [ A.class "col-xs-12"
+          ]
+          [ H.h3 [ A.class "user-page__activity-header" ] [ H.text "Aktiivisuus" ]
+          ]
+      ]
+    , H.div
+      [ A.class "row" ]
+      (List.map
+         (\ {heading, content} ->
+            H.div
+            [ A.class "col-xs-12 col-sm-6"]
+            [ H.div
+              [ A.class "user-page__activity-item" ]
+              [ H.h3 [ A.class "user-page__activity-item-heading" ] [ H.text heading ]
+              , H.p [ A.class "user-page__activity-item-content" ] [ H.text content]
+              , H.hr [] []
+              , H.div
+                []
+                [ H.span [ A.class "user-page__activity-item-profile-pic" ] []
+                , H.span
+                  [ A.class "user-page__activity-item-profile-info" ]
+                  [ H.span [ A.class "user-page__activity-item-profile-name"] [ H.text user.name ]
+                  , H.br [] []
+                  , H.span [ A.class "user-page__activity-item-profile-title"] [ H.text user.primaryPosition ]
+                  ]
+                ]
+              ]
+            ]
+         )
+         user.ads)
+    ]
+  , H.hr [] []
+  , H.div
+    [ A.class "container" ]
+    [ H.div
+      [ A.class "row" ]
+      [ H.div
           [ A.class "col-xs-12 col-sm-6"
           ]
           ([ H.h3 [ A.class "user-page__competences-header" ] [ H.text "Toimiala" ]
@@ -411,41 +443,3 @@ viewUser model user =
       ]
     ]
   ]
-
-
-
-viewProfileForm : User.User -> H.Html Msg
-viewProfileForm user =
-  H.form
-    []
-    [ H.div
-        [ A.class "form-group"]
-        [ H.label [] [ H.text "Millä nimellä meidän tulisi kutsua sinua?" ]
-        , H.input
-          [ A.value user.name
-          , A.class "form-control"
-          , E.onInput <| always NoOp
-          ] []
-        ]
-    , H.div
-      [ A.class "form-group" ]
-      [ H.label [] [ H.text "Kuvaile itseäsi" ]
-      , H.input
-        [ A.value user.description
-        , A.class "form-control"
-        , E.onInput <| always NoOp
-        ] []
-      ]
-    , H.div
-      [ A.class "form-group" ]
-      ([ H.label [] [ H.text "Tehtävät, joista sinulla on kokemusta" ]] ++
-         viewPositions user.extra.positions)
-    ]
-
-viewPositions : List String -> List (H.Html Msg)
-viewPositions positions =
-  List.map (\position -> H.input
-              [ A.value position
-              , A.class "form-control"
-              , E.onInput <| always NoOp
-              ] []) positions

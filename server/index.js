@@ -148,10 +148,11 @@ app.get('/api/me', (req, res) => {
         sebacon.getUserNickName(user.remote_id),
         sebacon.getUserPositions(user.remote_id),
         sebacon.getUserDomains(user.remote_id),
+        userAds(user),
         user
       ])
     })
-    .then(([ firstname, nickname, positions, domains, databaseUser ]) => {
+    .then(([ firstname, nickname, positions, domains, ads, databaseUser ]) => {
       const user = {};
       user.extra = {
         first_name: firstname,
@@ -159,11 +160,13 @@ app.get('/api/me', (req, res) => {
         positions: positions,
         domains: domains
       }
+      user.ads = ads;
+
       const userData = databaseUser.data;
       user.name = userData.name || '';
       user.description = userData.description || '';
       user.primary_domain = userData.primary_domain || 'Ei valittua toimialaa';
-      user.primary_position = userData.primary_position || 'Ei valittua tehtäväluokkaa';
+      user.primary_position = userData.primary_position || 'Ei titteliä';
       user.domains = userData.domains || [];
       user.positions = userData.positions || [];
       user.profile_creation_consented = userData.profile_creation_consented || false;
@@ -199,7 +202,21 @@ app.get('/api/positions', (req, res) => {
 
 app.get('/api/domains', (req, res) => {
   return sebacon.getDomainTitles().then(domains => res.json(Object.values(domains)));
-})
+});
+
+app.post('/api/ad', jsonParser, (req, res) => {
+  if (!req.session || !req.session.id) {
+    return res.sendStatus(403);
+  }
+
+  return userForSession(req)
+    .then(user => {
+      return knex('ads').insert({
+        user_id: user.id,
+        data: req.body
+      }, 'id');
+    }).then(insertResp => res.json(`${insertResp[0]}`));
+});
 
 
 app.get('*', (req, res) => {
@@ -216,4 +233,9 @@ function userForSession(req) {
     .then(resp => resp.length === 0 ? Promise.rejected('No session found') : resp[0].user_id)
     .then(id => knex('users').where({ id }))
     .then(resp => resp[0]);
+}
+
+function userAds(user) {
+  return knex('ads')
+    .where({ user_id: user.id });
 }

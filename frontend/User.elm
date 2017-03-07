@@ -22,8 +22,13 @@ type alias User =
   , positions : List Skill.Model
   , profileCreated : Bool
   , extra : Extra
+  , ads : List Ad
   }
 
+type alias Ad =
+  { heading : String
+  , content : String
+  }
 
 type alias Model =
   { user : Maybe User
@@ -47,6 +52,7 @@ userDecoder =
     |> P.required "positions" (list Skill.decoder)
     |> P.required "profile_creation_consented" bool
     |> P.required "extra" userExtraDecoder
+    |> P.required "ads" (list adDecoder)
 
 encode : User -> JS.Value
 encode user =
@@ -65,8 +71,14 @@ userExtraDecoder =
   P.decode Extra
     |> P.required "first_name" string
     |> P.required "nick_name" string
-    |> P.required "positions" (list string)
     |> P.required "domains" (list string)
+    |> P.required "positions" (list string)
+
+adDecoder : Decoder Ad
+adDecoder =
+  P.decode Ad
+    |> P.requiredAt [ "data", "heading" ] string
+    |> P.requiredAt [ "data", "content" ] string
 
 -- UPDATE
 
