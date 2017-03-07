@@ -27,7 +27,8 @@ function getMetaList(meta) {
   }).then(res => {
     const obj = {};
     res.result.forEach(o => {
-      obj[o.id] = o.otsikko;
+      const str = o.otsikko;
+      obj[o.id] = str.charAt(0).toLocaleUpperCase() + str.slice(1).toLocaleLowerCase();
     });
     return obj;
   })
