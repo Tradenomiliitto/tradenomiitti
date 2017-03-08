@@ -8,4 +8,20 @@ type alias Model =
 
 init : Model
 init =
-  { ads = [] }
+  { ads = [
+    {heading= "Test heading",
+    content= "Test message"
+    },
+    {heading= "Test heading",
+    content= "Test message"
+    },
+    {heading= "Test heading",
+    content= "Test message"
+    },
+    {heading= "Test heading",
+    content= "Test message"
+    },
+    {heading= "Test heading",
+    content= "Test message"
+    }
+  ] }

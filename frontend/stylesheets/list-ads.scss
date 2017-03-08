@@ -1,0 +1,53 @@
+@import 'common';
+
+.list-ads {
+
+  &__header {
+    @include gotham-bold;
+    text-transform: uppercase;
+    margin-bottom: 25px;
+    padding: 5%;
+  }
+
+  &__list-background {
+    background-color: $light-grey;
+  }
+
+  &__ad-container {
+    padding: 5%;
+  }
+
+  &__ad-preview {
+    margin-top: 25px;
+    padding: 15px;
+    box-shadow: 0 2px 2px 1px #CCC;
+    background-color: white;
+    &-heading {
+      color: $pink;
+      @include gotham-bold;
+    }
+    &-content {}
+    > hr {
+      border-color: rgba(0, 0, 0, 0.35);
+    }
+    &-profile {
+      &-pic {
+        @include round-profile-pic(40px, #ccc);
+      }
+      &-info {
+        display: inline-block;
+        margin-left: 15px;
+        position: relative;
+        top: -5px;
+      }
+      &-name {
+        font-weight: bold;
+      }
+      &-title {
+        font-weight: bold;
+        color: $pink;
+      }
+    }
+  }
+
+}

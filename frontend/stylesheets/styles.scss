@@ -1,21 +1,5 @@
-//color definitions
-$pink: #ff6889;
-$green:  rgb(74, 97, 97);
-$medium-grey: rgb(207, 208, 207);
-$dark-grey: rgb(99, 99, 99);
-$white: #FFF;
-$black: #000;
-
-@mixin gotham-bold {
-  font-family: "Gotham A","Gotham B",Arial,sans-serif;
-  font-weight: 700 !important;
-}
-
-//fonts
-@font-face  {
-  font-family: mundoSansRegular;
-  src: url("/static/MundoSansStd.otf");
-}
+@import 'common';
+@import 'list-ads';
 
 $navbar-default-bg: $pink;
 $navbar-default-color: $white;
@@ -167,14 +151,6 @@ $navbar-element-height: 35px;
 .navbar__profile-lock,
 .navbar__profile-pic {
   margin-left: 10px;
-}
-
-@mixin round-profile-pic($diameter, $color) {
-  width: $diameter;
-  height: $diameter;
-  border-radius: #{$diameter / 2};
-  background-color: $color;
-  display: inline-block;
 }
 
 .navbar__profile-pic {
