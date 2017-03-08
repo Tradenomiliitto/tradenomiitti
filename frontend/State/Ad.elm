@@ -1,16 +1,16 @@
-module State.CreateAd exposing (..)
+module State.Ad exposing (..)
 
 import State.Util exposing (SendingStatus(..))
 
 type alias Model =
-  { heading : String
-  , content : String
+  { addingAnswer : Bool
+  , answerText : String
   , sending : SendingStatus
   }
 
 init : Model
 init =
-  { heading = ""
-  , content = ""
+  { addingAnswer = False
+  , answerText = ""
   , sending = NotSending
   }

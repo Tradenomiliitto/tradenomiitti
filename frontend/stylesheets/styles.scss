@@ -1,6 +1,9 @@
 @import 'common';
 @import 'list-ads';
 
+$content-top-margin: 70px;
+$light-grey-background: #fbfbfb;
+
 $navbar-default-bg: $pink;
 $navbar-default-color: $white;
 $navbar-default-link-color: $navbar-default-color;
@@ -189,7 +192,7 @@ div#not-implemented {
 
 .user-page {
   &__section {
-    margin-top: #{ $navbar-height + 70px };
+    margin-top: #{ $navbar-height + $content-top-margin };
   }
   &__pic-container {
     margin-right: 20px;
@@ -424,79 +427,85 @@ div#not-implemented {
 
 /* https://github.com/lukehaas/css-loaders */
 
-.loader,
-.loader:before,
-.loader:after {
-  border-radius: 50%;
-}
-.loader {
-  color: #ffffff;
-  font-size: 11px;
-  text-indent: -99999em;
-  margin: 55px auto;
-  position: relative;
-  width: 10em;
-  height: 10em;
-  box-shadow: inset 0 0 0 1em;
-  -webkit-transform: translateZ(0);
-  -ms-transform: translateZ(0);
-  transform: translateZ(0);
-}
-.loader:before,
-.loader:after {
-  position: absolute;
-  content: '';
-}
-.loader:before {
-  width: 5.2em;
-  height: 10.2em;
-  background: $pink;
-  border-radius: 10.2em 0 0 10.2em;
-  top: -0.1em;
-  left: -0.1em;
-  -webkit-transform-origin: 5.2em 5.1em;
-  transform-origin: 5.2em 5.1em;
-  -webkit-animation: load2 2s infinite ease 1.5s;
-  animation: load2 2s infinite ease 1.5s;
-}
-.loader:after {
-  width: 5.2em;
-  height: 10.2em;
-  background: $pink;
-  border-radius: 0 10.2em 10.2em 0;
-  top: -0.1em;
-  left: 5.1em;
-  -webkit-transform-origin: 0px 5.1em;
-  transform-origin: 0px 5.1em;
-  -webkit-animation: load2 2s infinite ease;
-  animation: load2 2s infinite ease;
-}
-@-webkit-keyframes load2 {
-  0% {
-    -webkit-transform: rotate(0deg);
-    transform: rotate(0deg);
+@mixin loader($color, $background, $size) {
+  &,
+  &:before,
+  &:after {
+    border-radius: 50%;
   }
-  100% {
-    -webkit-transform: rotate(360deg);
-    transform: rotate(360deg);
+  & {
+    color: $color;
+    font-size: 11px;
+    text-indent: -99999em;
+    margin: 55px auto;
+    position: relative;
+    width: $size;
+    height: $size;
+    box-shadow: inset 0 0 0 1em;
+    -webkit-transform: translateZ(0);
+    -ms-transform: translateZ(0);
+    transform: translateZ(0);
   }
-}
-@keyframes load2 {
-  0% {
-    -webkit-transform: rotate(0deg);
-    transform: rotate(0deg);
+  &:before,
+  &:after {
+    position: absolute;
+    content: '';
   }
-  100% {
-    -webkit-transform: rotate(360deg);
-    transform: rotate(360deg);
+  &:before {
+    width: #{ $size * 0.02 + $size * 0.5 };
+    height: #{ $size * 1.02 };
+    background: $background;
+    border-radius: #{ $size * 1.02 } 0 0 #{ $size * 1.02 };
+    top: -#{ $size * 0.01 };
+    left: -#{ $size * 0.01 };
+    -webkit-transform-origin: #{$size * 0.52 } #{ $size * 0.51};
+    transform-origin: #{$size * 0.52 } #{ $size * 0.51};
+    -webkit-animation: load2 2s infinite ease 1.5s;
+    animation: load2 2s infinite ease 1.5s;
+  }
+  &:after {
+    width: #{$size * 0.52 };
+    height: #{ $size * 1.02 };
+    background: $background;
+    border-radius: 0 #{ $size * 1.02 } #{ $size * 1.02 } 0;
+    top: -#{ $size * 0.01 };
+    left: #{ $size * 0.51};
+    -webkit-transform-origin: 0px #{ $size * 0.51};
+    transform-origin: 0px #{ $size * 0.51};
+    -webkit-animation: load2 2s infinite ease;
+    animation: load2 2s infinite ease;
+  }
+  @-webkit-keyframes load2 {
+    0% {
+      -webkit-transform: rotate(0deg);
+      transform: rotate(0deg);
+    }
+    100% {
+      -webkit-transform: rotate(360deg);
+      transform: rotate(360deg);
+    }
+  }
+  @keyframes load2 {
+    0% {
+      -webkit-transform: rotate(0deg);
+      transform: rotate(0deg);
+    }
+    100% {
+      -webkit-transform: rotate(360deg);
+      transform: rotate(360deg);
+    }
   }
 }
 
+
+.loader {
+  @include loader($white, $pink, 10em);
+}
 
 .login-needed {
   display: flex;
   &__box {
-    margin-top: 70px;
+    margin-top: $content-top-margin;
     border: 1px solid $pink;
     padding: 60px 80px;
 
@@ -529,5 +538,46 @@ div#not-implemented {
         padding: 20px 42px;
       }
     }
+  }
+}
+
+.ad-page {
+  margin-top: $content-top-margin;
+  $padding: 30px;
+  &__ad {
+    &-container {
+      box-shadow: 0 2px 2px 1px #CCC;
+      background-color: $light-grey-background;
+    }
+    background-color: $white;
+    padding: $padding;
+  }
+  &__leave-answer {
+    margin-top: 0;
+    text-align: center;
+    &-button {
+      margin-top: 30px;
+    }
+    &-text {
+      font-size: 20px;
+      font-weight: bold;
+      margin-top: 70px;
+      padding: 0 30px;
+    }
+
+    &-box {
+      width: 100%;
+      padding: 15px;
+      margin-top: 30px;
+      font-size: 16px;
+      height: 120px;
+    }
+    &-input-container {
+      padding: $padding;
+      text-align: right;
+    }
+  }
+  &__sending {
+    @include loader($pink, $light-grey-background, 4em);
   }
 }

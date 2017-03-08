@@ -4,13 +4,15 @@ import Navigation
 import UrlParser as U exposing ((</>))
 import Window
 
-type Route = CreateAd | ListAds | ListUsers | Home | Info | NotFound | Profile | User Int
+type Route = CreateAd | ShowAd Int | ListAds | ListUsers | Home | Info | NotFound | Profile | User Int
 
 routeToPath : Route -> String
 routeToPath route =
   case route of
     CreateAd ->
       "/ad/create"
+    ShowAd adId ->
+      "/ads/" ++ (toString adId)
     ListAds ->
       "/ads"
     ListUsers ->
@@ -39,6 +41,7 @@ routeParser : U.Parser (Route -> a) a
 routeParser =
   U.oneOf
     [ U.map CreateAd (U.s "ad" </> U.s "create")
+    , U.map ShowAd (U.s "ads" </> U.int)
     , U.map ListAds (U.s "ads")
     , U.map ListUsers (U.s "users")
     , U.map Home (U.s "")
