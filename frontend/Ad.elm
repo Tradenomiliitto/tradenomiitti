@@ -1,10 +1,11 @@
 module Ad exposing (..)
 
 import Date
-import User
-
 import Html as H
 import Html.Attributes as A
+import Html.Events as E
+import State.Ad exposing (..)
+import User
 
 type alias Ad =
   {
@@ -25,16 +26,15 @@ type alias Answer =
     createdAt: Date.Date
   }
 
-type alias Model =
-  { addingAnswer : Bool
-  }
+type Msg = StartAddAnswer
 
-init : Model
-init =
-  { addingAnswer = True
-  }
+update : Msg -> Model -> (Model, Cmd Msg)
+update msg model =
+  case msg of
+    StartAddAnswer ->
+      { model | addingAnswer = True } ! []
 
-view : Model -> H.Html msg
+view : Model -> H.Html Msg
 view model =
   H.div
     [ A.class "container ad-page" ]
@@ -61,7 +61,7 @@ view model =
       ]
     ]
 
-leaveAnswerBox : List (H.Html msg)
+leaveAnswerBox : List (H.Html Msg)
 leaveAnswerBox =
   [ H.div
     [ A.class "ad-page__leave-answer-input-container"]
@@ -76,15 +76,19 @@ leaveAnswerBox =
     ]
   ]
 
-leaveAnswerPrompt : List (H.Html msg)
+leaveAnswerPrompt : List (H.Html Msg)
 leaveAnswerPrompt =
   [ H.p
       [ A.class "ad-page__leave-answer-text"]
       [ H.text "Kokemuksellasi on aina arvoa. Jää näkemyksesi vastaamalla ilmoitukseen." ]
-  , H.button [ A.class "btn btn-primary btn-lg ad-page__leave-answer-button" ] [ H.text "Vastaa ilmoitukseen" ]
+  , H.button
+    [ A.class "btn btn-primary btn-lg ad-page__leave-answer-button"
+    , E.onClick StartAddAnswer
+    ]
+    [ H.text "Vastaa ilmoitukseen" ]
   ]
 
-leaveAnswer : List (H.Html msg) -> H.Html msg
+leaveAnswer : List (H.Html Msg) -> H.Html Msg
 leaveAnswer contents =
   H.div
     [ A.class "col-xs-12 col-sm-6 ad-page__leave-answer" ]

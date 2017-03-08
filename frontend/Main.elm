@@ -43,6 +43,7 @@ type Msg
   | ProfileMessage Profile.Msg
   | CreateAdMessage CreateAd.Msg
   | ListAdsMessage ListAds.Msg
+  | AdMessage Ad.Msg
 
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
@@ -98,13 +99,19 @@ update msg model =
         (createAdModel, cmd) = CreateAd.update msg model.createAd
       in
         { model | createAd = createAdModel } ! [ Cmd.map CreateAdMessage cmd]
-    
+
     ListAdsMessage msg ->
       let
         (listAdsModel, cmd) = ListAds.update msg model.listAds
       in
         { model | listAds = listAdsModel } ! [ Cmd.map
         ListAdsMessage cmd ]
+
+    AdMessage msg ->
+      let
+        (adModel, cmd) = Ad.update msg model.ad
+      in
+        { model | ad = adModel } ! [ Cmd.map AdMessage cmd ]
 
 --SUBSCRIPTIONS
 
@@ -299,7 +306,7 @@ viewPage model =
         ListAds ->
           H.map ListAdsMessage <| ListAds.view model.listAds
         ShowAd _ ->
-          Ad.view Ad.init
+          H.map AdMessage <| Ad.view model.ad
         route ->
           notImplementedYet
   in
