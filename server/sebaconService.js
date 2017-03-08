@@ -78,7 +78,7 @@ function getUserEmploymentExtras(id) {
     getUserEmploymentHistory(id)
   ]).then(([ domainTitles, positionTitles, res ]) => {
     const organisations = Promise.all(
-      res.result.map(o => getOrganisation(o.tyonantaja).then(o => o.name || 'Tuntematon')));
+      res.result.map(o => getOrganisation(o.tyonantaja).then(o => o.result.name || 'Tuntematon')));
     return Promise.all([ domainTitles, positionTitles, res, organisations ]);
   }).then(([ domainTitles, positionTitles, res, organisations ]) => {
     return {
