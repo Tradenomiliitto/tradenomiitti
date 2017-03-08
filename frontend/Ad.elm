@@ -4,7 +4,9 @@ import Date
 import Html as H
 import Html.Attributes as A
 import Html.Events as E
+import Http
 import State.Ad exposing (..)
+import State.Util exposing (SendingStatus(..))
 import User
 
 type alias Ad =
@@ -26,13 +28,29 @@ type alias Answer =
     createdAt: Date.Date
   }
 
-type Msg = StartAddAnswer
+type Msg
+  = StartAddAnswer
+  | ChangeAnswerText String
+  | SendAnswer
+  | SendAnswerResponse (Result Http.Error ())
 
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
   case msg of
     StartAddAnswer ->
       { model | addingAnswer = True } ! []
+
+    ChangeAnswerText str ->
+      { model | answerText = str } ! []
+
+    SendAnswer ->
+      { model | sending = Sending } ! [  ]
+
+    SendAnswerResponse (Ok _) ->
+      { model | sending = FinishedSuccess "ok" } ! []
+
+    SendAnswerResponse (Err _) ->
+      { model | sending = FinishedFail } ! []
 
 view : Model -> H.Html Msg
 view model =
@@ -57,22 +75,33 @@ view model =
             ]
           ]
         ]
-      , leaveAnswer <| if model.addingAnswer then leaveAnswerBox else leaveAnswerPrompt
+      , leaveAnswer <|
+        if model.addingAnswer
+        then leaveAnswerBox (model.sending == Sending)
+        else leaveAnswerPrompt
       ]
     ]
 
-leaveAnswerBox : List (H.Html Msg)
-leaveAnswerBox =
+leaveAnswerBox : Bool -> List (H.Html Msg)
+leaveAnswerBox sending =
   [ H.div
     [ A.class "ad-page__leave-answer-input-container"]
     [ H.textarea
         [ A.class "ad-page__leave-answer-box"
         , A.placeholder "Kirjoita napakka vastaus"
+        , E.onInput ChangeAnswerText
+        , A.disabled sending
         ]
         []
-    , H.button
-      [ A.class "btn btn-primary ad-page__leave-answer-button" ]
-      [ H.text "Jätä vastaus" ]
+    , if not sending
+      then
+        H.button
+          [ A.class "btn btn-primary ad-page__leave-answer-button"
+          , E.onClick SendAnswer
+          ]
+          [ H.text "Jätä vastaus" ]
+      else
+        H.div [ A.class "ad-page__sending"] []
     ]
   ]
 

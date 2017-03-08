@@ -7,6 +7,7 @@ import Http
 import Json.Decode as Json
 import Json.Encode as JS
 import State.CreateAd exposing (..)
+import State.Util exposing (SendingStatus(..))
 
 type Msg
   = NoOp
