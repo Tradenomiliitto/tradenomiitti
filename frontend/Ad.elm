@@ -25,8 +25,17 @@ type alias Answer =
     createdAt: Date.Date
   }
 
-view : H.Html msg
-view =
+type alias Model =
+  { addingAnswer : Bool
+  }
+
+init : Model
+init =
+  { addingAnswer = True
+  }
+
+view : Model -> H.Html msg
+view model =
   H.div
     [ A.class "container ad-page" ]
     [ H.div
@@ -48,12 +57,35 @@ view =
             ]
           ]
         ]
-      , H.div
-        [ A.class "col-xs-12 col-sm-6 ad-page__leave-answer" ]
-        [ H.p
-            [ A.class "ad-page__leave-answer-text"]
-            [ H.text "Kokemuksellasi on aina arvoa. Jää näkemyksesi vastaamalla ilmoitukseen." ]
-        , H.button [ A.class "btn btn-primary btn-lg ad-page__leave-answer-button" ] [ H.text "Vastaa ilmoitukseen" ]
-        ]
+      , leaveAnswer <| if model.addingAnswer then leaveAnswerBox else leaveAnswerPrompt
       ]
     ]
+
+leaveAnswerBox : List (H.Html msg)
+leaveAnswerBox =
+  [ H.div
+    [ A.class "ad-page__leave-answer-input-container"]
+    [ H.textarea
+        [ A.class "ad-page__leave-answer-box"
+        , A.placeholder "Kirjoita napakka vastaus"
+        ]
+        []
+    , H.button
+      [ A.class "btn btn-primary ad-page__leave-answer-button" ]
+      [ H.text "Jätä vastaus" ]
+    ]
+  ]
+
+leaveAnswerPrompt : List (H.Html msg)
+leaveAnswerPrompt =
+  [ H.p
+      [ A.class "ad-page__leave-answer-text"]
+      [ H.text "Kokemuksellasi on aina arvoa. Jää näkemyksesi vastaamalla ilmoitukseen." ]
+  , H.button [ A.class "btn btn-primary btn-lg ad-page__leave-answer-button" ] [ H.text "Vastaa ilmoitukseen" ]
+  ]
+
+leaveAnswer : List (H.Html msg) -> H.Html msg
+leaveAnswer contents =
+  H.div
+    [ A.class "col-xs-12 col-sm-6 ad-page__leave-answer" ]
+    contents

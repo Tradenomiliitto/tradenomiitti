@@ -299,7 +299,7 @@ viewPage model =
         ListAds ->
           H.map ListAdsMessage <| ListAds.view model.listAds
         ShowAd _ ->
-          Ad.view
+          Ad.view Ad.init
         route ->
           notImplementedYet
   in
