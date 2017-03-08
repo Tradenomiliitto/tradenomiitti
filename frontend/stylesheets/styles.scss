@@ -2,6 +2,7 @@
 @import 'list-ads';
 
 $content-top-margin: 70px;
+$light-grey-background: #fbfbfb;
 
 $navbar-default-bg: $pink;
 $navbar-default-color: $white;
@@ -536,8 +537,26 @@ div#not-implemented {
 
 .ad-page {
   margin-top: $content-top-margin;
+  $padding: 30px;
   &__ad {
-    box-shadow: 0 2px 2px 1px #CCC;
-    padding: 15px;
+    &-container {
+      box-shadow: 0 2px 2px 1px #CCC;
+      background-color: $light-grey-background;
+    }
+    background-color: $white;
+    padding: $padding;
+  }
+  &__leave-answer {
+    margin-top: 0;
+    text-align: center;
+    &-button {
+      margin-top: 30px;
+    }
+    &-text {
+      font-size: 20px;
+      font-weight: bold;
+      margin-top: 70px;
+      padding: 0 30px;
+    }
   }
 }
