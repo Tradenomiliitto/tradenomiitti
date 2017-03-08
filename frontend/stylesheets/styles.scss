@@ -1,6 +1,8 @@
 @import 'common';
 @import 'list-ads';
 
+$content-top-margin: 70px;
+
 $navbar-default-bg: $pink;
 $navbar-default-color: $white;
 $navbar-default-link-color: $navbar-default-color;
@@ -189,7 +191,7 @@ div#not-implemented {
 
 .user-page {
   &__section {
-    margin-top: #{ $navbar-height + 70px };
+    margin-top: #{ $navbar-height + $content-top-margin };
   }
   &__pic-container {
     margin-right: 20px;
@@ -496,7 +498,7 @@ div#not-implemented {
 .login-needed {
   display: flex;
   &__box {
-    margin-top: 70px;
+    margin-top: $content-top-margin;
     border: 1px solid $pink;
     padding: 60px 80px;
 
@@ -529,5 +531,13 @@ div#not-implemented {
         padding: 20px 42px;
       }
     }
+  }
+}
+
+.ad-page {
+  margin-top: $content-top-margin;
+  &__ad {
+    box-shadow: 0 2px 2px 1px #CCC;
+    padding: 15px;
   }
 }

@@ -1,5 +1,10 @@
+module Ad exposing (..)
+
 import Date
 import User
+
+import Html as H
+import Html.Attributes as A
 
 type alias Ad =
   {
@@ -19,3 +24,29 @@ type alias Answer =
     createdBy: User.User,
     createdAt: Date.Date
   }
+
+view : H.Html msg
+view =
+  H.div
+    [ A.class "container ad-page" ]
+    [ H.div
+      [ A.class "row ad-page__ad user-page__activity-item" ]
+      [ H.div
+        [ A.class "col-xs-12 col-sm-6" ]
+        [ H.p [ A.class "ad-page__date" ] [ H.text "8.3.2017" ] -- TODO
+        , H.h3 [ A.class "user-page__activity-item-heading" ] [ H.text "Miten menestyä finanssialallla?" ] -- TODO
+        , H.p [ A.class "user-page__activity-item-content" ]  [ H.text "Curabitur lacinia pulvinar nibh.  Aliquam feugiat tellus ut neque.  Nunc eleifend leo vitae magna.  Nullam libero mauris, consequat quis, varius et, dictum id, arcu.  Nullam rutrum.  Nunc aliquet, augue nec adipiscing interdum, lacus tellus malesuada massa, quis varius mi purus non odio.  Nam a sapien.  " ] -- TODO
+        , H.hr [] []
+        , H.div
+          []
+          [ H.span [ A.class "user-page__activity-item-profile-pic" ] []
+          , H.span
+            [ A.class "user-page__activity-item-profile-info" ]
+            [ H.span [ A.class "user-page__activity-item-profile-name"] [ H.text "Matti" ]
+            , H.br [] []
+            , H.span [ A.class "user-page__activity-item-profile-title"] [ H.text "Titteli" ]
+            ]
+          ]
+        ]
+      ]
+    ]

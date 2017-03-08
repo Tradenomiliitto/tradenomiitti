@@ -1,3 +1,4 @@
+import Ad
 import CreateAd
 import Html as H
 import Html.Attributes as A
@@ -297,6 +298,8 @@ viewPage model =
             LoginNeeded.view <| ssoUrl model.rootUrl model.route
         ListAds ->
           H.map ListAdsMessage <| ListAds.view model.listAds
+        ShowAd _ ->
+          Ad.view
         route ->
           notImplementedYet
   in
@@ -331,4 +334,7 @@ routeToString route =
       "Hakuilmoitukset"
     CreateAd ->
       "Jätä ilmoitus"
+    ShowAd adId ->
+      "Ilmoitus " ++ (toString adId)
+
 
