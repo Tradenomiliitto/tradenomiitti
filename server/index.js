@@ -217,6 +217,30 @@ app.post('/api/ad', jsonParser, (req, res) => {
     }).then(insertResp => res.json(`${insertResp[0]}`));
 });
 
+app.get('/api/ads/:id', (req, res) => {
+  return knex('ads').where({id: req.params.id})
+    .then(rows => rows[0])
+    .then(ad => formatAd(ad))
+    .then(ad => res.send(ad));
+})
+
+app.get('/api/ads', (req, res) => {
+  return knex('ads').where({})
+    .then(rows => Promise.all(rows.map(formatAd)))
+    .then(ads => res.send(ads))
+})
+
+
+function formatAd(ad) {
+  return Promise.all([
+    knex('answers').where({ad_id: ad.id}),
+    knex('users').where({id: ad.user_id}).then(rows => rows[0])
+  ]).then(function ([answers, user]) {
+    ad.createdBy = user;
+    ad.answers = answers;
+    return ad;
+  })
+}
 
 app.get('*', (req, res) => {
   res.sendFile('./index.html', {root: rootDir})
