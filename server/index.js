@@ -123,7 +123,7 @@ function formatAd(ad) {
       .then(answers => Promise.all(answers.map(formatAnswer))),
     knex('users').where({id: ad.user_id}).then(rows => rows[0])
   ]).then(function ([answers, user]) {
-    ad.created_by = user;
+    ad.created_by = formatUser(user);
     ad.answers = answers;
     return ad;
   })
@@ -136,6 +136,12 @@ function formatAnswer(answer) {
       answer.created_by = user;
       return answer;
     })
+}
+
+function formatUser(user) {
+  formattedUser = user.data;
+  formattedUser.id = user.id;
+  return formattedUser;
 }
 
 app.get('*', (req, res) => {
