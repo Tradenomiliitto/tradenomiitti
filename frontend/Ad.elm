@@ -32,24 +32,16 @@ type alias Answer =
 type Msg
   = StartAddAnswer
   | ChangeAnswerText String
-  | SendAnswer
+  | SendAnswer Int
   | SendAnswerResponse (Result Http.Error String)
 
 
-sendAnswer : Model -> Cmd Msg
-sendAnswer model =
+sendAnswer : Model -> Int -> Cmd Msg
+sendAnswer model adId =
   let
     encoded =
       JS.object
         [ ("content", JS.string model.answerText)]
-    adId =
-      case model.adId of
-        Just adId -> adId
-        Nothing ->
-          let
-            _ = Debug.log "Expected an ad id, got" model.adId
-          in
-            -1
   in
     Http.post ("/api/ads/" ++ toString adId ++ "/answer") (Http.jsonBody encoded) Json.string
       |> Http.send SendAnswerResponse
@@ -87,8 +79,8 @@ update msg model =
     ChangeAnswerText str ->
       { model | answerText = str } ! []
 
-    SendAnswer ->
-      { model | sending = Sending } ! [ sendAnswer model ]
+    SendAnswer adId ->
+      { model | sending = Sending } ! [ sendAnswer model adId ]
 
     SendAnswerResponse (Ok _) ->
       { model | sending = FinishedSuccess "ok" } ! []
@@ -96,8 +88,8 @@ update msg model =
     SendAnswerResponse (Err _) ->
       { model | sending = FinishedFail } ! []
 
-view : Model -> H.Html Msg
-view model =
+view : Model -> Int -> H.Html Msg
+view model adId =
   H.div
     [ A.class "container ad-page" ]
     [ H.div
@@ -121,13 +113,13 @@ view model =
         ]
       , leaveAnswer <|
         if model.addingAnswer
-        then leaveAnswerBox (model.sending == Sending)
+        then leaveAnswerBox (model.sending == Sending) adId
         else leaveAnswerPrompt
       ]
     ]
 
-leaveAnswerBox : Bool -> List (H.Html Msg)
-leaveAnswerBox sending =
+leaveAnswerBox : Bool -> Int -> List (H.Html Msg)
+leaveAnswerBox sending adId =
   [ H.div
     [ A.class "ad-page__leave-answer-input-container"]
     [ H.textarea
@@ -141,7 +133,7 @@ leaveAnswerBox sending =
       then
         H.button
           [ A.class "btn btn-primary ad-page__leave-answer-button"
-          , E.onClick SendAnswer
+          , E.onClick (SendAnswer adId)
           ]
           [ H.text "Jätä vastaus" ]
       else

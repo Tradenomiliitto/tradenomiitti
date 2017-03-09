@@ -65,11 +65,7 @@ update msg model =
                 ({ modelWithRoute | user = userModel }, Cmd.map UserMessage cmd)
 
             ShowAd adId ->
-              let
-                adModel = model.ad
-                newAdModel = { adModel | adId = Just adId }
-              in
-                { modelWithRoute | ad = newAdModel } ! []
+              modelWithRoute ! []
 
             Profile ->
               modelWithRoute ! [ Cmd.map ProfileMessage Profile.initTasks ]
@@ -312,8 +308,8 @@ viewPage model =
             LoginNeeded.view <| ssoUrl model.rootUrl model.route
         ListAds ->
           H.map ListAdsMessage <| ListAds.view model.listAds
-        ShowAd _ ->
-          H.map AdMessage <| Ad.view model.ad
+        ShowAd adId ->
+          H.map AdMessage <| Ad.view model.ad adId
         route ->
           notImplementedYet
   in
