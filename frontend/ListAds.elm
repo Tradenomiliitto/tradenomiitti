@@ -57,7 +57,12 @@ adListView ad =
     [ A.class "col-xs-12 col-sm-6"]
     [ H.div
       [ A.class "list-ads__ad-preview" ]
-      [ H.a [ A.class "list-ads__ad-preview-heading", A.href ("/ads/" ++ (toString ad.id)) ] [  H.text ad.heading ]
+      [ H.h3 []
+        [ H.a 
+          [ A.class "list-ads__ad-preview-heading"
+          , A.href ("/ads/" ++ (toString ad.id)) ]
+          [ H.text ad.heading ] 
+        ]
       , H.p [ A.class "list-ads__ad-preview-content" ] [ H.text ad.content]
       , H.hr [] []
       , H.div
