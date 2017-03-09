@@ -45,7 +45,7 @@ userDecoder =
     |> P.required "domains" (list Skill.decoder)
     |> P.required "positions" (list Skill.decoder)
     |> P.required "profile_creation_consented" bool
-    |> P.required "extra" (nullable userExtraDecoder)
+    |> P.optional "extra" (Json.Decode.map Just userExtraDecoder) Nothing
 
 encode : User -> JS.Value
 encode user =
