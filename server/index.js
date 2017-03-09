@@ -163,7 +163,7 @@ function formatAnswer(answer) {
   return knex('users').where({ id: answer.user_id })
     .then(rows => rows[0])
     .then(function(user) {
-      answer.created_by = user;
+      answer.created_by = formatUser(user);
       return answer;
     })
 }

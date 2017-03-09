@@ -137,12 +137,25 @@ viewAd adId model userMaybe ad =
           then leaveAnswerBox (model.sending == Sending) adId
           else leaveAnswerPrompt canAnswer
         ]
+      , H.hr [ A.class "full-width-ruler" ] []
+      , viewAnswers ad.answers
       ]
+
+
+viewAnswers : Answers -> H.Html Msg
+viewAnswers answers =
+  case answers of
+    AnswerCount num ->
+      H.div [] [ H.text <| "Vastauksia on " ++ toString num ]
+    AnswerList (fst :: rst) ->
+      H.div [] [ H.text <| "Ensimmäinen vastaus on " ++ fst.content ]
+    AnswerList _ ->
+      H.div [] [ H.text "Voisit nähdä vastaukset, mutta niitä ei ole" ]
 
 leaveAnswerBox : Bool -> Int -> List (H.Html Msg)
 leaveAnswerBox sending adId =
   [ H.div
-    [ A.class "ad-page__leave-answer-input-container"]
+    [ A.class "ad-page__leave-answer-input-container" ]
     [ H.textarea
         [ A.class "ad-page__leave-answer-box"
         , A.placeholder "Kirjoita napakka vastaus"
