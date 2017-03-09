@@ -25,7 +25,6 @@ type Answers = AnswerCount Int | AnswerList (List Answer)
 
 type alias Answer =
   {
-    heading: String,
     content: String,
     createdBy: User.User,
     createdAt: Date.Date
@@ -57,7 +56,6 @@ answersDecoder =
 answerDecoder : Decoder Answer
 answerDecoder =
   P.decode Answer
-    |> P.requiredAt [ "data", "heading" ] string
     |> P.requiredAt [ "data", "content" ] string
     |> P.required "created_by" User.userDecoder
     |> P.required "created_at" date
