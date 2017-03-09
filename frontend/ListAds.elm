@@ -3,10 +3,10 @@ module ListAds exposing (..)
 import Html as H
 import Html.Attributes as A
 import Http
-import User
+import Ad
 import State.ListAds exposing (..)
 
-type Msg = NoOp | GetAds | UpdateAds (Result Http.Error (List User.Ad))
+type Msg = NoOp | GetAds | UpdateAds (Result Http.Error (List Ad.Ad))
 
 
 update : Msg -> Model -> (Model, Cmd Msg)
@@ -48,7 +48,7 @@ view model =
 
 
 
-adListView : User.Ad -> H.Html Msg
+adListView : Ad.Ad -> H.Html Msg
 adListView ad = 
   H.div
     [ A.class "col-xs-12 col-sm-6"]
@@ -62,9 +62,9 @@ adListView ad =
         [ H.span [ A.class "list-ads__ad-preview-profile-pic" ] []
         , H.span
           [ A.class "list-ads__ad-preview-profile-info" ]
-          [ H.span [ A.class "list-ads__ad-preview-profile-name"] [ H.text "TODO: name" ]
+          [ H.span [ A.class "list-ads__ad-preview-profile-name"] [ H.text ad.createdBy.name ]
           , H.br [] []
-          , H.span [ A.class "list-ads__ad-preview-profile-title"] [ H.text "TODO: user position" ]
+          , H.span [ A.class "list-ads__ad-preview-profile-title"] [ H.text ad.createdBy.primaryPosition ]
           ]
         ]
       ]

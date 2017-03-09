@@ -1,27 +1,12 @@
 module State.ListAds exposing (..)
-import User
+import Ad
 
 type alias Model =
   {
-    ads: List User.Ad
+    ads: List Ad.Ad
   }
 
 init : Model
 init =
   { ads = [
-    {heading= "Test heading",
-    content= "Test message"
-    },
-    {heading= "Test heading",
-    content= "Test message"
-    },
-    {heading= "Test heading",
-    content= "Test message"
-    },
-    {heading= "Test heading",
-    content= "Test message"
-    },
-    {heading= "Test heading",
-    content= "Test message"
-    }
   ] }
