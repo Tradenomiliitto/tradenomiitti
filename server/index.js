@@ -99,7 +99,7 @@ app.post('/api/ad', jsonParser, (req, res) => {
         user_id: user.id,
         data: req.body
       }, 'id');
-    }).then(insertResp => res.json(`${insertResp[0]}`));
+    }).then(insertResp => res.json(insertResp[0]));
 });
 
 app.get('/api/ads/:id', (req, res) => {
