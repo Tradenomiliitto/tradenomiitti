@@ -322,74 +322,11 @@ viewUser model user =
               ]
           ]
         ]
-      , H.div
-        [ A.class "col-md-6 user-page__membership-info" ]
-        [ H.h3 [ A.class "user-page__membership-info-heading" ] [ H.text "Jäsentiedot:" ]
-        , H.span [] [ H.text "(eivät näy muille)"]
-        , H.table
-          [ A.class "user-page__membership-info-definitions" ]
-          [ H.tr []
-              [ H.td [] [ H.text "Kutsumanimi" ]
-              , H.td [] [ H.text user.extra.nick_name ]
-              ]
-          , H.tr []
-            [ H.td [] [ H.text "Etunimi" ]
-            , H.td [] [ H.text user.extra.first_name ]
-            ]
-          , H.tr []
-            [ H.td [] [ H.text "Tehtäväluokat" ]
-            , H.td [] [ H.text (String.join ", " user.extra.positions)]
-            ]
-          , H.tr []
-            [ H.td [] [ H.text "Toimiala" ]
-            , H.td [] [ H.text (String.join ", " user.extra.domains) ]
-            ]
-          ]
-        , H.p [] [ H.text "Ovathan jäsentietosi ajan tasalla?" ]
-        , H.p [] [ H.a
-                     [ A.href "https://asiointi.tral.fi/" ]
-                     [ H.text "Päivitä tiedot" ]
-                 ]
-        ]
+      , membershipDataBox user
       ]
     ]
   , H.hr [] []
-  , H.div
-    [ A.class "container" ]
-    [ H.div
-      [ A.class "row" ]
-      [ H.div
-          [ A.class "col-xs-12"
-          ]
-          [ H.h3 [ A.class "user-page__activity-header" ] [ H.text "Aktiivisuus" ]
-          ]
-      ]
-    , H.div
-      [ A.class "row" ]
-      (List.map
-         (\ {heading, content} ->
-            H.div
-            [ A.class "col-xs-12 col-sm-6"]
-            [ H.div
-              [ A.class "user-page__activity-item" ]
-              [ H.h3 [ A.class "user-page__activity-item-heading" ] [ H.text heading ]
-              , H.p [ A.class "user-page__activity-item-content" ] [ H.text content]
-              , H.hr [] []
-              , H.div
-                []
-                [ H.span [ A.class "user-page__activity-item-profile-pic" ] []
-                , H.span
-                  [ A.class "user-page__activity-item-profile-info" ]
-                  [ H.span [ A.class "user-page__activity-item-profile-name"] [ H.text user.name ]
-                  , H.br [] []
-                  , H.span [ A.class "user-page__activity-item-profile-title"] [ H.text user.primaryPosition ]
-                  ]
-                ]
-              ]
-            ]
-         )
-         user.ads)
-    ]
+    -- TODO: User activity (sent and responded ads) View functions can be found in ListAds.elm
   , H.hr [] []
   , H.div
     [ A.class "container" ]
@@ -443,3 +380,42 @@ viewUser model user =
       ]
     ]
   ]
+
+membershipDataBox : User.User -> H.Html Msg 
+membershipDataBox user = 
+  case user.extra of
+    Just extra ->
+      H.div
+        [ A.class "col-md-6 user-page__membership-info" ]
+        [ H.h3 [ A.class "user-page__membership-info-heading" ] [ H.text "Jäsentiedot:" ]
+        , H.span [] [ H.text "(eivät näy muille)"]
+        , H.table
+          [ A.class "user-page__membership-info-definitions" ]
+          [ H.tr []
+              [ H.td [] [ H.text "Kutsumanimi" ]
+              , H.td [] [ H.text extra.nick_name ]
+              ]
+          , H.tr []
+            [ H.td [] [ H.text "Etunimi" ]
+            , H.td [] [ H.text extra.first_name ]
+            ]
+          , H.tr []
+            [ H.td [] [ H.text "Tehtäväluokat" ]
+            , H.td [] [ H.text (String.join ", " extra.positions)]
+            ]
+          , H.tr []
+            [ H.td [] [ H.text "Toimiala" ]
+            , H.td [] [ H.text (String.join ", " extra.domains) ]
+            ]
+          ]
+        , H.p [] [ H.text "Ovathan jäsentietosi ajan tasalla?" ]
+        , H.p [] [ H.a
+                     [ A.href "https://asiointi.tral.fi/" ]
+                     [ H.text "Päivitä tiedot" ]
+                 ]
+        ]
+    Nothing ->
+      H.div
+        [ A.class "col-md-6 user-page__membership-info" ]
+        [ H.h3 [ A.class "user-page__membership-info-heading" ] [ H.text "Jäsentiedot puuttuvat" ]
+        ]
