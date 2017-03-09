@@ -25,10 +25,9 @@ type alias Ad =
 type Answers = AnswerCount Int | AnswerList (List Answer)
 
 type alias Answer =
-  {
-    content: String,
-    createdBy: User.User,
-    createdAt: Date.Date
+  { content: String
+  , createdBy: User.User
+  , createdAt: Date.Date
   }
 
 type Msg
@@ -57,7 +56,7 @@ sendAnswer model =
       |> Http.send SendAnswerResponse
 
 adDecoder : Decoder Ad
-adDecoder = 
+adDecoder =
   P.decode Ad
     |> P.requiredAt [ "data", "heading" ] string
     |> P.requiredAt [ "data", "content" ] string
