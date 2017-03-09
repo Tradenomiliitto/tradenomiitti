@@ -24,6 +24,7 @@
     background-color: white;
     &-heading {
       color: $pink;
+      font-size: 24px;
       @include gotham-bold;
     }
     &-content {}

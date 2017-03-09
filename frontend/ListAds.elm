@@ -3,6 +3,7 @@ module ListAds exposing (..)
 import Ad
 import Html as H
 import Html.Attributes as A
+import Html.Events as E
 import Http
 import Json.Decode exposing (list)
 import State.Ad
@@ -56,7 +57,7 @@ adListView ad =
     [ A.class "col-xs-12 col-sm-6"]
     [ H.div
       [ A.class "list-ads__ad-preview" ]
-      [ H.h3 [ A.class "list-ads__ad-preview-heading" ] [ H.text ad.heading ]
+      [ H.a [ A.class "list-ads__ad-preview-heading", A.href ("/ads/" ++ (toString ad.id)) ] [  H.text ad.heading ]
       , H.p [ A.class "list-ads__ad-preview-content" ] [ H.text ad.content]
       , H.hr [] []
       , H.div
