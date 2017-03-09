@@ -1,43 +1,43 @@
 module Ad exposing (..)
 
-import Date
+import Date.Extra as Date
 import Html as H
 import Html.Attributes as A
 import Html.Events as E
 import Http
-import Json.Decode exposing (Decoder, string, list, oneOf, int, map)
+import Json.Decode as Json exposing (Decoder, string, list, oneOf, int, map)
 import Json.Decode.Extra exposing (date)
 import Json.Decode.Pipeline as P
+import Json.Encode as JS
 import State.Ad exposing (..)
 import State.Util exposing (SendingStatus(..))
 import User
 
-type alias Ad =
-  {
-    heading: String,
-    content: String,
-    answers: Answers,
-    createdBy: User.User,
-    createdAt: Date.Date
-  }
-
-type Answers = AnswerCount Int | AnswerList (List Answer)
-
-type alias Answer =
-  {
-    content: String,
-    createdBy: User.User,
-    createdAt: Date.Date
-  }
-
 type Msg
   = StartAddAnswer
   | ChangeAnswerText String
-  | SendAnswer
-  | SendAnswerResponse (Result Http.Error ())
+  | SendAnswer Int
+  | SendAnswerResponse (Result Http.Error String)
+  | GetAd (Result Http.Error Ad)
+
+
+getAd : Int -> Cmd Msg
+getAd adId =
+  Http.get ("/api/ads/" ++ toString adId) adDecoder
+    |> Http.send GetAd
+
+sendAnswer : Model -> Int -> Cmd Msg
+sendAnswer model adId =
+  let
+    encoded =
+      JS.object
+        [ ("content", JS.string model.answerText)]
+  in
+    Http.post ("/api/ads/" ++ toString adId ++ "/answer") (Http.jsonBody encoded) Json.string
+      |> Http.send SendAnswerResponse
 
 adDecoder : Decoder Ad
-adDecoder = 
+adDecoder =
   P.decode Ad
     |> P.requiredAt [ "data", "heading" ] string
     |> P.requiredAt [ "data", "content" ] string
@@ -69,8 +69,8 @@ update msg model =
     ChangeAnswerText str ->
       { model | answerText = str } ! []
 
-    SendAnswer ->
-      { model | sending = Sending } ! [  ]
+    SendAnswer adId ->
+      { model | sending = Sending } ! [ sendAnswer model adId ]
 
     SendAnswerResponse (Ok _) ->
       { model | sending = FinishedSuccess "ok" } ! []
@@ -78,38 +78,50 @@ update msg model =
     SendAnswerResponse (Err _) ->
       { model | sending = FinishedFail } ! []
 
-view : Model -> H.Html Msg
-view model =
+    GetAd (Ok ad) ->
+      { model | ad = Just ad } ! []
+
+    GetAd (Err _) ->
+      { model | ad = Nothing } ! [] -- TODO error handling
+
+view : Model -> Int -> H.Html Msg
+view model adId =
+  model.ad
+    |> Maybe.map (viewAd adId model)
+    |> Maybe.withDefault (H.div [] [ H.text "Ilmoituksen haku epäonnistui" ])
+
+viewAd : Int -> Model -> Ad -> H.Html Msg
+viewAd adId model ad  =
   H.div
     [ A.class "container ad-page" ]
     [ H.div
       [ A.class "row ad-page__ad-container" ]
       [ H.div
         [ A.class "col-xs-12 col-sm-6 ad-page__ad" ]
-        [ H.p [ A.class "ad-page__date" ] [ H.text "8.3.2017" ] -- TODO
-        , H.h3 [ A.class "user-page__activity-item-heading" ] [ H.text "Miten menestyä finanssialallla?" ] -- TODO
-        , H.p [ A.class "user-page__activity-item-content" ]  [ H.text "Curabitur lacinia pulvinar nibh.  Aliquam feugiat tellus ut neque.  Nunc eleifend leo vitae magna.  Nullam libero mauris, consequat quis, varius et, dictum id, arcu.  Nullam rutrum.  Nunc aliquet, augue nec adipiscing interdum, lacus tellus malesuada massa, quis varius mi purus non odio.  Nam a sapien.  " ] -- TODO
+        [ H.p [ A.class "ad-page__date" ] [ H.text (Date.toFormattedString "d.m.y" ad.createdAt) ]
+        , H.h3 [ A.class "user-page__activity-item-heading" ] [ H.text ad.heading ]
+        , H.p [ A.class "user-page__activity-item-content" ]  [ H.text ad.content ]
         , H.hr [] []
         , H.div
           []
           [ H.span [ A.class "user-page__activity-item-profile-pic" ] []
           , H.span
             [ A.class "user-page__activity-item-profile-info" ]
-            [ H.span [ A.class "user-page__activity-item-profile-name"] [ H.text "Matti" ]
+            [ H.span [ A.class "user-page__activity-item-profile-name"] [ H.text ad.createdBy.name ]
             , H.br [] []
-            , H.span [ A.class "user-page__activity-item-profile-title"] [ H.text "Titteli" ]
+            , H.span [ A.class "user-page__activity-item-profile-title"] [ H.text ad.createdBy.primaryPosition ]
             ]
           ]
         ]
       , leaveAnswer <|
         if model.addingAnswer
-        then leaveAnswerBox (model.sending == Sending)
+        then leaveAnswerBox (model.sending == Sending) adId
         else leaveAnswerPrompt
       ]
     ]
 
-leaveAnswerBox : Bool -> List (H.Html Msg)
-leaveAnswerBox sending =
+leaveAnswerBox : Bool -> Int -> List (H.Html Msg)
+leaveAnswerBox sending adId =
   [ H.div
     [ A.class "ad-page__leave-answer-input-container"]
     [ H.textarea
@@ -123,7 +135,7 @@ leaveAnswerBox sending =
       then
         H.button
           [ A.class "btn btn-primary ad-page__leave-answer-button"
-          , E.onClick SendAnswer
+          , E.onClick (SendAnswer adId)
           ]
           [ H.text "Jätä vastaus" ]
       else

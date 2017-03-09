@@ -1,12 +1,10 @@
 module State.ListAds exposing (..)
-import Ad
+import State.Ad
 
 type alias Model =
-  {
-    ads: List Ad.Ad
+  { ads: List State.Ad.Ad
   }
 
 init : Model
 init =
-  { ads = [
-  ] }
+  { ads = [] }

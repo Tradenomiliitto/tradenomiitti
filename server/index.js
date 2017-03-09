@@ -99,7 +99,7 @@ app.post('/api/ad', jsonParser, (req, res) => {
         user_id: user.id,
         data: req.body
       }, 'id');
-    }).then(insertResp => res.json(`${insertResp[0]}`));
+    }).then(insertResp => res.json(insertResp[0]));
 });
 
 app.get('/api/ads/:id', (req, res) => {
@@ -115,6 +115,36 @@ app.get('/api/ads', (req, res) => {
     .then(rows => Promise.all(rows.map(formatAd)))
     .then(ads => res.send(ads))
 })
+
+app.post('/api/ads/:id/answer', jsonParser, (req, res) => {
+  if (!req.session || !req.session.id) {
+    return res.sendStatus(403);
+  }
+
+  const ad_id = req.params.id;
+
+  return Promise.all([
+    knex('ads').where({ id: ad_id }).first(),
+    knex('answers').where({ ad_id }),
+    util.userForSession(req)
+  ]).then(([ad, answers, user]) => {
+
+    const isAsker = ad.user_id === user.id;
+    if (isAsker) return Promise.reject('User tried to answer own question');
+
+    const alreadyAnswered = answers.some(a => a.user_id === user.id)
+    if (alreadyAnswered) return Promise.reject('User tried to answer several times');
+    return knex('answers').insert({
+      user_id: user.id,
+      ad_id,
+      data: req.body
+    }, 'id');
+  }).then(insertResp => res.json(`${insertResp[0]}`))
+    .catch(err => {
+      console.error('Error in /api/ads/:id/answer', err);
+      res.sendStatus(500);
+    });
+});
 
 
 function formatAd(ad) {

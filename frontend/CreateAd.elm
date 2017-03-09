@@ -6,6 +6,8 @@ import Html.Events as E
 import Http
 import Json.Decode as Json
 import Json.Encode as JS
+import Nav
+import Navigation
 import State.CreateAd exposing (..)
 import State.Util exposing (SendingStatus(..))
 
@@ -14,7 +16,7 @@ type Msg
   | ChangeHeading String
   | ChangeContent String
   | Send
-  | SendResponse (Result Http.Error String)
+  | SendResponse (Result Http.Error Int)
 
 
 sendAd : Model -> Cmd Msg
@@ -26,7 +28,7 @@ sendAd model =
         , ("content", JS.string model.content)
         ]
   in
-    Http.post "/api/ad" (Http.jsonBody encoded) Json.string
+    Http.post "/api/ad" (Http.jsonBody encoded) Json.int
       |> Http.send SendResponse
 
 update : Msg -> Model -> (Model, Cmd Msg)
@@ -41,7 +43,8 @@ update msg model =
     SendResponse (Err _) ->
       { model | sending = FinishedFail } ! []
     SendResponse (Ok id) ->
-      { model | sending = FinishedSuccess id } ! []
+      { model | sending = FinishedSuccess (toString id) } !
+        [ Navigation.newUrl (Nav.routeToPath (Nav.ShowAd id)) ]
     NoOp ->
       model ! []
 
