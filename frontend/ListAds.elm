@@ -1,12 +1,14 @@
 module ListAds exposing (..)
 
+import Ad
 import Html as H
 import Html.Attributes as A
 import Http
-import State.Ad as Ad
+import Json.Decode exposing (list)
+import State.Ad
 import State.ListAds exposing (..)
 
-type Msg = NoOp | GetAds | UpdateAds (Result Http.Error (List Ad.Ad))
+type Msg = NoOp | GetAds | UpdateAds (Result Http.Error (List State.Ad.Ad))
 
 
 update : Msg -> Model -> (Model, Cmd Msg)
@@ -20,18 +22,18 @@ update msg model =
     UpdateAds (Err _) ->
       (model, Cmd.none)
     GetAds ->
-      (model, Cmd.none)
+      (model, getAds)
 
-{-
+
 getAds : Cmd Msg
 getAds =
   let
     url = "/api/ads/"
-    request = Http.get url
+    request = Http.get url (list Ad.adDecoder)
   in
     Http.send UpdateAds request
 
--}
+
 view : Model -> H.Html Msg
 view model =
   H.div []
@@ -48,7 +50,7 @@ view model =
 
 
 
-adListView : Ad.Ad -> H.Html Msg
+adListView : State.Ad.Ad -> H.Html Msg
 adListView ad =
   H.div
     [ A.class "col-xs-12 col-sm-6"]

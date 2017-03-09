@@ -70,6 +70,9 @@ update msg model =
             Profile ->
               modelWithRoute ! [ Cmd.map ProfileMessage Profile.initTasks ]
 
+            ListAds ->
+              modelWithRoute ! [ Cmd.map ListAdsMessage ListAds.getAds ]
+
             newRoute ->
               (modelWithRoute, Cmd.none)
       in
