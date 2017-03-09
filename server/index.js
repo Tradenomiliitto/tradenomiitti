@@ -6,6 +6,8 @@ const cookieSession = require('cookie-session');
 
 const sebacon = require('./sebaconService');
 const logon = require('./logonHandling');
+const util = require('./util');
+const profile = require('./profile');
 
 const rootDir = "./frontend"
 
@@ -64,6 +66,8 @@ sebacon.initialize({ customer: sebaconCustomer, user: sebaconUser,
                      password: sebaconPassword, auth: sebaconAuth});
 
 logon.initialize({ communicationsKey, knex, sebacon });
+util.initialize({ knex });
+profile.initialize({ knex, sebacon, util});
 
 const urlEncoded = bodyParser.urlencoded();
 const jsonParser = bodyParser.json();
@@ -72,54 +76,14 @@ app.post('/login', urlEncoded, logon.login );
 
 app.get('/logout', logon.logout);
 
-app.get('/api/me', (req, res) => {
-  if (!req.session || !req.session.id) {
-    return res.sendStatus(403);
-  }
-  return userForSession(req)
-    .then(user => {
-      return Promise.all([
-        sebacon.getUserFirstName(user.remote_id),
-        sebacon.getUserNickName(user.remote_id),
-        sebacon.getUserEmploymentExtras(user.remote_id),
-        userAds(user),
-        user
-      ])
-    })
-    .then(([ firstname, nickname, { positions, domains }, ads, databaseUser ]) => {
-      const user = {};
-      user.extra = {
-        first_name: firstname,
-        nick_name: nickname,
-        positions: positions,
-        domains: domains
-      }
-      user.ads = ads;
-
-      const userData = databaseUser.data;
-      user.name = userData.name || '';
-      user.description = userData.description || '';
-      user.primary_domain = userData.primary_domain || 'Ei valittua toimialaa';
-      user.primary_position = userData.primary_position || 'Ei titteliä';
-      user.domains = userData.domains || [];
-      user.positions = userData.positions || [];
-      user.profile_creation_consented = userData.profile_creation_consented || false;
-
-      return res.json(user);
-    })
-    .catch((err) => {
-      console.error('Error in /api/me', err);
-      req.session = null;
-      res.sendStatus(500);
-    });
-});
+app.get('/api/me', profile.getMe);
 
 app.put('/api/me', jsonParser, (req, res) => {
   if (!req.session || !req.session.id) {
     return res.sendStatus(403);
   }
 
-  return userForSession(req)
+  return util.userForSession(req)
     .then(user => {
       return knex('users').where({ id: user.id }).update('data', req.body)
     }).then(resp => {
@@ -143,7 +107,7 @@ app.post('/api/ad', jsonParser, (req, res) => {
     return res.sendStatus(403);
   }
 
-  return userForSession(req)
+  return util.userForSession(req)
     .then(user => {
       return knex('ads').insert({
         user_id: user.id,
@@ -161,15 +125,3 @@ app.listen(3000, () => {
   console.log('Listening on 3000');
 });
 
-function userForSession(req) {
-  return knex('sessions')
-    .where({ id: req.session.id })
-    .then(resp => resp.length === 0 ? Promise.rejected('No session found') : resp[0].user_id)
-    .then(id => knex('users').where({ id }))
-    .then(resp => resp[0]);
-}
-
-function userAds(user) {
-  return knex('ads')
-    .where({ user_id: user.id });
-}
