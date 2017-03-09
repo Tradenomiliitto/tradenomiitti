@@ -14,12 +14,11 @@ import State.Util exposing (SendingStatus(..))
 import User
 
 type alias Ad =
-  {
-    heading: String,
-    content: String,
-    answers: Answers,
-    createdBy: User.User,
-    createdAt: Date.Date
+  { heading: String
+  , content: String
+  , answers: Answers
+  , createdBy: User.User
+  , createdAt: Date.Date
   }
 
 type Answers = AnswerCount Int | AnswerList (List Answer)
