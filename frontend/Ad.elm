@@ -5,6 +5,8 @@ import Html as H
 import Html.Attributes as A
 import Html.Events as E
 import Http
+import Json.Decode as Json
+import Json.Encode as JS
 import State.Ad exposing (..)
 import State.Util exposing (SendingStatus(..))
 import User
@@ -32,7 +34,26 @@ type Msg
   = StartAddAnswer
   | ChangeAnswerText String
   | SendAnswer
-  | SendAnswerResponse (Result Http.Error ())
+  | SendAnswerResponse (Result Http.Error String)
+
+
+sendAnswer : Model -> Cmd Msg
+sendAnswer model =
+  let
+    encoded =
+      JS.object
+        [ ("content", JS.string model.answerText)]
+    adId =
+      case model.adId of
+        Just adId -> adId
+        Nothing ->
+          let
+            _ = Debug.log "Expected an ad id, got" model.adId
+          in
+            -1
+  in
+    Http.post ("/api/ads/" ++ toString adId ++ "/answer") (Http.jsonBody encoded) Json.string
+      |> Http.send SendAnswerResponse
 
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
@@ -44,7 +65,7 @@ update msg model =
       { model | answerText = str } ! []
 
     SendAnswer ->
-      { model | sending = Sending } ! [  ]
+      { model | sending = Sending } ! [ sendAnswer model ]
 
     SendAnswerResponse (Ok _) ->
       { model | sending = FinishedSuccess "ok" } ! []

@@ -64,6 +64,13 @@ update msg model =
               in
                 ({ modelWithRoute | user = userModel }, Cmd.map UserMessage cmd)
 
+            ShowAd adId ->
+              let
+                adModel = model.ad
+                newAdModel = { adModel | adId = Just adId }
+              in
+                { modelWithRoute | ad = newAdModel } ! []
+
             Profile ->
               modelWithRoute ! [ Cmd.map ProfileMessage Profile.initTasks ]
 
