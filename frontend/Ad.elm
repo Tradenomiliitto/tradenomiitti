@@ -117,7 +117,7 @@ viewAd adId model userMaybe ad =
         [ A.class "row ad-page__ad-container" ]
         [ H.div
           [ A.class "col-xs-12 col-sm-6 ad-page__ad" ]
-          [ H.p [ A.class "ad-page__date" ] [ H.text (Date.toFormattedString "d.m.y" ad.createdAt) ]
+          [ H.p [ A.class "ad-page__date" ] [ H.text (Date.toFormattedString "d.M.y" ad.createdAt) ]
           , H.h3 [ A.class "user-page__activity-item-heading" ] [ H.text ad.heading ]
           , H.p [ A.class "user-page__activity-item-content" ]  [ H.text ad.content ]
           , H.hr [] []
