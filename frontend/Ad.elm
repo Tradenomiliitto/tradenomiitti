@@ -5,7 +5,9 @@ import Html as H
 import Html.Attributes as A
 import Html.Events as E
 import Http
-import Json.Decode as Json
+import Json.Decode as Json exposing (Decoder, string, list, oneOf, int, map)
+import Json.Decode.Extra exposing (date)
+import Json.Decode.Pipeline as P
 import Json.Encode as JS
 import State.Ad exposing (..)
 import State.Util exposing (SendingStatus(..))
@@ -24,7 +26,6 @@ type Answers = AnswerCount Int | AnswerList (List Answer)
 
 type alias Answer =
   {
-    heading: String,
     content: String,
     createdBy: User.User,
     createdAt: Date.Date
@@ -54,6 +55,30 @@ sendAnswer model =
   in
     Http.post ("/api/ads/" ++ toString adId ++ "/answer") (Http.jsonBody encoded) Json.string
       |> Http.send SendAnswerResponse
+
+adDecoder : Decoder Ad
+adDecoder = 
+  P.decode Ad
+    |> P.requiredAt [ "data", "heading" ] string
+    |> P.requiredAt [ "data", "content" ] string
+    |> P.required "answers" answersDecoder
+    |> P.required "created_by" User.userDecoder
+    |> P.required "created_at" date
+
+--answers can be either list of answers or a number
+answersDecoder : Decoder Answers
+answersDecoder =
+  oneOf
+    [ map AnswerCount int
+    , map AnswerList (list answerDecoder)
+    ]
+
+answerDecoder : Decoder Answer
+answerDecoder =
+  P.decode Answer
+    |> P.requiredAt [ "data", "content" ] string
+    |> P.required "created_by" User.userDecoder
+    |> P.required "created_at" date
 
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
