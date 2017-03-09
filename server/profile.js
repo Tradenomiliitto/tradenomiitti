@@ -48,6 +48,22 @@ function getMe(req, res) {
     });
 }
 
+function putMe(req, res) {
+  if (!req.session || !req.session.id) {
+    return res.sendStatus(403);
+  }
+
+  return util.userForSession(req)
+    .then(user => {
+      return knex('users').where({ id: user.id }).update('data', req.body)
+    }).then(resp => {
+      res.sendStatus(200);
+    }).catch(err => {
+      console.error(err);
+      res.sendStatus(500);
+    })
+}
+
 function userAds(user) {
   return knex('ads')
     .where({ user_id: user.id });
@@ -56,5 +72,6 @@ function userAds(user) {
 
 module.exports = {
   getMe,
+  putMe,
   initialize
 };

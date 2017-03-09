@@ -78,21 +78,7 @@ app.get('/logout', logon.logout);
 
 app.get('/api/me', profile.getMe);
 
-app.put('/api/me', jsonParser, (req, res) => {
-  if (!req.session || !req.session.id) {
-    return res.sendStatus(403);
-  }
-
-  return util.userForSession(req)
-    .then(user => {
-      return knex('users').where({ id: user.id }).update('data', req.body)
-    }).then(resp => {
-      res.sendStatus(200);
-    }).catch(err => {
-      console.error(err);
-      res.sendStatus(500);
-    })
-});
+app.put('/api/me', jsonParser, profile.putMe);
 
 app.get('/api/positions', (req, res) => {
   return sebacon.getPositionTitles().then(positions => res.json(Object.values(positions)));
