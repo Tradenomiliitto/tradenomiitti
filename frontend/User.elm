@@ -24,11 +24,6 @@ type alias User =
   , extra : Maybe Extra
   }
 
-type alias Ad =
-  { heading : String
-  , content : String
-  }
-
 type alias Model =
   { user : Maybe User
   , spinning : Bool
@@ -71,12 +66,6 @@ userExtraDecoder =
     |> P.required "nick_name" string
     |> P.required "domains" (list string)
     |> P.required "positions" (list string)
-
-adDecoder : Decoder Ad
-adDecoder =
-  P.decode Ad
-    |> P.requiredAt [ "data", "heading" ] string
-    |> P.requiredAt [ "data", "content" ] string
 
 -- UPDATE
 
