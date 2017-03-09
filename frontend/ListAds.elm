@@ -3,14 +3,14 @@ module ListAds exposing (..)
 import Html as H
 import Html.Attributes as A
 import Http
-import Ad
+import State.Ad as Ad
 import State.ListAds exposing (..)
 
 type Msg = NoOp | GetAds | UpdateAds (Result Http.Error (List Ad.Ad))
 
 
 update : Msg -> Model -> (Model, Cmd Msg)
-update msg model = 
+update msg model =
   case msg of
     NoOp ->
       (model, Cmd.none)
@@ -21,17 +21,17 @@ update msg model =
       (model, Cmd.none)
     GetAds ->
       (model, Cmd.none)
-    
-{--
+
+{-
 getAds : Cmd Msg
 getAds =
   let
     url = "/api/ads/"
-    request = Http.get url 
+    request = Http.get url
   in
     Http.send UpdateAds request
-    
---}
+
+-}
 view : Model -> H.Html Msg
 view model =
   H.div []
@@ -49,7 +49,7 @@ view model =
 
 
 adListView : Ad.Ad -> H.Html Msg
-adListView ad = 
+adListView ad =
   H.div
     [ A.class "col-xs-12 col-sm-6"]
     [ H.div
@@ -69,4 +69,3 @@ adListView ad =
         ]
       ]
     ]
-  

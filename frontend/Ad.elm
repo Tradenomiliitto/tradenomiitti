@@ -1,6 +1,5 @@
 module Ad exposing (..)
 
-import Date
 import Html as H
 import Html.Attributes as A
 import Html.Events as E
@@ -13,28 +12,18 @@ import State.Ad exposing (..)
 import State.Util exposing (SendingStatus(..))
 import User
 
-type alias Ad =
-  { heading: String
-  , content: String
-  , answers: Answers
-  , createdBy: User.User
-  , createdAt: Date.Date
-  }
-
-type Answers = AnswerCount Int | AnswerList (List Answer)
-
-type alias Answer =
-  { content: String
-  , createdBy: User.User
-  , createdAt: Date.Date
-  }
-
 type Msg
   = StartAddAnswer
   | ChangeAnswerText String
   | SendAnswer Int
   | SendAnswerResponse (Result Http.Error String)
+  | GetAd (Result Http.Error Ad)
 
+
+getAd : Int -> Cmd Msg
+getAd adId =
+  Http.get ("/api/ads/" ++ toString adId) adDecoder
+    |> Http.send GetAd
 
 sendAnswer : Model -> Int -> Cmd Msg
 sendAnswer model adId =
@@ -87,6 +76,12 @@ update msg model =
 
     SendAnswerResponse (Err _) ->
       { model | sending = FinishedFail } ! []
+
+    GetAd (Ok _) ->
+      model ! []
+
+    GetAd (Err _) ->
+      model ! []
 
 view : Model -> Int -> H.Html Msg
 view model adId =
