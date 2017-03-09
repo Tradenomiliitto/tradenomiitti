@@ -9,6 +9,7 @@ exports.up = function(knex, Promise) {
       table.jsonb('data');
       table.integer('user_id').references('id').inTable('users');
       table.integer('ad_id').references('id').inTable('ads');
+      table.timestamp('created_at').defaultTo(knex.fn.now());
     })
   ])
 };
