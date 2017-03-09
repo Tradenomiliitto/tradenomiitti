@@ -309,7 +309,7 @@ viewPage model =
         ListAds ->
           H.map ListAdsMessage <| ListAds.view model.listAds
         ShowAd adId ->
-          H.map AdMessage <| Ad.view model.ad adId
+          H.map AdMessage <| Ad.view model.ad adId model.profile.user
         route ->
           notImplementedYet
   in

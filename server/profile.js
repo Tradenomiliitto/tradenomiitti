@@ -22,6 +22,7 @@ function getMe(req, res) {
     })
     .then(([ firstname, nickname, { positions, domains }, ads, databaseUser ]) => {
       const user = {};
+      user.id = databaseUser.id;
       user.extra = {
         first_name: firstname,
         nick_name: nickname,
