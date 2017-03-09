@@ -103,16 +103,19 @@ app.post('/api/ad', jsonParser, (req, res) => {
 });
 
 app.get('/api/ads/:id', (req, res) => {
-  return knex('ads').where({id: req.params.id})
-    .then(rows => rows[0])
-    .then(ad => formatAd(ad))
+  return Promise.all([
+    knex('ads').where({id: req.params.id}).first(),
+    util.userForSession(req)
+  ]).then(([ad, user]) => formatAd(ad, user))
     .then(ad => res.send(ad))
-    .catch(e => res.sendStatus(404));
+    .catch(e => { console.error(e); res.sendStatus(404) });
 })
 
 app.get('/api/ads', (req, res) => {
-  return knex('ads').where({})
-    .then(rows => Promise.all(rows.map(formatAd)))
+  return Promise.all([
+    knex('ads').where({}),
+    util.userForSession(req)
+  ]).then(([rows, user]) => Promise.all(rows.map(ad => formatAd(ad, user))))
     .then(ads => res.send(ads))
 })
 
@@ -147,14 +150,14 @@ app.post('/api/ads/:id/answer', jsonParser, (req, res) => {
 });
 
 
-function formatAd(ad) {
+function formatAd(ad, user) {
   return Promise.all([
     knex('answers').where({ad_id: ad.id})
       .then(answers => Promise.all(answers.map(formatAnswer))),
     knex('users').where({id: ad.user_id}).then(rows => rows[0])
-  ]).then(function ([answers, user]) {
-    ad.created_by = formatUser(user);
-    ad.answers = answers;
+  ]).then(function ([answers, askingUser]) {
+    ad.created_by = formatUser(askingUser);
+    ad.answers = user ? answers : answers.length;
     return ad;
   })
 }
