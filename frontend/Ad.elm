@@ -1,5 +1,6 @@
 module Ad exposing (..)
 
+import Date.Extra as Date
 import Html as H
 import Html.Attributes as A
 import Html.Events as E
@@ -77,32 +78,38 @@ update msg model =
     SendAnswerResponse (Err _) ->
       { model | sending = FinishedFail } ! []
 
-    GetAd (Ok _) ->
-      model ! []
+    GetAd (Ok ad) ->
+      { model | ad = Just ad } ! []
 
     GetAd (Err _) ->
-      model ! []
+      { model | ad = Nothing } ! [] -- TODO error handling
 
 view : Model -> Int -> H.Html Msg
 view model adId =
+  model.ad
+    |> Maybe.map (viewAd adId model)
+    |> Maybe.withDefault (H.div [] [ H.text "Ilmoituksen haku epäonnistui" ])
+
+viewAd : Int -> Model -> Ad -> H.Html Msg
+viewAd adId model ad  =
   H.div
     [ A.class "container ad-page" ]
     [ H.div
       [ A.class "row ad-page__ad-container" ]
       [ H.div
         [ A.class "col-xs-12 col-sm-6 ad-page__ad" ]
-        [ H.p [ A.class "ad-page__date" ] [ H.text "8.3.2017" ] -- TODO
-        , H.h3 [ A.class "user-page__activity-item-heading" ] [ H.text "Miten menestyä finanssialallla?" ] -- TODO
-        , H.p [ A.class "user-page__activity-item-content" ]  [ H.text "Curabitur lacinia pulvinar nibh.  Aliquam feugiat tellus ut neque.  Nunc eleifend leo vitae magna.  Nullam libero mauris, consequat quis, varius et, dictum id, arcu.  Nullam rutrum.  Nunc aliquet, augue nec adipiscing interdum, lacus tellus malesuada massa, quis varius mi purus non odio.  Nam a sapien.  " ] -- TODO
+        [ H.p [ A.class "ad-page__date" ] [ H.text (Date.toFormattedString "d.m.y" ad.createdAt) ]
+        , H.h3 [ A.class "user-page__activity-item-heading" ] [ H.text ad.heading ]
+        , H.p [ A.class "user-page__activity-item-content" ]  [ H.text ad.content ]
         , H.hr [] []
         , H.div
           []
           [ H.span [ A.class "user-page__activity-item-profile-pic" ] []
           , H.span
             [ A.class "user-page__activity-item-profile-info" ]
-            [ H.span [ A.class "user-page__activity-item-profile-name"] [ H.text "Matti" ]
+            [ H.span [ A.class "user-page__activity-item-profile-name"] [ H.text ad.createdBy.name ]
             , H.br [] []
-            , H.span [ A.class "user-page__activity-item-profile-title"] [ H.text "Titteli" ]
+            , H.span [ A.class "user-page__activity-item-profile-title"] [ H.text ad.createdBy.primaryPosition ]
             ]
           ]
         ]
