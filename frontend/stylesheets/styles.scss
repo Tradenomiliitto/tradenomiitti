@@ -190,6 +190,13 @@ div#not-implemented {
   text-align: center;
 }
 
+.full-width-ruler {
+  width: 210vw;
+  margin-left: -100vw;
+  border-color: rgba(0, 0, 0, 0.35);
+  margin-top: 70px;
+}
+
 .user-page {
   &__section {
     margin-top: #{ $navbar-height + $content-top-margin };
@@ -246,13 +253,6 @@ div#not-implemented {
         }
       }
     }
-  }
-
-  & > hr {
-    width: 110vw;
-    margin-left: -$grid-gutter-width;
-    border-color: rgba(0, 0, 0, 0.35);
-    margin-top: 70px;
   }
 
   &__competences-header {

@@ -325,9 +325,9 @@ viewUser model user =
       , membershipDataBox user
       ]
     ]
-  , H.hr [] []
+  , H.hr [ A.class "full-width-ruler" ] []
     -- TODO: User activity (sent and responded ads) View functions can be found in ListAds.elm
-  , H.hr [] []
+  , H.hr [ A.class "full-width-ruler" ] []
   , H.div
     [ A.class "container" ]
     [ H.div

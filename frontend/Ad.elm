@@ -84,46 +84,78 @@ update msg model =
     GetAd (Err _) ->
       { model | ad = Nothing } ! [] -- TODO error handling
 
-view : Model -> Int -> H.Html Msg
-view model adId =
+view : Model -> Int -> Maybe User.User -> H.Html Msg
+view model adId user =
   model.ad
-    |> Maybe.map (viewAd adId model)
+    |> Maybe.map (viewAd adId model user)
     |> Maybe.withDefault (H.div [] [ H.text "Ilmoituksen haku epäonnistui" ])
 
-viewAd : Int -> Model -> Ad -> H.Html Msg
-viewAd adId model ad  =
-  H.div
-    [ A.class "container ad-page" ]
-    [ H.div
-      [ A.class "row ad-page__ad-container" ]
+viewAd : Int -> Model -> Maybe User.User -> Ad -> H.Html Msg
+viewAd adId model userMaybe ad =
+  let
+    canAnswer =
+      case userMaybe of
+        Just user ->
+          let
+            isAsker = ad.createdBy.id == user.id
+            hasAnswered =
+              case ad.answers of
+                AnswerCount _ -> False -- not logged in? shouldn't happen
+                AnswerList answers ->
+                  answers
+                    |> List.map (.id << .createdBy)
+                    |> List.any ((==) user.id)
+          in
+            not isAsker && not hasAnswered
+
+        Nothing ->
+          False
+  in
+    H.div
+      [ A.class "container ad-page" ]
       [ H.div
-        [ A.class "col-xs-12 col-sm-6 ad-page__ad" ]
-        [ H.p [ A.class "ad-page__date" ] [ H.text (Date.toFormattedString "d.m.y" ad.createdAt) ]
-        , H.h3 [ A.class "user-page__activity-item-heading" ] [ H.text ad.heading ]
-        , H.p [ A.class "user-page__activity-item-content" ]  [ H.text ad.content ]
-        , H.hr [] []
-        , H.div
-          []
-          [ H.span [ A.class "user-page__activity-item-profile-pic" ] []
-          , H.span
-            [ A.class "user-page__activity-item-profile-info" ]
-            [ H.span [ A.class "user-page__activity-item-profile-name"] [ H.text ad.createdBy.name ]
-            , H.br [] []
-            , H.span [ A.class "user-page__activity-item-profile-title"] [ H.text ad.createdBy.primaryPosition ]
+        [ A.class "row ad-page__ad-container" ]
+        [ H.div
+          [ A.class "col-xs-12 col-sm-6 ad-page__ad" ]
+          [ H.p [ A.class "ad-page__date" ] [ H.text (Date.toFormattedString "d.M.y" ad.createdAt) ]
+          , H.h3 [ A.class "user-page__activity-item-heading" ] [ H.text ad.heading ]
+          , H.p [ A.class "user-page__activity-item-content" ]  [ H.text ad.content ]
+          , H.hr [] []
+          , H.div
+            []
+            [ H.span [ A.class "user-page__activity-item-profile-pic" ] []
+            , H.span
+              [ A.class "user-page__activity-item-profile-info" ]
+              [ H.span [ A.class "user-page__activity-item-profile-name"] [ H.text ad.createdBy.name ]
+              , H.br [] []
+              , H.span [ A.class "user-page__activity-item-profile-title"] [ H.text ad.createdBy.primaryPosition ]
+              ]
             ]
           ]
+        , leaveAnswer <|
+          if model.addingAnswer
+          then leaveAnswerBox (model.sending == Sending) adId
+          else leaveAnswerPrompt canAnswer
         ]
-      , leaveAnswer <|
-        if model.addingAnswer
-        then leaveAnswerBox (model.sending == Sending) adId
-        else leaveAnswerPrompt
+      , H.hr [ A.class "full-width-ruler" ] []
+      , viewAnswers ad.answers
       ]
-    ]
+
+
+viewAnswers : Answers -> H.Html Msg
+viewAnswers answers =
+  case answers of
+    AnswerCount num ->
+      H.div [] [ H.text <| "Vastauksia on " ++ toString num ]
+    AnswerList (fst :: rst) ->
+      H.div [] [ H.text <| "Ensimmäinen vastaus on " ++ fst.content ]
+    AnswerList _ ->
+      H.div [] [ H.text "Voisit nähdä vastaukset, mutta niitä ei ole" ]
 
 leaveAnswerBox : Bool -> Int -> List (H.Html Msg)
 leaveAnswerBox sending adId =
   [ H.div
-    [ A.class "ad-page__leave-answer-input-container"]
+    [ A.class "ad-page__leave-answer-input-container" ]
     [ H.textarea
         [ A.class "ad-page__leave-answer-box"
         , A.placeholder "Kirjoita napakka vastaus"
@@ -143,14 +175,18 @@ leaveAnswerBox sending adId =
     ]
   ]
 
-leaveAnswerPrompt : List (H.Html Msg)
-leaveAnswerPrompt =
+leaveAnswerPrompt : Bool -> List (H.Html Msg)
+leaveAnswerPrompt canAnswer =
   [ H.p
       [ A.class "ad-page__leave-answer-text"]
       [ H.text "Kokemuksellasi on aina arvoa. Jää näkemyksesi vastaamalla ilmoitukseen." ]
   , H.button
     [ A.class "btn btn-primary btn-lg ad-page__leave-answer-button"
     , E.onClick StartAddAnswer
+    , A.disabled (not canAnswer)
+    , A.title (if canAnswer
+               then "Voit vastata muiden esittämiin kysymyksiin kerran"
+               else "Et voi vastata tähän kysymykseen")
     ]
     [ H.text "Vastaa ilmoitukseen" ]
   ]

@@ -6,6 +6,7 @@ function initialize(params) {
 }
 
 function userForSession(req) {
+  if (!req.session.id) return Promise.resolve(null);
   return knex('sessions')
     .where({ id: req.session.id })
     .then(resp => resp.length === 0 ? Promise.reject('No session found') : resp[0].user_id)

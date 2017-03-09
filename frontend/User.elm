@@ -1,7 +1,7 @@
 module User exposing (..)
 
 import Http
-import Json.Decode exposing (Decoder, string, list, bool, nullable)
+import Json.Decode exposing (Decoder, string, list, bool, int)
 import Json.Decode.Pipeline as P
 import Json.Encode as JS
 import Skill
@@ -14,7 +14,8 @@ type alias Extra =
   }
 
 type alias User =
-  { name : String
+  { id : Int
+  , name : String
   , description : String
   , primaryDomain : String
   , primaryPosition : String
@@ -38,6 +39,7 @@ init =
 userDecoder : Decoder User
 userDecoder =
   P.decode User
+    |> P.required "id" int
     |> P.required "name" string
     |> P.required "description" string
     |> P.required "primary_domain" string
