@@ -37,7 +37,6 @@ type Msg
   | SendAnswer
   | SendAnswerResponse (Result Http.Error ())
 
-
 adDecoder : Decoder Ad
 adDecoder = 
   P.decode Ad
@@ -63,7 +62,6 @@ answerDecoder =
     |> P.required "created_by" User.userDecoder
     |> P.required "created_at" date
 
-
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
   case msg of
@@ -81,7 +79,6 @@ update msg model =
 
     SendAnswerResponse (Err _) ->
       { model | sending = FinishedFail } ! []
-
 
 view : Model -> H.Html Msg
 view model =
