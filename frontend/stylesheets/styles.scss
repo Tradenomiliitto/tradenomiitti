@@ -1,5 +1,6 @@
 @import 'common';
 @import 'list-ads';
+@import 'author-info';
 
 $content-top-margin: 70px;
 $light-grey-background: #fbfbfb;
@@ -557,6 +558,7 @@ div#not-implemented {
     text-align: center;
     &-button {
       margin-top: 30px;
+      margin-bottom: 30px;
     }
     &-text {
       font-size: 20px;
@@ -579,5 +581,53 @@ div#not-implemented {
   }
   &__sending {
     @include loader($pink, $light-grey-background, 4em);
+  }
+  &__answers {
+    margin-top: 70px;
+    &-separator {
+      width: 1px;
+      height: 50px;
+      background-color: $pink;
+      &-container {
+        display: flex;
+        justify-content: center;
+      }
+    }
+    &-icon {
+      color: $pink;
+      background-color: $white;
+      padding-bottom: 20px;
+      position: absolute;
+      &--left {
+        right: -15px;
+        transform: translateX(-50%);
+      }
+      &--right {
+        left: -15px;
+        transform: translateX(50%);
+      }
+      top: -5px;
+    }
+    &-content {
+      padding-bottom: 15px;
+      &--left {
+        padding-right: 20px;
+      }
+      &--right {
+        padding-left: 20px;
+      }
+    }
+    &-row {
+      margin-top: 30px;
+      &--left {
+        border-right: 2px solid $pink;
+      }
+      &--right {
+        border-left: 2px solid $pink;
+      }
+    }
+  }
+  &__date {
+    font-weight: bold;
   }
 }

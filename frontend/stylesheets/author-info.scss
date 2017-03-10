@@ -1,0 +1,19 @@
+
+.author-info {
+  &__pic {
+    @include round-profile-pic(40px, #ccc);
+  }
+  &__info {
+    display: inline-block;
+    margin-left: 15px;
+    position: relative;
+    top: -5px;
+  }
+  &__name {
+    font-weight: bold;
+  }
+  &__title {
+    font-weight: bold;
+    color: $pink;
+  }
+}
