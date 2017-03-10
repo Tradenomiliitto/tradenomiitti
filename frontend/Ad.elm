@@ -9,6 +9,7 @@ import Json.Decode as Json exposing (Decoder, string, list, oneOf, int, map)
 import Json.Decode.Extra exposing (date)
 import Json.Decode.Pipeline as P
 import Json.Encode as JS
+import Nav
 import State.Ad exposing (..)
 import State.Util exposing (SendingStatus(..))
 import User
@@ -84,14 +85,14 @@ update msg model =
     GetAd (Err _) ->
       { model | ad = Nothing } ! [] -- TODO error handling
 
-view : Model -> Int -> Maybe User.User -> H.Html Msg
-view model adId user =
+view : Model -> Int -> Maybe User.User -> String -> H.Html Msg
+view model adId user rootUrl =
   model.ad
-    |> Maybe.map (viewAd adId model user)
+    |> Maybe.map (viewAd adId model user rootUrl)
     |> Maybe.withDefault (H.div [] [ H.text "Ilmoituksen haku epäonnistui" ])
 
-viewAd : Int -> Model -> Maybe User.User -> Ad -> H.Html Msg
-viewAd adId model userMaybe ad =
+viewAd : Int -> Model -> Maybe User.User -> String -> Ad -> H.Html Msg
+viewAd adId model userMaybe rootUrl ad =
   let
     canAnswer =
       case userMaybe of
@@ -138,19 +139,93 @@ viewAd adId model userMaybe ad =
           else leaveAnswerPrompt canAnswer
         ]
       , H.hr [ A.class "full-width-ruler" ] []
-      , viewAnswers ad.answers
+      , viewAnswers ad.answers adId rootUrl
       ]
 
 
-viewAnswers : Answers -> H.Html Msg
-viewAnswers answers =
+viewAnswers : Answers -> Int -> String -> H.Html Msg
+viewAnswers answers adId rootUrl =
   case answers of
     AnswerCount num ->
-      H.div [] [ H.text <| "Vastauksia on " ++ toString num ]
+      viewAnswerCount num adId rootUrl
     AnswerList (fst :: rst) ->
-      H.div [] [ H.text <| "Ensimmäinen vastaus on " ++ fst.content ]
+      viewAnswerList (fst :: rst)
     AnswerList _ ->
-      H.div [] [ H.text "Voisit nähdä vastaukset, mutta niitä ei ole" ]
+      H.div
+        [ A.class "ad-page__answers" ]
+        [ H.h1 [] [ H.text "Tällä ilmoituksella ei ole vielä yhtään vastausta" ]
+        , H.p [] [ H.text "Lisää omasi ylhäällä" ]
+        ]
+
+viewAnswerList : List Answer -> H.Html Msg
+viewAnswerList answers =
+  H.div
+    [ A.class "ad-page__answers" ]
+    (List.indexedMap (\i answer -> viewAnswer answer ((i+1) % 2 == 0)) answers)
+
+viewAnswer : Answer -> Bool -> H.Html Msg
+viewAnswer answer isEven =
+  H.div
+    [ A.class "row ad-page__answers-row" ] <|
+    (if isEven then List.reverse else identity)
+    [ H.div
+      [ A.classList
+        [ ("col-sm-6", True)
+        , ("col-sm-offset-6", isEven)
+        , ("ad-page__answers-row--left", not isEven)
+        , ("ad-page__answers-row--right", isEven)
+        ]
+      ]
+      [ H.div
+          [ A.classList
+              [ ("ad-page__answers-content", True)
+              , ("ad-page__answers-content--left", not isEven)
+              , ("ad-page__answers-content--right", isEven)
+              ]
+          ]
+          [ H.p [] [ H.text answer.content ] ]
+      , H.span
+        [ A.classList
+            [ ("ad-page__answers-icon", True)
+            , ("ad-page__answers-icon--left", not isEven)
+            , ("ad-page__answers-icon--right", isEven)
+            , ("glyphicon", True)
+            , ("glyphicon-comment", True)
+            ]
+        ]
+        []
+      ]
+    ]
+
+viewAnswerCount : Int -> Int -> String -> H.Html Msg
+viewAnswerCount num adId rootUrl =
+  let
+    (heading, text) =
+      case num of
+        0 ->
+          ( "Tähän ilmoitukseen ei ole vastattu kertaakaan"
+          , "Kirjaudu sisään ja ole ensimmäinen"
+          )
+        1 ->
+          ( "Tällä ilmoituksella on yksi vastaus"
+          , "Kirjaudu sisään nähdäksesesi sen ja lisää omasi"
+          )
+        n ->
+          ( "Tähän ilmoitukseen on vastattu " ++ toString n ++ " kertaa"
+          , "Kirjaudu sisään nähdäksesi vastaukset ja lisää omasi"
+          )
+  in
+    H.div
+      [ A.class "ad-page__answers" ]
+      [ H.h1 [] [ H.text heading ]
+      , H.p [] [ H.text text ]
+      , H.a
+        [ A.class "btn btn-primary"
+        , A.href (Nav.ssoUrl rootUrl (Nav.ShowAd adId))
+        ]
+        [ H.text "Kirjaudu" ]
+      ]
+
 
 leaveAnswerBox : Bool -> Int -> List (H.Html Msg)
 leaveAnswerBox sending adId =
