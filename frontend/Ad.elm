@@ -20,7 +20,7 @@ type Msg
   = StartAddAnswer
   | ChangeAnswerText String
   | SendAnswer Int
-  | SendAnswerResponse (Result Http.Error String)
+  | SendAnswerResponse Int (Result Http.Error String)
   | GetAd (Result Http.Error Ad)
 
 
@@ -37,7 +37,7 @@ sendAnswer model adId =
         [ ("content", JS.string model.answerText)]
   in
     Http.post ("/api/ads/" ++ toString adId ++ "/answer") (Http.jsonBody encoded) Json.string
-      |> Http.send SendAnswerResponse
+      |> Http.send (SendAnswerResponse adId)
 
 adDecoder : Decoder Ad
 adDecoder =
@@ -75,10 +75,14 @@ update msg model =
     SendAnswer adId ->
       { model | sending = Sending } ! [ sendAnswer model adId ]
 
-    SendAnswerResponse (Ok _) ->
-      { model | sending = FinishedSuccess "ok" } ! []
+    SendAnswerResponse adId (Ok _) ->
+      { model
+        | sending = FinishedSuccess "ok"
+        , answerText = ""
+        , addingAnswer = False
+      } ! [ getAd adId ]
 
-    SendAnswerResponse (Err _) ->
+    SendAnswerResponse adId (Err _) ->
       { model | sending = FinishedFail } ! []
 
     GetAd (Ok ad) ->
