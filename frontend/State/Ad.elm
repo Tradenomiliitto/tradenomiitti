@@ -10,6 +10,7 @@ type alias Ad =
   , answers: Answers
   , createdBy: User.User
   , createdAt: Date.Date
+  , id: Int
   }
 
 type Answers = AnswerCount Int | AnswerList (List Answer)

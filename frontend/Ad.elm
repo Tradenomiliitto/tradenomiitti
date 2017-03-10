@@ -47,6 +47,7 @@ adDecoder =
     |> P.required "answers" answersDecoder
     |> P.required "created_by" User.userDecoder
     |> P.required "created_at" date
+    |> P.required "id" int
 
 --answers can be either list of answers or a number
 answersDecoder : Decoder Answers
