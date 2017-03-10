@@ -78,6 +78,7 @@ adListView ad =
       ]
     ]
 
+-- truncates content so that the result includes at most numChars characters, taking full words. "…" is added if the content is truncated 
 truncateContent : String -> Int -> String
 truncateContent content numChars =
   if (String.length content) < numChars
@@ -86,8 +87,10 @@ truncateContent content numChars =
       let
         truncated = List.foldl (takeNChars numChars) "" (String.words content)
       in
-        (String.dropRight 1 truncated) ++ "..."
+        -- drop extra whitespace created by takeNChars and add three dots
+        (String.dropRight 1 truncated) ++ "…"
 
+-- takes first x words where sum of the characters is less than n
 takeNChars : Int -> String -> String -> String
 takeNChars n word accumulator =
   let
