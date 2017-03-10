@@ -63,7 +63,7 @@ adListView ad =
           , A.href ("/ads/" ++ (toString ad.id)) ]
           [ H.text ad.heading ] 
         ]
-      , H.p [ A.class "list-ads__ad-preview-content" ] [ H.text ad.content]
+      , H.p [ A.class "list-ads__ad-preview-content" ] [ H.text (truncateContent ad.content 200) ]
       , H.hr [] []
       , H.div
         []
@@ -77,3 +77,22 @@ adListView ad =
         ]
       ]
     ]
+
+truncateContent : String -> Int -> String
+truncateContent content numChars =
+  if (String.length content) < numChars
+    then content
+    else
+      let
+        truncated = List.foldl (takeNChars numChars) "" (String.words content)
+      in
+        (String.dropRight 1 truncated) ++ "..."
+
+takeNChars : Int -> String -> String -> String
+takeNChars n word accumulator =
+  let
+    totalLength = (String.length accumulator) + (String.length word)
+  in
+    if totalLength < n
+      then accumulator ++ word ++ " "
+      else accumulator
