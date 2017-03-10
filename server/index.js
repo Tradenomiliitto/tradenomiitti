@@ -167,6 +167,7 @@ function formatAnswer(answer) {
     .then(rows => rows[0])
     .then(function(user) {
       answer.created_by = formatUser(user);
+      answer.data.content = answer.data.content || '';
       return answer;
     })
 }

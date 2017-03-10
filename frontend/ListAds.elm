@@ -1,12 +1,15 @@
 module ListAds exposing (..)
 
+import Ad
 import Html as H
 import Html.Attributes as A
+import Html.Events as E
 import Http
-import State.Ad as Ad
+import Json.Decode exposing (list)
+import State.Ad
 import State.ListAds exposing (..)
 
-type Msg = NoOp | GetAds | UpdateAds (Result Http.Error (List Ad.Ad))
+type Msg = NoOp | GetAds | UpdateAds (Result Http.Error (List State.Ad.Ad))
 
 
 update : Msg -> Model -> (Model, Cmd Msg)
@@ -20,18 +23,18 @@ update msg model =
     UpdateAds (Err _) ->
       (model, Cmd.none)
     GetAds ->
-      (model, Cmd.none)
+      (model, getAds)
 
-{-
+
 getAds : Cmd Msg
 getAds =
   let
     url = "/api/ads/"
-    request = Http.get url
+    request = Http.get url (list Ad.adDecoder)
   in
     Http.send UpdateAds request
 
--}
+
 view : Model -> H.Html Msg
 view model =
   H.div []
@@ -48,14 +51,19 @@ view model =
 
 
 
-adListView : Ad.Ad -> H.Html Msg
+adListView : State.Ad.Ad -> H.Html Msg
 adListView ad =
   H.div
     [ A.class "col-xs-12 col-sm-6"]
     [ H.div
       [ A.class "list-ads__ad-preview" ]
-      [ H.h3 [ A.class "list-ads__ad-preview-heading" ] [ H.text ad.heading ]
-      , H.p [ A.class "list-ads__ad-preview-content" ] [ H.text ad.content]
+      [ H.h3 []
+        [ H.a 
+          [ A.class "list-ads__ad-preview-heading"
+          , A.href ("/ads/" ++ (toString ad.id)) ]
+          [ H.text ad.heading ] 
+        ]
+      , H.p [ A.class "list-ads__ad-preview-content" ] [ H.text (truncateContent ad.content 200) ]
       , H.hr [] []
       , H.div
         []
@@ -69,3 +77,25 @@ adListView ad =
         ]
       ]
     ]
+
+-- truncates content so that the result includes at most numChars characters, taking full words. "…" is added if the content is truncated 
+truncateContent : String -> Int -> String
+truncateContent content numChars =
+  if (String.length content) < numChars
+    then content
+    else
+      let
+        truncated = List.foldl (takeNChars numChars) "" (String.words content)
+      in
+        -- drop extra whitespace created by takeNChars and add three dots
+        (String.dropRight 1 truncated) ++ "…"
+
+-- takes first x words where sum of the characters is less than n
+takeNChars : Int -> String -> String -> String
+takeNChars n word accumulator =
+  let
+    totalLength = (String.length accumulator) + (String.length word)
+  in
+    if totalLength < n
+      then accumulator ++ word ++ " "
+      else accumulator
