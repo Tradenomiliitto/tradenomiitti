@@ -101,23 +101,23 @@ view model adId user rootUrl =
 viewAd : Int -> Model -> Maybe User.User -> String -> Ad -> H.Html Msg
 viewAd adId model userMaybe rootUrl ad =
   let
-    canAnswer =
+    (canAnswer, isAsker, hasAnswered) =
       case userMaybe of
         Just user ->
           let
             isAsker = ad.createdBy.id == user.id
             hasAnswered =
               case ad.answers of
-                AnswerCount _ -> False -- not logged in? shouldn't happen
+                AnswerCount _ -> (False) -- not logged in? shouldn't happen
                 AnswerList answers ->
                   answers
                     |> List.map (.id << .createdBy)
                     |> List.any ((==) user.id)
           in
-            not isAsker && not hasAnswered
+            (not isAsker && not hasAnswered, isAsker, hasAnswered)
 
         Nothing ->
-          False
+          (False, False, False)
   in
     H.div
       [ A.class "container ad-page" ]
@@ -143,7 +143,7 @@ viewAd adId model userMaybe rootUrl ad =
         , leaveAnswer <|
           if model.addingAnswer
           then leaveAnswerBox (model.sending == Sending) adId
-          else leaveAnswerPrompt canAnswer
+          else leaveAnswerPrompt canAnswer isAsker hasAnswered
         ]
       , H.hr [ A.class "full-width-ruler" ] []
       , viewAnswers ad.answers adId rootUrl
@@ -261,21 +261,33 @@ leaveAnswerBox sending adId =
     ]
   ]
 
-leaveAnswerPrompt : Bool -> List (H.Html Msg)
-leaveAnswerPrompt canAnswer =
-  [ H.p
-      [ A.class "ad-page__leave-answer-text"]
-      [ H.text "Kokemuksellasi on aina arvoa. Jää näkemyksesi vastaamalla ilmoitukseen." ]
-  , H.button
-    [ A.class "btn btn-primary btn-lg ad-page__leave-answer-button"
-    , E.onClick StartAddAnswer
-    , A.disabled (not canAnswer)
-    , A.title (if canAnswer
-               then "Voit vastata muiden esittämiin kysymyksiin kerran"
-               else "Et voi vastata tähän kysymykseen")
+leaveAnswerPrompt : Bool -> Bool -> Bool -> List (H.Html Msg)
+leaveAnswerPrompt canAnswer isAsker hasAnswered =
+  if isAsker then
+    [ H.p
+      [ A.class "ad-page__leave-answer-text" ]
+      [ H.text "Muut käyttäjät voivat vastata ilmoitukseesi tällä sivulla. Näet vastaukset alla kun niitä tulee." ]
     ]
-    [ H.text "Vastaa ilmoitukseen" ]
-  ]
+  else
+    if hasAnswered then
+      [ H.p
+        [ A.class "ad-page__leave-answer-text" ]
+        [ H.text "Olet vastannut tähän ilmoitukseen. Kiitos kun autoit kanssatradenomiasi!" ]
+      ]
+    else
+      [ H.p
+          [ A.class "ad-page__leave-answer-text"]
+          [ H.text "Kokemuksellasi on aina arvoa. Jää näkemyksesi vastaamalla ilmoitukseen." ]
+      , H.button
+        [ A.class "btn btn-primary btn-lg ad-page__leave-answer-button"
+        , E.onClick StartAddAnswer
+        , A.disabled (not canAnswer)
+        , A.title (if canAnswer
+                  then "Voit vastata muiden esittämiin kysymyksiin kerran"
+                  else "Et voi vastata tähän kysymykseen")
+        ]
+        [ H.text "Vastaa ilmoitukseen" ]
+      ]
 
 leaveAnswer : List (H.Html Msg) -> H.Html Msg
 leaveAnswer contents =
