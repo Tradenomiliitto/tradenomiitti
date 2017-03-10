@@ -1,6 +1,8 @@
 module Ad exposing (..)
 
+import Common
 import Date.Extra as Date
+import Date
 import Html as H
 import Html.Attributes as A
 import Html.Events as E
@@ -118,7 +120,7 @@ viewAd adId model userMaybe rootUrl ad =
         [ A.class "row ad-page__ad-container" ]
         [ H.div
           [ A.class "col-xs-12 col-sm-6 ad-page__ad" ]
-          [ H.p [ A.class "ad-page__date" ] [ H.text (Date.toFormattedString "d.M.y" ad.createdAt) ]
+          [ viewDate ad.createdAt
           , H.h3 [ A.class "user-page__activity-item-heading" ] [ H.text ad.heading ]
           , H.p [ A.class "user-page__activity-item-content" ]  [ H.text ad.content ]
           , H.hr [] []
@@ -183,7 +185,11 @@ viewAnswer answer isEven =
               , ("ad-page__answers-content--right", isEven)
               ]
           ]
-          [ H.p [] [ H.text answer.content ] ]
+          [ viewDate answer.createdAt
+          , H.hr [] []
+          , H.p [] [ H.text answer.content ]
+          , Common.authorInfo answer.createdBy
+          ]
       , H.span
         [ A.classList
             [ ("ad-page__answers-icon", True)
@@ -271,3 +277,7 @@ leaveAnswer contents =
   H.div
     [ A.class "col-xs-12 col-sm-6 ad-page__leave-answer" ]
     contents
+
+viewDate : Date.Date -> H.Html Msg
+viewDate date =
+  H.p [ A.class "ad-page__date" ] [ H.text (Date.toFormattedString "d.M.y" date) ]

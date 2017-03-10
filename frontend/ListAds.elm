@@ -1,5 +1,6 @@
 module ListAds exposing (..)
 
+import Common
 import Html as H
 import Html.Attributes as A
 import Http
@@ -57,15 +58,6 @@ adListView ad =
       [ H.h3 [ A.class "list-ads__ad-preview-heading" ] [ H.text ad.heading ]
       , H.p [ A.class "list-ads__ad-preview-content" ] [ H.text ad.content]
       , H.hr [] []
-      , H.div
-        []
-        [ H.span [ A.class "list-ads__ad-preview-profile-pic" ] []
-        , H.span
-          [ A.class "list-ads__ad-preview-profile-info" ]
-          [ H.span [ A.class "list-ads__ad-preview-profile-name"] [ H.text ad.createdBy.name ]
-          , H.br [] []
-          , H.span [ A.class "list-ads__ad-preview-profile-title"] [ H.text ad.createdBy.primaryPosition ]
-          ]
-        ]
+      , Common.authorInfo ad.createdBy
       ]
     ]

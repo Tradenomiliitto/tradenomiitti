@@ -1,5 +1,6 @@
 @import 'common';
 @import 'list-ads';
+@import 'author-info';
 
 $content-top-margin: 70px;
 $light-grey-background: #fbfbfb;
@@ -624,5 +625,8 @@ div#not-implemented {
         border-left: 2px solid $pink;
       }
     }
+  }
+  &__date {
+    font-weight: bold;
   }
 }
