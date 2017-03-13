@@ -62,7 +62,6 @@ function consentToProfileCreation(req, res) {
     .then(user => {
       // patch user object
       Object.assign(user.data, {profile_creation_consented: true});
-      console.log(user)
       return knex('users')
         .where({ id: user.id })
         .update('data', user.data)
