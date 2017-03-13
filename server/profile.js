@@ -74,7 +74,6 @@ module.exports = function initialize(params) {
   return {
     getMe,
     putMe,
-    consentToProfileCreation,
-    initialize
+    consentToProfileCreation
   };
 }

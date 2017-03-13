@@ -29,7 +29,6 @@ module.exports = function initialize(params) {
 
   return  {
     userForSession,
-    formatUser,
-    initialize
+    formatUser
   };
 }

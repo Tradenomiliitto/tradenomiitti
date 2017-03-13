@@ -81,7 +81,6 @@ module.exports = function initialize(params) {
 
   return {
     login,
-    logout,
-    initialize
+    logout
   };
 }
