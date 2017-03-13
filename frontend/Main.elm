@@ -3,6 +3,7 @@ import CreateAd
 import Html as H
 import Html.Attributes as A
 import Html.Events as E
+import Home
 import Json.Decode as Json
 import ListAds
 import LoginNeeded
@@ -341,6 +342,8 @@ viewPage model =
           H.map ListAdsMessage <| ListAds.view model.listAds
         ShowAd adId ->
           H.map AdMessage <| Ad.view model.ad adId model.profile.user model.rootUrl
+        Home ->
+          Home.view
         route ->
           notImplementedYet
   in
