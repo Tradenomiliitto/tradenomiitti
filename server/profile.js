@@ -16,11 +16,10 @@ function getMe(req, res) {
         sebacon.getUserFirstName(user.remote_id),
         sebacon.getUserNickName(user.remote_id),
         sebacon.getUserEmploymentExtras(user.remote_id),
-        userAds(user),
         user
       ])
     })
-    .then(([ firstname, nickname, { positions, domains }, ads, databaseUser ]) => {
+    .then(([ firstname, nickname, { positions, domains }, databaseUser ]) => {
       const user = util.formatUser(databaseUser);
       user.extra = {
         first_name: firstname,
@@ -28,7 +27,6 @@ function getMe(req, res) {
         positions: positions,
         domains: domains
       }
-      user.ads = ads;
 
       return res.json(user);
     })
@@ -75,12 +73,6 @@ function consentToProfileCreation(req, res) {
       res.sendStatus(500);
     });
 }
-
-function userAds(user) {
-  return knex('ads')
-    .where({ user_id: user.id });
-}
-
 
 module.exports = {
   getMe,
