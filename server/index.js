@@ -80,6 +80,8 @@ app.get('/api/oma', profile.getMe);
 
 app.put('/api/oma', jsonParser, profile.putMe);
 
+app.post('/api/me/create-profile', profile.consentToProfileCreation);
+
 app.get('/api/tehtavaluokat', (req, res) => {
   return sebacon.getPositionTitles().then(positions => res.json(Object.values(positions)));
 });
@@ -109,7 +111,7 @@ app.get('/api/ilmoitukset/:id', (req, res) => {
   ]).then(([ad, user]) => formatAd(ad, user))
     .then(ad => res.send(ad))
     .catch(e => { console.error(e); res.sendStatus(404) });
-})
+});
 
 app.get('/api/ilmoitukset', (req, res) => {
   return Promise.all([
@@ -118,7 +120,30 @@ app.get('/api/ilmoitukset', (req, res) => {
   ]).then(([rows, user]) => Promise.all(rows.map(ad => formatAd(ad, user))))
     .then(ads => ads.sort(latestFirst))
     .then(ads => res.send(ads))
-})
+});
+
+app.get('/api/ads/byUser/:id', (req, res) => {
+  const getAds = knex('ads').where('user_id', req.params.id);
+  const getAnswers = knex('answers').where('user_id', req.params.id).select('ad_id').distinct()
+        .then(results => results.map(o => o.ad_id));
+
+  const getAdsForAnswerer = getAnswers.then(adIds => {
+    return knex('ads').whereIn('id', adIds);
+  });
+  return Promise.all([
+    getAds,
+    getAdsForAnswerer,
+    util.userForSession(req)
+  ]).then(([adsAsAsker, adsAsAnswerer, user]) => {
+    const allAds = adsAsAsker.concat(adsAsAnswerer)
+    return Promise.all(allAds.map(ad => formatAd(ad, user)))
+  }).then(ads => ads.sort(latestFirst))
+    .then(ads => res.send(ads))
+    .catch(err => {
+      console.error(err);
+      res.sendStatus(500);
+    })
+});
 
 //comparing function for two objects with createdAt datestring field. Latest will come first.
 function latestFirst(a, b) {
@@ -164,7 +189,7 @@ function formatAd(ad, user) {
       .then(answers => Promise.all(answers.map(formatAnswer))),
     knex('users').where({id: ad.user_id}).then(rows => rows[0])
   ]).then(function ([answers, askingUser]) {
-    ad.created_by = formatUser(askingUser);
+    ad.created_by = util.formatUser(askingUser);
     ad.answers = user ? answers : answers.length;
     return ad;
   })
@@ -174,16 +199,10 @@ function formatAnswer(answer) {
   return knex('users').where({ id: answer.user_id })
     .then(rows => rows[0])
     .then(function(user) {
-      answer.created_by = formatUser(user);
+      answer.created_by = util.formatUser(user);
       answer.data.content = answer.data.content || '';
       return answer;
     })
-}
-
-function formatUser(user) {
-  formattedUser = user.data;
-  formattedUser.id = user.id;
-  return formattedUser;
 }
 
 app.get('*', (req, res) => {

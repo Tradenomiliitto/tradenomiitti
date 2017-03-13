@@ -1,185 +1,16 @@
-module Profile exposing (..)
+module Profile.View exposing (..)
 
 import Html as H
 import Html.Attributes as A
 import Html.Events as E
-import Http
 import Json.Decode as Json
-import Json.Encode as JS
+import ListAds
 import Nav
+import Profile.Main exposing (Msg(..))
 import Skill
 import State.Main as RootState
 import State.Profile exposing (Model)
 import User
-
-
-type Msg
-  = GetMe (Result Http.Error User.User)
-  | Save User.User
-  | Edit
-  | AllowProfileCreation User.User
-  | DomainSkillMessage Int Skill.Msg
-  | PositionSkillMessage Int Skill.Msg
-  | ChangeDomainSelect String
-  | ChangePositionSelect String
-  | AddDomain
-  | AddPosition
-  | GetDomainOptions (Result Http.Error (List String))
-  | GetPositionOptions (Result Http.Error (List String))
-  | ChangePrimaryDomain String
-  | ChangePrimaryPosition String
-  | ChangeNickname String
-  | ChangeDescription String
-  | UpdateUser (Result Http.Error ())
-  | UpdateConsent (Result Http.Error ())
-  | NoOp
-
-
-getMe : Cmd Msg
-getMe =
-  Http.get "/api/oma" User.userDecoder
-    |> Http.send GetMe
-
-initTasks : Cmd Msg
-initTasks =
-  Cmd.batch [ getPositionOptions, getDomainOptions ]
-
-getDomainOptions : Cmd Msg
-getDomainOptions =
-  Http.get "/api/toimialat" (Json.list Json.string)
-    |> Http.send GetDomainOptions
-
-getPositionOptions : Cmd Msg
-getPositionOptions =
-  Http.get "/api/tehtavaluokat" (Json.list Json.string)
-    |> Http.send GetPositionOptions
-
-updateMe : User.User -> Cmd Msg
-updateMe user =
-  put "/api/oma" (User.encode user)
-    |> Http.send UpdateUser
-
-updateConsent : User.User -> Cmd Msg
-updateConsent user =
-  put "/api/oma" (User.encode user)
-    |> Http.send UpdateConsent
-
-put : String -> JS.Value -> Http.Request ()
-put url body =
-  Http.request
-    { method = "PUT"
-    , headers = []
-    , url = url
-    , body = Http.jsonBody body
-    , expect = Http.expectStringResponse (\_ -> Ok ())
-    , timeout = Nothing
-    , withCredentials = False
-    }
-
-updateSkillList : Int -> Skill.SkillLevel -> List Skill.Model -> List Skill.Model
-updateSkillList index skillLevel list =
-  List.indexedMap
-    (\i x -> if i == index then Skill.update skillLevel x else x)
-    list
-
-deleteFromSkillList : Int -> List Skill.Model -> List Skill.Model
-deleteFromSkillList index list =
-  List.indexedMap (\i x -> if i == index then Nothing else Just x) list
-    |> List.filterMap identity
-
-
-updateUser : (User.User -> User.User) -> Model -> Model
-updateUser update model =
-  { model | user = Maybe.map update model.user }
-
-update : Msg -> Model -> (Model, Cmd Msg)
-update msg model =
-  case msg of
-    GetMe (Err _) ->
-      { model | user = Nothing } ! []
-
-    GetMe (Ok user) ->
-      { model | user = Just user } ! []
-
-    Save user ->
-      model ! [ updateMe user ]
-
-    AllowProfileCreation user ->
-      let
-        newUser = { user | profileCreated = True }
-        newModel = { model
-                     | user = Just newUser
-                     , editing = True
-                   }
-      in
-        newModel ! [ updateConsent newUser ]
-
-    Edit ->
-      { model | editing = True } ! []
-
-    DomainSkillMessage index (Skill.LevelChange skillLevel) ->
-      updateUser (\u -> { u | domains = updateSkillList index skillLevel u.domains }) model ! []
-
-    PositionSkillMessage index (Skill.LevelChange skillLevel) ->
-      updateUser (\u -> { u | positions = updateSkillList index skillLevel u.positions }) model ! []
-
-    DomainSkillMessage index Skill.Delete ->
-      updateUser (\u -> { u | domains = deleteFromSkillList index u.domains }) model ! []
-
-    PositionSkillMessage index Skill.Delete ->
-      updateUser (\u -> { u | positions = deleteFromSkillList index u.positions }) model ! []
-
-    ChangeDomainSelect str ->
-      { model | selectedDomainOption = str } ! []
-
-    ChangePositionSelect str ->
-      { model | selectedPositionOption = str } ! []
-
-    AddDomain ->
-      updateUser (\u -> { u | domains = u.domains ++ [ Skill.Model model.selectedDomainOption Skill.Interested ] }) model ! []
-
-    AddPosition ->
-      updateUser (\u -> { u | positions = u.positions ++ [ Skill.Model model.selectedPositionOption Skill.Interested ] }) model ! []
-
-    ChangePrimaryDomain str ->
-      updateUser (\u -> { u | primaryDomain = str }) model ! []
-
-    ChangePrimaryPosition str ->
-      updateUser (\u -> { u | primaryPosition = str }) model ! []
-
-    ChangeNickname str ->
-      updateUser (\u -> { u | name = str }) model ! []
-
-    ChangeDescription str ->
-      updateUser (\u -> { u | description = str }) model ! []
-
-    GetPositionOptions (Ok list) ->
-      { model | positionOptions = list } ! []
-
-    GetDomainOptions (Ok list) ->
-      { model | domainOptions = list } ! []
-
-    GetPositionOptions (Err _) ->
-      model ! [] -- TODO error handling
-
-    GetDomainOptions (Err _) ->
-      model ! [] -- TODO error handling
-
-    UpdateUser (Err _) ->
-      model ! [] -- TODO error handling
-
-    UpdateUser (Ok _) ->
-      { model | editing = False } ! []
-
-    UpdateConsent (Err _) ->
-      model ! [] -- TODO error handling
-
-    UpdateConsent (Ok _) ->
-      model ! []
-
-    NoOp ->
-      model ! []
-
 
 view : Model -> RootState.Model ->  H.Html Msg
 view model rootState =
@@ -251,23 +82,6 @@ viewUserMaybe model =
 
 viewUser : Model -> User.User -> List (H.Html Msg)
 viewUser model user =
-  if not user.profileCreated
-  then
-    [ H.div
-      [ A.class "splash-screen" ]
-        [ H.div
-          [ A.class "profile__consent-needed col-xs-12 col-md-5" ]
-          [ H.h1 [] [ H.text "Tervetuloa Tradenomiittiin!" ]
-          , H.p [] [ H.text "Tehdäksemme palvelun käytöstä mahdollisimman vaivatonta hyödynnämme Tradenomiliiton olemassa olevia jäsentietoja (nimesi, työhistoriasi). Luomalla profiilin hyväksyt tietojesi käytön Tradenomiitti-palvelussa. Voit muokata tietojasi myöhemmin." ]
-          , H.button
-            [ A.class "btn btn-lg profile__consent-btn-inverse"
-            , E.onClick (AllowProfileCreation user)
-            ]
-            [ H.text "Luo profiili" ]
-          ]
-        ]
-    ]
-  else
   [ H.div
     [ A.class "container" ]
     [ H.div
@@ -326,7 +140,17 @@ viewUser model user =
       ]
     ]
   , H.hr [ A.class "full-width-ruler" ] []
-    -- TODO: User activity (sent and responded ads) View functions can be found in ListAds.elm
+  , H.div
+    [ A.class "container" ] <|
+    [ H.div
+      [ A.class "row" ]
+      [ H.div
+        [ A.class "col-sm-12" ]
+        [ H.h3 [ A.class "user-page__activity-header" ] [ H.text "Aktiivisuus" ]
+        ]
+      ]
+    ]
+    ++ ListAds.viewAds model.ads
   , H.hr [ A.class "full-width-ruler" ] []
   , H.div
     [ A.class "container" ]
@@ -381,8 +205,8 @@ viewUser model user =
     ]
   ]
 
-membershipDataBox : User.User -> H.Html Msg 
-membershipDataBox user = 
+membershipDataBox : User.User -> H.Html Msg
+membershipDataBox user =
   case user.extra of
     Just extra ->
       H.div
