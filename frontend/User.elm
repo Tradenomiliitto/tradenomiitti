@@ -41,7 +41,7 @@ userDecoder =
     |> P.required "id" int
     |> P.required "name" string
     |> P.required "description" string
-    |> P.required "primary_position" string
+    |> P.required "title" string
     |> P.required "domains" (list Skill.decoder)
     |> P.required "positions" (list Skill.decoder)
     |> P.required "profile_creation_consented" bool
@@ -52,7 +52,7 @@ encode user =
   JS.object
     [ ("name", JS.string user.name)
     , ("description", JS.string user.description)
-    , ("primary_position", JS.string user.primaryPosition)
+    , ("title", JS.string user.primaryPosition)
     , ("domains", JS.list (List.map Skill.encode user.domains) )
     , ("positions", JS.list (List.map Skill.encode user.positions) )
     , ("profile_creation_consented", JS.bool user.profileCreated)

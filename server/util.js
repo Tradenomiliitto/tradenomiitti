@@ -17,7 +17,7 @@ module.exports = function initialize(params) {
 
     formattedUser.name = userData.name || '';
     formattedUser.description = userData.description || '';
-    formattedUser.primary_position = userData.primary_position || 'Ei titteliä';
+    formattedUser.title = userData.title || 'Ei titteliä';
     formattedUser.domains = userData.domains || [];
     formattedUser.positions = userData.positions || [];
     formattedUser.profile_creation_consented = userData.profile_creation_consented || false;
