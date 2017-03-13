@@ -10,6 +10,7 @@ import Maybe.Extra as Maybe
 import Nav exposing (..)
 import Navigation
 import Profile.Main as Profile
+import Profile.View
 import State.Main exposing (..)
 import User
 
@@ -302,7 +303,7 @@ viewPage model =
         User userId ->
           H.map UserMessage <| User.view model.user
         Profile ->
-          H.map ProfileMessage <| Profile.view model.profile model
+          H.map ProfileMessage <| Profile.View.view model.profile model
         CreateAd ->
           if Maybe.isJust model.profile.user
           then
