@@ -40,6 +40,7 @@ init location =
 type Msg
   = NewUrl Route
   | UrlChange Navigation.Location
+  | AllowProfileCreation
   | UserMessage User.Msg
   | ProfileMessage Profile.Msg
   | CreateAdMessage CreateAd.Msg
@@ -85,20 +86,30 @@ update msg model =
       in
         ( { model | user = userModel}, Cmd.map UserMessage cmd )
 
+    AllowProfileCreation ->
+      let
+        (profileModel, cmd) = Profile.update Profile.AllowProfileCreation model.profile
+        newModel = { model | profile = profileModel, needsConsent = False }
+      in
+        newModel ! [ Cmd.map ProfileMessage cmd ]
+
     ProfileMessage msg ->
       let
         (profileModel, cmd) = Profile.update msg model.profile
-        initialLoading =
+        (initialLoading, needsConsent) =
           case msg of
-            Profile.GetMe _ ->
-              False
+            Profile.GetMe (Ok user) ->
+              (False, not user.profileCreated)
+            Profile.GetMe (Err _) ->
+              (False, False)
             _ ->
-              model.initialLoading
+              (model.initialLoading, model.needsConsent)
 
       in
         { model
           | profile = profileModel
           , initialLoading = initialLoading
+          , needsConsent = needsConsent
         } ! [ Cmd.map ProfileMessage cmd ]
 
     CreateAdMessage msg ->
@@ -136,10 +147,26 @@ view model =
       [ A.class "splash-screen" ]
       [ logoImage 400 ]
   else
-    H.div []
-      [ navigation model
-      , viewPage model
-      ]
+    if model.needsConsent
+    then
+      H.div
+        [ A.class "splash-screen" ]
+          [ H.div
+            [ A.class "profile__consent-needed col-xs-12 col-md-5" ]
+            [ H.h1 [] [ H.text "Tervetuloa Tradenomiittiin!" ]
+            , H.p [] [ H.text "Tehdäksemme palvelun käytöstä mahdollisimman vaivatonta hyödynnämme Tradenomiliiton olemassa olevia jäsentietoja (nimesi, työhistoriasi). Luomalla profiilin hyväksyt tietojesi käytön Tradenomiitti-palvelussa. Voit muokata tietojasi myöhemmin." ]
+            , H.button
+              [ A.class "btn btn-lg profile__consent-btn-inverse"
+              , E.onClick (AllowProfileCreation)
+              ]
+              [ H.text "Luo profiili" ]
+            ]
+          ]
+    else
+      H.div []
+        [ navigation model
+        , viewPage model
+        ]
 
 --TODO move navbar code to Nav.elm
 

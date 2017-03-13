@@ -78,6 +78,8 @@ app.get('/logout', logon.logout);
 
 app.get('/api/me', profile.getMe);
 
+app.post('/api/me/create-profile', profile.consentToProfileCreation);
+
 app.put('/api/me', jsonParser, profile.putMe);
 
 app.get('/api/positions', (req, res) => {
@@ -156,7 +158,7 @@ function formatAd(ad, user) {
       .then(answers => Promise.all(answers.map(formatAnswer))),
     knex('users').where({id: ad.user_id}).then(rows => rows[0])
   ]).then(function ([answers, askingUser]) {
-    ad.created_by = formatUser(askingUser);
+    ad.created_by = util.formatUser(askingUser);
     ad.answers = user ? answers : answers.length;
     return ad;
   })
@@ -166,16 +168,10 @@ function formatAnswer(answer) {
   return knex('users').where({ id: answer.user_id })
     .then(rows => rows[0])
     .then(function(user) {
-      answer.created_by = formatUser(user);
+      answer.created_by = util.formatUser(user);
       answer.data.content = answer.data.content || '';
       return answer;
     })
-}
-
-function formatUser(user) {
-  formattedUser = user.data;
-  formattedUser.id = user.id;
-  return formattedUser;
 }
 
 app.get('*', (req, res) => {

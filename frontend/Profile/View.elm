@@ -81,23 +81,6 @@ viewUserMaybe model =
 
 viewUser : Model -> User.User -> List (H.Html Msg)
 viewUser model user =
-  if not user.profileCreated
-  then
-    [ H.div
-      [ A.class "splash-screen" ]
-        [ H.div
-          [ A.class "profile__consent-needed col-xs-12 col-md-5" ]
-          [ H.h1 [] [ H.text "Tervetuloa Tradenomiittiin!" ]
-          , H.p [] [ H.text "Tehdäksemme palvelun käytöstä mahdollisimman vaivatonta hyödynnämme Tradenomiliiton olemassa olevia jäsentietoja (nimesi, työhistoriasi). Luomalla profiilin hyväksyt tietojesi käytön Tradenomiitti-palvelussa. Voit muokata tietojasi myöhemmin." ]
-          , H.button
-            [ A.class "btn btn-lg profile__consent-btn-inverse"
-            , E.onClick (AllowProfileCreation user)
-            ]
-            [ H.text "Luo profiili" ]
-          ]
-        ]
-    ]
-  else
   [ H.div
     [ A.class "container" ]
     [ H.div

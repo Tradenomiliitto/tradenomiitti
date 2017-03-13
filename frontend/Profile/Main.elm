@@ -12,7 +12,7 @@ type Msg
   = GetMe (Result Http.Error User.User)
   | Save User.User
   | Edit
-  | AllowProfileCreation User.User
+  | AllowProfileCreation
   | DomainSkillMessage Int Skill.Msg
   | PositionSkillMessage Int Skill.Msg
   | ChangeDomainSelect String
@@ -54,9 +54,9 @@ updateMe user =
   put "/api/me" (User.encode user)
     |> Http.send UpdateUser
 
-updateConsent : User.User -> Cmd Msg
-updateConsent user =
-  put "/api/me" (User.encode user)
+updateConsent : Cmd Msg
+updateConsent =
+  Http.post "/api/me/create-profile" Http.emptyBody (Json.succeed ())
     |> Http.send UpdateConsent
 
 put : String -> JS.Value -> Http.Request ()
@@ -99,15 +99,11 @@ update msg model =
     Save user ->
       model ! [ updateMe user ]
 
-    AllowProfileCreation user ->
+    AllowProfileCreation ->
       let
-        newUser = { user | profileCreated = True }
-        newModel = { model
-                     | user = Just newUser
-                     , editing = True
-                   }
+        newModel = { model | editing = True }
       in
-        newModel ! [ updateConsent newUser ]
+        newModel ! [ updateConsent ]
 
     Edit ->
       { model | editing = True } ! []
@@ -170,7 +166,13 @@ update msg model =
       model ! [] -- TODO error handling
 
     UpdateConsent (Ok _) ->
-      model ! []
+      let
+        newModel =
+          { model
+            | user = Maybe.map (\u -> { u | profileCreated = True }) model.user
+          }
+      in
+        newModel ! []
 
     NoOp ->
       model ! []
