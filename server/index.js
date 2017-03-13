@@ -76,11 +76,11 @@ app.post('/kirjaudu', urlEncoded, logon.login );
 
 app.get('/uloskirjautuminen', logon.logout);
 
-app.get('/api/oma', profile.getMe);
+app.get('/api/profiili/oma', profile.getMe);
 
-app.put('/api/oma', jsonParser, profile.putMe);
+app.put('/api/profiili/oma', jsonParser, profile.putMe);
 
-app.post('/api/me/create-profile', profile.consentToProfileCreation);
+app.post('/api/profiili/luo', profile.consentToProfileCreation);
 
 app.get('/api/tehtavaluokat', (req, res) => {
   return sebacon.getPositionTitles().then(positions => res.json(Object.values(positions)));
@@ -122,7 +122,7 @@ app.get('/api/ilmoitukset', (req, res) => {
     .then(ads => res.send(ads))
 });
 
-app.get('/api/ads/byUser/:id', (req, res) => {
+app.get('/api/ilmoitukset/tradenomilta/:id', (req, res) => {
   const getAds = knex('ads').where('user_id', req.params.id);
   const getAnswers = knex('answers').where('user_id', req.params.id).select('ad_id').distinct()
         .then(results => results.map(o => o.ad_id));
@@ -177,7 +177,7 @@ app.post('/api/ilmoitukset/:id/vastaus', jsonParser, (req, res) => {
     }, 'id');
   }).then(insertResp => res.json(`${insertResp[0]}`))
     .catch(err => {
-      console.error('Error in /api/ads/:id/answer', err);
+      console.error('Error in /api/ilmoitukset/:id/vastaus', err);
       res.sendStatus(500);
     });
 });
