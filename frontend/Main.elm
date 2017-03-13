@@ -4,12 +4,12 @@ import Html as H
 import Html.Attributes as A
 import Html.Events as E
 import Json.Decode as Json
-import ListAds 
+import ListAds
 import LoginNeeded
 import Maybe.Extra as Maybe
 import Nav exposing (..)
 import Navigation
-import Profile
+import Profile.Main as Profile
 import State.Main exposing (..)
 import User
 
@@ -349,5 +349,3 @@ routeToString route =
       "Jätä ilmoitus"
     ShowAd adId ->
       "Ilmoitus " ++ (toString adId)
-
-

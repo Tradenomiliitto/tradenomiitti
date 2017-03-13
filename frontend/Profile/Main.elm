@@ -1,4 +1,4 @@
-module Profile exposing (..)
+module Profile.Main exposing (..)
 
 import Html as H
 import Html.Attributes as A
