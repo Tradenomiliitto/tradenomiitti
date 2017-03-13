@@ -37,7 +37,7 @@ type Msg
 
 getMe : Cmd Msg
 getMe =
-  Http.get "/api/me" User.userDecoder
+  Http.get "/api/oma" User.userDecoder
     |> Http.send GetMe
 
 initTasks : Cmd Msg
@@ -46,22 +46,22 @@ initTasks =
 
 getDomainOptions : Cmd Msg
 getDomainOptions =
-  Http.get "/api/domains" (Json.list Json.string)
+  Http.get "/api/toimialat" (Json.list Json.string)
     |> Http.send GetDomainOptions
 
 getPositionOptions : Cmd Msg
 getPositionOptions =
-  Http.get "/api/positions" (Json.list Json.string)
+  Http.get "/api/tehtavaluokat" (Json.list Json.string)
     |> Http.send GetPositionOptions
 
 updateMe : User.User -> Cmd Msg
 updateMe user =
-  put "/api/me" (User.encode user)
+  put "/api/oma" (User.encode user)
     |> Http.send UpdateUser
 
 updateConsent : User.User -> Cmd Msg
 updateConsent user =
-  put "/api/me" (User.encode user)
+  put "/api/oma" (User.encode user)
     |> Http.send UpdateConsent
 
 put : String -> JS.Value -> Http.Request ()
@@ -195,7 +195,7 @@ profileTopRow model rootState =
       case model.user of
         Just _ ->
           H.a
-            [ A.href "/logout"
+            [ A.href "/uloskirjautuminen"
             , A.class "btn"
             ]
             [ H.text "Kirjaudu ulos" ]

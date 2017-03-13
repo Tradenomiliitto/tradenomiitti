@@ -54,7 +54,7 @@ routeParser =
 ssoUrl : String -> Route -> String
 ssoUrl rootUrl route =
   let
-    loginUrl = rootUrl ++ "/login?path=" ++ (routeToPath route)
+    loginUrl = rootUrl ++ "/kirjaudu?path=" ++ (routeToPath route)
     returnParameter = Window.encodeURIComponent loginUrl
   in
     "https://tunnistus.avoine.fi/sso-login/?service=tradenomiitti&return=" ++

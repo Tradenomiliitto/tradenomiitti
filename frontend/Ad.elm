@@ -26,7 +26,7 @@ type Msg
 
 getAd : Int -> Cmd Msg
 getAd adId =
-  Http.get ("/api/ads/" ++ toString adId) adDecoder
+  Http.get ("/api/ilmoitukset/" ++ toString adId) adDecoder
     |> Http.send GetAd
 
 sendAnswer : Model -> Int -> Cmd Msg
@@ -36,7 +36,7 @@ sendAnswer model adId =
       JS.object
         [ ("content", JS.string model.answerText)]
   in
-    Http.post ("/api/ads/" ++ toString adId ++ "/answer") (Http.jsonBody encoded) Json.string
+    Http.post ("/api/ilmoitukset/" ++ toString adId ++ "/vastaus") (Http.jsonBody encoded) Json.string
       |> Http.send (SendAnswerResponse adId)
 
 adDecoder : Decoder Ad

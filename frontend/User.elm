@@ -94,7 +94,7 @@ update msg model =
 getUser : Int -> Cmd Msg
 getUser userId =
   let
-    url = "/api/user/" ++ (toString userId)
+    url = "/api/tradenomit/" ++ (toString userId)
     request = Http.get url userDecoder
   in
     Http.send UpdateUser request
