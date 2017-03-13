@@ -82,10 +82,20 @@ module.exports = function initialize(params) {
       })
   }
 
+  function getProfile(req, res) {
+    return knex('users').where('id', req.params.id).first()
+      .then(user => util.formatUser(user))
+      .then(user => res.json(user))
+      .catch(err => {
+        return res.sendStatus(404)
+      });
+  }
+
   return {
     getMe,
     putMe,
     consentToProfileCreation,
-    listProfiles
+    listProfiles,
+    getProfile
   };
 }

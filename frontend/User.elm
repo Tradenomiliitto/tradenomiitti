@@ -1,19 +1,14 @@
 module User exposing (..)
 
-import Models.Ad exposing (Ad)
+import Html as H
 import Http
 import Json.Decode as Json
+import Models.Ad exposing (Ad)
 import Models.User exposing (User)
-
-
-type alias Model =
-  { user : Maybe User
-  }
-
-init : Model
-init =
-  { user = Nothing
-  }
+import Profile.Main as Profile
+import Profile.View
+import State.Profile
+import State.User exposing (..)
 
 
 -- UPDATE
@@ -21,6 +16,7 @@ init =
 type Msg
   = UpdateUser (Result Http.Error User)
   | UpdateAds (Result Http.Error (List Ad))
+  | ProfileMessage Profile.Msg
   | NoOp
 
 update : Msg -> Model -> ( Model, Cmd Msg)
@@ -28,12 +24,17 @@ update msg model =
   case msg of
     UpdateUser (Ok updatedUser) ->
       { model | user = Just updatedUser } ! []
-    -- TODO: show error
     UpdateUser (Err _) ->
-      { model | user = Nothing } ! []
+      { model | user = Nothing } ! [] -- TODO: show error
 
-    UpdateAds _ ->
-      model ! [] -- TODO
+    UpdateAds (Ok ads) ->
+      { model | ads = ads } ! []
+
+    UpdateAds (Err _) ->
+      model ! [] -- TODO: show error
+
+    ProfileMessage _ ->
+      model ! [] -- TODO not like this
 
     NoOp ->
       model ! []
@@ -41,7 +42,7 @@ update msg model =
 getUser : Int -> Cmd Msg
 getUser userId =
   let
-    url = "/api/tradenomit/" ++ toString userId
+    url = "/api/profiilit/" ++ toString userId
     request = Http.get url Models.User.userDecoder
   in
     Http.send UpdateUser request
@@ -57,4 +58,13 @@ getAds userId =
 
 -- VIEW
 
-view whatever = Debug.crash "Not implemented"
+view model =
+  let
+    profileInit = State.Profile.init
+    profile = { profileInit | ads = model.ads }
+    views = (Debug.log "user" model.user)
+      |> Maybe.map (\u ->  Profile.View.viewUser profile u)
+      |> Maybe.withDefault []
+
+  in
+    H.map ProfileMessage <| H.div [] views
