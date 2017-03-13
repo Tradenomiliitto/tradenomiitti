@@ -28,7 +28,7 @@ sendAd model =
         , ("content", JS.string model.content)
         ]
   in
-    Http.post "/api/ad" (Http.jsonBody encoded) Json.int
+    Http.post "/api/ilmoitukset" (Http.jsonBody encoded) Json.int
       |> Http.send SendResponse
 
 update : Msg -> Model -> (Model, Cmd Msg)

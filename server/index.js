@@ -36,7 +36,7 @@ if (process.env.NON_LOCAL) {
   app.set('trust proxy', 'loopback');
 }
 
-app.get('/api/user/:id', (req, res) => {
+app.get('/api/tradenomit/:id', (req, res) => {
   knex('users').where('id', req.params.id)
     .then(function(rows){
       if(rows.length === 0){
@@ -72,25 +72,25 @@ profile.initialize({ knex, sebacon, util});
 const urlEncoded = bodyParser.urlencoded();
 const jsonParser = bodyParser.json();
 
-app.post('/login', urlEncoded, logon.login );
+app.post('/kirjaudu', urlEncoded, logon.login );
 
-app.get('/logout', logon.logout);
+app.get('/uloskirjautuminen', logon.logout);
 
-app.get('/api/me', profile.getMe);
+app.get('/api/profiilit/oma', profile.getMe);
 
-app.post('/api/me/create-profile', profile.consentToProfileCreation);
+app.put('/api/profiilit/oma', jsonParser, profile.putMe);
 
-app.put('/api/me', jsonParser, profile.putMe);
+app.post('/api/profiilit/luo', profile.consentToProfileCreation);
 
-app.get('/api/positions', (req, res) => {
+app.get('/api/tehtavaluokat', (req, res) => {
   return sebacon.getPositionTitles().then(positions => res.json(Object.values(positions)));
 });
 
-app.get('/api/domains', (req, res) => {
+app.get('/api/toimialat', (req, res) => {
   return sebacon.getDomainTitles().then(domains => res.json(Object.values(domains)));
 });
 
-app.post('/api/ad', jsonParser, (req, res) => {
+app.post('/api/ilmoitukset', jsonParser, (req, res) => {
   if (!req.session || !req.session.id) {
     return res.sendStatus(403);
   }
@@ -104,7 +104,7 @@ app.post('/api/ad', jsonParser, (req, res) => {
     }).then(insertResp => res.json(insertResp[0]));
 });
 
-app.get('/api/ads/:id', (req, res) => {
+app.get('/api/ilmoitukset/:id', (req, res) => {
   return Promise.all([
     knex('ads').where({id: req.params.id}).first(),
     util.userForSession(req)
@@ -113,7 +113,7 @@ app.get('/api/ads/:id', (req, res) => {
     .catch(e => { console.error(e); res.sendStatus(404) });
 });
 
-app.get('/api/ads', (req, res) => {
+app.get('/api/ilmoitukset', (req, res) => {
   return Promise.all([
     knex('ads').where({}),
     util.userForSession(req)
@@ -122,7 +122,7 @@ app.get('/api/ads', (req, res) => {
     .then(ads => res.send(ads))
 });
 
-app.get('/api/ads/byUser/:id', (req, res) => {
+app.get('/api/ilmoitukset/tradenomilta/:id', (req, res) => {
   const getAds = knex('ads').where('user_id', req.params.id);
   const getAnswers = knex('answers').where('user_id', req.params.id).select('ad_id').distinct()
         .then(results => results.map(o => o.ad_id));
@@ -152,7 +152,7 @@ function latestFirst(a, b) {
   return date2 - date1;
 }
 
-app.post('/api/ads/:id/answer', jsonParser, (req, res) => {
+app.post('/api/ilmoitukset/:id/vastaus', jsonParser, (req, res) => {
   if (!req.session || !req.session.id) {
     return res.sendStatus(403);
   }
@@ -177,7 +177,7 @@ app.post('/api/ads/:id/answer', jsonParser, (req, res) => {
     }, 'id');
   }).then(insertResp => res.json(`${insertResp[0]}`))
     .catch(err => {
-      console.error('Error in /api/ads/:id/answer', err);
+      console.error('Error in /api/ilmoitukset/:id/vastaus', err);
       res.sendStatus(500);
     });
 });

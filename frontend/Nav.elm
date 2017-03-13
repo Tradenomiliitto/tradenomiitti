@@ -10,23 +10,23 @@ routeToPath : Route -> String
 routeToPath route =
   case route of
     CreateAd ->
-      "/ad/create"
+      "/ilmoitukset/uusi"
     ShowAd adId ->
-      "/ads/" ++ (toString adId)
+      "/ilmoitukset/" ++ (toString adId)
     ListAds ->
-      "/ads"
+      "/ilmoitukset"
     ListUsers ->
-      "/users"
+      "/tradenomit"
     Home ->
       "/"
     Info ->
-      "/info"
+      "/tietoa"
     NotFound ->
       "/notfound"
     Profile ->
-      "/profile"
+      "/profiili"
     User userId ->
-      "/user/" ++ (toString userId)
+      "/tradenomit/" ++ (toString userId)
 
 
 parseLocation : Navigation.Location -> Route
@@ -40,21 +40,21 @@ parseLocation location =
 routeParser : U.Parser (Route -> a) a
 routeParser =
   U.oneOf
-    [ U.map CreateAd (U.s "ad" </> U.s "create")
-    , U.map ShowAd (U.s "ads" </> U.int)
-    , U.map ListAds (U.s "ads")
-    , U.map ListUsers (U.s "users")
+    [ U.map CreateAd (U.s "ilmoitukset" </> U.s "uusi")
+    , U.map ShowAd (U.s "ilmoitukset" </> U.int)
+    , U.map ListAds (U.s "ilmoitukset")
+    , U.map ListUsers (U.s "ilmoitukset")
     , U.map Home (U.s "")
-    , U.map Info (U.s "info")
-    , U.map Profile (U.s "profile")
-    , U.map User (U.s "user" </> U.int)
+    , U.map Info (U.s "tietoa")
+    , U.map Profile (U.s "profiili")
+    , U.map User (U.s "tradenomit" </> U.int)
     ]
 
 
 ssoUrl : String -> Route -> String
 ssoUrl rootUrl route =
   let
-    loginUrl = rootUrl ++ "/login?path=" ++ (routeToPath route)
+    loginUrl = rootUrl ++ "/kirjaudu?path=" ++ (routeToPath route)
     returnParameter = Window.encodeURIComponent loginUrl
   in
     "https://tunnistus.avoine.fi/sso-login/?service=tradenomiitti&return=" ++

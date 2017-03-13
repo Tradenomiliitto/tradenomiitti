@@ -26,7 +26,7 @@ profileTopRow model rootState =
       case model.user of
         Just _ ->
           H.a
-            [ A.href "/logout"
+            [ A.href "/uloskirjautuminen"
             , A.class "btn"
             ]
             [ H.text "Kirjaudu ulos" ]

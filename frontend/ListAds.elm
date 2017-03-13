@@ -29,7 +29,7 @@ update msg model =
 getAds : Cmd Msg
 getAds =
   let
-    url = "/api/ads/"
+    url = "/api/ilmoitukset/"
     request = Http.get url (list Ad.adDecoder)
   in
     Http.send UpdateAds request
@@ -82,7 +82,7 @@ adListView ad =
       [ H.h3 []
         [ H.a 
           [ A.class "list-ads__ad-preview-heading"
-          , A.href ("/ads/" ++ (toString ad.id)) ]
+          , A.href ("/ilmoitukset/" ++ (toString ad.id)) ]
           [ H.text ad.heading ] 
         ]
       , H.p [ A.class "list-ads__ad-preview-content" ] [ H.text (truncateContent ad.content 200) ]

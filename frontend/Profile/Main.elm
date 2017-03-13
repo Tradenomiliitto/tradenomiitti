@@ -35,13 +35,13 @@ type Msg
 
 getMe : Cmd Msg
 getMe =
-  Http.get "/api/me" User.userDecoder
+  Http.get "/api/profiilit/oma" User.userDecoder
     |> Http.send GetMe
 
 
 getAds : User.User -> Cmd Msg
 getAds u =
-  Http.get ("/api/ads/byUser/" ++ toString u.id) (Json.list Ad.adDecoder)
+  Http.get ("/api/ilmoitukset/tradenomilta/" ++ toString u.id) (Json.list Ad.adDecoder)
     |> Http.send GetAds
 
 
@@ -51,22 +51,22 @@ initTasks =
 
 getDomainOptions : Cmd Msg
 getDomainOptions =
-  Http.get "/api/domains" (Json.list Json.string)
+  Http.get "/api/toimialat" (Json.list Json.string)
     |> Http.send GetDomainOptions
 
 getPositionOptions : Cmd Msg
 getPositionOptions =
-  Http.get "/api/positions" (Json.list Json.string)
+  Http.get "/api/tehtavaluokat" (Json.list Json.string)
     |> Http.send GetPositionOptions
 
 updateMe : User.User -> Cmd Msg
 updateMe user =
-  put "/api/me" (User.encode user)
+  put "/api/profiilit/oma" (User.encode user)
     |> Http.send UpdateUser
 
 updateConsent : Cmd Msg
 updateConsent =
-  Http.post "/api/me/create-profile" Http.emptyBody (Json.succeed ())
+  Http.post "/api/profiilit/luo" Http.emptyBody (Json.succeed ())
     |> Http.send UpdateConsent
 
 put : String -> JS.Value -> Http.Request ()
