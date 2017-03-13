@@ -17,7 +17,6 @@ type alias User =
   { id : Int
   , name : String
   , description : String
-  , primaryDomain : String
   , primaryPosition : String
   , domains : List Skill.Model
   , positions : List Skill.Model
@@ -42,7 +41,6 @@ userDecoder =
     |> P.required "id" int
     |> P.required "name" string
     |> P.required "description" string
-    |> P.required "primary_domain" string
     |> P.required "primary_position" string
     |> P.required "domains" (list Skill.decoder)
     |> P.required "positions" (list Skill.decoder)
@@ -54,7 +52,6 @@ encode user =
   JS.object
     [ ("name", JS.string user.name)
     , ("description", JS.string user.description)
-    , ("primary_domain", JS.string user.primaryDomain)
     , ("primary_position", JS.string user.primaryPosition)
     , ("domains", JS.list (List.map Skill.encode user.domains) )
     , ("positions", JS.list (List.map Skill.encode user.positions) )
