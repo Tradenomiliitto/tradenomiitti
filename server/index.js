@@ -76,11 +76,11 @@ app.post('/kirjaudu', urlEncoded, logon.login );
 
 app.get('/uloskirjautuminen', logon.logout);
 
-app.get('/api/profiili/oma', profile.getMe);
+app.get('/api/profiilit/oma', profile.getMe);
 
-app.put('/api/profiili/oma', jsonParser, profile.putMe);
+app.put('/api/profiilit/oma', jsonParser, profile.putMe);
 
-app.post('/api/profiili/luo', profile.consentToProfileCreation);
+app.post('/api/profiilit/luo', profile.consentToProfileCreation);
 
 app.get('/api/tehtavaluokat', (req, res) => {
   return sebacon.getPositionTitles().then(positions => res.json(Object.values(positions)));

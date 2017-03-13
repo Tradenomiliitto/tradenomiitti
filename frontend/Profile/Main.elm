@@ -35,7 +35,7 @@ type Msg
 
 getMe : Cmd Msg
 getMe =
-  Http.get "/api/profiili/oma" User.userDecoder
+  Http.get "/api/profiilit/oma" User.userDecoder
     |> Http.send GetMe
 
 
@@ -61,12 +61,12 @@ getPositionOptions =
 
 updateMe : User.User -> Cmd Msg
 updateMe user =
-  put "/api/profiili/oma" (User.encode user)
+  put "/api/profiilit/oma" (User.encode user)
     |> Http.send UpdateUser
 
 updateConsent : Cmd Msg
 updateConsent =
-  Http.post "/api/profiili/luo" Http.emptyBody (Json.succeed ())
+  Http.post "/api/profiilit/luo" Http.emptyBody (Json.succeed ())
     |> Http.send UpdateConsent
 
 put : String -> JS.Value -> Http.Request ()
