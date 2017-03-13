@@ -1,25 +1,7 @@
 module State.Ad exposing (..)
 
-import Date
 import State.Util exposing (SendingStatus(..))
-import User
-
-type alias Ad =
-  { heading: String
-  , content: String
-  , answers: Answers
-  , createdBy: User.User
-  , createdAt: Date.Date
-  , id: Int
-  }
-
-type Answers = AnswerCount Int | AnswerList (List Answer)
-
-type alias Answer =
-  { content: String
-  , createdBy: User.User
-  , createdAt: Date.Date
-  }
+import Models.Ad exposing (Ad)
 
 type alias Model =
   { addingAnswer : Bool

@@ -59,13 +59,6 @@ update msg model =
         modelWithRoute = { model | route = newRoute }
         ( newModel, cmd ) =
           case newRoute of
-            User userId ->
-              let
-                (userModel, cmd) =
-                  User.update (User.GetUser userId) modelWithRoute.user
-              in
-                ({ modelWithRoute | user = userModel }, Cmd.map UserMessage cmd)
-
             ShowAd adId ->
               modelWithRoute ! [ Cmd.map AdMessage (Ad.getAd adId) ]
 
@@ -74,6 +67,9 @@ update msg model =
 
             ListAds ->
               modelWithRoute ! [ Cmd.map ListAdsMessage ListAds.getAds ]
+
+            User userId ->
+              (modelWithRoute, Cmd.batch [ User.getUser userId, User.getAds userId ] |> Cmd.map UserMessage)
 
             newRoute ->
               (modelWithRoute, Cmd.none)

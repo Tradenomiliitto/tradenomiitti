@@ -2,10 +2,10 @@ module Common exposing (..)
 
 import Html as H
 import Html.Attributes as A
-import User
+import Models.User exposing (User)
 
 
-authorInfo : User.User -> H.Html msg
+authorInfo : User -> H.Html msg
 authorInfo user =
   H.div
     []

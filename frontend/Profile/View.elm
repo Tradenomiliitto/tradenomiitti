@@ -10,7 +10,7 @@ import Profile.Main exposing (Msg(..))
 import Skill
 import State.Main as RootState
 import State.Profile exposing (Model)
-import User
+import Models.User exposing (User)
 
 view : Model -> RootState.Model ->  H.Html Msg
 view model rootState =
@@ -80,7 +80,7 @@ viewUserMaybe model =
     |> Maybe.withDefault []
 
 
-viewUser : Model -> User.User -> List (H.Html Msg)
+viewUser : Model -> User -> List (H.Html Msg)
 viewUser model user =
   [ H.div
     [ A.class "container" ]
@@ -205,7 +205,7 @@ viewUser model user =
     ]
   ]
 
-membershipDataBox : User.User -> H.Html Msg
+membershipDataBox : User -> H.Html Msg
 membershipDataBox user =
   case user.extra of
     Just extra ->

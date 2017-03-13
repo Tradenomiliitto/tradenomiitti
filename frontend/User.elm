@@ -1,89 +1,39 @@
 module User exposing (..)
 
+import Models.Ad exposing (Ad)
 import Http
-import Json.Decode exposing (Decoder, string, list, bool, int)
-import Json.Decode.Pipeline as P
-import Json.Encode as JS
-import Skill
+import Json.Decode as Json
+import Models.User exposing (User)
 
-type alias Extra =
-  { first_name : String
-  , nick_name : String
-  , domains : List String
-  , positions : List String
-  }
-
-type alias User =
-  { id : Int
-  , name : String
-  , description : String
-  , primaryPosition : String
-  , domains : List Skill.Model
-  , positions : List Skill.Model
-  , profileCreated : Bool
-  , extra : Maybe Extra
-  }
 
 type alias Model =
   { user : Maybe User
-  , spinning : Bool
   }
 
 init : Model
 init =
   { user = Nothing
-  , spinning = False
   }
 
-userDecoder : Decoder User
-userDecoder =
-  P.decode User
-    |> P.required "id" int
-    |> P.required "name" string
-    |> P.required "description" string
-    |> P.required "title" string
-    |> P.required "domains" (list Skill.decoder)
-    |> P.required "positions" (list Skill.decoder)
-    |> P.required "profile_creation_consented" bool
-    |> P.optional "extra" (Json.Decode.map Just userExtraDecoder) Nothing
-
-encode : User -> JS.Value
-encode user =
-  JS.object
-    [ ("name", JS.string user.name)
-    , ("description", JS.string user.description)
-    , ("title", JS.string user.primaryPosition)
-    , ("domains", JS.list (List.map Skill.encode user.domains) )
-    , ("positions", JS.list (List.map Skill.encode user.positions) )
-    , ("profile_creation_consented", JS.bool user.profileCreated)
-    ]
-
-userExtraDecoder : Decoder Extra
-userExtraDecoder =
-  P.decode Extra
-    |> P.required "first_name" string
-    |> P.required "nick_name" string
-    |> P.required "domains" (list string)
-    |> P.required "positions" (list string)
 
 -- UPDATE
 
 type Msg
   = UpdateUser (Result Http.Error User)
-  | GetUser Int
+  | UpdateAds (Result Http.Error (List Ad))
   | NoOp
 
 update : Msg -> Model -> ( Model, Cmd Msg)
 update msg model =
   case msg of
     UpdateUser (Ok updatedUser) ->
-      { model | user = Just updatedUser, spinning = False } ! []
+      { model | user = Just updatedUser } ! []
     -- TODO: show error
     UpdateUser (Err _) ->
-      { model | user = Nothing, spinning = False } ! []
+      { model | user = Nothing } ! []
 
-    GetUser userId ->
-      { model | spinning = True } ! [ getUser userId ]
+    UpdateAds _ ->
+      model ! [] -- TODO
 
     NoOp ->
       model ! []
@@ -91,10 +41,18 @@ update msg model =
 getUser : Int -> Cmd Msg
 getUser userId =
   let
-    url = "/api/tradenomit/" ++ (toString userId)
-    request = Http.get url userDecoder
+    url = "/api/tradenomit/" ++ toString userId
+    request = Http.get url Models.User.userDecoder
   in
     Http.send UpdateUser request
+
+getAds : Int -> Cmd Msg
+getAds userId =
+  let
+    url = "/api/ilmoitukset/tradenomilta/" ++ toString userId
+    request = Http.get url (Json.list Models.Ad.adDecoder)
+  in
+    Http.send UpdateAds request
 
 
 -- VIEW
