@@ -39,7 +39,7 @@ view : Model -> H.Html Msg
 view model =
   let
     adsHtml = List.map adListView model.ads
-    rows = List.reverse (List.foldl folder [] adsHtml)
+    rows = List.reverse (List.foldl rowFolder [] adsHtml)
     rowsHtml = List.map row rows
   in
     H.div []
@@ -79,8 +79,8 @@ adListView ad =
 
 -- transforms a list to a list of lists of two elements: [1, 2, 3, 4, 5] => [[5], [3, 4], [1, 2]]
 -- note: reverse the results if you need the elements to be in original order
-folder : a -> List (List a) -> List (List a)
-folder x acc =
+rowFolder : a -> List (List a) -> List (List a)
+rowFolder x acc =
   case acc of
     [] -> [[x]]
     row :: rows ->
