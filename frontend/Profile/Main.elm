@@ -1,15 +1,18 @@
 module Profile.Main exposing (..)
 
+import Ad
 import Http
 import Json.Decode as Json
 import Json.Encode as JS
 import Skill
+import State.Ad
 import State.Profile exposing (Model)
 import User
 
 
 type Msg
   = GetMe (Result Http.Error User.User)
+  | GetAds (Result Http.Error (List State.Ad.Ad))
   | Save User.User
   | Edit
   | AllowProfileCreation
@@ -34,6 +37,13 @@ getMe : Cmd Msg
 getMe =
   Http.get "/api/me" User.userDecoder
     |> Http.send GetMe
+
+
+getAds : User.User -> Cmd Msg
+getAds u =
+  Http.get ("/api/ads/byUser/" ++ toString u.id) (Json.list Ad.adDecoder)
+    |> Http.send GetAds
+
 
 initTasks : Cmd Msg
 initTasks =
@@ -94,7 +104,13 @@ update msg model =
       { model | user = Nothing } ! []
 
     GetMe (Ok user) ->
-      { model | user = Just user } ! []
+      { model | user = Just user } ! [ getAds user ]
+
+    GetAds (Err _) ->
+      model ! []
+
+    GetAds (Ok ads) ->
+      { model | ads = ads } ! []
 
     Save user ->
       model ! [ updateMe user ]

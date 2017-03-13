@@ -35,31 +35,45 @@ getAds =
     Http.send UpdateAds request
 
 
-view : Model -> H.Html Msg
+view : Model -> H.Html msg
 view model =
+    H.div []
+    [ H.div
+      [ A.class "container" ]
+      [ H.div
+        [ A.class "row" ]
+        [ H.div
+          [ A.class "col-sm-12" ]
+          [ H.h3
+            [ A.class "list-ads__header" ]
+            [ H.text "Selaa hakuilmoituksia" ]
+          ]
+        ]
+      ]
+    , H.div
+      [ A.class "list-ads__list-background"]
+      [ H.div
+        [ A.class "container" ]
+        (viewAds model.ads)
+      ]
+    ]
+
+viewAds : List State.Ad.Ad -> List (H.Html msg)
+viewAds ads =
   let
-    adsHtml = List.map adListView model.ads
+    adsHtml = List.map adListView ads
     rows = List.reverse (List.foldl rowFolder [] adsHtml)
     rowsHtml = List.map row rows
   in
-    H.div []
-    [ H.div
-      []
-      [ H.h3 [ A.class "list-ads__header" ] [ H.text "Selaa hakuilmoituksia" ] ]
-      , H.div [A.class "list-ads__list-background"]
-      [ H.div
-        [ A.class "row list-ads__ad-container" ]
-        rowsHtml
-        ]
-    ]
+      rowsHtml
 
-row : List (H.Html Msg) -> H.Html Msg
+row : List (H.Html msg) -> H.Html msg
 row ads =
   H.div
     [ A.class "row" ]
     ads
 
-adListView : State.Ad.Ad -> H.Html Msg
+adListView : State.Ad.Ad -> H.Html msg
 adListView ad =
   H.div
     [ A.class "col-xs-12 col-sm-6"]

@@ -111,7 +111,7 @@ app.get('/api/ads/:id', (req, res) => {
   ]).then(([ad, user]) => formatAd(ad, user))
     .then(ad => res.send(ad))
     .catch(e => { console.error(e); res.sendStatus(404) });
-})
+});
 
 app.get('/api/ads', (req, res) => {
   return Promise.all([
@@ -120,7 +120,30 @@ app.get('/api/ads', (req, res) => {
   ]).then(([rows, user]) => Promise.all(rows.map(ad => formatAd(ad, user))))
     .then(ads => ads.sort(latestFirst))
     .then(ads => res.send(ads))
-})
+});
+
+app.get('/api/ads/byUser/:id', (req, res) => {
+  const getAds = knex('ads').where('user_id', req.params.id);
+  const getAnswers = knex('answers').where('user_id', req.params.id).select('ad_id').distinct()
+        .then(results => results.map(o => o.ad_id));
+
+  const getAdsForAnswerer = getAnswers.then(adIds => {
+    return knex('ads').whereIn('id', adIds);
+  });
+  return Promise.all([
+    getAds,
+    getAdsForAnswerer,
+    util.userForSession(req)
+  ]).then(([adsAsAsker, adsAsAnswerer, user]) => {
+    const allAds = adsAsAsker.concat(adsAsAnswerer)
+    return Promise.all(allAds.map(ad => formatAd(ad, user)))
+  }).then(ads => ads.sort(latestFirst))
+    .then(ads => res.send(ads))
+    .catch(err => {
+      console.error(err);
+      res.sendStatus(500);
+    })
+});
 
 //comparing function for two objects with createdAt datestring field. Latest will come first.
 function latestFirst(a, b) {

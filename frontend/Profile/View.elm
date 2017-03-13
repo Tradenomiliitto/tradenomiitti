@@ -4,6 +4,7 @@ import Html as H
 import Html.Attributes as A
 import Html.Events as E
 import Json.Decode as Json
+import ListAds
 import Nav
 import Profile.Main exposing (Msg(..))
 import Skill
@@ -139,7 +140,17 @@ viewUser model user =
       ]
     ]
   , H.hr [ A.class "full-width-ruler" ] []
-    -- TODO: User activity (sent and responded ads) View functions can be found in ListAds.elm
+  , H.div
+    [ A.class "container" ] <|
+    [ H.div
+      [ A.class "row" ]
+      [ H.div
+        [ A.class "col-sm-12" ]
+        [ H.h3 [ A.class "user-page__activity-header" ] [ H.text "Aktiivisuus" ]
+        ]
+      ]
+    ]
+    ++ ListAds.viewAds model.ads
   , H.hr [ A.class "full-width-ruler" ] []
   , H.div
     [ A.class "container" ]
