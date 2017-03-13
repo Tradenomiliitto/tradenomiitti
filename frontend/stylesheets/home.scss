@@ -1,0 +1,22 @@
+@import 'common';
+
+.home {
+  &__introbox {
+    text-align:center;
+    padding-top:75px;
+    &--heading {
+      text-transform: uppercase;
+      @include gotham-bold;
+      color: $pink
+    }
+    &--content {
+      padding-top:30px;
+      padding-bottom:30px;
+      font-size: 16px;
+    }
+    &--button {
+      background-color: $pink;
+      color: white;
+    }
+  }
+} 
