@@ -75,6 +75,7 @@ app.get('/uloskirjautuminen', logon.logout);
 app.get('/api/profiilit/oma', profile.getMe);
 app.put('/api/profiilit/oma', jsonParser, profile.putMe);
 app.post('/api/profiilit/luo', profile.consentToProfileCreation);
+app.get('/api/profiilit', profile.listProfiles);
 
 app.get('/api/tehtavaluokat', (req, res) => {
   return sebacon.getPositionTitles().then(positions => res.json(Object.values(positions)));

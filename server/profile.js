@@ -71,9 +71,21 @@ module.exports = function initialize(params) {
       });
   }
 
+  function listProfiles(req, res) {
+    return knex('users').where({})
+      .then(resp => {
+        return resp.map(user => util.formatUser(user));
+      }).then(users => res.json(users))
+      .catch(err => {
+        console.error(err);
+        res.sendStatus(500);
+      })
+  }
+
   return {
     getMe,
     putMe,
-    consentToProfileCreation
+    consentToProfileCreation,
+    listProfiles
   };
 }
