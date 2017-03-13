@@ -24,8 +24,7 @@ type Msg
   | AddPosition
   | GetDomainOptions (Result Http.Error (List String))
   | GetPositionOptions (Result Http.Error (List String))
-  | ChangePrimaryDomain String
-  | ChangePrimaryPosition String
+  | ChangeTitle String
   | ChangeNickname String
   | ChangeDescription String
   | UpdateUser (Result Http.Error ())
@@ -148,10 +147,7 @@ update msg model =
     AddPosition ->
       updateUser (\u -> { u | positions = u.positions ++ [ Skill.Model model.selectedPositionOption Skill.Interested ] }) model ! []
 
-    ChangePrimaryDomain str ->
-      updateUser (\u -> { u | primaryDomain = str }) model ! []
-
-    ChangePrimaryPosition str ->
+    ChangeTitle str ->
       updateUser (\u -> { u | primaryPosition = str }) model ! []
 
     ChangeNickname str ->

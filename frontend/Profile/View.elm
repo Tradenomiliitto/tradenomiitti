@@ -113,7 +113,7 @@ viewUser model user =
                   then
                     H.input
                     [ A.value user.primaryPosition
-                    , E.on "change" (Json.map ChangePrimaryPosition E.targetValue)
+                    , E.on "change" (Json.map ChangeTitle E.targetValue)
                     ]
                     []
                   else H.text user.primaryPosition
