@@ -37,19 +37,27 @@ getAds =
 
 view : Model -> H.Html Msg
 view model =
-  H.div []
-  [ H.div
-    []
-    [ H.h3 [ A.class "list-ads__header" ] [ H.text "Selaa hakuilmoituksia" ] ]
-  , H.div [A.class "list-ads__list-background"]
+  let
+    adsHtml = List.map adListView model.ads
+    rows = List.reverse (List.foldl rowFolder [] adsHtml)
+    rowsHtml = List.map row rows
+  in
+    H.div []
     [ H.div
-      [ A.class "row list-ads__ad-container" ]
-      (List.map
-        adListView
-        model.ads) ]
-  ]
+      []
+      [ H.h3 [ A.class "list-ads__header" ] [ H.text "Selaa hakuilmoituksia" ] ]
+      , H.div [A.class "list-ads__list-background"]
+      [ H.div
+        [ A.class "row list-ads__ad-container" ]
+        rowsHtml
+        ]
+    ]
 
-
+row : List (H.Html Msg) -> H.Html Msg
+row ads =
+  H.div
+    [ A.class "row" ]
+    ads
 
 adListView : State.Ad.Ad -> H.Html Msg
 adListView ad =
@@ -68,6 +76,18 @@ adListView ad =
       , Common.authorInfo ad.createdBy
       ]
     ]
+
+-- transforms a list to a list of lists of two elements: [1, 2, 3, 4, 5] => [[5], [3, 4], [1, 2]]
+-- note: reverse the results if you need the elements to be in original order
+rowFolder : a -> List (List a) -> List (List a)
+rowFolder x acc =
+  case acc of
+    [] -> [[x]]
+    row :: rows ->
+      case row of
+        el1 :: el2 :: els -> [x] :: row :: rows
+        el :: els -> [el, x] :: rows
+        els -> (x :: els) :: rows
 
 -- truncates content so that the result includes at most numChars characters, taking full words. "…" is added if the content is truncated 
 truncateContent : String -> Int -> String

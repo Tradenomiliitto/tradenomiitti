@@ -118,8 +118,16 @@ app.get('/api/ads', (req, res) => {
     knex('ads').where({}),
     util.userForSession(req)
   ]).then(([rows, user]) => Promise.all(rows.map(ad => formatAd(ad, user))))
+    .then(ads => ads.sort(latestFirst))
     .then(ads => res.send(ads))
 })
+
+//comparing function for two objects with createdAt datestring field. Latest will come first.
+function latestFirst(a, b) {
+  date1 = new Date(a.created_at);
+  date2 = new Date(b.created_at);
+  return date2 - date1;
+}
 
 app.post('/api/ads/:id/answer', jsonParser, (req, res) => {
   if (!req.session || !req.session.id) {
