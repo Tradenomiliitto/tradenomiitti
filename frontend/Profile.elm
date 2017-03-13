@@ -381,8 +381,8 @@ viewUser model user =
     ]
   ]
 
-membershipDataBox : User.User -> H.Html Msg 
-membershipDataBox user = 
+membershipDataBox : User.User -> H.Html Msg
+membershipDataBox user =
   case user.extra of
     Just extra ->
       H.div
