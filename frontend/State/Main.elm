@@ -6,6 +6,7 @@ import State.Profile as ProfileState
 import State.CreateAd
 import State.ListAds
 import State.Ad
+import State.Home
 import User
 
 
@@ -19,6 +20,7 @@ type alias Model =
   , createAd : State.CreateAd.Model
   , listAds : State.ListAds.Model
   , ad : State.Ad.Model
+  , home : State.Home.Model
   }
 
 
@@ -33,4 +35,5 @@ initState location =
   , createAd = State.CreateAd.init
   , listAds = State.ListAds.init
   , ad = State.Ad.init
+  , home = State.Home.init
   }
