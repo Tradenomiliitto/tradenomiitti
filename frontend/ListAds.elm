@@ -37,7 +37,7 @@ getAds =
 
 view : Model -> H.Html msg
 view model =
-    H.div []
+  H.div []
     [ H.div
       [ A.class "container" ]
       [ H.div
