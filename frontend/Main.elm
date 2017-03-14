@@ -5,6 +5,7 @@ import Html.Attributes as A
 import Html.Events as E
 import Json.Decode as Json
 import ListAds
+import ListUsers
 import LoginNeeded
 import Maybe.Extra as Maybe
 import Nav exposing (..)
@@ -45,6 +46,7 @@ type Msg
   | ProfileMessage Profile.Msg
   | CreateAdMessage CreateAd.Msg
   | ListAdsMessage ListAds.Msg
+  | ListUsersMessage ListUsers.Msg
   | AdMessage Ad.Msg
 
 update : Msg -> Model -> (Model, Cmd Msg)
@@ -74,6 +76,9 @@ update msg model =
                 { model | route = Profile } ! [ Navigation.newUrl (routeToPath Profile) ]
               else
                 (modelWithRoute, Cmd.batch [ User.getUser userId, User.getAds userId ] |> Cmd.map UserMessage)
+
+            ListUsers ->
+              modelWithRoute ! [ Cmd.map ListUsersMessage ListUsers.getUsers ]
 
             newRoute ->
               (modelWithRoute, Cmd.none)
@@ -130,8 +135,13 @@ update msg model =
       let
         (listAdsModel, cmd) = ListAds.update msg model.listAds
       in
-        { model | listAds = listAdsModel } ! [ Cmd.map
-        ListAdsMessage cmd ]
+        { model | listAds = listAdsModel } ! [ Cmd.map ListAdsMessage cmd ]
+
+    ListUsersMessage msg ->
+      let
+        (listUsersModel, cmd) = ListUsers.update msg model.listUsers
+      in
+        { model | listUsers = listUsersModel } ! [ Cmd.map ListUsersMessage cmd ]
 
     AdMessage msg ->
       let
@@ -349,6 +359,8 @@ viewPage model =
           H.map ListAdsMessage <| ListAds.view model.listAds
         ShowAd adId ->
           H.map AdMessage <| Ad.view model.ad adId model.profile.user model.rootUrl
+        ListUsers ->
+          ListUsers.view model.listUsers
         route ->
           notImplementedYet
   in
