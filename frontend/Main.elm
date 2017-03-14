@@ -12,7 +12,6 @@ import Nav exposing (..)
 import Navigation
 import Profile.Main as Profile
 import Profile.View
-import State.ListUsers
 import State.Main exposing (..)
 import User
 
@@ -352,7 +351,7 @@ viewPage model =
         ShowAd adId ->
           H.map AdMessage <| Ad.view model.ad adId model.profile.user model.rootUrl
         ListUsers ->
-          ListUsers.view State.ListUsers.init
+          ListUsers.view model.listUsers
         route ->
           notImplementedYet
   in

@@ -2,16 +2,18 @@ module State.Main exposing (..)
 
 import Nav exposing (..)
 import Navigation
-import State.Profile as ProfileState
+import State.Ad
 import State.CreateAd
 import State.ListAds
-import State.Ad
+import State.ListUsers
+import State.Profile as ProfileState
 import State.User
 
 
 type alias Model =
   { route : Route
   , rootUrl : String
+  , listUsers : State.ListUsers.Model
   , user : State.User.Model
   , profile : ProfileState.Model
   , initialLoading : Bool
@@ -27,6 +29,7 @@ initState location =
   { route = parseLocation location
   , rootUrl = location.origin
   , user = State.User.init
+  , listUsers = State.ListUsers.init
   , profile = ProfileState.init
   , initialLoading = True
   , needsConsent = True
