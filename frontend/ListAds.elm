@@ -64,7 +64,7 @@ viewAds ads =
     rows = List.reverse (List.foldl rowFolder [] adsHtml)
     rowsHtml = List.map row rows
   in
-      rowsHtml
+    rowsHtml
 
 row : List (H.Html msg) -> H.Html msg
 row ads =
