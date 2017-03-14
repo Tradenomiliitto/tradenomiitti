@@ -6,6 +6,16 @@ import Html.Attributes as A
 import Models.User exposing (User)
 import State.ListUsers exposing (..)
 
+type Msg = NoOp
+
+getUsers : Cmd Msg
+getUsers = Debug.crash "Not implemented"
+
+
+update : Msg -> Model -> (Model, Cmd Msg)
+update msg model =
+  Debug.crash "Not implemented"
+
 view : Model -> H.Html msg
 view model =
   H.div
