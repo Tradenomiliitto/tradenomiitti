@@ -1,8 +1,8 @@
 module State.ListAds exposing (..)
-import State.Ad
+import Models.Ad
 
 type alias Model =
-  { ads: List State.Ad.Ad
+  { ads: List Models.Ad.Ad
   }
 
 init : Model

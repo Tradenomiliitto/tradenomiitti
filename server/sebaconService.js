@@ -144,7 +144,6 @@ module.exports = function initialize(params) {
     getUserDomains,
     getUserEmploymentExtras,
     getPositionTitles,
-    getDomainTitles,
-    initialize
+    getDomainTitles
   }
 }

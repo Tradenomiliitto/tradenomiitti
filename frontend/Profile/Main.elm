@@ -5,15 +5,15 @@ import Http
 import Json.Decode as Json
 import Json.Encode as JS
 import Skill
-import State.Ad
+import Models.Ad
 import State.Profile exposing (Model)
-import User
+import Models.User exposing (User)
 
 
 type Msg
-  = GetMe (Result Http.Error User.User)
-  | GetAds (Result Http.Error (List State.Ad.Ad))
-  | Save User.User
+  = GetMe (Result Http.Error User)
+  | GetAds (Result Http.Error (List Models.Ad.Ad))
+  | Save User
   | Edit
   | AllowProfileCreation
   | DomainSkillMessage Int Skill.Msg
@@ -24,8 +24,7 @@ type Msg
   | AddPosition
   | GetDomainOptions (Result Http.Error (List String))
   | GetPositionOptions (Result Http.Error (List String))
-  | ChangePrimaryDomain String
-  | ChangePrimaryPosition String
+  | ChangeTitle String
   | ChangeNickname String
   | ChangeDescription String
   | UpdateUser (Result Http.Error ())
@@ -35,13 +34,13 @@ type Msg
 
 getMe : Cmd Msg
 getMe =
-  Http.get "/api/profiilit/oma" User.userDecoder
+  Http.get "/api/profiilit/oma" Models.User.userDecoder
     |> Http.send GetMe
 
 
-getAds : User.User -> Cmd Msg
+getAds : User -> Cmd Msg
 getAds u =
-  Http.get ("/api/ilmoitukset/tradenomilta/" ++ toString u.id) (Json.list Ad.adDecoder)
+  Http.get ("/api/ilmoitukset/tradenomilta/" ++ toString u.id) (Json.list Models.Ad.adDecoder)
     |> Http.send GetAds
 
 
@@ -59,9 +58,9 @@ getPositionOptions =
   Http.get "/api/tehtavaluokat" (Json.list Json.string)
     |> Http.send GetPositionOptions
 
-updateMe : User.User -> Cmd Msg
+updateMe : User -> Cmd Msg
 updateMe user =
-  put "/api/profiilit/oma" (User.encode user)
+  put "/api/profiilit/oma" (Models.User.encode user)
     |> Http.send UpdateUser
 
 updateConsent : Cmd Msg
@@ -93,7 +92,7 @@ deleteFromSkillList index list =
     |> List.filterMap identity
 
 
-updateUser : (User.User -> User.User) -> Model -> Model
+updateUser : (User -> User) -> Model -> Model
 updateUser update model =
   { model | user = Maybe.map update model.user }
 
@@ -148,10 +147,7 @@ update msg model =
     AddPosition ->
       updateUser (\u -> { u | positions = u.positions ++ [ Skill.Model model.selectedPositionOption Skill.Interested ] }) model ! []
 
-    ChangePrimaryDomain str ->
-      updateUser (\u -> { u | primaryDomain = str }) model ! []
-
-    ChangePrimaryPosition str ->
+    ChangeTitle str ->
       updateUser (\u -> { u | primaryPosition = str }) model ! []
 
     ChangeNickname str ->

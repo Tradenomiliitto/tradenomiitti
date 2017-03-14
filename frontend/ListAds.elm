@@ -6,10 +6,10 @@ import Html as H
 import Html.Attributes as A
 import Http
 import Json.Decode exposing (list)
-import State.Ad
+import Models.Ad
 import State.ListAds exposing (..)
 
-type Msg = NoOp | GetAds | UpdateAds (Result Http.Error (List State.Ad.Ad))
+type Msg = NoOp | GetAds | UpdateAds (Result Http.Error (List Models.Ad.Ad))
 
 
 update : Msg -> Model -> (Model, Cmd Msg)
@@ -30,7 +30,7 @@ getAds : Cmd Msg
 getAds =
   let
     url = "/api/ilmoitukset/"
-    request = Http.get url (list Ad.adDecoder)
+    request = Http.get url (list Models.Ad.adDecoder)
   in
     Http.send UpdateAds request
 
@@ -58,7 +58,7 @@ view model =
       ]
     ]
 
-viewAds : List State.Ad.Ad -> List (H.Html msg)
+viewAds : List Models.Ad.Ad -> List (H.Html msg)
 viewAds ads =
   let
     adsHtml = List.map adListView ads
@@ -73,7 +73,7 @@ row ads =
     [ A.class "row" ]
     ads
 
-adListView : State.Ad.Ad -> H.Html msg
+adListView : Models.Ad.Ad -> H.Html msg
 adListView ad =
   H.div
     [ A.class "col-xs-12 col-sm-6"]

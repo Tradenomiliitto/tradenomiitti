@@ -7,13 +7,13 @@ import State.CreateAd
 import State.ListAds
 import State.Ad
 import State.Home
-import User
+import State.User
 
 
 type alias Model =
   { route : Route
   , rootUrl : String
-  , user : User.Model
+  , user : State.User.Model
   , profile : ProfileState.Model
   , initialLoading : Bool
   , needsConsent : Bool
@@ -28,7 +28,7 @@ initState : Navigation.Location -> Model
 initState location =
   { route = parseLocation location
   , rootUrl = location.origin
-  , user = User.init
+  , user = State.User.init
   , profile = ProfileState.init
   , initialLoading = True
   , needsConsent = True

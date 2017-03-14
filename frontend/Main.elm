@@ -53,7 +53,7 @@ update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
   case msg of
     NewUrl route ->
-      ( model ,  Navigation.newUrl (routeToPath route) )
+      model ! [ Navigation.newUrl (routeToPath route) ]
 
     UrlChange location ->
       let
@@ -61,13 +61,6 @@ update msg model =
         modelWithRoute = { model | route = newRoute }
         ( newModel, cmd ) =
           case newRoute of
-            User userId ->
-              let
-                (userModel, cmd) =
-                  User.update (User.GetUser userId) modelWithRoute.user
-              in
-                ({ modelWithRoute | user = userModel }, Cmd.map UserMessage cmd)
-
             ShowAd adId ->
               modelWithRoute ! [ Cmd.map AdMessage (Ad.getAd adId) ]
 
@@ -79,6 +72,13 @@ update msg model =
             
             Home ->
               modelWithRoute ! [ Cmd.map HomeMessage (Cmd.map Home.ListAdsMessage ListAds.getAds)]
+
+            User userId ->
+              if Just userId == Maybe.map .id model.profile.user
+              then
+                { model | route = Profile } ! [ Navigation.newUrl (routeToPath Profile) ]
+              else
+                (modelWithRoute, Cmd.batch [ User.getUser userId, User.getAds userId ] |> Cmd.map UserMessage)
 
             newRoute ->
               (modelWithRoute, Cmd.none)
@@ -110,12 +110,20 @@ update msg model =
             _ ->
               (model.initialLoading, model.needsConsent)
 
+        -- We might want to do routing or other initalization based on the
+        -- logged in profile, so redo that once we are first loaded
+        redoNewUrlCmd =
+          if initialLoading /= model.initialLoading then
+            Navigation.newUrl (routeToPath model.route)
+          else
+            Cmd.none
+
       in
         { model
           | profile = profileModel
           , initialLoading = initialLoading
           , needsConsent = needsConsent
-        } ! [ Cmd.map ProfileMessage cmd ]
+        } ! [ Cmd.map ProfileMessage cmd, redoNewUrlCmd ]
 
     CreateAdMessage msg ->
       let
