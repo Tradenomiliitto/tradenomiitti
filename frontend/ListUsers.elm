@@ -3,18 +3,27 @@ module ListUsers exposing (..)
 import Common
 import Html as H
 import Html.Attributes as A
+import Http
+import Json.Decode as Json
 import Models.User exposing (User)
 import State.ListUsers exposing (..)
 
-type Msg = NoOp
+type Msg
+  = UpdateUsers (Result Http.Error (List User))
 
 getUsers : Cmd Msg
-getUsers = Debug.crash "Not implemented"
+getUsers =
+  Http.get "/api/profiilit" (Json.list Models.User.userDecoder)
+    |> Http.send UpdateUsers
 
 
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
-  Debug.crash "Not implemented"
+  case msg of
+    UpdateUsers (Ok users) ->
+      { model | users = users } ! []
+    UpdateUsers (Err _) ->
+      model ! [] -- TODO error handling
 
 view : Model -> H.Html msg
 view model =
