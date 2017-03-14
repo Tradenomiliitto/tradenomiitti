@@ -5,12 +5,14 @@ import Html.Attributes as A
 import Html.Events as E
 import Json.Decode as Json
 import ListAds
+import ListUsers
 import LoginNeeded
 import Maybe.Extra as Maybe
 import Nav exposing (..)
 import Navigation
 import Profile.Main as Profile
 import Profile.View
+import State.ListUsers
 import State.Main exposing (..)
 import User
 
@@ -349,6 +351,8 @@ viewPage model =
           H.map ListAdsMessage <| ListAds.view model.listAds
         ShowAd adId ->
           H.map AdMessage <| Ad.view model.ad adId model.profile.user model.rootUrl
+        ListUsers ->
+          ListUsers.view State.ListUsers.init
         route ->
           notImplementedYet
   in
