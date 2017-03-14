@@ -1,7 +1,6 @@
 module ListAds exposing (..)
 
 import Common
-import Ad
 import Html as H
 import Html.Attributes as A
 import Http
@@ -80,10 +79,10 @@ adListView ad =
     [ H.div
       [ A.class "list-ads__ad-preview" ]
       [ H.h3 []
-        [ H.a 
+        [ H.a
           [ A.class "list-ads__ad-preview-heading"
           , A.href ("/ilmoitukset/" ++ (toString ad.id)) ]
-          [ H.text ad.heading ] 
+          [ H.text ad.heading ]
         ]
       , H.p [ A.class "list-ads__ad-preview-content" ] [ H.text (truncateContent ad.content 200) ]
       , H.hr [] []
@@ -103,7 +102,7 @@ rowFolder x acc =
         el :: els -> [el, x] :: rows
         els -> (x :: els) :: rows
 
--- truncates content so that the result includes at most numChars characters, taking full words. "…" is added if the content is truncated 
+-- truncates content so that the result includes at most numChars characters, taking full words. "…" is added if the content is truncated
 truncateContent : String -> Int -> String
 truncateContent content numChars =
   if (String.length content) < numChars
