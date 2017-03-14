@@ -10,6 +10,9 @@ $light-green: rgb(95, 125, 125);
 $white: #FFF;
 $black: #000;
 
+//breakpoints for smaller screen sizes
+$screen-xs: 768px;
+
 @mixin gotham-bold {
   font-family: "Gotham A","Gotham B",Arial,sans-serif;
   font-weight: 700 !important;

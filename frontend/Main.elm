@@ -71,7 +71,7 @@ update msg model =
               modelWithRoute ! [ Cmd.map ListAdsMessage ListAds.getAds ]
             
             Home ->
-              modelWithRoute ! [ Cmd.map HomeMessage (Cmd.map Home.ListAdsMessage ListAds.getAds)]
+              modelWithRoute ! [ Cmd.map HomeMessage Home.initTasks ]
 
             User userId ->
               if Just userId == Maybe.map .id model.profile.user

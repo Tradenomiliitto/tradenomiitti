@@ -18,13 +18,17 @@ update msg model =
       in
         ({ model | listAds = listAdsModel }, Cmd.map ListAdsMessage cmd)
 
+initTasks : Cmd Msg
+initTasks = Cmd.map ListAdsMessage ListAds.getAds
+
 
 view : Model -> H.Html Msg
 view model = 
   H.div 
     []
     [ introScreen
-    , listLatestAds model]
+    , listLatestAds model
+    ]
 
 
 introScreen : H.Html msg
@@ -55,7 +59,8 @@ listLatestAds model =
     [ H.div
       [ A.class "home__latest-ads--container" ]
       [ listAdsHeader 
-      , listFourAds model]
+      , listFourAds model
+      ]
      ]
 
 listAdsHeader : H.Html Msg

@@ -5,40 +5,44 @@
     height: 100vh;
   }
   &__introbox {
-    text-align:center;
-    padding-top:75px;
+    text-align: center;
+    padding-top: 75px;
     &--heading {
       @include gotham-bold;
       text-transform: uppercase;
-      font-size: 41.5px;
+      font-size: 42px;
       color: $pink
     }
     &--content {
-      padding-top:43px;
-      padding-bottom:64px;
+      padding-top: 40px;
+      padding-bottom: 60px;
       font-size: 20px;
     }
     &--button {
-      font-size:18px;
+      font-size: 18px;
       background-color: $pink;
-      color: white;
-      width:251px;
-      height: 62px;
+      color: $white;
+      width: 250px;
+      height: 60px;
     }
   }
   &__latest-ads {
     background-color: $light-grey;
-    margin-left:-15px;
-    width:100vw;
+    margin-left: -15px;
+    width: 100vw;
 
     &--container {
-      padding-left:10%;
-      padding-right:10%;
-      padding-bottom:100px;
+      padding-left: 10%;
+      padding-right: 10%;
+      padding-bottom: 100px;
     }
     &--header {
-      padding-top:90px;
-      padding-bottom:50px;
+      padding-top: 90px;
+      padding-bottom: 50px;
+      @media screen and (max-width: $screen-xs) {
+        padding-top: 40px;
+        padding-bottom: 0px;
+      }
       text-transform: uppercase;
       @include gotham-bold;
     }
