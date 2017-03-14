@@ -4,7 +4,7 @@ import Common
 import Html as H
 import Html.Attributes as A
 import Http
-import Json.Decode exposing (list)
+import Json.Decode as Json
 import Models.Ad
 import State.ListAds exposing (..)
 
@@ -29,7 +29,7 @@ getAds : Cmd Msg
 getAds =
   let
     url = "/api/ilmoitukset/"
-    request = Http.get url (list Models.Ad.adDecoder)
+    request = Http.get url (Json.list Models.Ad.adDecoder)
   in
     Http.send UpdateAds request
 
