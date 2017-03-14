@@ -70,7 +70,7 @@ viewUser user =
 row : List (H.Html msg) -> H.Html msg
 row users =
   H.div
-    [ A.class "row" ]
+    [ A.class "row list-users__user-row" ]
     users
 
 -- transforms a list to a list of lists of three elements: [1, 2, 3, 4, 5] => [[4, 5], [1, 2, 3]]
