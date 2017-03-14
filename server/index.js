@@ -31,18 +31,6 @@ if (process.env.NON_LOCAL) {
   app.set('trust proxy', 'loopback');
 }
 
-app.get('/api/tradenomit/:id', (req, res) => {
-  knex('users').where('id', req.params.id)
-    .then(function(rows){
-      if(rows.length === 0){
-         return Promise.reject("Not Found");
-      }
-      else return rows;
-    })
-    .then(rows => res.send(rows[0]))
-    .catch(e => res.sendStatus(404))
-});
-
 const communicationsKey = process.env.COMMUNICATIONS_KEY;
 if (!communicationsKey) console.warn("You should have COMMUNICATIONS_KEY for avoine in ENV");
 
@@ -75,6 +63,8 @@ app.get('/uloskirjautuminen', logon.logout);
 app.get('/api/profiilit/oma', profile.getMe);
 app.put('/api/profiilit/oma', jsonParser, profile.putMe);
 app.post('/api/profiilit/luo', profile.consentToProfileCreation);
+app.get('/api/profiilit', profile.listProfiles);
+app.get('/api/profiilit/:id', profile.getProfile);
 
 app.get('/api/tehtavaluokat', (req, res) => {
   return sebacon.getPositionTitles().then(positions => res.json(Object.values(positions)));

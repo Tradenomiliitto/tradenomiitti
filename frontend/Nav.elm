@@ -4,7 +4,16 @@ import Navigation
 import UrlParser as U exposing ((</>))
 import Window
 
-type Route = CreateAd | ShowAd Int | ListAds | ListUsers | Home | Info | NotFound | Profile | User Int
+type Route
+  = CreateAd
+  | ShowAd Int
+  | ListAds
+  | ListUsers
+  | Home
+  | Info
+  | NotFound
+  | Profile
+  | User Int
 
 routeToPath : Route -> String
 routeToPath route =

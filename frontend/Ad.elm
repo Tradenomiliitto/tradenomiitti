@@ -1,20 +1,19 @@
 module Ad exposing (..)
 
 import Common
-import Date.Extra as Date
 import Date
+import Date.Extra as Date
 import Html as H
 import Html.Attributes as A
 import Html.Events as E
 import Http
-import Json.Decode as Json exposing (Decoder, string, list, oneOf, int, map)
-import Json.Decode.Extra exposing (date)
-import Json.Decode.Pipeline as P
+import Json.Decode as Json
 import Json.Encode as JS
+import Models.Ad exposing (Ad, Answers(..), Answer)
+import Models.User exposing (User)
 import Nav
 import State.Ad exposing (..)
 import State.Util exposing (SendingStatus(..))
-import User
 
 type Msg
   = StartAddAnswer
@@ -26,7 +25,7 @@ type Msg
 
 getAd : Int -> Cmd Msg
 getAd adId =
-  Http.get ("/api/ilmoitukset/" ++ toString adId) adDecoder
+  Http.get ("/api/ilmoitukset/" ++ toString adId) Models.Ad.adDecoder
     |> Http.send GetAd
 
 sendAnswer : Model -> Int -> Cmd Msg
@@ -39,30 +38,6 @@ sendAnswer model adId =
     Http.post ("/api/ilmoitukset/" ++ toString adId ++ "/vastaus") (Http.jsonBody encoded) Json.string
       |> Http.send (SendAnswerResponse adId)
 
-adDecoder : Decoder Ad
-adDecoder =
-  P.decode Ad
-    |> P.requiredAt [ "data", "heading" ] string
-    |> P.requiredAt [ "data", "content" ] string
-    |> P.required "answers" answersDecoder
-    |> P.required "created_by" User.userDecoder
-    |> P.required "created_at" date
-    |> P.required "id" int
-
---answers can be either list of answers or a number
-answersDecoder : Decoder Answers
-answersDecoder =
-  oneOf
-    [ map AnswerCount int
-    , map AnswerList (list answerDecoder)
-    ]
-
-answerDecoder : Decoder Answer
-answerDecoder =
-  P.decode Answer
-    |> P.requiredAt [ "data", "content" ] string
-    |> P.required "created_by" User.userDecoder
-    |> P.required "created_at" date
 
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
@@ -92,13 +67,13 @@ update msg model =
     GetAd (Err _) ->
       { model | ad = Nothing } ! [] -- TODO error handling
 
-view : Model -> Int -> Maybe User.User -> String -> H.Html Msg
+view : Model -> Int -> Maybe User -> String -> H.Html Msg
 view model adId user rootUrl =
   model.ad
     |> Maybe.map (viewAd adId model user rootUrl)
     |> Maybe.withDefault (H.div [] [ H.text "Ilmoituksen haku epäonnistui" ])
 
-viewAd : Int -> Model -> Maybe User.User -> String -> Ad -> H.Html Msg
+viewAd : Int -> Model -> Maybe User -> String -> Ad -> H.Html Msg
 viewAd adId model userMaybe rootUrl ad =
   let
     (canAnswer, isAsker, hasAnswered) =
