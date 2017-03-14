@@ -51,7 +51,7 @@ update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
   case msg of
     NewUrl route ->
-      model ! [ Navigation.newUrl (routeToPath Profile) ]
+      model ! [ Navigation.newUrl (routeToPath route) ]
 
     UrlChange location ->
       let
