@@ -28,10 +28,13 @@
   }
   &__latest-ads {
     background-color: $light-grey;
+    margin-left:-15px;
+    width:100vw;
 
     &--container {
       padding-left:10%;
       padding-right:10%;
+      padding-bottom:100px;
     }
     &--header {
       padding-top:90px;
