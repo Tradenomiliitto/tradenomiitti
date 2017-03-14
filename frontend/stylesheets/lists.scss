@@ -18,7 +18,7 @@
     margin-top: 25px;
     padding: 15px;
     box-shadow: 0 2px 2px 1px #CCC;
-    background-color: white;
+    background-color: $white;
     &-heading {
       color: $pink;
       @include gotham-bold;
