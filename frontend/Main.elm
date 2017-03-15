@@ -123,7 +123,7 @@ update msg model =
         -- logged in profile, so redo that once we are first loaded
         redoNewUrlCmd =
           if initialLoading /= model.initialLoading then
-            Navigation.newUrl (routeToPath model.route)
+            Navigation.modifyUrl (routeToPath model.route)
           else
             Cmd.none
 
