@@ -186,7 +186,7 @@ view model =
       H.div [ A.class "page-layout" ]
         [ navigation model
         , viewPage model
-        , Footer.view
+        , Footer.view NewUrl
         ]
 
 --TODO move navbar code to Nav.elm

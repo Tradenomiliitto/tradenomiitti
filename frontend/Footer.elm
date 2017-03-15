@@ -1,10 +1,12 @@
 module Footer exposing (..)
 
+import Common
 import Html as H
 import Html.Attributes as A
+import Nav
 
-view : H.Html msg
-view =
+view : (Nav.Route -> msg) -> H.Html msg
+view routeToMsg =
   H.div
     [ A.class "footer" ]
     [ H.div
@@ -19,8 +21,8 @@ view =
           ]
         , H.div
           [ A.class "col-xs-12 col-sm-3" ]
-          [ H.p [] [ H.a [ A.href "/kayttoehdot" ] [ H.text "Palvelun käyttöehdot" ]]
-          , H.p [] [ H.a [ A.href "/rekisteriseloste" ] [ H.text "Rekisteriseloste" ]]
+          [ H.p [] [ Common.link Nav.Terms routeToMsg ]
+          , H.p [] [ Common.link Nav.RegisterDescription routeToMsg ]
           , H.p [] [ H.a [ A.href "http://tral.fi" ] [ H.text "tral.fi" ]]
           , H.p [] [ H.a [ A.href "http://liity.tral.fi/#liity" ] [ H.text "Liity jäseneksi" ]]
           ]
