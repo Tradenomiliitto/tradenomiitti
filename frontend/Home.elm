@@ -6,7 +6,6 @@ import ListAds
 import ListUsers
 import State.Home exposing (..)
 
-
 type Msg = ListAdsMessage ListAds.Msg | ListUsersMessage ListUsers.Msg
 
 
@@ -29,8 +28,8 @@ initTasks = Cmd.batch [ Cmd.map ListAdsMessage ListAds.getAds, Cmd.map ListUsers
 
 
 view : Model -> H.Html Msg
-view model = 
-  H.div 
+view model =
+  H.div
     []
     [ introScreen
     , listLatestAds model
@@ -50,11 +49,11 @@ introBox : H.Html msg
 introBox =
   H.div
     [ A.class "home__introbox col-sm-6 col-sm-offset-3" ]
-    [ H.h2 
+    [ H.h2
       [ A.class "home__introbox--heading" ]
       [ H.text "Kohtaa tradenomi" ]
     , H.div
-      [ A.class "home__introbox--content" ] 
+      [ A.class "home__introbox--content" ]
       [ H.text "Tradenomiitti on tradenomien oma kohtaamispaikka, jossa jäsenet löytävät toisensa yhteisten aiheiden ympäriltä ja hyötyvät toistensa kokemuksista." ]
     , H.button
       [ A.class "home__introbox--button btn btn-primary" ]
@@ -69,7 +68,7 @@ listLatestAds model =
     [ A.class "home__latest-ads" ]
     [ H.div
       [ A.class "home__section--container" ]
-      [ listAdsHeading 
+      [ listAdsHeading
       , listFourAds model
       ]
      ]
@@ -88,7 +87,7 @@ listAdsButtons =
     [ A.class "home__section--heading--buttons col-sm-7" ]
     [ H.button
       [ A.class "home__section--heading--buttons--inverse btn btn-primary" ]
-      [ H.text "katso kaikki ilmoitukset" ] 
+      [ H.text "katso kaikki ilmoitukset" ]
     , H.button
       [ A.class "home__section--heading--buttons--normal btn btn-primary" ]
       [ H.text "jätä ilmoitus" ]
@@ -114,7 +113,7 @@ listUsers model =
     [ A.class "home__list-users" ]
     [ H.div
       [ A.class "home__section--container" ]
-      [ listUsersHeading 
+      [ listUsersHeading
       , listThreeUsers model
       ]
      ]
@@ -133,7 +132,7 @@ listUsersButtons =
     [ A.class "home__section--heading--buttons col-sm-7" ]
     [ H.button
       [ A.class "home__section--heading--buttons--inverse btn btn-primary" ]
-      [ H.text "katso kaikki tradenomit" ] 
+      [ H.text "katso kaikki tradenomit" ]
     , H.button
       [ A.class "home__section--heading--buttons--normal btn btn-primary" ]
       [ H.text "muokkaa omaa profiilia" ]
