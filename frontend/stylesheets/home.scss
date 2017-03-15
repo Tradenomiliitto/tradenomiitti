@@ -1,5 +1,14 @@
 @import 'common';
 
+
+
+@mixin button-paddings {
+  padding-top: 15px !important;
+  padding-bottom: 15px !important;
+  padding-left: 30px !important;
+  padding-right: 30px !important;
+}
+
 .home {
   &__intro-screen {
     height: 100vh;
@@ -36,7 +45,7 @@
       padding-right: 10%;
       padding-bottom: 100px;
     }
-    &--header {
+    &--heading {
       padding-top: 90px;
       padding-bottom: 50px;
       @media screen and (max-width: $screen-xs) {
@@ -45,6 +54,30 @@
       }
       text-transform: uppercase;
       @include gotham-bold;
+      &--text {
+        font-size: 28px;
+      }
+      &--buttons {
+        text-align: right;
+        @media screen and (max-width: $screen-xs) {
+          text-align: center;
+        }
+        &--inverse {
+          border-width: 2px !important;
+          @include inverse-button-colors;
+          @include button-paddings;
+          @media screen and (max-width: $screen-xs) {
+            margin-top: 20px;
+          }
+        }
+        &--normal {
+          margin-left: 20px;
+          @include button-paddings;
+          @media screen and (max-width: $screen-xs) {
+            display: none !important;
+          }
+        }
+      }
     }
   }
 } 

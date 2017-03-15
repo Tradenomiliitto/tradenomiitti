@@ -30,6 +30,7 @@ view model =
     , listLatestAds model
     ]
 
+-- FIRST INFO SCREEN --
 
 introScreen : H.Html msg
 introScreen =
@@ -52,21 +53,43 @@ introBox =
       [ H.text "luo oma profiili" ]
     ]
 
+-- LIST LATEST ADS --
+
 listLatestAds : Model -> H.Html Msg
 listLatestAds model =
   H.div
     [ A.class "home__latest-ads" ]
     [ H.div
       [ A.class "home__latest-ads--container" ]
-      [ listAdsHeader 
+      [ listAdsHeading 
       , listFourAds model
       ]
      ]
 
+listAdsHeading : H.Html Msg
+listAdsHeading =
+  H.div
+    [ A.class "home__latest-ads--heading row" ]
+    [ listAdsHeader
+    , listAdsButtons
+    ]
+
+listAdsButtons : H.Html Msg
+listAdsButtons =
+  H.div
+    [ A.class "home__latest-ads--heading--buttons col-sm-6" ]
+    [ H.button
+      [ A.class "home__latest-ads--heading--buttons--inverse btn btn-primary" ]
+      [ H.text "katso kaikki ilmoitukset" ] 
+    , H.button
+      [ A.class "home__latest-ads--heading--buttons--normal btn btn-primary" ]
+      [ H.text "jätä ilmoitus" ]
+    ]
+
 listAdsHeader : H.Html Msg
 listAdsHeader =
-  H.h3
-    [ A.class "home__latest-ads--header" ]
+  H.div
+    [ A.class "home__latest-ads--heading--text col-sm-6" ]
     [ H.text "Uusimmat ilmoitukset" ]
 
 listFourAds : Model -> H.Html Msg
