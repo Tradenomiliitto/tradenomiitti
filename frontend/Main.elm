@@ -1,5 +1,6 @@
 import Ad
 import CreateAd
+import Footer
 import Html as H
 import Html.Attributes as A
 import Html.Events as E
@@ -181,9 +182,10 @@ view model =
             ]
           ]
     else
-      H.div []
+      H.div [ A.class "page-layout" ]
         [ navigation model
         , viewPage model
+        , Footer.view
         ]
 
 --TODO move navbar code to Nav.elm
