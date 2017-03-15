@@ -12,9 +12,11 @@ import LoginNeeded
 import Maybe.Extra as Maybe
 import Nav exposing (..)
 import Navigation
+import PreformattedText
 import Profile.Main as Profile
 import Profile.View
 import State.Main exposing (..)
+import Static
 import User
 
 main : Program Never Model Msg
@@ -347,6 +349,10 @@ viewPage model =
           H.map AdMessage <| Ad.view model.ad adId model.profile.user model.rootUrl
         ListUsers ->
           ListUsers.view model.listUsers
+        Terms ->
+          PreformattedText.view Static.termsHeading Static.termsText
+        RegisterDescription ->
+          PreformattedText.view Static.registerDescriptionHeading Static.registerDescriptionText
         route ->
           notImplementedYet
   in
