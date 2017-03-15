@@ -3,10 +3,11 @@ module Home exposing (..)
 import Html as H
 import Html.Attributes as A
 import ListAds
+import ListUsers
 import State.Home exposing (..)
 
 
-type Msg = ListAdsMessage ListAds.Msg
+type Msg = ListAdsMessage ListAds.Msg | ListUsersMessage ListUsers.Msg
 
 
 update : Msg -> Model -> (Model, Cmd Msg)
@@ -16,10 +17,15 @@ update msg model =
       let
         (listAdsModel, cmd) = ListAds.update msg model.listAds
       in
-        ({ model | listAds = listAdsModel }, Cmd.map ListAdsMessage cmd)
+        { model | listAds = listAdsModel } ! [ Cmd.map ListAdsMessage cmd ]
+    ListUsersMessage msg ->
+      let
+        (listUsersModel, cmd) = ListUsers.update msg model.listUsers
+      in
+        { model | listUsers = listUsersModel } ! [ Cmd.map ListUsersMessage cmd ]
 
 initTasks : Cmd Msg
-initTasks = Cmd.map ListAdsMessage ListAds.getAds
+initTasks = Cmd.batch [ Cmd.map ListAdsMessage ListAds.getAds, Cmd.map ListUsersMessage ListUsers.getUsers ]
 
 
 view : Model -> H.Html Msg
@@ -141,5 +147,5 @@ listUsersButtons =
 listThreeUsers : Model -> H.Html Msg
 listThreeUsers model =
   H.div
-    []
-    [ H.text "List Users" ]
+    [ A.class "row" ]
+    (List.map ListUsers.viewUser (List.take 3 model.listUsers.users))
