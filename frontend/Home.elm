@@ -28,6 +28,7 @@ view model =
     []
     [ introScreen
     , listLatestAds model
+    , listUsers model
     ]
 
 -- FIRST INFO SCREEN --
@@ -60,7 +61,7 @@ listLatestAds model =
   H.div
     [ A.class "home__latest-ads" ]
     [ H.div
-      [ A.class "home__latest-ads--container" ]
+      [ A.class "home__section--container" ]
       [ listAdsHeading 
       , listFourAds model
       ]
@@ -69,7 +70,7 @@ listLatestAds model =
 listAdsHeading : H.Html Msg
 listAdsHeading =
   H.div
-    [ A.class "home__latest-ads--heading row" ]
+    [ A.class "home__section--heading row" ]
     [ listAdsHeader
     , listAdsButtons
     ]
@@ -77,19 +78,19 @@ listAdsHeading =
 listAdsButtons : H.Html Msg
 listAdsButtons =
   H.div
-    [ A.class "home__latest-ads--heading--buttons col-sm-6" ]
+    [ A.class "home__section--heading--buttons col-sm-7" ]
     [ H.button
-      [ A.class "home__latest-ads--heading--buttons--inverse btn btn-primary" ]
+      [ A.class "home__section--heading--buttons--inverse btn btn-primary" ]
       [ H.text "katso kaikki ilmoitukset" ] 
     , H.button
-      [ A.class "home__latest-ads--heading--buttons--normal btn btn-primary" ]
+      [ A.class "home__section--heading--buttons--normal btn btn-primary" ]
       [ H.text "jätä ilmoitus" ]
     ]
 
 listAdsHeader : H.Html Msg
 listAdsHeader =
   H.div
-    [ A.class "home__latest-ads--heading--text col-sm-6" ]
+    [ A.class "home__section--heading--text col-sm-5" ]
     [ H.text "Uusimmat ilmoitukset" ]
 
 listFourAds : Model -> H.Html Msg
@@ -97,3 +98,48 @@ listFourAds model =
   H.div
     []
     (ListAds.viewAds (List.take 4 model.listAds.ads))
+
+-- LIST USERS --
+
+listUsers : Model -> H.Html Msg
+listUsers model =
+  H.div
+    [ A.class "home__list-users" ]
+    [ H.div
+      [ A.class "home__section--container" ]
+      [ listUsersHeading 
+      , listThreeUsers model
+      ]
+     ]
+
+listUsersHeading : H.Html Msg
+listUsersHeading =
+  H.div
+    [ A.class "home__section--heading row" ]
+    [ listUsersHeader
+    , listUsersButtons
+    ]
+
+listUsersHeader : H.Html Msg
+listUsersHeader =
+  H.div
+    [ A.class "home__section--heading--text col-sm-5" ]
+    [ H.text "Löydä tradenomi" ]
+
+listUsersButtons : H.Html Msg
+listUsersButtons =
+  H.div
+    [ A.class "home__section--heading--buttons col-sm-7" ]
+    [ H.button
+      [ A.class "home__section--heading--buttons--inverse btn btn-primary" ]
+      [ H.text "katso kaikki tradenomit" ] 
+    , H.button
+      [ A.class "home__section--heading--buttons--normal btn btn-primary" ]
+      [ H.text "muokkaa omaa profiilia" ]
+    ]
+
+listThreeUsers : Model -> H.Html Msg
+listThreeUsers model =
+  H.div
+    []
+    [ H.text "List Users" ]

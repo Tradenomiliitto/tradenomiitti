@@ -35,11 +35,8 @@
       height: 60px;
     }
   }
-  &__latest-ads {
-    background-color: $light-grey;
-    margin-left: -15px;
-    width: 100vw;
 
+  &__section {
     &--container {
       padding-left: 10%;
       padding-right: 10%;
@@ -79,5 +76,16 @@
         }
       }
     }
+  }
+
+  &__latest-ads {
+    background-color: $light-grey;
+    margin-left: -15px;
+    width: 100vw;
+  }
+
+  &__list-users {
+    background-color: $white;
+    width: 100vw;
   }
 } 
