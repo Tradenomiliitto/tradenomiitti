@@ -10,6 +10,31 @@ $light-green: rgb(95, 125, 125);
 $white: #FFF;
 $black: #000;
 
+$content-top-margin: 70px;
+$light-grey-background: #fbfbfb;
+
+$navbar-default-bg: $pink;
+$navbar-default-color: $white;
+$navbar-default-link-color: $navbar-default-color;
+$navbar-default-link-active-color: $white;
+$navbar-default-link-hover-color: $white;
+$font-family-sans-serif: mundoSansRegular;
+$font-size-base: 14px;
+$navbar-height: 66px;
+$footer-height: 250px;
+$footer-height-mobile: 450px;
+$grid-float-breakpoint: 850px;
+
+$btn-border-radius-small: 0;
+$btn-border-radius-large: 0;
+$btn-border-radius-base: 0;
+$btn-primary-bg: $pink;
+
+$link-color: $black;
+
+$fa-font-path: "/static";
+$icon-font-path: "/static/";
+
 @mixin gotham-bold {
   font-family: "Gotham A","Gotham B",Arial,sans-serif;
   font-weight: 700 !important;
@@ -18,7 +43,7 @@ $black: #000;
 //fonts
 @font-face  {
   font-family: mundoSansRegular;
-  src: url("/static/MundoSansStd.otf");
+  src: url("/static/MundoSansStd-Light.otf");
 }
 
 @mixin round-profile-pic($diameter, $color) {
@@ -27,4 +52,12 @@ $black: #000;
   border-radius: #{$diameter / 2};
   background-color: $color;
   display: inline-block;
+}
+
+@mixin inverse-button-colors {
+  color: $pink !important;
+  background-color: $white !important;
+  &:hover {
+    background-color: $white !important;
+  }
 }

@@ -5,6 +5,7 @@ import Footer
 import Html as H
 import Html.Attributes as A
 import Html.Events as E
+import Home
 import Json.Decode as Json
 import ListAds
 import ListUsers
@@ -52,6 +53,7 @@ type Msg
   | ListAdsMessage ListAds.Msg
   | ListUsersMessage ListUsers.Msg
   | AdMessage Ad.Msg
+  | HomeMessage Home.Msg
 
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
@@ -73,6 +75,9 @@ update msg model =
 
             ListAds ->
               modelWithRoute ! [ Cmd.map ListAdsMessage ListAds.getAds ]
+            
+            Home ->
+              modelWithRoute ! [ Cmd.map HomeMessage Home.initTasks ]
 
             User userId ->
               if Just userId == Maybe.map .id model.profile.user
@@ -152,6 +157,12 @@ update msg model =
         (adModel, cmd) = Ad.update msg model.ad
       in
         { model | ad = adModel } ! [ Cmd.map AdMessage cmd ]
+    
+    HomeMessage msg ->
+      let
+        (homeModel, cmd) = Home.update msg model.home
+      in
+        { model | home = homeModel } ! [ Cmd.map HomeMessage cmd ]
 
 --SUBSCRIPTIONS
 
@@ -347,6 +358,8 @@ viewPage model =
           H.map ListAdsMessage <| ListAds.view model.listAds
         ShowAd adId ->
           H.map AdMessage <| Ad.view model.ad adId model.profile.user model.rootUrl
+        Home ->
+          H.map HomeMessage <| Home.view model.home
         ListUsers ->
           ListUsers.view model.listUsers
         Terms ->
