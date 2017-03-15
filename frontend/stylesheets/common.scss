@@ -1,5 +1,6 @@
 //color definitions
 $pink: #ff6889;
+$green: #496060;
 $green:  rgb(74, 97, 97);
 $medium-grey: rgb(207, 208, 207);
 $dark-grey: rgb(99, 99, 99);
@@ -34,6 +35,11 @@ $link-color: $black;
 
 $fa-font-path: "/static";
 $icon-font-path: "/static/";
+
+#navbar-height-to-js { height: $navbar-height; }
+#pink-to-js { color: $pink; }
+#green-to-js { color: $green; }
+
 
 @mixin gotham-bold {
   font-family: "Gotham A","Gotham B",Arial,sans-serif;

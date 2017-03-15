@@ -84,7 +84,7 @@ update msg model =
 
             Home ->
               modelWithRoute ! [ Cmd.map HomeMessage Home.initTasks
-                               , animation "TODO"
+                               , animation "home-intro-canvas"
                                ]
 
             User userId ->

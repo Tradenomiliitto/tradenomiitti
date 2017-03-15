@@ -43,22 +43,35 @@ introScreen : H.Html msg
 introScreen =
   H.div
     [ A.class "home__intro-screen" ]
-    [ introBox ]
+    (introAnimation :: introBoxes)
 
-introBox : H.Html msg
-introBox =
-  H.div
+introAnimation : H.Html msg
+introAnimation =
+  H.canvas [ A.id "home-intro-canvas"
+           , A.class "home__intro-canvas"
+           ] []
+
+introBoxes : List ( H.Html msg )
+introBoxes =
+  [ H.div
+     [ A.class "home__introbox col-sm-6 col-sm-offset-3" ]
+     [ H.h2
+         [ A.class "home__introbox--heading" ]
+         [ H.text "Kohtaa tradenomi" ]
+     ]
+  , H.div
     [ A.class "home__introbox col-sm-6 col-sm-offset-3" ]
-    [ H.h2
-      [ A.class "home__introbox--heading" ]
-      [ H.text "Kohtaa tradenomi" ]
-    , H.div
-      [ A.class "home__introbox--content" ]
-      [ H.text "Tradenomiitti on tradenomien oma kohtaamispaikka, jossa jäsenet löytävät toisensa yhteisten aiheiden ympäriltä ja hyötyvät toistensa kokemuksista." ]
-    , H.button
-      [ A.class "home__introbox--button btn btn-primary" ]
-      [ H.text "luo oma profiili" ]
+    [ H.div
+        [ A.class "home__introbox--content" ]
+        [ H.text "Tradenomiitti on tradenomien oma kohtaamispaikka, jossa jäsenet löytävät toisensa yhteisten aiheiden ympäriltä ja hyötyvät toistensa kokemuksista." ]
     ]
+  , H.div
+    [ A.class "home__introbox home__introbox--button-container col-sm-4 col-sm-offset-4" ]
+    [ H.button
+        [ A.class "home__introbox--button btn btn-primary" ]
+        [ H.text "luo oma profiili" ]
+    ]
+ ]
 
 -- LIST LATEST ADS --
 

@@ -6,24 +6,36 @@
 }
 
 .home {
+  $intro-height: calc(100vh - #{ $navbar-height });
   &__intro-screen {
-    height: calc(100vh - #{ $navbar-height });
+    height: $intro-height;
+  }
+  &__intro-canvas {
+    height: $intro-height;
+    position: absolute;
+    top: $navbar-height;
+    width: 100vw;
+    left: 0;
+    z-index: 2;
   }
   &__introbox {
     text-align: center;
-    padding-top: 75px;
     &--heading {
+      margin-top: 75px;
       @include gotham-bold;
       text-transform: uppercase;
       font-size: 42px;
       color: $pink
     }
     &--content {
-      padding-top: 40px;
-      padding-bottom: 60px;
+      margin-top: 40px;
+      margin-bottom: 60px;
       font-size: 20px;
     }
     &--button {
+      &-container {
+        z-index: 10;
+      }
       font-size: 18px;
       background-color: $pink;
       color: $white;
