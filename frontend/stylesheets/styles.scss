@@ -2,6 +2,9 @@
 @import 'lists';
 @import 'author-info';
 
+$fa-font-path: "/static/";
+@import '../../node_modules/font-awesome/scss/font-awesome';
+
 $content-top-margin: 70px;
 $light-grey-background: #fbfbfb;
 
@@ -683,5 +686,14 @@ body {
 
   & a {
     color: $white;
+  }
+
+  &__social-icons {
+    & i {
+      color: $white;
+      padding: 15px;
+      border: 1px solid $white;
+      margin-right: 15px;
+    }
   }
 }
