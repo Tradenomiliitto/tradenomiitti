@@ -350,9 +350,9 @@ viewPage model =
         ListUsers ->
           ListUsers.view model.listUsers
         Terms ->
-          PreformattedText.view Static.termsHeading Static.termsText
+          PreformattedText.view Static.termsHeading Static.termsTexts
         RegisterDescription ->
-          PreformattedText.view Static.registerDescriptionHeading Static.registerDescriptionText
+          PreformattedText.view Static.registerDescriptionHeading Static.registerDescriptionTexts
         route ->
           notImplementedYet
   in
