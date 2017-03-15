@@ -1,7 +1,5 @@
 @import 'common';
 
-
-
 @mixin button-paddings {
   padding-top: 15px !important;
   padding-bottom: 15px !important;
@@ -87,5 +85,49 @@
   &__list-users {
     background-color: $white;
     width: 100vw;
+  }
+
+  &__tradenomiitti {
+    &--background {
+      background-color: $light-grey;
+      margin-left: -15px;
+      width: 100vw;
+      padding-top: 120px;
+      padding-bottom: 120px;
+    }
+    &--container {
+      margin-left: 5%;
+      margin-right: 5%;
+      background-color: $white;
+    }
+    &--info-container {
+      padding-left: 60px !important;
+      padding-right: 60px !important;
+
+    }
+    &--image{
+      width: 100%;
+      height: 100%;
+    }
+    &--info {
+      margin-top: 60px;
+
+      &--header {
+        color: $pink;
+        @include gotham-bold;
+        text-transform: uppercase;
+        font-size: 42px;
+      }
+      &--text {
+        font-size: 20px;
+        margin-top: 50px;
+        margin-bottom: 50px;
+      }
+      &--read-more-button {
+        border-width: 2px !important;
+        @include button-paddings;
+        @include inverse-button-colors;
+      }
+    }
   }
 } 

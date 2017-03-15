@@ -35,6 +35,7 @@ view model =
     [ introScreen
     , listLatestAds model
     , listUsers model
+    , tradenomiittiSection
     ]
 
 -- FIRST INFO SCREEN --
@@ -77,7 +78,7 @@ listAdsHeading : H.Html Msg
 listAdsHeading =
   H.div
     [ A.class "home__section--heading row" ]
-    [ listAdsHeader
+    [ sectionHeader "Uusimmat ilmoitukset"
     , listAdsButtons
     ]
 
@@ -93,11 +94,11 @@ listAdsButtons =
       [ H.text "jätä ilmoitus" ]
     ]
 
-listAdsHeader : H.Html Msg
-listAdsHeader =
+sectionHeader : String -> H.Html Msg
+sectionHeader title =
   H.div
     [ A.class "home__section--heading--text col-sm-5" ]
-    [ H.text "Uusimmat ilmoitukset" ]
+    [ H.text title ]
 
 listFourAds : Model -> H.Html Msg
 listFourAds model =
@@ -122,15 +123,9 @@ listUsersHeading : H.Html Msg
 listUsersHeading =
   H.div
     [ A.class "home__section--heading row" ]
-    [ listUsersHeader
+    [ sectionHeader "Löydä tradenomi"
     , listUsersButtons
     ]
-
-listUsersHeader : H.Html Msg
-listUsersHeader =
-  H.div
-    [ A.class "home__section--heading--text col-sm-5" ]
-    [ H.text "Löydä tradenomi" ]
 
 listUsersButtons : H.Html Msg
 listUsersButtons =
@@ -149,3 +144,59 @@ listThreeUsers model =
   H.div
     [ A.class "row" ]
     (List.map ListUsers.viewUser (List.take 3 model.listUsers.users))
+
+  -- TRADENOMIITTI AD --
+
+tradenomiittiSection : H.Html Msg
+tradenomiittiSection =
+  H.div
+    [ A.class "home__tradenomiitti--background" ]
+    [ H.div
+        [ A.class "home__tradenomiitti--container" ]
+        [ tradenomiittiRow ]
+    ]
+tradenomiittiRow : H.Html Msg
+tradenomiittiRow =
+  H.div
+    [ A.class "row"]
+    [ H.div [ A.class "home__tradenomiitti--info-container  col-md-6" ] [ tradenomiittiInfo ]
+    , tradenomiImage
+    ]
+
+tradenomiittiInfo : H.Html Msg
+tradenomiittiInfo =
+  H.div
+    [ A.class "home__tradenomiitti--info" ]
+    [ tradenomiittiHeader
+    , tradenomiittiInfoText
+    , readMoreButton
+    ]
+
+tradenomiittiHeader : H.Html Msg
+tradenomiittiHeader =
+  H.h2
+    [ A.class "home__tradenomiitti--info--header" ]
+    [ H.text "Lorem ipsum dolorem salet" ]
+
+tradenomiittiInfoText : H.Html Msg
+tradenomiittiInfoText =
+  H.p
+    [ A.class "home__tradenomiitti--info--text" ]
+    [ H.text "Tähän kuvaava teksti Tradenomiitistä. Hyötynäkökuma, eli mitä täällä voi tehdä ja miksi pitäisi liittyä. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua." ]
+
+readMoreButton : H.Html Msg
+readMoreButton =
+  H.button
+   [ A.class "home__tradenomiitti--info--read-more-button btn btn-primary" ]
+   [ H.text "Lue lisää" ]
+
+tradenomiImage : H.Html Msg
+tradenomiImage =
+  H.div
+    [ A.class "col-md-6" ]
+    [ H.img
+      [ A.class "home__tradenomiitti--image"
+      , A.src "/static/tral_person_image_square_1.jpg"
+      ]
+      []
+    ]
