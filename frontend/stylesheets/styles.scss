@@ -187,9 +187,9 @@ $navbar-element-height: 35px;
 
 .app-content {
   padding-top: $navbar-height;
-  padding-bottom: $footer-height;
+  padding-bottom: #{$footer-height + 50px};
   @media (max-width: $screen-xs-max) {
-    padding-bottom: $footer-height-mobile;
+    padding-bottom: #{$footer-height-mobile + 35px };
   }
 }
 
@@ -704,8 +704,5 @@ body {
     text-transform: uppercase;
     margin-bottom: 50px;
     margin-top: 50px;
-  }
-  &__text {
-    margin-bottom: 50px;
   }
 }
