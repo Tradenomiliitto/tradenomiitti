@@ -1,37 +1,8 @@
 @import 'common';
+@import 'bootstrap';
 @import 'lists';
 @import 'author-info';
 @import 'home';
-
-$content-top-margin: 70px;
-$light-grey-background: #fbfbfb;
-
-$navbar-default-bg: $pink;
-$navbar-default-color: $white;
-$navbar-default-link-color: $navbar-default-color;
-$navbar-default-link-active-color: $white;
-$navbar-default-link-hover-color: $white;
-$font-family-sans-serif: mundoSansRegular;
-$font-size-base: 14px;
-$navbar-height: 66px;
-$grid-float-breakpoint: 850px;
-
-$btn-border-radius-small: 0;
-$btn-border-radius-large: 0;
-$btn-border-radius-base: 0;
-$btn-primary-bg: $pink;
-
-$link-color: $black;
-
-$icon-font-path: "/static/";
-
-@mixin inverse-button-colors {
-  color: $pink !important;
-  background-color: $white !important;
-  &:hover {
-    background-color: $white !important;
-  }
-}
 
 body {
   overflow-x: hidden;
@@ -100,8 +71,6 @@ body {
 #logo > img {
   margin-top: -5px;
 }
-
-@import "bootstrap";
 
 .navbar-right {
   padding-right: 40px;

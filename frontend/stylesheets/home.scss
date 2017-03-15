@@ -43,7 +43,7 @@
     &--heading {
       padding-top: 90px;
       padding-bottom: 50px;
-      @media screen and (max-width: $screen-xs) {
+      @media screen and (max-width: $screen-xs-max) {
         padding-top: 40px;
         padding-bottom: 0px;
       }
@@ -54,21 +54,21 @@
       }
       &--buttons {
         text-align: right;
-        @media screen and (max-width: $screen-xs) {
+        @media screen and (max-width: $screen-xs-max) {
           text-align: center;
         }
         &--inverse {
           border-width: 2px !important;
           @include inverse-button-colors;
           @include button-paddings;
-          @media screen and (max-width: $screen-xs) {
+          @media screen and (max-width: $screen-xs-max) {
             margin-top: 20px;
           }
         }
         &--normal {
           margin-left: 20px;
           @include button-paddings;
-          @media screen and (max-width: $screen-xs) {
+          @media screen and (max-width: $screen-xs-max) {
             display: none !important;
           }
         }
@@ -120,8 +120,8 @@
       }
       &--text {
         font-size: 20px;
-        margin-top: 50px;
-        margin-bottom: 50px;
+        margin-top: 40px;
+        margin-bottom: 40px;
       }
       &--read-more-button {
         border-width: 2px !important;

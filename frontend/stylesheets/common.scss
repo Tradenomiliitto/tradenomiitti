@@ -10,8 +10,27 @@ $light-green: rgb(95, 125, 125);
 $white: #FFF;
 $black: #000;
 
-//breakpoints for smaller screen sizes
-$screen-xs: 768px;
+$content-top-margin: 70px;
+$light-grey-background: #fbfbfb;
+
+$navbar-default-bg: $pink;
+$navbar-default-color: $white;
+$navbar-default-link-color: $navbar-default-color;
+$navbar-default-link-active-color: $white;
+$navbar-default-link-hover-color: $white;
+$font-family-sans-serif: mundoSansRegular;
+$font-size-base: 14px;
+$navbar-height: 66px;
+$grid-float-breakpoint: 850px;
+
+$btn-border-radius-small: 0;
+$btn-border-radius-large: 0;
+$btn-border-radius-base: 0;
+$btn-primary-bg: $pink;
+
+$link-color: $black;
+
+$icon-font-path: "/static/";
 
 @mixin gotham-bold {
   font-family: "Gotham A","Gotham B",Arial,sans-serif;
@@ -38,11 +57,4 @@ $screen-xs: 768px;
   &:hover {
     background-color: $white !important;
   }
-}
-
-@mixin button-paddings {
-  padding-top: 15px !important;
-  padding-bottom: 15px !important;
-  padding-left: 30px !important;
-  padding-right: 30px !important;
 }
