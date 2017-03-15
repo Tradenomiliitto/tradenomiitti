@@ -14,6 +14,8 @@ type Route
   | NotFound
   | Profile
   | User Int
+  | Terms
+  | RegisterDescription
 
 routeToPath : Route -> String
 routeToPath route =
@@ -36,7 +38,36 @@ routeToPath route =
       "/profiili"
     User userId ->
       "/tradenomit/" ++ (toString userId)
+    Terms ->
+      "/kayttoehdot"
+    RegisterDescription ->
+      "/rekisteriseloste"
 
+routeToString : Route -> String
+routeToString route =
+  case route of
+    User userId ->
+      "Käyttäjä " ++ (toString userId)
+    Profile ->
+      "Oma Profiili"
+    Home ->
+      "Home"
+    Info ->
+      "Tietoa"
+    NotFound ->
+      "Ei löytynyt"
+    ListUsers ->
+      "Tradenomit"
+    ListAds ->
+      "Hakuilmoitukset"
+    CreateAd ->
+      "Jätä ilmoitus"
+    ShowAd adId ->
+      "Ilmoitus " ++ (toString adId)
+    Terms ->
+      "Palvelun käyttöehdot"
+    RegisterDescription ->
+      "Rekisteriseloste"
 
 parseLocation : Navigation.Location -> Route
 parseLocation location =
@@ -57,6 +88,8 @@ routeParser =
     , U.map Info (U.s "tietoa")
     , U.map Profile (U.s "profiili")
     , U.map User (U.s "tradenomit" </> U.int)
+    , U.map Terms (U.s "kayttoehdot")
+    , U.map RegisterDescription (U.s "rekisteriseloste")
     ]
 
 

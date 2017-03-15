@@ -7,11 +7,11 @@
     "preansible": "./conf/preinstall.sh",
     "serverinstallbase": "./conf/serverinstallbase.sh",
     "serverinstallpm2": "ansible-playbook conf/pm2install.yml -i conf/inventory.ini",
-    "compilelocal": "cd frontend && mkdir -p static && elm-make --yes Main.elm --output static/main.js && node-sass --precision 8 --include-path ../node_modules/bootstrap-sass/assets/stylesheets -r stylesheets/styles.scss -o static/ && cp assets/* ../node_modules/bootstrap-sass/assets/fonts/bootstrap/* ../conf/assets/* static/",
+    "compilelocal": "cd frontend && mkdir -p static && elm-make --yes Main.elm --output static/main.js && node-sass --precision 8 --include-path ../node_modules/bootstrap-sass/assets/stylesheets -r stylesheets/styles.scss -o static/ && cp assets/* ../node_modules/bootstrap-sass/assets/fonts/bootstrap/* ../node_modules/font-awesome/fonts/* ../conf/assets/* static/",
     "start": "environment=local node server/index.js",
     "compilefrontend": "cd frontend && elm-make --yes Main.elm --output /srv/static/main.js",
     "compilescss": "node-sass --precision 8 --include-path node_modules/bootstrap-sass/assets/stylesheets -r frontend/stylesheets/styles.scss -o /srv/static/",
-    "compileassets": "cp frontend/assets/* node_modules/bootstrap-sass/assets/fonts/bootstrap/* /srv/static/"
+    "compileassets": "cp frontend/assets/* node_modules/bootstrap-sass/assets/fonts/bootstrap/* node_modules/font-awesome/fonts/* /srv/static/"
   },
   "repository": {
     "type": "git",
@@ -29,6 +29,7 @@
     "cookie-session": "^2.0.0-alpha.3",
     "elm": "^0.18.0",
     "express": "^4.14.1",
+    "font-awesome": "^4.7.0",
     "knex": "^0.12.6",
     "node-sass": "^4.5.0",
     "pg": "^6.1.2",
