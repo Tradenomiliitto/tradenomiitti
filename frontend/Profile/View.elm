@@ -77,7 +77,13 @@ viewUserMaybe : Model -> List (H.Html Msg)
 viewUserMaybe model =
   model.user
     |> Maybe.map (viewUser model)
-    |> Maybe.withDefault []
+    |> Maybe.withDefault
+      [ H.div
+        [ A.class "container"]
+          [ H.div [ A.class "row user-page__section" ]
+            [ H.text "Et ole kirjautunut" ]
+          ]
+      ]
 
 
 viewUser : Model -> User -> List (H.Html Msg)

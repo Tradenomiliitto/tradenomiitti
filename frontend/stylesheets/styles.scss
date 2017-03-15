@@ -2,6 +2,9 @@
 @import 'lists';
 @import 'author-info';
 
+$fa-font-path: "/static/";
+@import '../../node_modules/font-awesome/scss/font-awesome';
+
 $content-top-margin: 70px;
 $light-grey-background: #fbfbfb;
 
@@ -13,6 +16,8 @@ $navbar-default-link-hover-color: $white;
 $font-family-sans-serif: mundoSansRegular;
 $font-size-base: 14px;
 $navbar-height: 66px;
+$footer-height: 250px;
+$footer-height-mobile: 450px;
 $grid-float-breakpoint: 850px;
 
 $btn-border-radius-small: 0;
@@ -182,6 +187,10 @@ $navbar-element-height: 35px;
 
 .app-content {
   padding-top: $navbar-height;
+  padding-bottom: #{$footer-height + 50px};
+  @media (max-width: $screen-xs-max) {
+    padding-bottom: #{$footer-height-mobile + 35px };
+  }
 }
 
 div#not-implemented {
@@ -639,5 +648,61 @@ div#not-implemented {
 
   & .author-info__pic {
     @include round-profile-pic(60px, #ccc); // Override with bigger picture
+  }
+}
+
+html {
+  height: 100%;
+}
+
+body {
+  height: 100%;
+}
+
+.page-layout {
+  position: relative;
+  min-height: 100%;
+}
+
+.footer {
+  background-color: #496060;
+  height: $footer-height;
+  @media (max-width: $screen-xs-max) {
+    height: $footer-height-mobile;
+  }
+  width: 100vw;
+  position: absolute;
+  bottom: 0;
+
+  &__content {
+    margin-top: 60px;
+    padding-bottom: 30px;
+  }
+
+  &__tral-logo {
+    height: 66px;
+    margin-bottom: 20px;
+  }
+
+  & a {
+    color: $white;
+  }
+
+  &__social-icons {
+    & i {
+      color: $white;
+      padding: 15px;
+      border: 1px solid $white;
+      margin-right: 15px;
+    }
+  }
+}
+
+.preformatted {
+  &__heading {
+    @include gotham-bold;
+    text-transform: uppercase;
+    margin-bottom: 50px;
+    margin-top: 50px;
   }
 }
