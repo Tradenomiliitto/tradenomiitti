@@ -1,4 +1,5 @@
 import Ad
+import Common
 import CreateAd
 import Footer
 import Html as H
@@ -266,13 +267,13 @@ viewLinkInverse : Route -> H.Html Msg
 viewLinkInverse route =
   H.li
     [ A.class "navbar__inverse-button" ]
-    [ link route ]
+    [ Common.link route NewUrl ]
 
 viewLink : Route -> H.Html Msg
 viewLink route =
   H.li
     []
-    [ link route ]
+    [ Common.link route NewUrl ]
 
 viewProfileLink : Model -> H.Html Msg
 viewProfileLink model =
@@ -325,23 +326,6 @@ viewProfileLink model =
       ]
 
 
-link : Route -> H.Html Msg
-link route =
-  let
-    action =
-      E.onWithOptions
-        "click"
-        { stopPropagation = False
-        , preventDefault = True
-        }
-        (Json.succeed <| NewUrl route)
-  in
-    H.a
-      [ action
-      , A.href (routeToPath route)
-      ]
-      [ H.text (routeToString route) ]
-
 viewPage : Model -> H.Html Msg
 viewPage model =
   let
@@ -378,24 +362,3 @@ notImplementedYet =
     [ H.text "Tätä ominaisuutta ei ole vielä toteutettu" ]
 
 
-routeToString : Route -> String
-routeToString route =
-  case route of
-    User userId ->
-      "Käyttäjä " ++ (toString userId)
-    Profile ->
-      "Oma Profiili"
-    Home ->
-      "Home"
-    Info ->
-      "Tietoa"
-    NotFound ->
-      "Ei löytynyt"
-    ListUsers ->
-      "Tradenomit"
-    ListAds ->
-      "Hakuilmoitukset"
-    CreateAd ->
-      "Jätä ilmoitus"
-    ShowAd adId ->
-      "Ilmoitus " ++ (toString adId)

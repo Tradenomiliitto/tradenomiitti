@@ -37,6 +37,27 @@ routeToPath route =
     User userId ->
       "/tradenomit/" ++ (toString userId)
 
+routeToString : Route -> String
+routeToString route =
+  case route of
+    User userId ->
+      "Käyttäjä " ++ (toString userId)
+    Profile ->
+      "Oma Profiili"
+    Home ->
+      "Home"
+    Info ->
+      "Tietoa"
+    NotFound ->
+      "Ei löytynyt"
+    ListUsers ->
+      "Tradenomit"
+    ListAds ->
+      "Hakuilmoitukset"
+    CreateAd ->
+      "Jätä ilmoitus"
+    ShowAd adId ->
+      "Ilmoitus " ++ (toString adId)
 
 parseLocation : Navigation.Location -> Route
 parseLocation location =
