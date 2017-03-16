@@ -372,7 +372,7 @@ viewPage model =
         Home ->
           H.map (mapAppMessage HomeMessage) <| Home.view model.home
         ListUsers ->
-          ListUsers.view model.listUsers
+          H.map (mapAppMessage ListUsersMessage) <| ListUsers.view model.listUsers
         Terms ->
           PreformattedText.view Static.termsHeading Static.termsTexts
         RegisterDescription ->

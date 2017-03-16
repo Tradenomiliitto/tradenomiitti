@@ -10,35 +10,35 @@ type AppMessage msg  = Link Route | LocalMessage msg
 
 link : Route -> String -> H.Html (AppMessage msg)
 link route title =
-  let
-    action =
-      E.onWithOptions
-        "click"
-        { stopPropagation = False
-        , preventDefault = True
-        }
-        (Json.succeed <| Link route)
-  in
-    H.a
-      [ action
-      , A.href (routeToPath route)
-      ]
-      [ H.text title ]
+  H.a
+    [ action route
+    , A.href (routeToPath route)
+    ]
+    [ H.text title ]
 
 button : String -> String -> Route -> H.Html (AppMessage msg)
 button title class route =
-  let
-    action =
-      E.onWithOptions
-        "click"
-        { stopPropagation = False
-        , preventDefault = True
-        }
-        (Json.succeed <| Link route)
-  in
-    H.button
-      [ action
-      , E.onClick (Link route)
-      , A.class class
-      ]
-      [ H.text title ]
+  H.button
+    [ action route
+    , E.onClick (Link route)
+    , A.class class
+    ]
+    [ H.text title ]
+
+linkDiv : String  -> Route  -> List (H.Html (AppMessage msg))-> H.Html (AppMessage msg)
+linkDiv class route content =
+  H.div
+    [ action route
+    , E.onClick (Link route)
+    , A.class class
+    ]
+    content
+    
+action : Route -> H.Attribute (AppMessage msg)
+action route =
+  E.onWithOptions
+    "click"
+    { stopPropagation = False
+    , preventDefault = True
+    }
+    (Json.succeed <| Link route)

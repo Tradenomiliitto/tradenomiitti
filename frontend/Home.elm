@@ -157,7 +157,7 @@ listUsersButtons =
         Nav.Profile
     ]
 
-listThreeUsers : Model -> H.Html msg
+listThreeUsers : Model -> H.Html (AppMessage msg)
 listThreeUsers model =
   H.div
     [ A.class "row" ]
