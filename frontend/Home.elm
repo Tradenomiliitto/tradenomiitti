@@ -5,7 +5,8 @@ import Html.Attributes as A
 import ListAds
 import ListUsers
 import State.Home exposing (..)
-
+import Link exposing (..)
+import Nav
 
 type Msg = ListAdsMessage ListAds.Msg | ListUsersMessage ListUsers.Msg
 
@@ -28,7 +29,7 @@ initTasks : Cmd Msg
 initTasks = Cmd.batch [ Cmd.map ListAdsMessage ListAds.getAds, Cmd.map ListUsersMessage ListUsers.getUsers ]
 
 
-view : Model -> H.Html Msg
+view : Model -> H.Html (AppMessage Msg)
 view model = 
   H.div 
     []
@@ -63,7 +64,7 @@ introBox =
 
 -- LIST LATEST ADS --
 
-listLatestAds : Model -> H.Html Msg
+listLatestAds : Model -> H.Html (AppMessage Msg)
 listLatestAds model =
   H.div
     [ A.class "home__latest-ads" ]
@@ -74,7 +75,7 @@ listLatestAds model =
       ]
      ]
 
-listAdsHeading : H.Html Msg
+listAdsHeading : H.Html (AppMessage Msg)
 listAdsHeading =
   H.div
     [ A.class "home__section--heading row" ]
@@ -82,25 +83,25 @@ listAdsHeading =
     , listAdsButtons
     ]
 
-listAdsButtons : H.Html Msg
+listAdsButtons : H.Html (AppMessage Msg)
 listAdsButtons =
   H.div
     [ A.class "home__section--heading--buttons col-sm-7" ]
     [ H.button
       [ A.class "home__section--heading--buttons--inverse btn btn-primary" ]
-      [ H.text "katso kaikki ilmoitukset" ] 
+      [ Link.link Nav.ListAds "katso kaikki ilmoitukset" ] 
     , H.button
       [ A.class "home__section--heading--buttons--normal btn btn-primary" ]
       [ H.text "jätä ilmoitus" ]
     ]
 
-sectionHeader : String -> H.Html Msg
+sectionHeader : String -> H.Html msg
 sectionHeader title =
   H.div
     [ A.class "home__section--heading--text col-sm-5" ]
     [ H.text title ]
 
-listFourAds : Model -> H.Html Msg
+listFourAds : Model -> H.Html msg
 listFourAds model =
   H.div
     []
@@ -108,7 +109,7 @@ listFourAds model =
 
 -- LIST USERS --
 
-listUsers : Model -> H.Html Msg
+listUsers : Model -> H.Html msg
 listUsers model =
   H.div
     [ A.class "home__list-users" ]
@@ -119,7 +120,7 @@ listUsers model =
       ]
      ]
 
-listUsersHeading : H.Html Msg
+listUsersHeading : H.Html msg
 listUsersHeading =
   H.div
     [ A.class "home__section--heading row" ]
@@ -127,7 +128,7 @@ listUsersHeading =
     , listUsersButtons
     ]
 
-listUsersButtons : H.Html Msg
+listUsersButtons : H.Html msg
 listUsersButtons =
   H.div
     [ A.class "home__section--heading--buttons col-sm-7" ]
@@ -139,7 +140,7 @@ listUsersButtons =
       [ H.text "muokkaa omaa profiilia" ]
     ]
 
-listThreeUsers : Model -> H.Html Msg
+listThreeUsers : Model -> H.Html msg
 listThreeUsers model =
   H.div
     [ A.class "row" ]
@@ -147,7 +148,7 @@ listThreeUsers model =
 
   -- TRADENOMIITTI AD --
 
-tradenomiittiSection : H.Html Msg
+tradenomiittiSection : H.Html msg
 tradenomiittiSection =
   H.div
     [ A.class "home__tradenomiitti--background" ]
@@ -155,7 +156,7 @@ tradenomiittiSection =
         [ A.class "home__tradenomiitti--container" ]
         [ tradenomiittiRow ]
     ]
-tradenomiittiRow : H.Html Msg
+tradenomiittiRow : H.Html msg
 tradenomiittiRow =
   H.div
     [ A.class "row"]
@@ -163,7 +164,7 @@ tradenomiittiRow =
     , tradenomiImage
     ]
 
-tradenomiittiInfo : H.Html Msg
+tradenomiittiInfo : H.Html msg
 tradenomiittiInfo =
   H.div
     [ A.class "home__tradenomiitti--info" ]
@@ -172,25 +173,25 @@ tradenomiittiInfo =
     , readMoreButton
     ]
 
-tradenomiittiHeader : H.Html Msg
+tradenomiittiHeader : H.Html msg
 tradenomiittiHeader =
   H.h2
     [ A.class "home__tradenomiitti--info--header" ]
     [ H.text "Lorem ipsum dolorem salet" ]
 
-tradenomiittiInfoText : H.Html Msg
+tradenomiittiInfoText : H.Html msg
 tradenomiittiInfoText =
   H.p
     [ A.class "home__tradenomiitti--info--text" ]
     [ H.text "Tähän kuvaava teksti Tradenomiitistä. Hyötynäkökuma, eli mitä täällä voi tehdä ja miksi pitäisi liittyä. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua." ]
 
-readMoreButton : H.Html Msg
+readMoreButton : H.Html msg
 readMoreButton =
   H.button
    [ A.class "home__tradenomiitti--info--read-more-button btn btn-primary" ]
    [ H.text "Lue lisää" ]
 
-tradenomiImage : H.Html Msg
+tradenomiImage : H.Html msg
 tradenomiImage =
   H.div
     [ A.class "col-md-6" ]

@@ -19,6 +19,7 @@ import Profile.View
 import State.Main exposing (..)
 import Static
 import User
+import Link exposing (..)
 
 main : Program Never Model Msg
 main =
@@ -54,6 +55,7 @@ type Msg
   | ListUsersMessage ListUsers.Msg
   | AdMessage Ad.Msg
   | HomeMessage Home.Msg
+
 
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
@@ -359,7 +361,7 @@ viewPage model =
         ShowAd adId ->
           H.map AdMessage <| Ad.view model.ad adId model.profile.user model.rootUrl
         Home ->
-          H.map HomeMessage <| Home.view model.home
+          H.map (mapAppMessage HomeMessage) <| Home.view model.home
         ListUsers ->
           ListUsers.view model.listUsers
         Terms ->
@@ -373,6 +375,14 @@ viewPage model =
       [ A.class "container-fluid app-content" ]
       [ content ]
 
+
+mapAppMessage : (msg -> Msg) -> AppMessage msg -> Msg
+mapAppMessage func message =
+  case message of
+    Link route ->
+      NewUrl route
+    LocalMessage mesg ->
+      func mesg
 
 notImplementedYet : H.Html Msg
 notImplementedYet =
