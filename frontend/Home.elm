@@ -87,12 +87,14 @@ listAdsButtons : H.Html (AppMessage Msg)
 listAdsButtons =
   H.div
     [ A.class "home__section--heading--buttons col-sm-7" ]
-    [ H.button
-      [ A.class "home__section--heading--buttons--inverse btn btn-primary" ]
-      [ Link.link Nav.ListAds "katso kaikki ilmoitukset" ] 
-    , H.button
-      [ A.class "home__section--heading--buttons--normal btn btn-primary" ]
-      [ H.text "jätä ilmoitus" ]
+    [ Link.button
+        "katso kaikki ilmoitukset"
+        "home__section--heading--buttons--inverse btn btn-primary"
+        Nav.ListAds
+    , Link.button
+        "jätä ilmoitus"
+        "home__section--heading--buttons--normal btn btn-primary"
+        Nav.CreateAd
     ]
 
 sectionHeader : String -> H.Html msg
@@ -109,7 +111,7 @@ listFourAds model =
 
 -- LIST USERS --
 
-listUsers : Model -> H.Html msg
+listUsers : Model -> H.Html (AppMessage msg)
 listUsers model =
   H.div
     [ A.class "home__list-users" ]
@@ -120,7 +122,7 @@ listUsers model =
       ]
      ]
 
-listUsersHeading : H.Html msg
+listUsersHeading : H.Html (AppMessage msg)
 listUsersHeading =
   H.div
     [ A.class "home__section--heading row" ]
@@ -128,16 +130,18 @@ listUsersHeading =
     , listUsersButtons
     ]
 
-listUsersButtons : H.Html msg
+listUsersButtons : H.Html (AppMessage msg)
 listUsersButtons =
   H.div
     [ A.class "home__section--heading--buttons col-sm-7" ]
-    [ H.button
-      [ A.class "home__section--heading--buttons--inverse btn btn-primary" ]
-      [ H.text "katso kaikki tradenomit" ] 
-    , H.button
-      [ A.class "home__section--heading--buttons--normal btn btn-primary" ]
-      [ H.text "muokkaa omaa profiilia" ]
+    [ Link.button
+        "katso kaikki tradenomit"
+        "home__section--heading--buttons--inverse btn btn-primary"
+        Nav.ListUsers
+    , Link.button
+        "muokkaa omaa profiilia"
+        "home__section--heading--buttons--normal btn btn-primary"
+        Nav.Profile
     ]
 
 listThreeUsers : Model -> H.Html msg
@@ -148,7 +152,7 @@ listThreeUsers model =
 
   -- TRADENOMIITTI AD --
 
-tradenomiittiSection : H.Html msg
+tradenomiittiSection : H.Html (AppMessage msg)
 tradenomiittiSection =
   H.div
     [ A.class "home__tradenomiitti--background" ]
@@ -156,7 +160,7 @@ tradenomiittiSection =
         [ A.class "home__tradenomiitti--container" ]
         [ tradenomiittiRow ]
     ]
-tradenomiittiRow : H.Html msg
+tradenomiittiRow : H.Html (AppMessage msg)
 tradenomiittiRow =
   H.div
     [ A.class "row"]
@@ -164,7 +168,7 @@ tradenomiittiRow =
     , tradenomiImage
     ]
 
-tradenomiittiInfo : H.Html msg
+tradenomiittiInfo : H.Html (AppMessage msg)
 tradenomiittiInfo =
   H.div
     [ A.class "home__tradenomiitti--info" ]
@@ -185,11 +189,12 @@ tradenomiittiInfoText =
     [ A.class "home__tradenomiitti--info--text" ]
     [ H.text "Tähän kuvaava teksti Tradenomiitistä. Hyötynäkökuma, eli mitä täällä voi tehdä ja miksi pitäisi liittyä. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua." ]
 
-readMoreButton : H.Html msg
+readMoreButton : H.Html (AppMessage msg)
 readMoreButton =
-  H.button
-   [ A.class "home__tradenomiitti--info--read-more-button btn btn-primary" ]
-   [ H.text "Lue lisää" ]
+  Link.button
+    "lue lisää"
+    "home__tradenomiitti--info--read-more-button btn btn-primary"
+    Nav.Info
 
 tradenomiImage : H.Html msg
 tradenomiImage =

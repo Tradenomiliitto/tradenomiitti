@@ -24,3 +24,21 @@ link route title =
       , A.href (routeToPath route)
       ]
       [ H.text title ]
+
+button : String -> String -> Route -> H.Html (AppMessage msg)
+button title class route =
+  let
+    action =
+      E.onWithOptions
+        "click"
+        { stopPropagation = False
+        , preventDefault = True
+        }
+        (Json.succeed <| Link route)
+  in
+    H.button
+      [ action
+      , E.onClick (Link route)
+      , A.class class
+      ]
+      [ H.text title ]
