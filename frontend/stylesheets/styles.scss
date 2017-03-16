@@ -631,7 +631,7 @@ body {
 }
 
 .footer {
-  background-color: #496060;
+  background-color: $green;
   height: $footer-height;
   @media (max-width: $screen-xs-max) {
     height: $footer-height-mobile;

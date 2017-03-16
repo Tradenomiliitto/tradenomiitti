@@ -1,3 +1,5 @@
+port module Main exposing (..)
+
 import Ad
 import Common
 import CreateAd
@@ -20,6 +22,10 @@ import State.Main exposing (..)
 import Static
 import User
 import Link exposing (..)
+
+type alias HtmlId = String
+port animation : HtmlId -> Cmd msg
+
 
 main : Program Never Model Msg
 main =
@@ -77,9 +83,11 @@ update msg model =
 
             ListAds ->
               modelWithRoute ! [ Cmd.map ListAdsMessage ListAds.getAds ]
-            
+
             Home ->
-              modelWithRoute ! [ Cmd.map HomeMessage Home.initTasks ]
+              modelWithRoute ! [ Cmd.map HomeMessage Home.initTasks
+                               , animation "home-intro-canvas"
+                               ]
 
             User userId ->
               if Just userId == Maybe.map .id model.profile.user
@@ -125,7 +133,7 @@ update msg model =
         -- logged in profile, so redo that once we are first loaded
         redoNewUrlCmd =
           if initialLoading /= model.initialLoading then
-            Navigation.newUrl (routeToPath model.route)
+            Navigation.modifyUrl (routeToPath model.route)
           else
             Cmd.none
 
@@ -159,7 +167,7 @@ update msg model =
         (adModel, cmd) = Ad.update msg model.ad
       in
         { model | ad = adModel } ! [ Cmd.map AdMessage cmd ]
-    
+
     HomeMessage msg ->
       let
         (homeModel, cmd) = Home.update msg model.home
@@ -238,6 +246,7 @@ logo =
     [ H.a
       [ A.id "logo"
       , A.href "/"
+      , Common.linkAction Home NewUrl
       ]
       [ logoImage 163
       ]
@@ -389,5 +398,3 @@ notImplementedYet =
   H.div
     [ A.id "not-implemented" ]
     [ H.text "Tätä ominaisuutta ei ole vielä toteutettu" ]
-
-

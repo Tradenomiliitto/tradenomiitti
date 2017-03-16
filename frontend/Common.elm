@@ -25,16 +25,21 @@ authorInfo user =
 link : Route -> (Route -> msg ) -> H.Html msg
 link route toMsg =
   let
-    action =
-      E.onWithOptions
-        "click"
-        { stopPropagation = False
-        , preventDefault = True
-        }
-        (Json.succeed <| toMsg route)
+    action = linkAction route toMsg
   in
     H.a
       [ action
       , A.href (routeToPath route)
       ]
       [ H.text (routeToString route) ]
+
+
+linkAction : Route -> (Route -> msg) -> H.Attribute msg
+linkAction route toMsg =
+  E.onWithOptions
+    "click"
+    { stopPropagation = False
+    , preventDefault = True
+    }
+    (Json.succeed <| toMsg route)
+

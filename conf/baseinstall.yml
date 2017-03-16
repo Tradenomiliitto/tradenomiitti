@@ -74,8 +74,9 @@
     - name: static folder creation
       file: path=/srv/static state=directory mode=0755 owner=ubuntu
 
-    - name: upload font
-      copy:  src=assets/MundoSansStd.otf dest=/srv/static/MundoSansStd.otf
+    - name: upload static assets
+      copy: src=assets/{{ item }} dest=/srv/static/{{ item }}
+      with_items: [ MundoSansStd-Light.otf, tral_person_image_square_1.jpg ]
 
   handlers:
     - name: restart nginx
