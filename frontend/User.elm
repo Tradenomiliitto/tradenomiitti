@@ -3,10 +3,11 @@ module User exposing (..)
 import Html as H
 import Http
 import Json.Decode as Json
+import Link exposing (AppMessage)
 import Models.Ad exposing (Ad)
 import Models.User exposing (User)
-import Profile.Main as Profile
 import Profile.View
+import Profile.Main as Profile
 import State.Profile
 import State.User exposing (..)
 
@@ -16,7 +17,7 @@ import State.User exposing (..)
 type Msg
   = UpdateUser (Result Http.Error User)
   | UpdateAds (Result Http.Error (List Ad))
-  | ProfileMessage Profile.Msg
+  | ProfileMessage (AppMessage Profile.Msg)
   | NoOp
 
 update : Msg -> Model -> ( Model, Cmd Msg)

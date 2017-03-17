@@ -360,7 +360,7 @@ viewPage model =
         User userId ->
           H.map UserMessage <| User.view model.user
         Profile ->
-          H.map ProfileMessage <| Profile.View.view model.profile model
+          H.map (mapAppMessage ProfileMessage) <| Profile.View.view model.profile model
         CreateAd ->
           if Maybe.isJust model.profile.user
           then
