@@ -93,8 +93,8 @@ viewUser model user =
     [ A.class "container" ]
     [ H.div
       [ A.class "row user-page__section" ]
-      [ userInfoBox model user
-      , membershipDataBox user
+      [ H.map LocalMessage (userInfoBox model user)
+      , H.map LocalMessage (membershipDataBox user)
       ]
     ]
   , H.hr [ A.class "full-width-ruler" ] []
@@ -114,13 +114,13 @@ viewUser model user =
     [ A.class "container" ]
     [ H.div
       [ A.class "row" ]
-      [ userDomains model user
-      , userPositions model user
+      [ H.map LocalMessage (userDomains model user)
+      , H.map LocalMessage (userPositions model user)
       ]
     ]
   ]
 
-userInfoBox : Model -> User -> H.Html (AppMessage Msg)
+userInfoBox : Model -> User -> H.Html Msg
 userInfoBox model user =
   H.div
     [ A.class "col-md-6" ]
@@ -138,7 +138,7 @@ userInfoBox model user =
                 then
                   H.input [ A.placeholder "Miksi kutsumme sinua?"
                   , A.value user.name
-                  , E.onInput (\x -> LocalMessage (ChangeNickname x))
+                  , E.onInput ChangeNickname
                   ] []
                 else
                   H.text user.name
@@ -149,7 +149,7 @@ userInfoBox model user =
               then
                 H.input
                 [ A.value user.primaryPosition
-                , E.on "change" (Json.map LocalMessage (Json.map ChangeTitle E.targetValue))
+                , E.on "change" (Json.map ChangeTitle E.targetValue)
                 ]
                 []
               else H.text user.primaryPosition
@@ -161,7 +161,7 @@ userInfoBox model user =
     ]
 
 
-userDescription : Model -> User -> H.Html (AppMessage Msg)
+userDescription : Model -> User -> H.Html Msg
 userDescription model user =
   H.div
     [ A.class "row user-page__description" ]
@@ -171,14 +171,14 @@ userDescription model user =
           H.textarea [ A.value user.description
                       , A.placeholder "Kirjoita napakka kuvaus itsestäsi"
                       , A.class "user-page__description-input"
-                      , E.onInput (\x -> LocalMessage (ChangeDescription x))
+                      , E.onInput ChangeDescription
                       ] []
         else
           H.text user.description
       ]
     ]
 
-userDomains : Model -> User -> H.Html (AppMessage Msg)
+userDomains : Model -> User -> H.Html Msg
 userDomains model user =
   H.div
     [ A.class "col-xs-12 col-sm-6"
@@ -186,25 +186,25 @@ userDomains model user =
     ([ H.h3 [ A.class "user-page__competences-header" ] [ H.text "Toimiala" ]
     ] ++
       (List.indexedMap
-        (\i x -> H.map LocalMessage (H.map (DomainSkillMessage i) <|
-          Skill.view model.editing x))
+        (\i x -> H.map (DomainSkillMessage i) <|
+          Skill.view model.editing x)
             user.domains
     ) ++
     (if model.editing
       then
         [ H.select
-          [ E.on "change" (Json.map LocalMessage (Json.map ChangeDomainSelect E.targetValue))] <|
+          [ E.on "change" (Json.map ChangeDomainSelect E.targetValue)] <|
             H.option [] [ H.text "Valitse toimiala"] :: List.map (\o -> H.option [] [ H.text o ]) model.domainOptions
             , H.button
               [ A.class "btn"
-              , E.onClick (LocalMessage AddDomain)
+              , E.onClick AddDomain
               ]
               [ H.text "Lisää toimiala"]
               ]
       else [])
     )
 
-userPositions : Model -> User -> H.Html (AppMessage Msg)
+userPositions : Model -> User -> H.Html Msg
 userPositions model user =
   H.div
     [ A.class "col-xs-12 col-sm-6"
@@ -212,24 +212,24 @@ userPositions model user =
     ([ H.h3 [ A.class "user-page__competences-header" ] [ H.text "Tehtäväluokka" ]
       ] ++
         (List.indexedMap
-          (\i x -> H.map LocalMessage (H.map (PositionSkillMessage i) <| Skill.view model.editing x))
+          (\i x -> H.map (PositionSkillMessage i) <| Skill.view model.editing x)
           user.positions
         ) ++
         (if model.editing
           then
             [ H.select
-              [ E.on "change" (Json.map LocalMessage (Json.map ChangePositionSelect E.targetValue))] <|
+              [ E.on "change" (Json.map ChangePositionSelect E.targetValue)] <|
               H.option [] [ H.text "Valitse tehtäväluokka"] :: List.map (\o -> H.option [] [ H.text o ]) model.positionOptions
             , H.button
             [ A.class "btn"
-            , E.onClick (LocalMessage AddPosition)
+            , E.onClick AddPosition
             ]
             [ H.text "Lisää tehtäväluokka"]
             ]
           else [])
     )
 
-membershipDataBox : User -> H.Html (AppMessage Msg)
+membershipDataBox : User -> H.Html msg
 membershipDataBox user =
   case user.extra of
     Just extra ->
