@@ -1,0 +1,52 @@
+.login-needed {
+  &__container {
+    height: $fullpage-height;
+  }
+  &__animation {
+    height: $fullpage-height;
+    position: absolute;
+    top: $navbar-height;
+    width: 100vw;
+    left: 0;
+    z-index: 2;
+  }
+  display: flex;
+  &__box {
+    z-index: 10;
+    margin-top: $content-top-margin;
+    border: 1px solid $pink;
+    padding: 60px 80px;
+    text-align: center;
+    background-color: $white;
+
+    & > h1 {
+      @include gotham-bold;
+      text-transform: uppercase;
+      color: $pink;
+      margin-bottom: 20px;
+    }
+    & > p {
+      text-align: center;
+      font-size: 20px;
+    }
+  }
+  &__actionable-items {
+    margin-top: 40px;
+    &-join {
+      float: left;
+      font-size: 18px;
+      &-link {
+        text-decoration: underline;
+        font-weight: bold;
+        margin-top: 10px;
+        display: block;
+      }
+    }
+    &-login {
+      float: right;
+      &-button {
+        padding: 20px 42px;
+      }
+    }
+  }
+}

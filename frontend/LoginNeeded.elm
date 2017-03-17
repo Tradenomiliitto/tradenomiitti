@@ -6,6 +6,16 @@ import Html.Attributes as A
 view : String -> H.Html msg
 view loginUrl =
   H.div
+    [ A.class "login-needed__container"
+    ]
+    [ H.canvas [ A.id "login-needed-canvas"
+               , A.class "login-needed__animation" ] []
+    , viewLoginBox loginUrl
+    ]
+
+viewLoginBox : String -> H.Html msg
+viewLoginBox loginUrl =
+  H.div
     [ A.class "container"
     ]
     [ H.div

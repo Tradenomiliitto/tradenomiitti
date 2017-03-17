@@ -101,6 +101,9 @@ update msg model =
             ListUsers ->
               modelWithRoute ! [ Cmd.map ListUsersMessage ListUsers.getUsers ]
 
+            LoginNeeded _ ->
+              modelWithRoute ! [ animation "login-needed-canvas" ]
+
             newRoute ->
               (modelWithRoute, Cmd.none)
 
