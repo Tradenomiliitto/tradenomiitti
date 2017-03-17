@@ -25,6 +25,7 @@ import Link exposing (..)
 
 type alias HtmlId = String
 port animation : HtmlId -> Cmd msg
+port scrollTop : Bool -> Cmd msg
 
 
 main : Program Never Model Msg
@@ -67,12 +68,13 @@ update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
   case msg of
     NewUrl route ->
-      model ! [ Navigation.newUrl (routeToPath route) ]
+      { model | scrollTop = True } ! [ Navigation.newUrl (routeToPath route) ]
 
     UrlChange location ->
       let
+        shouldScroll = model.scrollTop
         newRoute = parseLocation location
-        modelWithRoute = { model | route = newRoute }
+        modelWithRoute = { model | route = newRoute, scrollTop = False }
         ( newModel, cmd ) =
           case newRoute of
             ShowAd adId ->
@@ -102,7 +104,7 @@ update msg model =
             newRoute ->
               (modelWithRoute, Cmd.none)
       in
-        newModel ! [ cmd ]
+        newModel ! [ cmd, scrollTop shouldScroll ]
 
     UserMessage msg ->
       let
