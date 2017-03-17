@@ -24,6 +24,7 @@ button title class route =
     ]
     [ H.text title ]
 
+-- creates a div where the whole element is clickable and links to the route given in parameteres
 linkDiv : String  -> Route  -> List (H.Html (AppMessage msg))-> H.Html (AppMessage msg)
 linkDiv class route content =
   H.div

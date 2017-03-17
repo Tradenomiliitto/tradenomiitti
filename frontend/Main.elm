@@ -368,7 +368,7 @@ viewPage model =
           else
             LoginNeeded.view <| ssoUrl model.rootUrl model.route
         ListAds ->
-          H.map ListAdsMessage <| ListAds.view model.listAds
+          H.map (mapAppMessage ListAdsMessage) <| ListAds.view model.listAds
         ShowAd adId ->
           H.map AdMessage <| Ad.view model.ad adId model.profile.user model.rootUrl
         Home ->

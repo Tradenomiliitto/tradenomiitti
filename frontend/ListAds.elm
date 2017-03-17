@@ -3,19 +3,20 @@ module ListAds exposing (..)
 import Common
 import Html as H
 import Html.Attributes as A
+import Html.Events as E
 import Http
+import Link exposing (AppMessage(..))
 import Json.Decode as Json
 import Models.Ad
+import Nav
 import State.ListAds exposing (..)
 
-type Msg = NoOp | GetAds | UpdateAds (Result Http.Error (List Models.Ad.Ad))
+type Msg = GetAds | UpdateAds (Result Http.Error (List Models.Ad.Ad))
 
 
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
   case msg of
-    NoOp ->
-      (model, Cmd.none)
     UpdateAds (Ok ads) ->
       ({ model | ads = ads }, Cmd.none )
     --TODO: show error
@@ -34,7 +35,7 @@ getAds =
     Http.send UpdateAds request
 
 
-view : Model -> H.Html msg
+view : Model -> H.Html (AppMessage Msg)
 view model =
   H.div []
     [ H.div
@@ -57,7 +58,7 @@ view model =
       ]
     ]
 
-viewAds : List Models.Ad.Ad -> List (H.Html msg)
+viewAds : List Models.Ad.Ad -> List (H.Html (AppMessage msg))
 viewAds ads =
   let
     adsHtml = List.map adListView ads
@@ -72,10 +73,11 @@ row ads =
     [ A.class "row" ]
     ads
 
-adListView : Models.Ad.Ad -> H.Html msg
+adListView : Models.Ad.Ad -> H.Html (AppMessage msg)
 adListView ad =
   H.div
-    [ A.class "col-xs-12 col-sm-6"]
+    [ A.class "col-xs-12 col-sm-6"
+    , E.onClick (Link (Nav.ShowAd ad.id))]
     [ H.div
       [ A.class "list-ads__ad-preview" ]
       [ H.h3 []

@@ -116,7 +116,7 @@ sectionHeader title =
     [ A.class "home__section--heading--text col-sm-5" ]
     [ H.text title ]
 
-listFourAds : Model -> H.Html msg
+listFourAds : Model -> H.Html (AppMessage msg)
 listFourAds model =
   H.div
     []
