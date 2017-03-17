@@ -19,8 +19,7 @@ link route title =
 button : String -> String -> Route -> H.Html (AppMessage msg)
 button title class route =
   H.button
-    [ action route
-    , E.onClick (Link route)
+    [ E.onClick (Link route)
     , A.class class
     ]
     [ H.text title ]
@@ -28,8 +27,7 @@ button title class route =
 linkDiv : String  -> Route  -> List (H.Html (AppMessage msg))-> H.Html (AppMessage msg)
 linkDiv class route content =
   H.div
-    [ action route
-    , E.onClick (Link route)
+    [ E.onClick (Link route)
     , A.class class
     ]
     content

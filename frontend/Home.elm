@@ -30,8 +30,8 @@ initTasks = Cmd.batch [ Cmd.map ListAdsMessage ListAds.getAds, Cmd.map ListUsers
 
 
 view : Model -> H.Html (AppMessage Msg)
-view model = 
-  H.div 
+view model =
+  H.div
     []
     [ introScreen
     , listLatestAds model
