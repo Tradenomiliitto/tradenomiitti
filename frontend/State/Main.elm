@@ -14,6 +14,7 @@ import State.User
 type alias Model =
   { route : Route
   , rootUrl : String
+  , scrollTop : Bool
   , listUsers : State.ListUsers.Model
   , user : State.User.Model
   , profile : ProfileState.Model
@@ -30,6 +31,7 @@ initState : Navigation.Location -> Model
 initState location =
   { route = parseLocation location
   , rootUrl = location.origin
+  , scrollTop = False
   , user = State.User.init
   , listUsers = State.ListUsers.init
   , profile = ProfileState.init
