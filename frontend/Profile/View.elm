@@ -92,56 +92,7 @@ viewUser model user =
     [ A.class "container" ]
     [ H.div
       [ A.class "row user-page__section" ]
-      [ H.div
-        [ A.class "col-md-6" ]
-        [ H.div
-          [ A.class "row" ]
-          [ H.div
-            [ A.class "col-xs-12"]
-            [ H.div
-              [ A.class "pull-left user-page__pic-container" ]
-              [ H.span [ A.class "user-page__pic" ] [] ]
-            , H.div
-              [ A.class "pull-left" ]
-              [ H.h4 [ A.class "user-page__name" ]
-                  [ if model.editing
-                    then
-                      H.input [ A.placeholder "Miksi kutsumme sinua?"
-                              , A.value user.name
-                              , E.onInput ChangeNickname
-                              ] []
-                    else
-                      H.text user.name
-                  ]
-              , H.p
-                [ A.class "user-page__work-details" ]
-                [ if model.editing
-                  then
-                    H.input
-                    [ A.value user.primaryPosition
-                    , E.on "change" (Json.map ChangeTitle E.targetValue)
-                    ]
-                    []
-                  else H.text user.primaryPosition
-                ]
-              ]
-            ]
-          ]
-        , H.div
-          [ A.class "row user-page__description" ]
-          [ H.p [ A.class "col-xs-12" ]
-              [ if model.editing
-                then
-                  H.textarea [ A.value user.description
-                             , A.placeholder "Kirjoita napakka kuvaus itsestäsi"
-                             , A.class "user-page__description-input"
-                             , E.onInput ChangeDescription
-                             ] []
-                else
-                  H.text user.description
-              ]
-          ]
-        ]
+      [ userInfoBox model user
       , membershipDataBox user
       ]
     ]
@@ -162,54 +113,119 @@ viewUser model user =
     [ A.class "container" ]
     [ H.div
       [ A.class "row" ]
-      [ H.div
-          [ A.class "col-xs-12 col-sm-6"
-          ]
-          ([ H.h3 [ A.class "user-page__competences-header" ] [ H.text "Toimiala" ]
-          ] ++
-             (List.indexedMap
-                (\i x -> H.map (DomainSkillMessage i) <|
-                   Skill.view model.editing x)
-                user.domains
-             ) ++
-             (if model.editing
-              then
-                [ H.select
-                    [ E.on "change" (Json.map ChangeDomainSelect E.targetValue)] <|
-                    H.option [] [ H.text "Valitse toimiala"] :: List.map (\o -> H.option [] [ H.text o ]) model.domainOptions
-                , H.button
-                  [ A.class "btn"
-                  , E.onClick AddDomain
-                  ]
-                  [ H.text "Lisää toimiala"]
-                ]
-              else [])
-          )
-      , H.div
-          [ A.class "col-xs-12 col-sm-6"
-          ]
-          ([ H.h3 [ A.class "user-page__competences-header" ] [ H.text "Tehtäväluokka" ]
-           ] ++
-             (List.indexedMap
-                (\i x -> H.map (PositionSkillMessage i) <| Skill.view model.editing x)
-                user.positions
-             ) ++
-             (if model.editing
-              then
-                [ H.select
-                    [ E.on "change" (Json.map ChangePositionSelect E.targetValue)] <|
-                    H.option [] [ H.text "Valitse tehtäväluokka"] :: List.map (\o -> H.option [] [ H.text o ]) model.positionOptions
-                , H.button
-                  [ A.class "btn"
-                  , E.onClick AddPosition
-                  ]
-                  [ H.text "Lisää tehtäväluokka"]
-                ]
-              else [])
-          )
+      [ userDomains model user
+      , userPositions model user
       ]
     ]
   ]
+
+userInfoBox : Model -> User -> H.Html Msg
+userInfoBox model user =
+  H.div
+    [ A.class "col-md-6" ]
+    [ H.div
+      [ A.class "row" ]
+      [ H.div
+         [ A.class "col-xs-12"]
+         [ H.div
+            [ A.class "pull-left user-page__pic-container" ]
+            [ H.span [ A.class "user-page__pic" ] [] ]
+          , H.div
+              [ A.class "pull-left" ]
+              [ H.h4 [ A.class "user-page__name" ]
+            [ if model.editing
+                then
+                  H.input [ A.placeholder "Miksi kutsumme sinua?"
+                  , A.value user.name
+                  , E.onInput ChangeNickname
+                  ] []
+                else
+                  H.text user.name
+              ]
+          , H.p
+            [ A.class "user-page__work-details" ]
+            [ if model.editing
+              then
+                H.input
+                [ A.value user.primaryPosition
+                , E.on "change" (Json.map ChangeTitle E.targetValue)
+                ]
+                []
+              else H.text user.primaryPosition
+            ]
+          ]
+        ]
+      ]
+    , userDescription model user
+    ]
+
+userDescription : Model -> User -> H.Html Msg
+userDescription model user =
+  H.div
+    [ A.class "row user-page__description" ]
+    [ H.p [ A.class "col-xs-12" ]
+      [ if model.editing
+        then
+          H.textarea [ A.value user.description
+                      , A.placeholder "Kirjoita napakka kuvaus itsestäsi"
+                      , A.class "user-page__description-input"
+                      , E.onInput ChangeDescription
+                      ] []
+        else
+          H.text user.description
+      ]
+    ]
+
+userDomains : Model -> User -> H.Html Msg
+userDomains model user =
+  H.div
+    [ A.class "col-xs-12 col-sm-6"
+    ]
+    ([ H.h3 [ A.class "user-page__competences-header" ] [ H.text "Toimiala" ]
+    ] ++
+    (List.indexedMap
+      (\i x -> H.map (DomainSkillMessage i) <|
+        Skill.view model.editing x)
+          user.domains
+    ) ++
+    (if model.editing
+      then
+        [ H.select
+          [ E.on "change" (Json.map ChangeDomainSelect E.targetValue)] <|
+            H.option [] [ H.text "Valitse toimiala"] :: List.map (\o -> H.option [] [ H.text o ]) model.domainOptions
+            , H.button
+              [ A.class "btn"
+              , E.onClick AddDomain
+              ]
+              [ H.text "Lisää toimiala"]
+              ]
+      else [])
+    )
+
+userPositions : Model -> User -> H.Html Msg
+userPositions model user =
+  H.div
+    [ A.class "col-xs-12 col-sm-6"
+    ]
+    ([ H.h3 [ A.class "user-page__competences-header" ] [ H.text "Tehtäväluokka" ]
+      ] ++
+        (List.indexedMap
+          (\i x -> H.map (PositionSkillMessage i) <| Skill.view model.editing x)
+          user.positions
+        ) ++
+        (if model.editing
+          then
+            [ H.select
+              [ E.on "change" (Json.map ChangePositionSelect E.targetValue)] <|
+              H.option [] [ H.text "Valitse tehtäväluokka"] :: List.map (\o -> H.option [] [ H.text o ]) model.positionOptions
+            , H.button
+            [ A.class "btn"
+            , E.onClick AddPosition
+            ]
+            [ H.text "Lisää tehtäväluokka"]
+            ]
+          else [])
+    )
 
 membershipDataBox : User -> H.Html Msg
 membershipDataBox user =
