@@ -360,7 +360,7 @@ viewPage model =
         User userId ->
           H.map UserMessage <| User.view model.user
         Profile ->
-          H.map ProfileMessage <| Profile.View.view model.profile model
+          H.map (mapAppMessage ProfileMessage) <| Profile.View.view model.profile model
         CreateAd ->
           if Maybe.isJust model.profile.user
           then
@@ -368,7 +368,7 @@ viewPage model =
           else
             LoginNeeded.view <| ssoUrl model.rootUrl model.route
         ListAds ->
-          H.map ListAdsMessage <| ListAds.view model.listAds
+          H.map (mapAppMessage ListAdsMessage) <| ListAds.view model.listAds
         ShowAd adId ->
           H.map AdMessage <| Ad.view model.ad adId model.profile.user model.rootUrl
         Home ->
