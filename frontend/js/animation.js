@@ -117,7 +117,7 @@ export default function initAnimation(port) {
 
       function create(event){
         var x1 = event.clientX;
-        var y1 = event.clientY - offset;
+        var y1 = event.clientY - offset + window.pageYOffset;
         n = n + 1;
         var color_index = Math.floor(Math.random() * 5)
         var stk_index = Math.floor(Math.random() * 4)
