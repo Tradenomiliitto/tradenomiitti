@@ -80,17 +80,15 @@ adListView ad =
     , E.onClick (Link (Nav.ShowAd ad.id))]
     [ H.div
       [ A.class "list-ads__ad-preview" ]
-      [ H.h3 []
-        [ H.a
-          [ A.class "list-ads__ad-preview-heading"
-          , A.href ("/ilmoitukset/" ++ (toString ad.id)) ]
-          [ H.text ad.heading ]
-        ]
+      [ H.h3
+        [ A.class "list-ads__ad-preview-heading"]
+        [ H.text ad.heading ]
       , H.p [ A.class "list-ads__ad-preview-content" ] [ H.text (truncateContent ad.content 200) ]
       , H.hr [] []
       , Common.authorInfo ad.createdBy
       ]
     ]
+    
 
 -- transforms a list to a list of lists of two elements: [1, 2, 3, 4, 5] => [[5], [3, 4], [1, 2]]
 -- note: reverse the results if you need the elements to be in original order

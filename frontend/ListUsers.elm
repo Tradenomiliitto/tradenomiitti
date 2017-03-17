@@ -3,11 +3,12 @@ module ListUsers exposing (..)
 import Common
 import Html as H
 import Html.Attributes as A
+import Html.Events as E
 import Http
 import Json.Decode as Json
 import Models.User exposing (User)
 import State.ListUsers exposing (..)
-import Link exposing (AppMessage)
+import Link exposing (AppMessage(..))
 import Nav
 
 type Msg
@@ -58,9 +59,10 @@ view model =
 
 viewUser : User -> H.Html (AppMessage msg)
 viewUser user =
-  Link.linkDiv
-    "col-xs-12 col-sm-6 col-md-4"
-    (Nav.User user.id)
+  H.div
+    [ A.class "col-xs-12 col-sm-6 col-md-4"
+    , E.onClick (Link (Nav.User user.id))
+    ]
     [ H.div
       [ A.class "user-card" ]
       [ Common.authorInfo user
