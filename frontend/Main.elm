@@ -372,7 +372,11 @@ viewPage model =
         ShowAd adId ->
           H.map AdMessage <| Ad.view model.ad adId model.profile.user model.rootUrl
         Home ->
-          H.map (mapAppMessage HomeMessage) <| Home.view model.home
+          if model.home.createProfileClicked
+          then
+            LoginNeeded.view <| ssoUrl model.rootUrl model.route
+          else
+            H.map (mapAppMessage HomeMessage) <| Home.view model.home
         ListUsers ->
           H.map (mapAppMessage ListUsersMessage) <| ListUsers.view model.listUsers
         Terms ->

@@ -2,13 +2,17 @@ module Home exposing (..)
 
 import Html as H
 import Html.Attributes as A
+import Html.Events as E
+import Link exposing (..)
 import ListAds
 import ListUsers
-import State.Home exposing (..)
-import Link exposing (..)
 import Nav
+import State.Home exposing (..)
 
-type Msg = ListAdsMessage ListAds.Msg | ListUsersMessage ListUsers.Msg
+type Msg
+  = ListAdsMessage ListAds.Msg
+  | ListUsersMessage ListUsers.Msg
+  | ClickCreateProfile
 
 
 update : Msg -> Model -> (Model, Cmd Msg)
@@ -25,6 +29,9 @@ update msg model =
       in
         { model | listUsers = listUsersModel } ! [ Cmd.map ListUsersMessage cmd ]
 
+    ClickCreateProfile ->
+      { model | createProfileClicked = True } ! []
+
 initTasks : Cmd Msg
 initTasks = Cmd.batch [ Cmd.map ListAdsMessage ListAds.getAds, Cmd.map ListUsersMessage ListUsers.getUsers ]
 
@@ -33,7 +40,7 @@ view : Model -> H.Html (AppMessage Msg)
 view model =
   H.div
     []
-    [ introScreen
+    [ H.map LocalMessage introScreen
     , listLatestAds model
     , listUsers model
     , tradenomiittiSection
@@ -41,7 +48,7 @@ view model =
 
 -- FIRST INFO SCREEN --
 
-introScreen : H.Html msg
+introScreen : H.Html Msg
 introScreen =
   H.div
     [ A.class "home__intro-screen" ]
@@ -53,7 +60,7 @@ introAnimation =
            , A.class "home__intro-canvas"
            ] []
 
-introBoxes : List ( H.Html msg )
+introBoxes : List ( H.Html Msg )
 introBoxes =
   [ H.div
      [ A.class "home__introbox col-sm-6 col-sm-offset-3" ]
@@ -70,8 +77,10 @@ introBoxes =
   , H.div
     [ A.class "home__introbox home__introbox--button-container col-sm-4 col-sm-offset-4" ]
     [ H.button
-        [ A.class "home__introbox--button btn btn-primary" ]
-        [ H.text "luo oma profiili" ]
+        [ A.class "home__introbox--button btn btn-primary"
+        , E.onClick ClickCreateProfile
+        ]
+        [ H.text "Luo oma profiili" ]
     ]
  ]
 
