@@ -73,10 +73,10 @@ update msg model =
     UrlChange location ->
       let
         shouldScroll = model.scrollTop
-        newRoute = parseLocation location
-        modelWithRoute = { model | route = newRoute, scrollTop = False }
+        route = parseLocation location
+        modelWithRoute = { model | route = route, scrollTop = False }
         ( newModel, cmd ) =
-          case newRoute of
+          case route of
             ShowAd adId ->
               modelWithRoute ! [ Cmd.map AdMessage (Ad.getAd adId) ]
 
@@ -103,7 +103,24 @@ update msg model =
 
             newRoute ->
               (modelWithRoute, Cmd.none)
+
+        needsLogin =
+          case (route, Maybe.isJust model.profile.user, model.initialLoading) of
+            (CreateAd, False, False) -> True
+            _ -> False
+
+        newRoute =
+          if needsLogin
+          then
+            routeToPath <| LoginNeeded (routeToPath route |> Just)
+          else
+            routeToPath route
+
       in
+        if needsLogin
+        then
+          model ! [ Navigation.newUrl newRoute ]
+        else
         newModel ! [ cmd, scrollTop shouldScroll ]
 
     UserMessage msg ->
@@ -304,7 +321,6 @@ viewLink route =
 viewProfileLink : Model -> H.Html Msg
 viewProfileLink model =
   let
-    route = Profile
     action =
       if Maybe.isJust model.profile.user
       then
@@ -313,14 +329,14 @@ viewProfileLink model =
             { stopPropagation = False
             , preventDefault = True
             }
-            (Json.succeed <| NewUrl route)
+            (Json.succeed <| NewUrl Profile)
         ]
       else
         []
 
     endpoint = if Maybe.isJust model.profile.user
-               then routeToPath route
-               else ssoUrl model.rootUrl route
+               then routeToPath Profile
+               else ssoUrl model.rootUrl (routeToPath Profile |> Just)
     linkText =
       model.profile.user
         |> Maybe.map .name
@@ -361,22 +377,16 @@ viewPage model =
           H.map UserMessage <| User.view model.user
         Profile ->
           H.map ProfileMessage <| Profile.View.view model.profile model
+        LoginNeeded route ->
+          LoginNeeded.view <| ssoUrl model.rootUrl route
         CreateAd ->
-          if Maybe.isJust model.profile.user
-          then
-            H.map CreateAdMessage <| CreateAd.view model.createAd
-          else
-            LoginNeeded.view <| ssoUrl model.rootUrl model.route
+          H.map CreateAdMessage <| CreateAd.view model.createAd
         ListAds ->
           H.map ListAdsMessage <| ListAds.view model.listAds
         ShowAd adId ->
           H.map AdMessage <| Ad.view model.ad adId model.profile.user model.rootUrl
         Home ->
-          if model.home.createProfileClicked
-          then
-            LoginNeeded.view <| ssoUrl model.rootUrl model.route
-          else
-            H.map (mapAppMessage HomeMessage) <| Home.view model.home
+          H.map (mapAppMessage HomeMessage) <| Home.view model.home
         ListUsers ->
           H.map (mapAppMessage ListUsersMessage) <| ListUsers.view model.listUsers
         Terms ->

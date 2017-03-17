@@ -1,7 +1,7 @@
 module Nav exposing (..)
 
 import Navigation
-import UrlParser as U exposing ((</>))
+import UrlParser as U exposing ((<?>), (</>))
 import Window
 
 type Route
@@ -14,6 +14,7 @@ type Route
   | NotFound
   | Profile
   | User Int
+  | LoginNeeded (Maybe String)
   | Terms
   | RegisterDescription
 
@@ -38,6 +39,8 @@ routeToPath route =
       "/profiili"
     User userId ->
       "/tradenomit/" ++ (toString userId)
+    LoginNeeded pathMaybe ->
+      "/kirjautuminen-tarvitaan/" ++ (pathMaybe |> Maybe.map (\s -> "?seuraava=" ++ s) |> Maybe.withDefault "")
     Terms ->
       "/kayttoehdot"
     RegisterDescription ->
@@ -64,6 +67,8 @@ routeToString route =
       "Jätä ilmoitus"
     ShowAd adId ->
       "Ilmoitus " ++ (toString adId)
+    LoginNeeded _ ->
+      "Kirjautuminen vaaditaan"
     Terms ->
       "Palvelun käyttöehdot"
     RegisterDescription ->
@@ -88,15 +93,15 @@ routeParser =
     , U.map Info (U.s "tietoa")
     , U.map Profile (U.s "profiili")
     , U.map User (U.s "tradenomit" </> U.int)
+    , U.map LoginNeeded (U.s "kirjautuminen-tarvitaan" <?> (U.stringParam "seuraava"))
     , U.map Terms (U.s "kayttoehdot")
     , U.map RegisterDescription (U.s "rekisteriseloste")
     ]
 
-
-ssoUrl : String -> Route -> String
-ssoUrl rootUrl route =
+ssoUrl : String -> Maybe String -> String
+ssoUrl rootUrl maybePath =
   let
-    loginUrl = rootUrl ++ "/kirjaudu?path=" ++ (routeToPath route)
+    loginUrl = rootUrl ++ "/kirjaudu" ++ (Maybe.map (\s -> "?path=" ++ s) maybePath |> Maybe.withDefault "")
     returnParameter = Window.encodeURIComponent loginUrl
   in
     "https://tunnistus.avoine.fi/sso-login/?service=tradenomiitti&return=" ++

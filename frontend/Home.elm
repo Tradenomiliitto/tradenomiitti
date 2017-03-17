@@ -40,7 +40,7 @@ view : Model -> H.Html (AppMessage Msg)
 view model =
   H.div
     []
-    [ H.map LocalMessage introScreen
+    [ introScreen
     , listLatestAds model
     , listUsers model
     , tradenomiittiSection
@@ -48,7 +48,7 @@ view model =
 
 -- FIRST INFO SCREEN --
 
-introScreen : H.Html Msg
+introScreen : H.Html (AppMessage Msg)
 introScreen =
   H.div
     [ A.class "home__intro-screen" ]
@@ -60,7 +60,7 @@ introAnimation =
            , A.class "home__intro-canvas"
            ] []
 
-introBoxes : List ( H.Html Msg )
+introBoxes : List ( H.Html (Link.AppMessage Msg) )
 introBoxes =
   [ H.div
      [ A.class "home__introbox col-sm-6 col-sm-offset-3" ]
@@ -76,11 +76,8 @@ introBoxes =
     ]
   , H.div
     [ A.class "home__introbox home__introbox--button-container col-sm-4 col-sm-offset-4" ]
-    [ H.button
-        [ A.class "home__introbox--button btn btn-primary"
-        , E.onClick ClickCreateProfile
-        ]
-        [ H.text "Luo oma profiili" ]
+    [ Link.button "Luo oma profiili" "home__introbox--button btn btn-primary"
+        (Nav.LoginNeeded (Nav.Home |> Nav.routeToPath |> Just))
     ]
  ]
 
