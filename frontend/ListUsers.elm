@@ -7,6 +7,8 @@ import Http
 import Json.Decode as Json
 import Models.User exposing (User)
 import State.ListUsers exposing (..)
+import Link exposing (AppMessage)
+import Nav
 
 type Msg
   = UpdateUsers (Result Http.Error (List User))
@@ -25,7 +27,7 @@ update msg model =
     UpdateUsers (Err _) ->
       model ! [] -- TODO error handling
 
-view : Model -> H.Html msg
+view : Model -> H.Html (AppMessage msg)
 view model =
   let
     usersHtml = List.map viewUser model.users
@@ -54,11 +56,11 @@ view model =
         ]
       ]
 
-viewUser : User -> H.Html msg
+viewUser : User -> H.Html (AppMessage msg)
 viewUser user =
-  H.div
-    [ A.class "col-xs-12 col-sm-6 col-md-4"
-    ]
+  Link.linkDiv
+    "col-xs-12 col-sm-6 col-md-4"
+    (Nav.User user.id)
     [ H.div
       [ A.class "user-card" ]
       [ Common.authorInfo user
