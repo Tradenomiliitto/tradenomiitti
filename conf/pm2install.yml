@@ -1,5 +1,5 @@
 ---
-- hosts: [ dev ]
+- hosts: [ dev, qa, prod ]
   remote_user: ubuntu
   become: yes
 

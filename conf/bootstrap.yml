@@ -1,0 +1,14 @@
+---
+- hosts: [ dev, qa, prod ]
+  remote_user: ubuntu
+  become: yes
+  tasks:
+    - name: install nginx
+      apt: pkg=nginx state=present
+
+    - name: install bootstrap nginx.conf
+      template: src=nginx-bootstrap.conf dest=/etc/nginx/nginx.conf force=no
+
+    - name: ensure nginx is running
+      service: name=nginx state=started enabled=yes
+
