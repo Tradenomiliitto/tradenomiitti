@@ -59,9 +59,10 @@ view model =
 
 viewUser : User -> H.Html (AppMessage msg)
 viewUser user =
-  H.div
-    [ A.class "col-xs-12 col-sm-6 col-md-4"
-    , E.onClick (Link (Nav.User user.id))
+  H.a
+    [ A.class "col-xs-12 col-sm-6 col-md-4 card-link"
+    , A.href (Nav.routeToPath (Nav.User user.id))
+    , Link.action (Nav.User user.id)
     ]
     [ H.div
       [ A.class "user-card" ]

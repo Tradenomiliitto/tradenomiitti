@@ -75,9 +75,10 @@ row ads =
 
 adListView : Models.Ad.Ad -> H.Html (AppMessage msg)
 adListView ad =
-  H.div
-    [ A.class "col-xs-12 col-sm-6"
-    , E.onClick (Link (Nav.ShowAd ad.id))]
+  H.a
+    [ A.class "col-xs-12 col-sm-6 card-link"
+    , A.href (Nav.routeToPath (Nav.ShowAd ad.id))
+    , Link.action (Nav.ShowAd ad.id)]
     [ H.div
       [ A.class "list-ads__ad-preview" ]
       [ H.h3
@@ -88,7 +89,7 @@ adListView ad =
       , Common.authorInfo ad.createdBy
       ]
     ]
-    
+
 
 -- transforms a list to a list of lists of two elements: [1, 2, 3, 4, 5] => [[5], [3, 4], [1, 2]]
 -- note: reverse the results if you need the elements to be in original order
