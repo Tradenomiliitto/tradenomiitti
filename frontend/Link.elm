@@ -23,14 +23,6 @@ button title class route =
     , A.class class
     ]
     [ H.text title ]
-
-linkDiv : String  -> Route  -> List (H.Html (AppMessage msg))-> H.Html (AppMessage msg)
-linkDiv class route content =
-  H.div
-    [ E.onClick (Link route)
-    , A.class class
-    ]
-    content
     
 action : Route -> H.Attribute (AppMessage msg)
 action route =

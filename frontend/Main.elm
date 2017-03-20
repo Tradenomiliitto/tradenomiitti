@@ -379,13 +379,13 @@ viewPage model =
         User userId ->
           H.map UserMessage <| User.view model.user
         Profile ->
-          H.map ProfileMessage <| Profile.View.view model.profile model
+          H.map (mapAppMessage ProfileMessage) <| Profile.View.view model.profile model
         LoginNeeded route ->
           LoginNeeded.view <| ssoUrl model.rootUrl route
         CreateAd ->
           H.map CreateAdMessage <| CreateAd.view model.createAd
         ListAds ->
-          H.map ListAdsMessage <| ListAds.view model.listAds
+          H.map (mapAppMessage ListAdsMessage) <| ListAds.view model.listAds
         ShowAd adId ->
           H.map AdMessage <| Ad.view model.ad adId model.profile.user model.rootUrl
         Home ->
