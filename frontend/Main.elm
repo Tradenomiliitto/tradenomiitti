@@ -24,7 +24,7 @@ import User
 import Link exposing (..)
 
 type alias HtmlId = String
-port animation : HtmlId -> Cmd msg
+port animation : (HtmlId, Bool) -> Cmd msg -- send True on splash screen, False otherwise
 port scrollTop : Bool -> Cmd msg
 
 
@@ -55,6 +55,7 @@ type Msg
   = NewUrl Route
   | UrlChange Navigation.Location
   | AllowProfileCreation
+  | ToggleAcceptTerms
   | UserMessage User.Msg
   | ProfileMessage Profile.Msg
   | CreateAdMessage CreateAd.Msg
@@ -88,7 +89,7 @@ update msg model =
 
             Home ->
               modelWithRoute ! [ Cmd.map HomeMessage Home.initTasks
-                               , animation "home-intro-canvas"
+                               , animation ("home-intro-canvas", False)
                                ]
 
             User userId ->
@@ -102,7 +103,7 @@ update msg model =
               modelWithRoute ! [ Cmd.map ListUsersMessage ListUsers.getUsers ]
 
             LoginNeeded _ ->
-              modelWithRoute ! [ animation "login-needed-canvas" ]
+              modelWithRoute ! [ animation ("login-needed-canvas", False) ]
 
             newRoute ->
               (modelWithRoute, Cmd.none)
@@ -119,12 +120,21 @@ update msg model =
           else
             routeToPath route
 
+        doConsentNeededAnimation =
+          if (not model.initialLoading) && model.needsConsent then
+            animation ("consent-needed-canvas", True)
+          else
+            Cmd.none
+
       in
         if needsLogin
         then
           model ! [ Navigation.newUrl newRoute ]
         else
-        newModel ! [ cmd, scrollTop shouldScroll ]
+          newModel ! [ cmd
+                     , scrollTop shouldScroll
+                     , doConsentNeededAnimation
+                     ]
 
     UserMessage msg ->
       let
@@ -138,6 +148,9 @@ update msg model =
         newModel = { model | profile = profileModel, needsConsent = False }
       in
         newModel ! [ Cmd.map ProfileMessage cmd ]
+
+    ToggleAcceptTerms ->
+      { model | acceptsTerms = not model.acceptsTerms } ! []
 
     ProfileMessage msg ->
       let
@@ -154,7 +167,7 @@ update msg model =
         -- We might want to do routing or other initalization based on the
         -- logged in profile, so redo that once we are first loaded
         redoNewUrlCmd =
-          if initialLoading /= model.initialLoading then
+           if initialLoading /= model.initialLoading then
             Navigation.modifyUrl (routeToPath model.route)
           else
             Cmd.none
@@ -164,7 +177,9 @@ update msg model =
           | profile = profileModel
           , initialLoading = initialLoading
           , needsConsent = needsConsent
-        } ! [ Cmd.map ProfileMessage cmd, redoNewUrlCmd ]
+        } ! [ Cmd.map ProfileMessage cmd
+            , redoNewUrlCmd
+            ]
 
     CreateAdMessage msg ->
       let
@@ -206,33 +221,71 @@ subscriptions model =
 
 view : Model -> H.Html Msg
 view model =
-  if model.initialLoading
-  then
-    H.div
-      [ A.class "splash-screen" ]
-      [ logoImage 400 ]
-  else
-    if model.needsConsent
-    then
+  let
+    splashScreen =
       H.div
         [ A.class "splash-screen" ]
-          [ H.div
-            [ A.class "profile__consent-needed col-xs-12 col-md-5" ]
+        [ logoImage 400 ]
+
+    askConsent =
+      H.div
+        [ A.class "splash-screen" ]
+          [ H.canvas [ A.id "consent-needed-canvas", A.class "consent-needed__animation" ] []
+          , H.div
+            [ A.class "consent-needed col-xs-12 col-md-5" ]
             [ H.h1 [] [ H.text "Tervetuloa Tradenomiittiin!" ]
             , H.p [] [ H.text "Tehdäksemme palvelun käytöstä mahdollisimman vaivatonta hyödynnämme Tradenomiliiton olemassa olevia jäsentietoja (nimesi, työhistoriasi). Luomalla profiilin hyväksyt tietojesi käytön Tradenomiitti-palvelussa. Voit muokata tietojasi myöhemmin." ]
-            , H.button
-              [ A.class "btn btn-lg profile__consent-btn-inverse"
-              , E.onClick (AllowProfileCreation)
+            , H.div [ A.class "row consent-needed__actionable" ]
+              [ H.div
+                [ A.class "col-xs-12 col-sm-6" ]
+                [ H.label
+                  []
+                  [ H.input
+                    [ A.type_ "checkbox"
+                    , E.onClick ToggleAcceptTerms
+                    ]
+                    []
+                  , H.span
+                    [ A.class "consent-needed__read-terms"]
+                    [ H.text "Hyväksyn palvelun "
+                    , H.a
+                      [ A.href "/kayttoehdot"
+                      , A.target "_blank"
+                      , A.class "consent-needed__read-terms-link"
+                      ]
+                      [ H.text "käyttöehdot" ]
+                    ]
+                  ]
+                ]
+              , H.div
+                [ A.class "col-xs-12 col-sm-6" ]
+                [ H.button
+                  [ A.class "btn btn-lg consent-needed__btn-inverse"
+                  , E.onClick AllowProfileCreation
+                  , A.disabled (not model.acceptsTerms)
+                  ]
+                  [ H.text "Luo profiili" ]
+                ]
               ]
-              [ H.text "Luo profiili" ]
             ]
           ]
-    else
+
+    mainUi =
       H.div [ A.class "page-layout" ]
         [ navigation model
         , viewPage model
         , Footer.view NewUrl
         ]
+  in
+    if model.initialLoading
+    then
+      splashScreen
+    else
+      case (model.needsConsent, model.route) of
+        (True, Terms) -> mainUi
+        (True, RegisterDescription) -> mainUi
+        (True, _) -> askConsent
+        _ -> mainUi
 
 --TODO move navbar code to Nav.elm
 
@@ -342,7 +395,7 @@ viewProfileLink model =
                else ssoUrl model.rootUrl (routeToPath Profile |> Just)
     linkText =
       model.profile.user
-        |> Maybe.map .name
+        |> Maybe.map (\u -> if u.profileCreated then u.name else "Profiili")
         |> Maybe.withDefault "Kirjaudu"
 
     linkGraphic =

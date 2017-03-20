@@ -3,7 +3,7 @@ import { timer } from 'd3-timer';
 // particle animation used under GPL license from https://bl.ocks.org/mbostock/280d83080497c8c13152 and http://mustafasaifee.com/
 
 export default function initAnimation(port) {
-  port.subscribe(id => {
+  port.subscribe(([ id, isSplashScreen ]) => {
 
     //wait until element is rendered
     let counter = 0;
@@ -24,12 +24,13 @@ export default function initAnimation(port) {
       var context = canvas.getContext("2d");
 
       const styleValueInPx = getStyleRuleValue('height', '#navbar-height-to-js');
-      const offset = Number(styleValueInPx.replace(/[^\d]+/, ''))
+      const offset = isSplashScreen ? 0 : Number(styleValueInPx.replace(/[^\d]+/, ''))
 
       const pink = getStyleRuleValue('color', '#pink-to-js');
       const green = getStyleRuleValue('color', '#green-to-js');
+      const white = getStyleRuleValue('color', '#white-to-js');
 
-      const color = [pink, green]
+      const color = isSplashScreen ? [ white, white ] : [pink, green];
       const stk = color;
 
       canvas.onclick = create;
