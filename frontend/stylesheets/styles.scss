@@ -41,27 +41,44 @@ body {
     @include gotham-bold;
   }
 
-  &__consent-needed {
-    text-align: center;
-    color: $white;
-    padding: 85px;
-    border: 1px solid $white;
-    & h1 {
-      @include gotham-bold;
-      text-transform: uppercase;
-    }
+}
 
-    & p {
-      margin-top: 40px;
-      font-size: 20px;
-    }
+.consent-needed {
+  text-align: center;
+  color: $white;
+  padding: 85px;
+  border: 1px solid $white;
+  & h1 {
+    @include gotham-bold;
+    text-transform: uppercase;
   }
 
-  &__consent-btn-inverse {
-    margin-top: 50px;
+  & p {
+    margin-top: 40px;
+    font-size: 20px;
+  }
+
+  &__btn-inverse {
     @include inverse-button-colors;
     @include gotham-bold;
     text-transform: uppercase;
+  }
+  &__actionable {
+    margin-top: 50px;
+  }
+
+  &__read-terms {
+    position: relative;
+    top: -3px;
+    padding-left: 10px;
+    &-link {
+      color: $white;
+      &:hover,
+      &:active,
+      &:focus {
+        color: $white;
+      }
+    }
   }
 }
 

@@ -55,6 +55,7 @@ type Msg
   = NewUrl Route
   | UrlChange Navigation.Location
   | AllowProfileCreation
+  | ToggleAcceptTerms
   | UserMessage User.Msg
   | ProfileMessage Profile.Msg
   | CreateAdMessage CreateAd.Msg
@@ -139,6 +140,9 @@ update msg model =
       in
         newModel ! [ Cmd.map ProfileMessage cmd ]
 
+    ToggleAcceptTerms ->
+      { model | acceptsTerms = not model.acceptsTerms } ! []
+
     ProfileMessage msg ->
       let
         (profileModel, cmd) = Profile.update msg model.profile
@@ -206,33 +210,70 @@ subscriptions model =
 
 view : Model -> H.Html Msg
 view model =
-  if model.initialLoading
-  then
-    H.div
-      [ A.class "splash-screen" ]
-      [ logoImage 400 ]
-  else
-    if model.needsConsent
-    then
+  let
+    splashScreen =
+      H.div
+        [ A.class "splash-screen" ]
+        [ logoImage 400 ]
+
+    askConsent =
       H.div
         [ A.class "splash-screen" ]
           [ H.div
-            [ A.class "profile__consent-needed col-xs-12 col-md-5" ]
+            [ A.class "consent-needed col-xs-12 col-md-5" ]
             [ H.h1 [] [ H.text "Tervetuloa Tradenomiittiin!" ]
             , H.p [] [ H.text "Tehdäksemme palvelun käytöstä mahdollisimman vaivatonta hyödynnämme Tradenomiliiton olemassa olevia jäsentietoja (nimesi, työhistoriasi). Luomalla profiilin hyväksyt tietojesi käytön Tradenomiitti-palvelussa. Voit muokata tietojasi myöhemmin." ]
-            , H.button
-              [ A.class "btn btn-lg profile__consent-btn-inverse"
-              , E.onClick (AllowProfileCreation)
+            , H.div [ A.class "row consent-needed__actionable" ]
+              [ H.div
+                [ A.class "col-xs-12 col-sm-6" ]
+                [ H.label
+                  []
+                  [ H.input
+                    [ A.type_ "checkbox"
+                    , E.onClick ToggleAcceptTerms
+                    ]
+                    []
+                  , H.span
+                    [ A.class "consent-needed__read-terms"]
+                    [ H.text "Hyväksyn palvelun "
+                    , H.a
+                      [ A.href "/kayttoehdot"
+                      , A.target "_blank"
+                      , A.class "consent-needed__read-terms-link"
+                      ]
+                      [ H.text "käyttöehdot" ]
+                    ]
+                  ]
+                ]
+              , H.div
+                [ A.class "col-xs-12 col-sm-6" ]
+                [ H.button
+                  [ A.class "btn btn-lg consent-needed__btn-inverse"
+                  , E.onClick AllowProfileCreation
+                  , A.disabled (not model.acceptsTerms)
+                  ]
+                  [ H.text "Luo profiili" ]
+                ]
               ]
-              [ H.text "Luo profiili" ]
             ]
           ]
-    else
+
+    mainUi =
       H.div [ A.class "page-layout" ]
         [ navigation model
         , viewPage model
         , Footer.view NewUrl
         ]
+  in
+    if model.initialLoading
+    then
+      splashScreen
+    else
+      case (model.needsConsent, model.route) of
+        (True, Terms) -> mainUi
+        (True, RegisterDescription) -> mainUi
+        (True, _) -> askConsent
+        _ -> mainUi
 
 --TODO move navbar code to Nav.elm
 
