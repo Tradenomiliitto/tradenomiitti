@@ -2,10 +2,10 @@ module Home exposing (..)
 
 import Html as H
 import Html.Attributes as A
-import Html.Events as E
 import Link exposing (..)
 import ListAds
 import ListUsers
+import Models.User exposing (User)
 import Nav
 import State.Home exposing (..)
 
@@ -36,11 +36,11 @@ initTasks : Cmd Msg
 initTasks = Cmd.batch [ Cmd.map ListAdsMessage ListAds.getAds, Cmd.map ListUsersMessage ListUsers.getUsers ]
 
 
-view : Model -> H.Html (AppMessage Msg)
-view model =
+view : Model -> Maybe User -> H.Html (AppMessage Msg)
+view model userMaybe =
   H.div
     []
-    [ introScreen
+    [ introScreen userMaybe
     , listLatestAds model
     , listUsers model
     , tradenomiittiSection
@@ -48,11 +48,11 @@ view model =
 
 -- FIRST INFO SCREEN --
 
-introScreen : H.Html (AppMessage Msg)
-introScreen =
+introScreen : Maybe User -> H.Html (AppMessage Msg)
+introScreen userMaybe =
   H.div
     [ A.class "home__intro-screen" ]
-    (introAnimation :: introBoxes)
+    (introAnimation :: introBoxes userMaybe)
 
 introAnimation : H.Html msg
 introAnimation =
@@ -60,26 +60,34 @@ introAnimation =
            , A.class "home__intro-canvas"
            ] []
 
-introBoxes : List ( H.Html (Link.AppMessage Msg) )
-introBoxes =
-  [ H.div
-     [ A.class "home__introbox col-sm-6 col-sm-offset-3" ]
-     [ H.h2
-         [ A.class "home__introbox--heading" ]
-         [ H.text "Kohtaa tradenomi" ]
-     ]
-  , H.div
-    [ A.class "home__introbox col-sm-6 col-sm-offset-3" ]
+introBoxes : Maybe User -> List ( H.Html (Link.AppMessage Msg) )
+introBoxes userMaybe =
+  let
+    createProfile =
+      case userMaybe of
+        Just _ ->
+          []
+        Nothing ->
+          [ H.div
+            [ A.class "home__introbox home__introbox--button-container col-sm-4 col-sm-offset-4" ]
+            [ Link.button "Luo oma profiili" "home__introbox--button btn btn-primary"
+                (Nav.LoginNeeded (Nav.Home |> Nav.routeToPath |> Just))
+            ]
+          ]
+  in
     [ H.div
-        [ A.class "home__introbox--content" ]
-        [ H.text "Tradenomiitti on tradenomien oma kohtaamispaikka, jossa jäsenet löytävät toisensa yhteisten aiheiden ympäriltä ja hyötyvät toistensa kokemuksista." ]
-    ]
-  , H.div
-    [ A.class "home__introbox home__introbox--button-container col-sm-4 col-sm-offset-4" ]
-    [ Link.button "Luo oma profiili" "home__introbox--button btn btn-primary"
-        (Nav.LoginNeeded (Nav.Home |> Nav.routeToPath |> Just))
-    ]
- ]
+      [ A.class "home__introbox col-sm-6 col-sm-offset-3" ]
+      [ H.h2
+          [ A.class "home__introbox--heading" ]
+          [ H.text "Kohtaa tradenomi" ]
+      ]
+    , H.div
+      [ A.class "home__introbox col-sm-6 col-sm-offset-3" ]
+      [ H.div
+          [ A.class "home__introbox--content" ]
+          [ H.text "Tradenomiitti on tradenomien oma kohtaamispaikka, jossa jäsenet löytävät toisensa yhteisten aiheiden ympäriltä ja hyötyvät toistensa kokemuksista." ]
+      ]
+    ] ++ createProfile
 
 -- LIST LATEST ADS --
 
