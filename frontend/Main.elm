@@ -120,12 +120,21 @@ update msg model =
           else
             routeToPath route
 
+        doConsentNeededAnimation =
+          if (not model.initialLoading) && model.needsConsent then
+            animation ("consent-needed-canvas", True)
+          else
+            Cmd.none
+
       in
         if needsLogin
         then
           model ! [ Navigation.newUrl newRoute ]
         else
-        newModel ! [ cmd, scrollTop shouldScroll ]
+          newModel ! [ cmd
+                     , scrollTop shouldScroll
+                     , doConsentNeededAnimation
+                     ]
 
     UserMessage msg ->
       let
@@ -156,13 +165,10 @@ update msg model =
               (model.initialLoading, model.needsConsent)
 
         -- We might want to do routing or other initalization based on the
-        -- logged in profile, so do commands when initialLoading stops
-        reinitCmd =
-          if initialLoading /= model.initialLoading then
-            Cmd.batch
-              [ Navigation.modifyUrl (routeToPath model.route)
-              , animation ("consent-needed-canvas", True)
-              ]
+        -- logged in profile, so redo that once we are first loaded
+        redoNewUrlCmd =
+           if initialLoading /= model.initialLoading then
+            Navigation.modifyUrl (routeToPath model.route)
           else
             Cmd.none
 
@@ -172,7 +178,7 @@ update msg model =
           , initialLoading = initialLoading
           , needsConsent = needsConsent
         } ! [ Cmd.map ProfileMessage cmd
-            , reinitCmd
+            , redoNewUrlCmd
             ]
 
     CreateAdMessage msg ->
