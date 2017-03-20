@@ -24,7 +24,7 @@ import User
 import Link exposing (..)
 
 type alias HtmlId = String
-port animation : HtmlId -> Cmd msg
+port animation : (HtmlId, Bool) -> Cmd msg -- send True on splash screen, False otherwise
 port scrollTop : Bool -> Cmd msg
 
 
@@ -89,7 +89,7 @@ update msg model =
 
             Home ->
               modelWithRoute ! [ Cmd.map HomeMessage Home.initTasks
-                               , animation "home-intro-canvas"
+                               , animation ("home-intro-canvas", False)
                                ]
 
             User userId ->
@@ -103,7 +103,7 @@ update msg model =
               modelWithRoute ! [ Cmd.map ListUsersMessage ListUsers.getUsers ]
 
             LoginNeeded _ ->
-              modelWithRoute ! [ animation "login-needed-canvas" ]
+              modelWithRoute ! [ animation ("login-needed-canvas", False) ]
 
             newRoute ->
               (modelWithRoute, Cmd.none)
@@ -156,10 +156,13 @@ update msg model =
               (model.initialLoading, model.needsConsent)
 
         -- We might want to do routing or other initalization based on the
-        -- logged in profile, so redo that once we are first loaded
-        redoNewUrlCmd =
+        -- logged in profile, so do commands when initialLoading stops
+        reinitCmd =
           if initialLoading /= model.initialLoading then
-            Navigation.modifyUrl (routeToPath model.route)
+            Cmd.batch
+              [ Navigation.modifyUrl (routeToPath model.route)
+              , animation ("consent-needed-canvas", True)
+              ]
           else
             Cmd.none
 
@@ -168,7 +171,9 @@ update msg model =
           | profile = profileModel
           , initialLoading = initialLoading
           , needsConsent = needsConsent
-        } ! [ Cmd.map ProfileMessage cmd, redoNewUrlCmd ]
+        } ! [ Cmd.map ProfileMessage cmd
+            , reinitCmd
+            ]
 
     CreateAdMessage msg ->
       let
@@ -219,7 +224,8 @@ view model =
     askConsent =
       H.div
         [ A.class "splash-screen" ]
-          [ H.div
+          [ H.canvas [ A.id "consent-needed-canvas", A.class "consent-needed__animation" ] []
+          , H.div
             [ A.class "consent-needed col-xs-12 col-md-5" ]
             [ H.h1 [] [ H.text "Tervetuloa Tradenomiittiin!" ]
             , H.p [] [ H.text "Tehdäksemme palvelun käytöstä mahdollisimman vaivatonta hyödynnämme Tradenomiliiton olemassa olevia jäsentietoja (nimesi, työhistoriasi). Luomalla profiilin hyväksyt tietojesi käytön Tradenomiitti-palvelussa. Voit muokata tietojasi myöhemmin." ]
