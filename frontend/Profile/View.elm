@@ -33,7 +33,7 @@ profileTopRow model rootState =
             [ H.text "Kirjaudu ulos" ]
         Nothing ->
           H.a
-            [ A.href <| Nav.ssoUrl rootState.rootUrl Nav.Profile
+            [ A.href <| Nav.ssoUrl rootState.rootUrl (Nav.routeToPath Nav.Profile |> Just)
             , A.class "btn"
             ]
             [ H.text "Kirjaudu sisään" ]

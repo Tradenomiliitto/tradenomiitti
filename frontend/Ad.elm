@@ -207,7 +207,7 @@ viewAnswerCount num adId rootUrl =
       , H.p [] [ H.text text ]
       , H.a
         [ A.class "btn btn-primary"
-        , A.href (Nav.ssoUrl rootUrl (Nav.ShowAd adId))
+        , A.href (Nav.ssoUrl rootUrl (Nav.ShowAd adId |> Nav.routeToPath |> Just))
         ]
         [ H.text "Kirjaudu" ]
       ]

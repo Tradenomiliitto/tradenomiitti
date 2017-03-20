@@ -6,7 +6,7 @@
 }
 
 .home {
-  $intro-height: calc(100vh - #{ $navbar-height });
+  $intro-height: $fullpage-height;
   &__intro-screen {
     height: $intro-height;
   }
