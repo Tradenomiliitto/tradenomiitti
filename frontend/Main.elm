@@ -395,7 +395,7 @@ viewProfileLink model =
                else ssoUrl model.rootUrl (routeToPath Profile |> Just)
     linkText =
       model.profile.user
-        |> Maybe.map .name
+        |> Maybe.map (\u -> if u.profileCreated then u.name else "Profiili")
         |> Maybe.withDefault "Kirjaudu"
 
     linkGraphic =
