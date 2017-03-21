@@ -16,9 +16,9 @@ You can install servers by running (replace ENV with dev, qa, or prod)
 npm install
 cp /path/to/sideloaded/assets/* conf/assets/ # we don't want fonts/images/etc in repo
 npm run preansible
-$EDITOR conf/inventory.ini
+$EDITOR conf/inventory.ini # edit with your favorite editor
 ENV_TO_DEPLOY=ENV npm run serverinstallbase
-git remote add ENV ubuntu@SERVER/srv/tradenomiitti.git # for each ENV
+git remote add ENV ubuntu@SERVER:/srv/tradenomiitti.git
 git push ENV master # for each ENV
 ENV_TO_DEPLOY=ENV npm run serverinstallpm2
 ```

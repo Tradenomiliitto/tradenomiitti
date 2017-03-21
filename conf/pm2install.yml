@@ -7,7 +7,7 @@
     - weareinteractive.pm2
 
   vars:
-    pm2_service_name: pm2
+    pm2_service_name: pm2-ubuntu
     pm2_apps:
       - run: /srv/app.json
         path: /srv/checkout/tradenomiitti
