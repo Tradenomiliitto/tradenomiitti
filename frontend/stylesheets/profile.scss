@@ -1,0 +1,173 @@
+.profile {
+  &__editing {
+    &--heading {
+      margin-top: #{ $navbar-height + $content-top-margin };
+      text-align: center;
+      padding-bottom: 50px;
+      &--title {
+        text-transform: uppercase;
+        color: $pink;
+        font-size: 36px;
+        @include gotham-bold;
+        margin-bottom: 50px;
+      }
+      &--content {
+        font-size: 16px;
+      }
+    }
+    &--membership {
+      background-color: $light-grey;
+      &--databox {
+        background-color: $white;
+        $padding: 33px;
+        padding: 8px $padding $padding $padding;
+        &--heading {
+          @include gotham-bold;
+          color: $pink;
+          text-transform: uppercase;
+        }
+        &-definitions {
+          width: 100%;
+          margin-bottom: 30px;
+          & td {
+            border-bottom: 1px solid $dark-grey;
+            $padding: 8px;
+            padding-top: $padding;
+            padding-bottom: $padding;
+          }
+          & td:first-child {
+            font-weight: bold;
+            padding-right: 2em;
+            &:after {
+            content: ':';
+            }
+          }
+        } 
+      }
+      //margin-left: 4%;
+      //margin-right: 4%;
+      box-shadow: 0 2px 2px 1px #CCC;
+      &--info {
+        padding: 40px;
+        &--text {
+          font-size: 16px;
+          margin-bottom: 30px;
+        }
+        &--button {
+          @include inverse-button-colors;
+          @include button-paddings;
+          border-width: 2px;
+          font-size: 12px !important;
+        }
+      }
+    }
+    &--public-info {
+      margin-top: 50px;
+      margin-left: 8%;
+      margin-right: 8%;
+      &--header {
+        color: $pink;
+        text-transform: uppercase;
+        @include gotham-bold;
+      }
+
+      &--box {
+      }
+
+      &--text {
+        font-size: 16px;
+        margin-top: 30px;
+        margin-bottom: 30px;
+      }
+
+    }
+    &--competences {
+      background-color: $light-grey;
+      width: 100vw;
+      margin-left: -15px;
+
+      &--row {
+        margin-left: 8%;
+        margin-right: 8%;
+        padding-left: 15px;
+      }
+
+      &--heading {
+        margin-top: 50px;
+        margin-bottom: 30px;
+        &--title {
+          @include gotham-bold;
+          text-transform: uppercase;
+          color: $pink;
+        }
+        &--text {
+          margin-top: 30px;
+          font-size: 16px;
+        }
+      }
+
+      &--text {
+        margin-top: 35px;
+        margin-bottom: 35px;
+        font-size: 16px;
+      }
+    }
+  &--bold {
+    font-weight: bold;
+    font-size: 16px;
+  }
+  }
+  &__buttons {
+    text-align: right;
+    height: 100%;
+    margin-top: 5px;
+  }
+
+  &__top-row {
+    position: fixed;
+    width: 100%;
+    top: $navbar-height;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    z-index: 8001;
+    background-color: $medium-grey;
+    &--editing {
+      background-color: $dark-grey;
+
+      color: $white;
+      & a {
+        color: $white;
+      }
+    }
+    &-edit-button {
+      min-width: 16em;
+      @include button-colors;
+    }
+  }
+  &__heading {
+    @include gotham-bold;
+  }
+
+  &__consent-needed {
+    text-align: center;
+    color: $white;
+    padding: 85px;
+    border: 1px solid $white;
+    & h1 {
+      @include gotham-bold;
+      text-transform: uppercase;
+    }
+
+    & p {
+      margin-top: 40px;
+      font-size: 20px;
+    }
+  }
+
+  &__consent-btn-inverse {
+    margin-top: 50px;
+    @include inverse-button-colors;
+    @include gotham-bold;
+    text-transform: uppercase;
+  }
+}

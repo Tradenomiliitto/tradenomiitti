@@ -4,44 +4,14 @@
 @import 'author-info';
 @import 'home';
 @import 'login-needed';
+@import 'profile';
 @import '../../node_modules/font-awesome/scss/font-awesome';
 
 body {
   overflow-x: hidden;
 }
 
-.profile {
-  &__buttons {
-    text-align: right;
-    height: 100%;
-    margin-top: 5px;
-  }
 
-  &__top-row {
-    position: fixed;
-    width: 100%;
-    top: $navbar-height;
-    padding-top: 8px;
-    padding-bottom: 8px;
-    z-index: 8001;
-    background-color: $medium-grey;
-    &--editing {
-      background-color: $dark-grey;
-
-      color: $white;
-      & a {
-        color: $white;
-      }
-    }
-    &-edit-button {
-      min-width: 16em;
-    }
-  }
-  &__heading {
-    @include gotham-bold;
-  }
-
-}
 
 .consent-needed {
   text-align: center;
@@ -262,7 +232,6 @@ div#not-implemented {
   &__competences-header {
     @include gotham-bold;
     text-transform: uppercase;
-    margin-bottom: 70px;
   }
   &__activity-header {
     @include gotham-bold;
