@@ -74,7 +74,7 @@ membershipDataInfo =
             ]
         , H.a [ A.href "https://asiointi.tral.fi" ] [ H.button
             [ A.class "profile__editing--membership--info--button btn btn-primary" ]
-            [ H.text "siirry muokkaamaan jäsentietoja"
+            [ H.text "päivitä jäsentiedot"
             ] ]
         ]
    
