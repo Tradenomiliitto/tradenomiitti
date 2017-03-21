@@ -7,6 +7,7 @@ $dark-grey: rgb(99, 99, 99);
 
 $light-grey: rgb(251, 251, 251);
 $light-green: rgb(95, 125, 125);
+$light-pink: #ff96ad;
 
 $white: #FFF;
 $black: #000;
@@ -62,11 +63,22 @@ $fullpage-height: calc(100vh - #{ $navbar-height });
   display: inline-block;
 }
 
+@mixin button-colors {
+  color: $white !important;
+  background-color: $pink !important;
+  &:hover {
+    background-color: $light-pink !important;
+    border-color: $light-pink !important;
+  }
+}
+
 @mixin inverse-button-colors {
   color: $pink !important;
   background-color: $white !important;
   &:hover {
     background-color: $white !important;
+    color: $light-pink !important;
+    border-color: $light-pink !important;
   }
 }
 

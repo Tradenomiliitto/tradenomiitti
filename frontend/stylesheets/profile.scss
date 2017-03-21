@@ -16,7 +16,9 @@
       }
     }
     &--membership {
+      background-color: $light-grey;
       &--databox {
+        background-color: $white;
         $padding: 33px;
         padding: 8px $padding $padding $padding;
         &--heading {
@@ -46,7 +48,6 @@
       margin-right: 4%;
       box-shadow: 0 2px 2px 1px #CCC;
       &--info {
-        background-color: $light-grey;
         padding: 40px;
         &--text {
           font-size: 16px;
