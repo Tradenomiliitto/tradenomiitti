@@ -4,6 +4,7 @@
 @import 'author-info';
 @import 'home';
 @import 'login-needed';
+@import 'profile';
 @import '../../node_modules/font-awesome/scss/font-awesome';
 
 body {
@@ -235,7 +236,6 @@ div#not-implemented {
   &__competences-header {
     @include gotham-bold;
     text-transform: uppercase;
-    margin-bottom: 70px;
   }
   &__activity-header {
     @include gotham-bold;

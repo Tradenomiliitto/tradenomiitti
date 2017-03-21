@@ -69,3 +69,10 @@ $fullpage-height: calc(100vh - #{ $navbar-height });
     background-color: $white !important;
   }
 }
+
+@mixin button-paddings {
+  padding-top: 15px !important;
+  padding-bottom: 15px !important;
+  padding-left: 30px !important;
+  padding-right: 30px !important;
+}
