@@ -23,7 +23,7 @@ button title class route =
     , A.class class
     ]
     [ H.text title ]
-    
+
 action : Route -> H.Attribute (AppMessage msg)
 action route =
   E.onWithOptions

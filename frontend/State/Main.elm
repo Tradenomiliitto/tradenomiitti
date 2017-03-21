@@ -20,6 +20,7 @@ type alias Model =
   , profile : ProfileState.Model
   , initialLoading : Bool
   , needsConsent : Bool
+  , acceptsTerms : Bool
   , createAd : State.CreateAd.Model
   , listAds : State.ListAds.Model
   , ad : State.Ad.Model
@@ -37,6 +38,7 @@ initState location =
   , profile = ProfileState.init
   , initialLoading = True
   , needsConsent = True
+  , acceptsTerms = False
   , createAd = State.CreateAd.init
   , listAds = State.ListAds.init
   , ad = State.Ad.init

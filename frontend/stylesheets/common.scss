@@ -42,6 +42,7 @@ $fullpage-height: calc(100vh - #{ $navbar-height });
 #navbar-height-to-js { height: $navbar-height; }
 #pink-to-js { color: $pink; }
 #green-to-js { color: $green; }
+#white-to-js { color: $white; }
 
 
 @mixin gotham-bold {
