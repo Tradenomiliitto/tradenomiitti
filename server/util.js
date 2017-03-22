@@ -2,7 +2,7 @@ module.exports = function initialize(params) {
   const knex = params.knex;
 
   function userForSession(req) {
-    if (!req.session.id) return Promise.resolve(null);
+    if (!req.session.id) return Promise.reject('Request has no session id');
     return knex('sessions')
       .where({ id: req.session.id })
       .then(resp => resp.length === 0 ? Promise.reject('No session found') : resp[0].user_id)
@@ -11,11 +11,16 @@ module.exports = function initialize(params) {
   }
 
   function formatUser(user) {
+    formattedUser = formatUserNotLoggedIn(user);
+    formattedUser.name = user.data.name || '';
+
+    return formattedUser;
+  }
+
+  function formatUserNotLoggedIn(user){
     const formattedUser = user.data;
     formattedUser.id = user.id;
     const userData = user.data;
-
-    formattedUser.name = userData.name || '';
     formattedUser.description = userData.description || '';
     formattedUser.title = userData.title || 'Ei titteliä';
     formattedUser.domains = userData.domains || [];
@@ -24,7 +29,6 @@ module.exports = function initialize(params) {
 
     return formattedUser;
   }
-
 
   return  {
     userForSession,
