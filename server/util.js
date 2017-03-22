@@ -10,28 +10,36 @@ module.exports = function initialize(params) {
       .then(resp => resp[0]);
   }
 
+  //formats given user as json, giving only fields that current user is allowed to see
+  function formatUserSafe(req, user) {
+    return userForSession(req)
+      .then(_ => formatUser(user))
+      .catch(e => formatUserNotLoggedIn(user));
+  } 
+
   function formatUser(user) {
-    formattedUser = formatUserNotLoggedIn(user);
-    formattedUser.name = user.data.name || '';
-
-    return formattedUser;
-  }
-
-  function formatUserNotLoggedIn(user){
     const formattedUser = user.data;
     formattedUser.id = user.id;
     const userData = user.data;
+    formattedUser.name = userData.name || '';
     formattedUser.description = userData.description || '';
     formattedUser.title = userData.title || 'Ei titteliä';
     formattedUser.domains = userData.domains || [];
     formattedUser.positions = userData.positions || [];
     formattedUser.profile_creation_consented = userData.profile_creation_consented || false;
 
+    return formattedUser;;
+  }
+
+  function formatUserNotLoggedIn(user){
+    formattedUser = formatUser(user);
+    formattedUser.name = 'Tradenomi';
     return formattedUser;
   }
 
   return  {
     userForSession,
-    formatUser
+    formatUser,
+    formatUserSafe
   };
 }
