@@ -385,6 +385,9 @@ div#not-implemented {
   &__submit-button {
     text-align: right;
     margin-top: 40px;
+    & button {
+      @include button-colors;
+    }
   }
 
   &__fail,
@@ -491,6 +494,7 @@ div#not-implemented {
     margin-top: 0;
     text-align: center;
     &-button {
+      @include button-colors;
       margin-top: 30px;
       margin-bottom: 30px;
     }
