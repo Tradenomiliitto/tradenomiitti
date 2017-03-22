@@ -35,7 +35,7 @@ update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
   case msg of
     ChangeHeading str ->
-      { model | heading = str } ! []
+      { model | heading = String.filter ((/=) '\n') str } ! []
     ChangeContent str ->
       { model | content = str } ! []
     Send ->
@@ -48,6 +48,12 @@ update msg model =
     NoOp ->
       model ! []
 
+minHeading : Int
+minHeading = 4
+
+maxHeading : Int
+maxHeading = 90
+
 view : Model -> H.Html Msg
 view model =
   case model.sending of
@@ -58,15 +64,26 @@ view model =
           [ A.class "row create-ad" ]
           [ H.div
             [ A.class "col-xs-12 col-sm-7 create-ad__inputs" ]
-            [ H.h2
+            [ H.h3
                 [ A.class "create-ad__heading-input" ]
-                [ H.input
+                [ H.textarea
                   [ A.placeholder "Otsikko"
                   , E.onInput ChangeHeading
                   , A.value model.heading
+                  , A.wrap "soft"
+                  , A.rows 1
                   ]
                   []
                 ]
+            , H.span
+              [ A.class "create-ad__heading-length-hint" ]
+              [ H.text <|
+                if String.length model.heading < minHeading
+                then
+                  "Vielä vähintään " ++ toString (minHeading - String.length model.heading) ++ " merkkiä"
+                else
+                  "Enää korkeintaan " ++ toString (maxHeading - String.length model.heading) ++ " merkkiä"
+              ]
             , H.textarea
               [ A.placeholder "Kirjoita ytimekäs ilmoitus"
               , A.class "create-ad__textcontent"
@@ -86,6 +103,7 @@ view model =
               [ H.button
                   [ A.class "btn btn-primary"
                   , E.onClick Send
+                  , A.disabled (String.length model.heading < minHeading || String.length model.heading > maxHeading)
                   ]
                   [ H.text "Julkaise ilmoitus"]
               ]

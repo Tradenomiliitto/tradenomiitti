@@ -363,16 +363,23 @@ div#not-implemented {
   }
 
   $input-padding: 8px;
-  &__heading-input {
-    color: $pink;
-    @include gotham-bold;
-    & input {
-      padding: $input-padding;
-      width: 100%;
+  &__heading {
+    &-input {
+      color: $pink;
+      @include gotham-bold;
+      margin-bottom: 0;
+      & textarea {
+        padding: $input-padding;
+        width: 100%;
+      }
+    }
+    &-length-hint {
+      margin-bottom: 10px;
     }
   }
 
   &__textcontent {
+    margin-top: 10px;
     padding: $input-padding;
     width: 100%;
     min-height: 80px;
