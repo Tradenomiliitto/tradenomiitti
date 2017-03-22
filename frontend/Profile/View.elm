@@ -72,10 +72,15 @@ membershipDataInfo =
             , H.span [ A.class "profile__editing--bold" ] [H.text "Jäsentiedot eivät näy sellaisenaan muille."
              ]
             ]
-        , H.a [ A.href "https://asiointi.tral.fi" ] [ H.button
+        , H.a
+          [ A.href "https://asiointi.tral.fi"
+          , A.target "_blank"
+          ]
+          [ H.button
             [ A.class "profile__editing--membership--info--button btn btn-primary" ]
             [ H.text "päivitä jäsentiedot"
-            ] ]
+            ]
+          ]
         ]
 
 
