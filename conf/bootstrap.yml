@@ -1,0 +1,25 @@
+---
+- hosts: [ dev, qa, prod ]
+  remote_user: ubuntu
+  become: yes
+  tasks:
+    - name: install nginx
+      apt: pkg=nginx state=present
+
+    - name: remove base install nginx.conf just once
+      shell: rm -f /etc/nginx/nginx.conf && touch /etc/nginx/.nginx.conf.deleted.stamp
+      args:
+        creates: /etc/nginx/.nginx.conf.deleted.stamp
+
+    - name: install bootstrap nginx.conf
+      template: src=nginx-bootstrap.conf dest=/etc/nginx/nginx.conf force=no
+      notify:
+        - restart nginx
+
+    - name: ensure nginx is running
+      service: name=nginx state=started enabled=yes
+
+  handlers:
+    - name: restart nginx
+      service: name=nginx state=restarted
+
