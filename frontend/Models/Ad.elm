@@ -48,3 +48,10 @@ answerDecoder =
     |> P.requiredAt [ "data", "content" ] Json.string
     |> P.required "created_by" Models.User.userDecoder
     |> P.required "created_at" date
+
+
+adCount : Answers -> Int
+adCount answers =
+  case answers of
+    AnswerCount num -> num
+    AnswerList list -> List.length list

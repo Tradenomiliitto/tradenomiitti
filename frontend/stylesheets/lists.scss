@@ -17,6 +17,15 @@
     margin-left: -15px;
   }
 
+}
+
+.list-users {
+  &__user-row {
+    margin-top: 25px;
+  }
+}
+
+.list-ads {
   &__ad-preview {
     margin-top: 25px;
     padding: 15px;
@@ -32,11 +41,16 @@
     > hr {
       border-color: rgba(0, 0, 0, 0.35);
     }
-  }
-}
-
-.list-users {
-  &__user-row {
-    margin-top: 25px;
+    &-answer-count {
+      float: right;
+      &-number {
+        font-weight: bold;
+        margin-right: 4px;
+      }
+      & svg {
+        fill: $pink;
+        width: 37px;
+      }
+    }
   }
 }
