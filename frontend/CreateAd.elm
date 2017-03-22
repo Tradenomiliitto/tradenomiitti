@@ -43,7 +43,7 @@ update msg model =
     SendResponse (Err _) ->
       { model | sending = FinishedFail } ! []
     SendResponse (Ok id) ->
-      { model | sending = FinishedSuccess (toString id) } !
+      init !
         [ Navigation.newUrl (Nav.routeToPath (Nav.ShowAd id)) ]
     NoOp ->
       model ! []
