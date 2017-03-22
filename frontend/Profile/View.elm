@@ -25,7 +25,7 @@ editProfileView : Model -> RootState.Model -> H.Html (AppMessage Msg)
 editProfileView model rootState =
   case model.user of
     Just user ->
-      H.div 
+      H.div
         []
         [ profileTopRow model rootState
         , editProfileHeading
@@ -33,7 +33,7 @@ editProfileView model rootState =
         , H.map LocalMessage (publicInfoEditing model user)
         , H.map LocalMessage (competences model user)
         ]
-    Nothing -> H.div [] [] 
+    Nothing -> H.div [] []
 
 
 
@@ -44,8 +44,8 @@ editProfileHeading =
   H.div
     [ A.class "profile__editing--heading col-sm-6 col-sm-offset-3" ]
     [ H.h2 [ A.class "profile__editing--heading--title" ] [ H.text "Muokkaa profiilia" ]
-    , H.p [ A.class "profile__editing--heading--content" ] [ H.text "Tehdäksemme Tradenomiitin käytöstä sinulle mahdollisimman vaivatonta, olemme luoneet sinulle profiilin TRAL:n jäsentietojen perusteella. Viimeistele profiilisi tarkastamalla jäsentietosi, muokkaamalla julkista profiiliasi ja täyttämällä henkilökohtainen käyntikorttisi."] 
-    ] 
+    , H.p [ A.class "profile__editing--heading--content" ] [ H.text "Tehdäksemme Tradenomiitin käytöstä sinulle mahdollisimman vaivatonta, olemme luoneet sinulle profiilin TRAL:n jäsentietojen perusteella. Viimeistele profiilisi tarkastamalla jäsentietosi, muokkaamalla julkista profiiliasi ja täyttämällä henkilökohtainen käyntikorttisi."]
+    ]
   ]
   ]
 
@@ -56,7 +56,7 @@ membershipInfoEditing user =
       [ H.div
         [ A.class "row"]
         [ membershipDataBoxEditing user
-        , membershipDataInfo 
+        , membershipDataInfo
         ]
       ]
 
@@ -67,7 +67,7 @@ membershipDataInfo =
         [ A.class "profile__editing--membership--info col-md-6" ]
         [
           H.p
-            [ A.class "profile__editing--membership--info--text" ] 
+            [ A.class "profile__editing--membership--info--text" ]
             [ H.text "Profiilissa hyödynnetään liiton jäsentietoja. Tarkistathan, että tietosi ovat järjestelmässämme ajan tasalla. "
             , H.span [ A.class "profile__editing--bold" ] [H.text "Jäsentiedot eivät näy sellaisenaan muille."
              ]
@@ -77,12 +77,12 @@ membershipDataInfo =
             [ H.text "päivitä jäsentiedot"
             ] ]
         ]
-   
+
 
 
 publicInfoEditing : Model -> User -> H.Html Msg
 publicInfoEditing model user =
-  H.div 
+  H.div
     [ A.class "container-fluid" ]
     [ H.div
         [ A.class "profile__editing--public-info row" ]
@@ -91,7 +91,7 @@ publicInfoEditing model user =
     ]
 
 publicInfo : Model -> User -> H.Html Msg
-publicInfo model user = 
+publicInfo model user =
   H.div
     [ A.class "col-sm-6 profile__editing--public-info--box" ]
     [ H.h3 [A.class "profile__editing--public-info--header"] [H.text "Julkiset tiedot" ]
@@ -125,9 +125,9 @@ competences model user =
           H.div
             [ A.class "profile__editing--competences--heading col-md-6" ]
             [ H.h3
-            [ A.class "profile__editing--competences--heading--title" ] 
+            [ A.class "profile__editing--competences--heading--title" ]
             [ H.text "Muokkaa osaamistasi" ]
-        , H.p 
+        , H.p
             [ A.class "profile__editing--competences--heading--text" ]
             [ H.text "Osaamisesi on esitäytetty jäsentietojemme perusteella. Muokkaa ja täydennä tehtäviä ja toimialoja, jotta Tradenomiitti voi palvella sinua paremmin ja jotta muut tradenomit löytäisivät sinut helpommin. "
             , H.span [A.class "profile__editing--bold"] [ H.text "Osaaminen näkyy kaikille käyttäjille." ]
@@ -245,7 +245,7 @@ viewUser model user =
 
 userInfoBoxEditing2 : User -> H.Html Msg
 userInfoBoxEditing2 user =
-  H.div 
+  H.div
     [A.class "container"]
     [ H.div
         [A.class "row"]
@@ -254,7 +254,7 @@ userInfoBoxEditing2 user =
           [ H.span [ A.class "user-page__pic" ] [] ]
         , H.div [A.class "col-md-4" ]
           [ H.h4 [ A.class "user-page__name" ]
-            [ 
+            [
                   H.input [ A.placeholder "Miksi kutsumme sinua?"
                   , A.value user.name
                   , E.onInput ChangeNickname
@@ -262,7 +262,7 @@ userInfoBoxEditing2 user =
               ]
           , H.p
             [ A.class "user-page__work-details" ]
-            [ 
+            [
                 H.input
                 [ A.value user.primaryPosition
                 , E.on "change" (Json.map ChangeTitle E.targetValue)
@@ -272,7 +272,7 @@ userInfoBoxEditing2 user =
           ]
       ]
     ]
-  
+
 
 userInfoBoxEditing : Model -> User -> H.Html Msg
 userInfoBoxEditing model user =
