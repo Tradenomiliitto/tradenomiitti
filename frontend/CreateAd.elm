@@ -82,7 +82,11 @@ view model =
                 then
                   "Vielä vähintään " ++ toString (minHeading - String.length model.heading) ++ " merkkiä"
                 else
-                  "Enää korkeintaan " ++ toString (maxHeading - String.length model.heading) ++ " merkkiä"
+                  if String.length model.heading <= maxHeading
+                  then
+                    "Enää korkeintaan " ++ toString (maxHeading - String.length model.heading) ++ " merkkiä"
+                  else
+                    toString (String.length model.heading - maxHeading) ++ " merkkiä liian pitkä"
               ]
             , H.textarea
               [ A.placeholder "Kirjoita ytimekäs ilmoitus"
