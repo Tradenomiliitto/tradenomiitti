@@ -353,17 +353,23 @@ userDescription model user =
 location : Model -> User -> H.Html Msg
 location model user =
   H.div []
-    [ H.span [] [ H.i [ A.class "fa fa-map-marker" ] [] ]
-    , 
-        if model.editing
-          then
-            H.select
-              [ E.on "change" (Json.map ChangeLocation E.targetValue) ]
-              (List.map (\location -> (H.option [] [ H.text location ])) finnishRegions)
-          else
-            H.p [] [H.text user.location]
+    [ H.i [ A.class "fa fa-map-marker fa-2x" ] []
+    , H.span [] [H.text " "]
+    , if model.editing
+        then
+          H.select
+            [ E.on "change" (Json.map ChangeLocation E.targetValue) ]
+            (List.map (optionPreselected user.location) finnishRegions)
+        else
+          H.span [] [ H.text (user.location) ]
        
     ]
+optionPreselected : String -> String -> H.Html msg
+optionPreselected default value =
+  if default == value
+    then H.option [ A.selected True ] [ H.text value ]
+    else H.option [] [ H.text value ]
+
 
 userDomains : Model -> User -> H.Html Msg
 userDomains model user =
@@ -489,4 +495,19 @@ finnishRegions =
   , "Pohjois-Pohjanmaa"
   , "Kainuu"
   , "Pohjois-Karjala"
+  , "Pohjois-Savo"
+  , "Etelä-Savo"
+  , "Etelä-Karjala"
+  , "Keski-Suomi"
+  , "Etelä-Pohjanmaa"
+  , "Pohjanmaa"
+  , "Keski-Pohjanmaa"
+  , "Pirkanmaa"
+  , "Satakunta"
+  , "Päijät-Häme"
+  , "Kanta-Häme"
+  , "Kymenlaakso"
+  , "Uusimaa"
+  , "Varsinais-Suomi"
+  , "Ahvenanmaa"
   ]
