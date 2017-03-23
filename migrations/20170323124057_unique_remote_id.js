@@ -28,7 +28,7 @@ exports.down = function(knex, Promise) {
     }),
     knex.schema.alterTable('answers', function(table){
       table.dropForeign('ad_id');
-      table.foreign('user_id').references('id').inTable('ads');
+      table.foreign('ad_id').references('id').inTable('ads');
       table.dropForeign('user_id');
       table.foreign('user_id').references('id').inTable('users');
     })
