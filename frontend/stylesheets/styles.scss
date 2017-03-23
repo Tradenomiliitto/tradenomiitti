@@ -363,16 +363,23 @@ div#not-implemented {
   }
 
   $input-padding: 8px;
-  &__heading-input {
-    color: $pink;
-    @include gotham-bold;
-    & input {
-      padding: $input-padding;
-      width: 100%;
+  &__heading {
+    &-input {
+      color: $pink;
+      @include gotham-bold;
+      margin-bottom: 0;
+      & textarea {
+        padding: $input-padding;
+        width: 100%;
+      }
+    }
+    &-length-hint {
+      margin-bottom: 10px;
     }
   }
 
   &__textcontent {
+    margin-top: 10px;
     padding: $input-padding;
     width: 100%;
     min-height: 80px;
@@ -385,6 +392,9 @@ div#not-implemented {
   &__submit-button {
     text-align: right;
     margin-top: 40px;
+    & button {
+      @include button-colors;
+    }
   }
 
   &__fail,
@@ -491,6 +501,7 @@ div#not-implemented {
     margin-top: 0;
     text-align: center;
     &-button {
+      @include button-colors;
       margin-top: 30px;
       margin-bottom: 30px;
     }

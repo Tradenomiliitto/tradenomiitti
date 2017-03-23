@@ -1,5 +1,5 @@
 ---
-- hosts: [ dev ]
+- hosts: [ dev, qa, prod ]
   remote_user: ubuntu
   become: yes
   tasks:
@@ -15,12 +15,8 @@
 
     - name: install system dependencies
       apt: pkg={{item}} state=present
-      with_items: [ nginx, postgresql, nodejs, git, python-psycopg2 ]
+      with_items: [ postgresql, nodejs, git, python-psycopg2 ]
 
-
-    - name: ensure base services are running
-      service: name={{item}} state=started enabled=yes
-      with_items: [ nginx ]
 
     - name: install nginx basic auth password file
       template: src=passwd dest=/etc/nginx/passwd
@@ -43,6 +39,10 @@
       postgresql_db:
         name: tradenomiitti
         owner: "{{db_user}}"
+
+    - name: ensure base services are running
+      service: name={{item}} state=started enabled=yes
+      with_items: [ nginx, postgresql ]
 
 
     # Set up deployment by git push env master

@@ -45,6 +45,7 @@
     &-login {
       float: right;
       &-button {
+        @include button-colors;
         padding: 20px 42px;
       }
     }

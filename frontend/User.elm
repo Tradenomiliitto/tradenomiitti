@@ -63,7 +63,7 @@ view model =
   let
     profileInit = State.Profile.init
     profile = { profileInit | ads = model.ads }
-    views = (Debug.log "user" model.user)
+    views = model.user
       |> Maybe.map (\u ->  Profile.View.viewUser profile u)
       |> Maybe.withDefault []
 
