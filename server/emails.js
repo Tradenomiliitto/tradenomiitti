@@ -5,14 +5,28 @@ const colorsFilepath = __dirname + '/../frontend/stylesheets/colors.scss';
 const scssVars = scssToJson(colorsFilepath);
 
 module.exports = function init(params) {
-  const server = emailjs.server.connect(params.smtp);
 
   function send(user, ad) {
+    const server = emailjs.server.connect(params.smtp);
+    server.send({
+      from: 'TBD', // TODO
+      to: 'TBD', // TODO
+      text: 'Kirjaudu Tradenomiittiin nähdäksesi vastauksen',
+      subject: 'Ilmoitukseesi on vastattu',
+      attachment: [
+        { data: answerNotificationHtml(user, ad), alternative: true }
+      ]
+    }, (err, message) => {
+      console.log(err || message);
+    });
+  }
+
+  function answerNotificationHtml(user, ad) {
     return (
 `
 <html>
   <head></head>
-  <body style="text-align: center; width: 600px; font-family: Arial, sans-serif;">
+  <body style="text-align: center; width: 600px; font-family: Arial, sans-serif; margin-left: auto; margin-right: auto;">
     <svg
       style="fill: ${scssVars.$pink}; width: 43px; margin-top: 40px;"
       viewBox="0 0 30.982708 27.119791"
