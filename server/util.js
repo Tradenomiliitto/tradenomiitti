@@ -11,7 +11,7 @@ module.exports = function initialize(params) {
   }
 
   function formatUser(user) {
-    const formattedUser = user.data;
+    const formattedUser = {};
     formattedUser.id = user.id;
     const userData = user.data;
 
