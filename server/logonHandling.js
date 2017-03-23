@@ -69,6 +69,9 @@ module.exports = function initialize(params) {
             return res.redirect(req.query.path || '/');
           });
         })
+        // There is a race condition problem, where knex tries to insert same user more than once.
+        // remote_id is unique, so this won't happen, but it will throw an error which is caught here.
+        .catch(e => res.end());
     });
   }
 
