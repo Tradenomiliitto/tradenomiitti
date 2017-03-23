@@ -33,7 +33,7 @@ module.exports = function init(params) {
       <h2 style="color: ${scssVars.$pink};">${ad.heading}</h2>
       <p>${ad.content}</p>
     </div>
-    <p style="margin-top: 50px;">Etkö halua enää sähköposteja? Voit muokata sähköpostiasetuksia <a href="https://tradenomiitti.fi/profiili" style="text-decoration: none;">Profiili-sivulla</a>.</p>
+    <p style="margin-top: 50px;">Etkö halua enää sähköposteja? Voit muokata sähköpostiasetuksia <a href="https://tradenomiitti.fi/profiili" style="text-decoration: none; color: inherit; font-weight: bold;">Profiili-sivulla</a>.</p>
   </body>
 </html>
 `
