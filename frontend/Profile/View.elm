@@ -248,8 +248,8 @@ viewUser model user =
   ]
 
 
-userInfoBoxEditing2 : User -> H.Html Msg
-userInfoBoxEditing2 user =
+userInfoBoxEditing2 : Model -> User -> H.Html Msg
+userInfoBoxEditing2 model user =
   H.div
     [A.class "container"]
     [ H.div
@@ -274,6 +274,7 @@ userInfoBoxEditing2 user =
                 ]
                 []
             ]
+          , location model user
           ]
       ]
     ]
@@ -285,7 +286,7 @@ userInfoBoxEditing model user =
     [ A.class "col-md-6" ]
     [ H.div
       [ A.class "row" ]
-      [ userInfoBoxEditing2 user
+      [ userInfoBoxEditing2 model user
       ]
     , userDescription model user
     ]
@@ -353,16 +354,15 @@ location : Model -> User -> H.Html Msg
 location model user =
   H.div []
     [ H.span [] [ H.i [ A.class "fa fa-map-marker" ] [] ]
-    , H.span [] 
-      [
+    , 
         if model.editing
           then
             H.select
               [ E.on "change" (Json.map ChangeLocation E.targetValue) ]
               (List.map (\location -> (H.option [] [ H.text location ])) finnishRegions)
           else
-            H.text user.location
-      ] 
+            H.p [] [H.text user.location]
+       
     ]
 
 userDomains : Model -> User -> H.Html Msg
