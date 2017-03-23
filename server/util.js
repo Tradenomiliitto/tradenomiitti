@@ -29,7 +29,7 @@ module.exports = function initialize(params) {
     formattedUser.location = userData.location || "";
     formattedUser.profile_creation_consented = userData.profile_creation_consented || false;
 
-    return formattedUser;;
+    return formattedUser;
   }
 
   function formatUserNotLoggedIn(user){
