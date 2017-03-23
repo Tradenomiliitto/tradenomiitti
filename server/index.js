@@ -54,6 +54,21 @@ const util = require('./util')({ knex });
 const profile = require('./profile')({ knex, sebacon, util});
 const ads = require('./ads')({ util, knex });
 
+const smtpHost = process.env.SMTP_HOST;
+const smtpUser = process.env.SMTP_USER;
+const smtpPassword = process.env.SMTP_PASSWORD;
+const smtpTls = process.env.SMTP_TLS;
+if (!smtpHost || !smtpUser || !smtpPassword || !smtpTls) {
+  console.warn("You should have SMTP_* parameters in ENV");
+}
+const smtp =
+      { host: smtpHost,
+        user: smtpUser,
+        password: smtpPassword,
+        tls: smtpTls === 'true'
+      }
+const emails = require('./emails')({ smtp });
+
 const urlEncoded = bodyParser.urlencoded();
 const jsonParser = bodyParser.json();
 
@@ -80,6 +95,11 @@ app.get('/api/ilmoitukset', ads.listAds);
 app.get('/api/ilmoitukset/tradenomilta/:id', ads.adsForUser);
 app.post('/api/ilmoitukset/:id/vastaus', jsonParser, ads.createAnswer);
 
+app.get('/api/test-email-generation', (req, res) => {
+  util.userForSession(req).then(user => {
+    res.send(emails.send(util.formatUser(user)))
+  });
+});
 
 app.get('*', (req, res) => {
   res.sendFile('./index.html', {root: rootDir})

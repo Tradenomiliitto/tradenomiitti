@@ -32,6 +32,7 @@
     "cookie-session": "^2.0.0-alpha.3",
     "d3-timer": "^1.0.5",
     "elm": "^0.18.0",
+    "emailjs": "^1.0.8",
     "express": "^4.14.1",
     "font-awesome": "^4.7.0",
     "knex": "^0.12.6",
