@@ -9,7 +9,7 @@ module.exports = function init(params) {
   function send(user, ad) {
     const server = emailjs.server.connect(params.smtp);
     server.send({
-      from: 'TBD', // TODO
+      from: params.mailFrom,
       to: 'TBD', // TODO
       text: 'Kirjaudu Tradenomiittiin nähdäksesi vastauksen',
       subject: 'Ilmoitukseesi on vastattu',

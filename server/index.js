@@ -58,8 +58,9 @@ const smtpHost = process.env.SMTP_HOST;
 const smtpUser = process.env.SMTP_USER;
 const smtpPassword = process.env.SMTP_PASSWORD;
 const smtpTls = process.env.SMTP_TLS;
-if (!smtpHost || !smtpUser || !smtpPassword || !smtpTls) {
-  console.warn("You should have SMTP_* parameters in ENV");
+const mailFrom = process.env.MAIL_FROM;
+if (!smtpHost || !smtpUser || !smtpPassword || !smtpTls || !mailFrom) {
+  console.warn("You should have SMTP_* parameters and MAIL_FROM in ENV");
 }
 const smtp =
       { host: smtpHost,
@@ -67,7 +68,7 @@ const smtp =
         password: smtpPassword,
         tls: smtpTls === 'true'
       }
-const emails = require('./emails')({ smtp });
+const emails = require('./emails')({ smtp, mailFrom });
 
 const urlEncoded = bodyParser.urlencoded();
 const jsonParser = bodyParser.json();
