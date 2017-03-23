@@ -26,6 +26,7 @@ module.exports = function initialize(params) {
     formattedUser.title = userData.title || 'Ei titteliä';
     formattedUser.domains = userData.domains || [];
     formattedUser.positions = userData.positions || [];
+    formattedUser.location = userData.location || "";
     formattedUser.profile_creation_consented = userData.profile_creation_consented || false;
 
     return formattedUser;;

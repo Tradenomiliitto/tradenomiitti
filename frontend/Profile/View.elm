@@ -319,6 +319,7 @@ userInfoBox model user =
                 []
               else H.text user.primaryPosition
             ]
+          , location model user
           ]
         ]
       ]
@@ -341,6 +342,22 @@ userDescription model user =
         else
           H.text user.description
       ]
+    ]
+
+location : Model -> User -> H.Html Msg
+location model user =
+  H.div []
+    [ H.span [] [ H.i [ A.class "fa fa-map-marker" ] [] ]
+    , H.span [] 
+      [
+        if model.editing
+          then
+            H.select
+              [ E.on "change" (Json.map ChangeLocation E.targetValue) ]
+              (List.map (\location -> (H.option [] [ H.text location ])) finnishRegions)
+          else
+            H.text user.location
+      ] 
     ]
 
 userDomains : Model -> User -> H.Html Msg
@@ -460,3 +477,11 @@ membershipDataBoxEditing user =
         [ A.class "user-page__membership-info" ]
         [ H.h3 [ A.class "user-page__membership-info-heading" ] [ H.text "Jäsentiedot puuttuvat" ]
         ]
+
+finnishRegions : List String
+finnishRegions =
+  [ "Lappi"
+  , "Pohjois-Pohjanmaa"
+  , "Kainuu"
+  , "Pohjois-Karjala"
+  ]
