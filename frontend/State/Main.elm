@@ -4,10 +4,11 @@ import Nav exposing (..)
 import Navigation
 import State.Ad
 import State.CreateAd
-import State.ListAds
 import State.Home
+import State.ListAds
 import State.ListUsers
 import State.Profile as ProfileState
+import State.Settings
 import State.User
 
 
@@ -25,6 +26,7 @@ type alias Model =
   , listAds : State.ListAds.Model
   , ad : State.Ad.Model
   , home : State.Home.Model
+  , settings : State.Settings.Model
   }
 
 
@@ -43,4 +45,5 @@ initState location =
   , listAds = State.ListAds.init
   , ad = State.Ad.init
   , home = State.Home.init
+  , settings = State.Settings.init
   }

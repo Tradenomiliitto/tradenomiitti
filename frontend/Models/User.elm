@@ -12,6 +12,10 @@ type alias Extra =
   , positions : List String
   }
 
+type alias Settings =
+  { emails_for_answers : Bool
+  }
+
 type alias User =
   { id : Int
   , name : String
@@ -37,12 +41,18 @@ userDecoder =
 
 encode : User -> JS.Value
 encode user =
-  JS.object
+  JS.object <|
     [ ("name", JS.string user.name)
     , ("description", JS.string user.description)
     , ("title", JS.string user.primaryPosition)
     , ("domains", JS.list (List.map Skill.encode user.domains) )
     , ("positions", JS.list (List.map Skill.encode user.positions) )
+    ]
+
+settingsEncode : Settings -> JS.Value
+settingsEncode settings =
+  JS.object
+    [ ("emails_for_answers", JS.bool settings.emails_for_answers)
     ]
 
 userExtraDecoder : Json.Decoder Extra
@@ -52,3 +62,9 @@ userExtraDecoder =
     |> P.required "nick_name" Json.string
     |> P.required "domains" (Json.list Json.string)
     |> P.required "positions" (Json.list Json.string)
+
+
+settingsDecoder : Json.Decoder Settings
+settingsDecoder =
+  P.decode Settings
+    |> P.required "emails_for_answers" Json.bool

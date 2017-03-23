@@ -96,6 +96,10 @@ app.get('/api/ilmoitukset', ads.listAds);
 app.get('/api/ilmoitukset/tradenomilta/:id', ads.adsForUser);
 app.post('/api/ilmoitukset/:id/vastaus', jsonParser, ads.createAnswer);
 
+
+app.get('/api/asetukset', (req, res) => {
+  res.json({emails_for_answers: true});
+});
 app.get('/api/test-email-generation', (req, res) => {
   util.userForSession(req).then(user => {
     res.send(emails.send(util.formatUser(user), { heading: 'Ilmoituksen otsikko', content: 'ilmoituksen sisältö' , id: 1}))

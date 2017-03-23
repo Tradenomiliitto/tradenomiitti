@@ -4,10 +4,11 @@ import Ad
 import Http
 import Json.Decode as Json
 import Json.Encode as JS
-import Skill
 import Models.Ad
-import State.Profile exposing (Model)
 import Models.User exposing (User)
+import Skill
+import State.Profile exposing (Model)
+import Util
 
 
 type Msg
@@ -60,25 +61,13 @@ getPositionOptions =
 
 updateMe : User -> Cmd Msg
 updateMe user =
-  put "/api/profiilit/oma" (Models.User.encode user)
+  Util.put "/api/profiilit/oma" (Models.User.encode user)
     |> Http.send UpdateUser
 
 updateConsent : Cmd Msg
 updateConsent =
   Http.post "/api/profiilit/luo" Http.emptyBody (Json.succeed ())
     |> Http.send UpdateConsent
-
-put : String -> JS.Value -> Http.Request ()
-put url body =
-  Http.request
-    { method = "PUT"
-    , headers = []
-    , url = url
-    , body = Http.jsonBody body
-    , expect = Http.expectStringResponse (\_ -> Ok ())
-    , timeout = Nothing
-    , withCredentials = False
-    }
 
 updateSkillList : Int -> Skill.SkillLevel -> List Skill.Model -> List Skill.Model
 updateSkillList index skillLevel list =
