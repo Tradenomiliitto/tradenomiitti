@@ -66,7 +66,7 @@ module.exports = function initialize(params) {
       }).then(resp => {
         res.sendStatus(200);
       }).catch(err => {
-        console.error(err);
+        console.error('Error in /api/profiilit/luo', err);
         res.sendStatus(500);
       });
   }
