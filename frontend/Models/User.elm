@@ -43,7 +43,6 @@ encode user =
     , ("title", JS.string user.primaryPosition)
     , ("domains", JS.list (List.map Skill.encode user.domains) )
     , ("positions", JS.list (List.map Skill.encode user.positions) )
-    , ("profile_creation_consented", JS.bool user.profileCreated)
     ]
 
 userExtraDecoder : Json.Decoder Extra
