@@ -6,6 +6,7 @@ import Html.Events as E
 import Http
 import Models.User exposing (Settings)
 import State.Settings exposing (..)
+import State.Util exposing (SendingStatus(..))
 import Util
 
 type Msg
@@ -38,36 +39,38 @@ update msg model =
       model ! [] -- TODO error handling
 
     UpdateSettings (Ok _) ->
-      model ! []
+      { model | sending = FinishedSuccess "" } ! []
 
     UpdateSettings (Err _) ->
-      model ! [] -- TODO error handling
+      { model | sending = FinishedFail } ! [] -- TODO error handling
 
     ToggleEmailsForAnswers settings ->
       { model
-        | settings = Just
+        | sending = NotSending
+        , settings = Just
           { settings
             | emails_for_answers = not settings.emails_for_answers }} ! []
 
     ChangeEmailAddress settings str ->
       { model
-        | settings = Just
+        | sending = NotSending
+        , settings = Just
           { settings
             | email_address = str }} ! []
 
     Save settings ->
-      model ! [ updateSettings settings ]
+      { model | sending = Sending } ! [ updateSettings settings ]
 
 
 
 view : Model -> H.Html Msg
 view model =
   model.settings
-    |> Maybe.map viewSettings
+    |> Maybe.map (viewSettings model)
     |> Maybe.withDefault (H.div [] [])
 
-viewSettings : Settings -> H.Html Msg
-viewSettings settings =
+viewSettings : Model -> Settings -> H.Html Msg
+viewSettings model settings =
   H.div
     []
     [ H.h1 [] [ H.text "Asetukset" ]
@@ -108,4 +111,16 @@ viewSettings settings =
       , A.class "btn btn-default"
       ]
       [ H.text "Tallenna" ]
+    , H.p
+      []
+      [ H.text <| sendingToText model.sending ]
     ]
+
+
+sendingToText : SendingStatus -> String
+sendingToText sending =
+  case sending of
+    NotSending -> ""
+    Sending -> "Tallenetaan…"
+    FinishedSuccess _ -> "Tallennus onnistui"
+    FinishedFail -> "Tallenuksessa meni jotain pieleen"
