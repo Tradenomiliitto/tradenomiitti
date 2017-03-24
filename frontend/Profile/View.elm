@@ -367,15 +367,11 @@ userDomains model user =
     (if model.editing
       then
         [ H.select
-          [ E.on "change" (Json.map ChangeDomainSelect E.targetValue)] <|
+          [ E.on "change" (Json.map ChangeDomainSelect E.targetValue)
+          ] <|
             H.option [] [ H.text "Valitse toimiala"] :: List.map (\o -> H.option [] [ H.text o ]) model.domainOptions
-            , H.button
-              [ A.class "btn"
-              , E.onClick AddDomain
-              ]
-              [ H.text "Lisää toimiala"]
-              ]
-      else [])
+        ]
+     else [])
     )
 
 userPositions : Model -> User -> H.Html Msg
@@ -398,11 +394,6 @@ userPositions model user =
             [ H.select
               [ E.on "change" (Json.map ChangePositionSelect E.targetValue)] <|
               H.option [] [ H.text "Valitse tehtäväluokka"] :: List.map (\o -> H.option [] [ H.text o ]) model.positionOptions
-            , H.button
-            [ A.class "btn"
-            , E.onClick AddPosition
-            ]
-            [ H.text "Lisää tehtäväluokka"]
             ]
           else [])
     )
