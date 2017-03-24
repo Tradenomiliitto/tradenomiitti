@@ -5,6 +5,7 @@ import Json.Decode.Pipeline as P
 import Json.Encode as JS
 import Skill
 
+-- data in Extra comes from the api
 type alias Extra =
   { first_name : String
   , nick_name : String
@@ -20,6 +21,7 @@ type alias User =
   , domains : List Skill.Model
   , positions : List Skill.Model
   , profileCreated : Bool
+  , location : String
   , extra : Maybe Extra
   }
 
@@ -33,6 +35,7 @@ userDecoder =
     |> P.required "domains" (Json.list Skill.decoder)
     |> P.required "positions" (Json.list Skill.decoder)
     |> P.required "profile_creation_consented" Json.bool
+    |> P.required "location" Json.string
     |> P.optional "extra" (Json.map Just userExtraDecoder) Nothing
 
 encode : User -> JS.Value
@@ -44,6 +47,7 @@ encode user =
     , ("domains", JS.list (List.map Skill.encode user.domains) )
     , ("positions", JS.list (List.map Skill.encode user.positions) )
     , ("profile_creation_consented", JS.bool user.profileCreated)
+    , ("location", JS.string user.location)
     ]
 
 userExtraDecoder : Json.Decoder Extra

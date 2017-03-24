@@ -1,6 +1,5 @@
 module Profile.Main exposing (..)
 
-import Ad
 import Http
 import Json.Decode as Json
 import Json.Encode as JS
@@ -20,6 +19,7 @@ type Msg
   | PositionSkillMessage Int Skill.Msg
   | ChangeDomainSelect String
   | ChangePositionSelect String
+  | ChangeLocation String
   | GetDomainOptions (Result Http.Error (List String))
   | GetPositionOptions (Result Http.Error (List String))
   | ChangeTitle String
@@ -138,6 +138,9 @@ update msg model =
 
     ChangePositionSelect str ->
       updateUser (\u -> { u | positions = u.positions ++ [ Skill.Model str Skill.Interested ] }) model ! []
+
+    ChangeLocation str ->
+      updateUser (\u -> { u | location = str }) model ! []
 
     ChangeTitle str ->
       updateUser (\u -> { u | primaryPosition = str }) model ! []
