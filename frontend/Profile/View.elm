@@ -128,7 +128,7 @@ competences model user =
     [ H.div [ A.class "profile__editing--competences--row row" ]
         [
           H.div
-            [ A.class "profile__editing--competences--heading col-md-6" ]
+            [ A.class "profile__editing--competences--heading col-md-7" ]
             [ H.h3
             [ A.class "profile__editing--competences--heading--title" ]
             [ H.text "Muokkaa osaamistasi" ]
@@ -388,16 +388,9 @@ userDomains model user =
     ) ++
     (if model.editing
       then
-        [ H.select
-          [ E.on "change" (Json.map ChangeDomainSelect E.targetValue)] <|
-            H.option [] [ H.text "Valitse toimiala"] :: List.map (\o -> H.option [] [ H.text o ]) model.domainOptions
-            , H.button
-              [ A.class "btn"
-              , E.onClick AddDomain
-              ]
-              [ H.text "Lisää toimiala"]
-              ]
-      else [])
+        [ select model.domainOptions ChangeDomainSelect "Valitse toimiala" "Lisää toimiala, josta olet kiinnostunut tai sinulla on osaamista"
+        ]
+     else [])
     )
 
 userPositions : Model -> User -> H.Html Msg
@@ -417,17 +410,27 @@ userPositions model user =
         ) ++
         (if model.editing
           then
-            [ H.select
-              [ E.on "change" (Json.map ChangePositionSelect E.targetValue)] <|
-              H.option [] [ H.text "Valitse tehtäväluokka"] :: List.map (\o -> H.option [] [ H.text o ]) model.positionOptions
-            , H.button
-            [ A.class "btn"
-            , E.onClick AddPosition
-            ]
-            [ H.text "Lisää tehtäväluokka"]
+            [ select model.positionOptions ChangePositionSelect "Valitse tehtäväluokka" "Lisää tehtäväluokka, josta olet kiinnostunut tai sinulla on osaamista"
             ]
           else [])
     )
+
+select : List String -> (String -> msg) -> String -> String -> H.Html msg
+select options toEvent defaultOption heading =
+  H.div
+    []
+    [ H.label
+      [ A.class "user-page__competence-select-label" ]
+      [ H.text heading ]
+    , H.span
+      [ A.class "user-page__competence-select-container" ]
+      [ H.select
+        [ E.on "change" (Json.map toEvent E.targetValue)
+        , A.class "user-page__competence-select"
+        ] <|
+          H.option [] [ H.text defaultOption ] :: List.map (\o -> H.option [] [ H.text o ]) options
+      ]
+    ]
 
 membershipDataBox : User -> H.Html msg
 membershipDataBox user =
