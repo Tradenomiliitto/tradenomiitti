@@ -14,6 +14,7 @@ type alias Extra =
 
 type alias Settings =
   { emails_for_answers : Bool
+  , email_address : String
   }
 
 type alias User =
@@ -53,6 +54,7 @@ settingsEncode : Settings -> JS.Value
 settingsEncode settings =
   JS.object
     [ ("emails_for_answers", JS.bool settings.emails_for_answers)
+    , ("email_address", JS.string settings.email_address)
     ]
 
 userExtraDecoder : Json.Decoder Extra
@@ -68,3 +70,4 @@ settingsDecoder : Json.Decoder Settings
 settingsDecoder =
   P.decode Settings
     |> P.required "emails_for_answers" Json.bool
+    |> P.required "email_address" Json.string

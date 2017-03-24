@@ -98,8 +98,31 @@ app.post('/api/ilmoitukset/:id/vastaus', jsonParser, ads.createAnswer);
 
 
 app.get('/api/asetukset', (req, res) => {
-  res.json({emails_for_answers: true});
+  util.userForSession(req).then(dbUser => {
+    const settings = {};
+    const dbSettings = dbUser.settings || {};
+    settings.emails_for_answers = dbSettings.emails_for_answers || true;
+    settings.email_address = dbSettings.email_address || '';
+    res.json(settings);
+  }).catch(e => {
+    console.error('GET /api/asetukset', e);
+    res.sendStatus(500);
+  });
 });
+
+app.put('/api/asetukset', jsonParser, (req, res) => {
+  util.userForSession(req).then(dbUser => {
+    const newSettings = Object.assign({}, dbUser.settings, req.body);
+    return knex('users').where({ id: dbUser.id }).update('settings', newSettings);
+  }).then(resp => {
+    res.sendStatus(200);
+  }).catch(e => {
+    console.error('PUT /api/asetukset', e);
+    res.sendStatus(500);
+  });
+})
+
+
 app.get('/api/test-email-generation', (req, res) => {
   util.userForSession(req).then(user => {
     res.send(emails.send(util.formatUser(user), { heading: 'Ilmoituksen otsikko', content: 'ilmoituksen sisältö' , id: 1}))

@@ -12,6 +12,7 @@ type Msg
   = GetSettings (Result Http.Error Settings)
   | UpdateSettings (Result Http.Error ())
   | ToggleEmailsForAnswers Settings
+  | ChangeEmailAddress Settings String
   | Save Settings
 
 getSettings : Cmd Msg
@@ -48,6 +49,12 @@ update msg model =
           { settings
             | emails_for_answers = not settings.emails_for_answers }} ! []
 
+    ChangeEmailAddress settings str ->
+      { model
+        | settings = Just
+          { settings
+            | email_address = str }} ! []
+
     Save settings ->
       model ! [ updateSettings settings ]
 
@@ -63,18 +70,42 @@ viewSettings : Settings -> H.Html Msg
 viewSettings settings =
   H.div
     []
-    [ H.label
-        []
-        [ H.input
-          [ A.type_ "checkbox"
-          , E.onClick <| ToggleEmailsForAnswers settings
-          , A.checked settings.emails_for_answers
+    [ H.h1 [] [ H.text "Asetukset" ]
+    , H.form
+      [ ]
+      [ H.div
+        [ A.class "form-group"
+        ]
+        [ H.label
+          [ A.for "email-address"
+          ]
+          [ H.text "Sähköpostiosoite" ]
+        , H.input
+          [ A.type_ "text"
+          , A.class "form-control"
+          , A.id "email-address"
+          , A.value settings.email_address
+          , E.onInput (ChangeEmailAddress settings)
           ]
           []
-        , H.text "Lähetä ilmoitus sähköpostiin saapuneista vastauksista"
+        ]
+      ]
+      , H.div
+        [ A.class "checkbox" ]
+        [ H.label
+          []
+          [ H.input
+            [ A.type_ "checkbox"
+            , E.onClick <| ToggleEmailsForAnswers settings
+            , A.checked settings.emails_for_answers
+            ]
+            []
+          , H.text "Lähetä ilmoitus sähköpostiin saapuneista vastauksista"
+          ]
         ]
     , H.button
       [ E.onClick (Save settings)
+      , A.class "btn btn-default"
       ]
       [ H.text "Tallenna" ]
     ]
