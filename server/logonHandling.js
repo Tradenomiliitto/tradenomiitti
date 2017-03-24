@@ -54,8 +54,10 @@ module.exports = function initialize(params) {
                     profile_creation_consented: false
                   }
                 }, 'id') // postgres does not automatically return the id, ask for it explicitly
-            })
-              .then(insertResp => ({ id: insertResp[0] }))
+            }).then(insertResp => ({ id: insertResp[0] }))
+              //insert will fail if user with the remote_id is already created
+              .catch(e => knex('users').where({remote_id: remoteId})
+                .then(rows => rows[0]))
           } else {
             return resp[0];
           }
