@@ -172,7 +172,12 @@
   }
   &__location {
     &--marker {
-      margin-right: 10px;
+      margin-right: 5px;
+      width: 20px;
+    }
+    &--text {
+      position: relative;
+      top: 3px;
     }
   }
 }

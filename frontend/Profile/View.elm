@@ -353,14 +353,14 @@ userDescription model user =
 location : Model -> User -> H.Html Msg
 location model user =
   H.div [ A.class "profile__location" ]
-    [ H.i [ A.class "fa fa-map-marker fa-2x profile__location--marker" ] []
+    [ H.img [ A.class "profile__location--marker", A.src "/static/lokaatio.svg" ] []
     , if model.editing
         then
           H.select
             [ E.on "change" (Json.map ChangeLocation E.targetValue) ]
             (List.map (optionPreselected user.location) finnishRegions)
         else
-          H.span [] [ H.text (user.location) ]
+          H.span [A.class "profile__location--text"] [ H.text (user.location) ]
        
     ]
 optionPreselected : String -> String -> H.Html msg
