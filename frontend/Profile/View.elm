@@ -128,7 +128,7 @@ competences model user =
     [ H.div [ A.class "profile__editing--competences--row row" ]
         [
           H.div
-            [ A.class "profile__editing--competences--heading col-md-6" ]
+            [ A.class "profile__editing--competences--heading col-md-7" ]
             [ H.h3
             [ A.class "profile__editing--competences--heading--title" ]
             [ H.text "Muokkaa osaamistasi" ]
