@@ -95,7 +95,7 @@ update msg model =
             User userId ->
               if Just userId == Maybe.map .id model.profile.user
               then
-                { model | route = Profile } ! [ Navigation.newUrl (routeToPath Profile) ]
+                { model | route = Profile } ! [ Navigation.modifyUrl (routeToPath Profile) ]
               else
                 (modelWithRoute, Cmd.batch [ User.getUser userId, User.getAds userId ] |> Cmd.map UserMessage)
 
