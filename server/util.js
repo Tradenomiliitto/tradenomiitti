@@ -10,6 +10,10 @@ module.exports = function initialize(params) {
       .then(resp => resp[0]);
   }
 
+  function userById(id) {
+    return knex('users').where({ id }).then(resp => (resp[0]));
+  }
+
   function formatUser(user) {
     const formattedUser = {};
     formattedUser.id = user.id;
@@ -28,6 +32,7 @@ module.exports = function initialize(params) {
 
   return  {
     userForSession,
+    userById,
     formatUser
   };
 }

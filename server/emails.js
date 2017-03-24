@@ -6,15 +6,19 @@ const scssVars = scssToJson(colorsFilepath);
 
 module.exports = function init(params) {
 
-  function send(user, ad) {
+  function sendNotificationForAnswer(dbUser, ad) {
+    const { email_address, emails_for_answers } = dbUser.settings || {};
+    if (! (emails_for_answers && email_address && email_address.includes('@'))) {
+      return;
+    }
     const server = emailjs.server.connect(params.smtp);
     server.send({
       from: params.mailFrom,
-      to: 'TBD', // TODO
+      to: email_address,
       text: 'Kirjaudu Tradenomiittiin nähdäksesi vastauksen',
       subject: 'Ilmoitukseesi on vastattu',
       attachment: [
-        { data: answerNotificationHtml(user, ad), alternative: true,
+        { data: answerNotificationHtml(ad), alternative: true,
           related: [
             { path: `${__dirname}/../frontend/assets/tradenomiitti-tunnus-email.png`, type: 'image/png',
               headers: {"Content-ID":"<logo.png>"},
@@ -28,7 +32,7 @@ module.exports = function init(params) {
     });
   }
 
-  function answerNotificationHtml(user, ad) {
+  function answerNotificationHtml(ad) {
     return (
 `
 <html>
@@ -42,8 +46,8 @@ module.exports = function init(params) {
     </p>
     <h4 style="font-weight: bold; text-transform: uppercase; margin-top: 100px;">Ilmoituksesi</h4>
     <div style="width: 80%; background-color: ${scssVars['$light-grey-background']}; border-color: ${scssVars['$medium-grey']}; border-style: solid; border-width: 1px; padding: 30px; margin-left: auto; margin-right: auto;">
-      <h2 style="color: ${scssVars.$pink};">${ad.heading}</h2>
-      <p>${ad.content}</p>
+      <h2 style="color: ${scssVars.$pink};">${ad.data.heading}</h2>
+      <p>${ad.data.content}</p>
     </div>
     <p style="margin-top: 50px;">Etkö halua enää sähköposteja? Voit muokata sähköpostiasetuksiasi <a href="https://tradenomiitti.fi/asetukset" style="text-decoration: none; color: inherit; font-weight: bold;">Käyttäjätilin asetuksista</a>.</p>
   </body>
@@ -53,6 +57,6 @@ module.exports = function init(params) {
   }
 
   return {
-    send
+    sendNotificationForAnswer
   };
 }

@@ -49,11 +49,6 @@ const sebacon = require('./sebaconService')({
   customer: sebaconCustomer, user: sebaconUser,
   password: sebaconPassword, auth: sebaconAuth});
 
-const logon = require('./logonHandling')({ communicationsKey, knex, sebacon });
-const util = require('./util')({ knex });
-const profile = require('./profile')({ knex, sebacon, util});
-const ads = require('./ads')({ util, knex });
-
 const smtpHost = process.env.SMTP_HOST;
 const smtpUser = process.env.SMTP_USER;
 const smtpPassword = process.env.SMTP_PASSWORD;
@@ -69,6 +64,11 @@ const smtp =
         tls: smtpTls === 'true'
       }
 const emails = require('./emails')({ smtp, mailFrom });
+
+const logon = require('./logonHandling')({ communicationsKey, knex, sebacon });
+const util = require('./util')({ knex });
+const profile = require('./profile')({ knex, sebacon, util});
+const ads = require('./ads')({ util, knex, emails });
 
 const urlEncoded = bodyParser.urlencoded();
 const jsonParser = bodyParser.json();
@@ -121,13 +121,6 @@ app.put('/api/asetukset', jsonParser, (req, res) => {
     res.sendStatus(500);
   });
 })
-
-
-app.get('/api/test-email-generation', (req, res) => {
-  util.userForSession(req).then(user => {
-    res.send(emails.send(util.formatUser(user), { heading: 'Ilmoituksen otsikko', content: 'ilmoituksen sisältö' , id: 1}))
-  });
-});
 
 app.get('*', (req, res) => {
   res.sendFile('./index.html', {root: rootDir})
