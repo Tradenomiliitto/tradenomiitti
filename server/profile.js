@@ -25,7 +25,6 @@ module.exports = function initialize(params) {
           positions: positions,
           domains: domains
         }
-
         return res.json(user);
       })
       .catch((err) => {
@@ -42,10 +41,8 @@ module.exports = function initialize(params) {
 
     return util.userForSession(req)
       .then(user => {
-        return knex('users').where({ id: user.id }).first().then(user => {
-          const newData = Object.assign({}, user.data, req.body);
-          return knex('users').where({ id: user.id }).update('data', newData);
-        })
+        const newData = Object.assign({}, user.data, req.body);
+        return knex('users').where({ id: user.id }).update('data', newData);
       }).then(resp => {
         res.sendStatus(200);
       }).catch(err => {
