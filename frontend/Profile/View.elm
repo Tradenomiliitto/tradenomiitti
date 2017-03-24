@@ -366,10 +366,7 @@ userDomains model user =
     ) ++
     (if model.editing
       then
-        [ H.select
-          [ E.on "change" (Json.map ChangeDomainSelect E.targetValue)
-          ] <|
-            H.option [] [ H.text "Valitse toimiala"] :: List.map (\o -> H.option [] [ H.text o ]) model.domainOptions
+        [ select model.domainOptions ChangeDomainSelect "Valitse toimiala"
         ]
      else [])
     )
@@ -391,12 +388,22 @@ userPositions model user =
         ) ++
         (if model.editing
           then
-            [ H.select
-              [ E.on "change" (Json.map ChangePositionSelect E.targetValue)] <|
-              H.option [] [ H.text "Valitse tehtäväluokka"] :: List.map (\o -> H.option [] [ H.text o ]) model.positionOptions
+            [ select model.positionOptions ChangePositionSelect "Valitse tehtäväluokka"
             ]
           else [])
     )
+
+select : List String -> (String -> msg) -> String -> H.Html msg
+select options toEvent defaultOption =
+  H.span
+    [ A.class "user-page__competence-select-container" ]
+    [ H.select
+      [ E.on "change" (Json.map toEvent E.targetValue)
+      , A.class "user-page__competence-select"
+      ] <|
+        H.option [] [ H.text defaultOption ] :: List.map (\o -> H.option [] [ H.text o ]) options
+    ]
+
 
 membershipDataBox : User -> H.Html msg
 membershipDataBox user =
