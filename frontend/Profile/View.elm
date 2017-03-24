@@ -352,9 +352,8 @@ userDescription model user =
 
 location : Model -> User -> H.Html Msg
 location model user =
-  H.div []
-    [ H.i [ A.class "fa fa-map-marker fa-2x" ] []
-    , H.span [] [H.text " "]
+  H.div [ A.class "profile__location" ]
+    [ H.i [ A.class "fa fa-map-marker fa-2x profile__location--marker" ] []
     , if model.editing
         then
           H.select
@@ -491,7 +490,8 @@ membershipDataBoxEditing user =
 
 finnishRegions : List String
 finnishRegions =
-  [ "Lappi"
+  [ ""
+  , "Lappi"
   , "Pohjois-Pohjanmaa"
   , "Kainuu"
   , "Pohjois-Karjala"

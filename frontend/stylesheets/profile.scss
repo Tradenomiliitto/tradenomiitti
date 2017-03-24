@@ -170,4 +170,9 @@
     @include gotham-bold;
     text-transform: uppercase;
   }
+  &__location {
+    &--marker {
+      margin-right: 10px;
+    }
+  }
 }
