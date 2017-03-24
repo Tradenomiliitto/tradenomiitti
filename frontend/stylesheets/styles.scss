@@ -242,8 +242,6 @@ div#not-implemented {
 		border: 0;
 		border-radius: 3px;
 		appearance: none;
-    -webkit-appearance: none;
-		-moz-appearance: none;
     background-color: $white;
     color: $pink;
     @include gotham-bold;
