@@ -361,8 +361,9 @@ location model user =
             (List.map (optionPreselected user.location) finnishRegions)
         else
           H.span [A.class "profile__location--text"] [ H.text (user.location) ]
-       
     ]
+
+
 optionPreselected : String -> String -> H.Html msg
 optionPreselected default value =
   if default == value
