@@ -59,6 +59,7 @@ module.exports = function initialize(params) {
     return Promise.all([
       knex('ads').where({}),
       util.userForSession(req)
+        .catch(e => null)
     ]).then(([rows, user]) => Promise.all(rows.map(ad => formatAd(ad, user))))
       .then(ads => ads.sort(latestFirst))
       .then(ads => res.send(ads))

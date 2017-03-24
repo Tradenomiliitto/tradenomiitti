@@ -248,8 +248,8 @@ viewUser model user =
   ]
 
 
-userInfoBoxEditing2 : User -> H.Html Msg
-userInfoBoxEditing2 user =
+userInfoBoxEditing2 : Model -> User -> H.Html Msg
+userInfoBoxEditing2 model user =
   H.div
     [A.class "container"]
     [ H.div
@@ -274,6 +274,7 @@ userInfoBoxEditing2 user =
                 ]
                 []
             ]
+          , location model user
           ]
       ]
     ]
@@ -285,7 +286,7 @@ userInfoBoxEditing model user =
     [ A.class "col-md-6" ]
     [ H.div
       [ A.class "row" ]
-      [ userInfoBoxEditing2 user
+      [ userInfoBoxEditing2 model user
       ]
     , userDescription model user
     ]
@@ -324,6 +325,7 @@ userInfoBox model user =
                 []
               else H.text user.primaryPosition
             ]
+          , location model user
           ]
         ]
       ]
@@ -347,6 +349,26 @@ userDescription model user =
           H.text user.description
       ]
     ]
+
+location : Model -> User -> H.Html Msg
+location model user =
+  H.div [ A.class "profile__location" ]
+    [ H.img [ A.class "profile__location--marker", A.src "/static/lokaatio.svg" ] []
+    , if model.editing
+        then
+          H.select
+            [ E.on "change" (Json.map ChangeLocation E.targetValue) ]
+            (List.map (optionPreselected user.location) finnishRegions)
+        else
+          H.span [A.class "profile__location--text"] [ H.text (user.location) ]
+       
+    ]
+optionPreselected : String -> String -> H.Html msg
+optionPreselected default value =
+  if default == value
+    then H.option [ A.selected True ] [ H.text value ]
+    else H.option [] [ H.text value ]
+
 
 userDomains : Model -> User -> H.Html Msg
 userDomains model user =
@@ -465,3 +487,27 @@ membershipDataBoxEditing user =
         [ A.class "user-page__membership-info" ]
         [ H.h3 [ A.class "user-page__membership-info-heading" ] [ H.text "Jäsentiedot puuttuvat" ]
         ]
+
+finnishRegions : List String
+finnishRegions =
+  [ ""
+  , "Lappi"
+  , "Pohjois-Pohjanmaa"
+  , "Kainuu"
+  , "Pohjois-Karjala"
+  , "Pohjois-Savo"
+  , "Etelä-Savo"
+  , "Etelä-Karjala"
+  , "Keski-Suomi"
+  , "Etelä-Pohjanmaa"
+  , "Pohjanmaa"
+  , "Keski-Pohjanmaa"
+  , "Pirkanmaa"
+  , "Satakunta"
+  , "Päijät-Häme"
+  , "Kanta-Häme"
+  , "Kymenlaakso"
+  , "Uusimaa"
+  , "Varsinais-Suomi"
+  , "Ahvenanmaa"
+  ]
