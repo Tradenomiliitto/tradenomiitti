@@ -366,7 +366,7 @@ userDomains model user =
     ) ++
     (if model.editing
       then
-        [ select model.domainOptions ChangeDomainSelect "Valitse toimiala"
+        [ select model.domainOptions ChangeDomainSelect "Valitse toimiala" "Lisää toimiala, josta olet kiinnostunut tai sinulla on osaamista"
         ]
      else [])
     )
@@ -388,22 +388,27 @@ userPositions model user =
         ) ++
         (if model.editing
           then
-            [ select model.positionOptions ChangePositionSelect "Valitse tehtäväluokka"
+            [ select model.positionOptions ChangePositionSelect "Valitse tehtäväluokka" "Lisää tehtäväluokka, josta olet kiinnostunut tai sinulla on osaamista"
             ]
           else [])
     )
 
-select : List String -> (String -> msg) -> String -> H.Html msg
-select options toEvent defaultOption =
-  H.span
-    [ A.class "user-page__competence-select-container" ]
-    [ H.select
-      [ E.on "change" (Json.map toEvent E.targetValue)
-      , A.class "user-page__competence-select"
-      ] <|
-        H.option [] [ H.text defaultOption ] :: List.map (\o -> H.option [] [ H.text o ]) options
+select : List String -> (String -> msg) -> String -> String -> H.Html msg
+select options toEvent defaultOption heading =
+  H.div
+    []
+    [ H.label
+      [ A.class "user-page__competence-select-label" ]
+      [ H.text heading ]
+    , H.span
+      [ A.class "user-page__competence-select-container" ]
+      [ H.select
+        [ E.on "change" (Json.map toEvent E.targetValue)
+        , A.class "user-page__competence-select"
+        ] <|
+          H.option [] [ H.text defaultOption ] :: List.map (\o -> H.option [] [ H.text o ]) options
+      ]
     ]
-
 
 membershipDataBox : User -> H.Html msg
 membershipDataBox user =
