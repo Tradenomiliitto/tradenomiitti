@@ -143,6 +143,10 @@
       min-width: 16em;
       @include button-colors;
     }
+    &-settings-button {
+      min-width: 16em;
+      margin-right: 15px;
+    }
   }
   &__heading {
     @include gotham-bold;
