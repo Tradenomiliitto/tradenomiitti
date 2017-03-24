@@ -137,12 +137,18 @@ module.exports = function initialize(params) {
       .then(res => res.result.kutsumanimi || '');
   }
 
+  function getUserEmail(id) {
+    return getUser(id)
+      .then(res => res.result.email1 || res.result.email2 || '');
+  }
+
   return {
     getUserPositions,
     getUserFirstName,
     getUserNickName,
     getUserDomains,
     getUserEmploymentExtras,
+    getUserEmail,
     getPositionTitles,
     getDomainTitles
   }

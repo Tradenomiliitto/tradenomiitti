@@ -41,9 +41,10 @@ module.exports = function initialize(params) {
             return Promise.all([
               sebacon.getUserFirstName(remoteId),
               sebacon.getUserNickName(remoteId),
+              sebacon.getUserEmail(remoteId),
               sebacon.getUserPositions(remoteId),
               sebacon.getUserDomains(remoteId)
-            ]).then(([firstname, nickname, positions, domains]) => {
+            ]).then(([firstname, nickname, email, positions, domains]) => {
               return knex('users')
                 .insert({
                   remote_id: body.result.local_id,
@@ -52,8 +53,12 @@ module.exports = function initialize(params) {
                     domains: domains.map(d => ({ heading: d, skill_level: 1 })),
                     positions: positions.map(d => ({ heading: d, skill_level: 1 })),
                     profile_creation_consented: false
+                  },
+                  settings: {
+                    email_address: email,
+                    emails_for_answers: true
                   }
-                }, 'id') // postgres does not automatically return the id, ask for it explicitly
+                }, 'id'); // postgres does not automatically return the id, ask for it explicitly
             })
               .then(insertResp => ({ id: insertResp[0] }))
           } else {
