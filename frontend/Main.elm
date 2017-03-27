@@ -4,11 +4,12 @@ import Ad
 import Common
 import CreateAd
 import Footer
+import Home
 import Html as H
 import Html.Attributes as A
 import Html.Events as E
-import Home
 import Json.Decode as Json
+import Link exposing (..)
 import ListAds
 import ListUsers
 import LoginNeeded
@@ -18,10 +19,10 @@ import Navigation
 import PreformattedText
 import Profile.Main as Profile
 import Profile.View
+import Settings
 import State.Main exposing (..)
 import Static
 import User
-import Link exposing (..)
 
 type alias HtmlId = String
 port animation : (HtmlId, Bool) -> Cmd msg -- send True on splash screen, False otherwise
@@ -63,6 +64,7 @@ type Msg
   | ListUsersMessage ListUsers.Msg
   | AdMessage Ad.Msg
   | HomeMessage Home.Msg
+  | SettingsMessage Settings.Msg
 
 
 update : Msg -> Model -> (Model, Cmd Msg)
@@ -104,6 +106,9 @@ update msg model =
 
             LoginNeeded _ ->
               modelWithRoute ! [ animation ("login-needed-canvas", False) ]
+
+            Settings ->
+              modelWithRoute ! [ Cmd.map SettingsMessage Settings.initTasks ]
 
             newRoute ->
               (modelWithRoute, Cmd.none)
@@ -210,6 +215,12 @@ update msg model =
         (homeModel, cmd) = Home.update msg model.home
       in
         { model | home = homeModel } ! [ Cmd.map HomeMessage cmd ]
+
+    SettingsMessage msg ->
+      let
+        (settingsModel, cmd) = Settings.update msg model.settings
+      in
+        { model | settings = settingsModel } ! [ Cmd.map SettingsMessage cmd ]
 
 --SUBSCRIPTIONS
 
@@ -449,6 +460,8 @@ viewPage model =
           PreformattedText.view Static.termsHeading Static.termsTexts
         RegisterDescription ->
           PreformattedText.view Static.registerDescriptionHeading Static.registerDescriptionTexts
+        Settings ->
+          H.map SettingsMessage <| Settings.view model.settings
         route ->
           notImplementedYet
   in

@@ -2,6 +2,7 @@
 module.exports = function initialize(params) {
   const util = params.util;
   const knex = params.knex;
+  const emails = params.emails;
 
   //comparing function for two objects with createdAt datestring field. Latest will come first.
   function latestFirst(a, b) {
@@ -83,16 +84,25 @@ module.exports = function initialize(params) {
 
       const alreadyAnswered = answers.some(a => a.user_id === user.id)
       if (alreadyAnswered) return Promise.reject('User tried to answer several times');
-      return knex('answers').insert({
-        user_id: user.id,
-        ad_id,
-        data: req.body
-      }, 'id');
-    }).then(insertResp => res.json(`${insertResp[0]}`))
-      .catch(err => {
-        console.error('Error in /api/ilmoitukset/:id/vastaus', err);
-        res.sendStatus(500);
-      });
+      return Promise.all([
+        knex('answers').insert({
+          user_id: user.id,
+          ad_id,
+          data: req.body
+        }, 'id'),
+        util.userById(ad.user_id).then(dbUser => {
+          emails.sendNotificationForAnswer(dbUser, ad);
+        }).catch(e => {
+          console.error('Error sending email for answer', e);
+          return Promise.resolve(null); // don't crash on failing email
+        })
+      ]);
+    }).then(([ insertResp, emailResp ]) => {
+      res.json(`${insertResp[0]}`);
+    }).catch(err => {
+      console.error('Error in /api/ilmoitukset/:id/vastaus', err);
+      res.sendStatus(500);
+    });
   }
 
   function adsForUser(req, res) {

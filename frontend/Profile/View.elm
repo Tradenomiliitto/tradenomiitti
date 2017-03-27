@@ -150,7 +150,7 @@ competences model user =
 profileTopRow : Model -> RootState.Model -> H.Html (AppMessage Msg)
 profileTopRow model rootState =
   let
-    link =
+    logonLink =
       case model.user of
         Just _ ->
           H.a
@@ -175,6 +175,13 @@ profileTopRow model rootState =
             [ H.text (if model.editing then "Tallenna profiili" else "Muokkaa profiilia") ]
         Nothing ->
           H.div [] []
+
+    settingsButton =
+      H.button
+        [ A.class "btn btn-default profile__top-row-settings-button"
+        , E.onClick (Link Nav.Settings)
+        ]
+        [ H.text "Asetukset" ]
   in
     H.div
       [ A.classList
@@ -194,8 +201,9 @@ profileTopRow model rootState =
                 [ H.text "Oma profiili" ] ]
           , H.div
             [ A.class "col-xs-8 profile__buttons" ]
-            [ saveOrEdit
-            , link
+            [ settingsButton
+            , saveOrEdit
+            , logonLink
             ]
           ]
         ]

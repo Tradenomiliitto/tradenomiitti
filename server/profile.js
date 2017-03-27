@@ -25,7 +25,6 @@ module.exports = function initialize(params) {
           positions: positions,
           domains: domains
         }
-
         return res.json(user);
       })
       .catch((err) => {
@@ -42,7 +41,8 @@ module.exports = function initialize(params) {
 
     return util.userForSession(req)
       .then(user => {
-        return knex('users').where({ id: user.id }).update('data', req.body)
+        const newData = Object.assign({}, user.data, req.body);
+        return knex('users').where({ id: user.id }).update('data', newData);
       }).then(resp => {
         res.sendStatus(200);
       }).catch(err => {
@@ -66,7 +66,7 @@ module.exports = function initialize(params) {
       }).then(resp => {
         res.sendStatus(200);
       }).catch(err => {
-        console.error(err);
+        console.error('Error in /api/profiilit/luo', err);
         res.sendStatus(500);
       });
   }

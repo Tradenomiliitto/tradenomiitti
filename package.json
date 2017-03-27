@@ -33,6 +33,7 @@
     "cookie-session": "^2.0.0-alpha.3",
     "d3-timer": "^1.0.5",
     "elm": "^0.18.0",
+    "emailjs": "^1.0.8",
     "express": "^4.14.1",
     "font-awesome": "^4.7.0",
     "knex": "^0.12.6",
@@ -41,6 +42,7 @@
     "postcss-cli": "^3.0.0",
     "request": "^2.79.0",
     "request-promise-native": "^1.0.3",
+    "scss-to-json": "^1.1.0",
     "smoothscroll-polyfill": "^0.3.4",
     "sqlite3": "^3.1.8",
     "uuid": "^3.0.1"

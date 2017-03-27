@@ -10,6 +10,10 @@ module.exports = function initialize(params) {
       .then(resp => resp[0]);
   }
 
+  function userById(id) {
+    return knex('users').where({ id }).then(resp => (resp[0]));
+  }
+
   //formats given user as json, giving only fields that current user is allowed to see
   function formatUserSafe(req, user) {
     return userForSession(req)
@@ -18,7 +22,7 @@ module.exports = function initialize(params) {
   } 
 
   function formatUser(user) {
-    const formattedUser = user.data;
+    const formattedUser = {};
     formattedUser.id = user.id;
     const userData = user.data;
     formattedUser.name = userData.name || '';
@@ -40,6 +44,7 @@ module.exports = function initialize(params) {
 
   return  {
     userForSession,
+    userById,
     formatUser,
     formatUserSafe
   };
