@@ -18,7 +18,7 @@ module.exports = function initialize(params) {
         ])
       })
       .then(([ firstname, nickname, { positions, domains }, databaseUser ]) => {
-        const user = util.formatUser(databaseUser);
+        const user = util.formatUser(databaseUser, true);
         user.extra = {
           first_name: firstname,
           nick_name: nickname,
@@ -72,9 +72,9 @@ module.exports = function initialize(params) {
   }
 
   function listProfiles(req, res) {
-    return knex('users').where({})
-      .then(resp => {
-        return resp.map(user => util.formatUser(user));
+    return Promise.all([ knex('users').where({}), util.loggedIn(req) ])
+      .then(([resp, loggedIn]) => {
+        return resp.map(user => util.formatUser(user, loggedIn));
       }).then(users => res.json(users))
       .catch(err => {
         console.error(err);
@@ -83,8 +83,8 @@ module.exports = function initialize(params) {
   }
 
   function getProfile(req, res) {
-    return knex('users').where('id', req.params.id).first()
-      .then(user => util.formatUserSafe(req, user))
+    return Promise.all([ knex('users').where('id', req.params.id).first(), util.loggedIn(req)])
+      .then(([ user, loggedIn ]) => util.formatUser(user, loggedIn))
       .then(user => res.json(user))
       .catch(err => {
         return res.sendStatus(404)
