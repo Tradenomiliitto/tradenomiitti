@@ -1,8 +1,16 @@
 .svg {
   &__user-pic {
-    fill: none;
-    stroke: $white;
-    stroke-width: 6;
-    stroke-miterlimit: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+
+    & > svg {
+      fill: none;
+      stroke: $white;
+      stroke-width: 6;
+      stroke-miterlimit: 10;
+      width: 50%;
+    }
   }
 }
