@@ -104,16 +104,7 @@ viewAd adId model userMaybe rootUrl ad =
           , H.h3 [ A.class "user-page__activity-item-heading" ] [ H.text ad.heading ]
           , H.p [ A.class "user-page__activity-item-content" ]  [ H.text ad.content ]
           , H.hr [] []
-          , H.div
-            []
-            [ H.span [ A.class "user-page__activity-item-profile-pic" ] []
-            , H.span
-              [ A.class "user-page__activity-item-profile-info" ]
-              [ H.span [ A.class "user-page__activity-item-profile-name"] [ H.text ad.createdBy.name ]
-              , H.br [] []
-              , H.span [ A.class "user-page__activity-item-profile-title"] [ H.text ad.createdBy.primaryPosition ]
-              ]
-            ]
+          , Common.authorInfo ad.createdBy
           ]
         , leaveAnswer <|
           if model.addingAnswer

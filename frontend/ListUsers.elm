@@ -66,7 +66,7 @@ viewUser user =
     ]
     [ H.div
       [ A.class "user-card" ]
-      [ Common.authorInfo user
+      [ Common.authorInfoWithLocation user
       , H.hr [] []
       , H.p [] [ H.text user.description ]
       ]
