@@ -26,6 +26,7 @@ import Link exposing (..)
 type alias HtmlId = String
 port animation : (HtmlId, Bool) -> Cmd msg -- send True on splash screen, False otherwise
 port scrollTop : Bool -> Cmd msg
+port imageUpload : Bool -> Cmd msg
 
 
 main : Program Never Model Msg
@@ -46,7 +47,7 @@ init location =
     urlCmd = Navigation.modifyUrl (routeToPath (parseLocation location))
     profileCmd = Cmd.map ProfileMessage Profile.getMe
   in
-    model ! [ urlCmd, profileCmd ]
+    model ! [ urlCmd, profileCmd, imageUpload True ] -- TODO
 
 
 -- UPDATE

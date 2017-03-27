@@ -1,0 +1,39 @@
+.image-upload {
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background-color: rgba(50, 50, 50, 0.6);
+  z-index: 9342;
+  display: none;
+  &--active {
+    display: initial;
+  }
+
+  &__content {
+    background-color: $white;
+    border-radius: 15px;
+    min-height: 50vh;
+    max-height: 90vh;
+    margin-top: 10vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &__close-button {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    cursor: pointer;
+  }
+
+  &__file {
+    &-label {
+    }
+    &-input {
+      display: none !important;
+    }
+  }
+}
