@@ -65,13 +65,29 @@ encode user =
     , ("domains", JS.list (List.map Skill.encode user.domains) )
     , ("positions", JS.list (List.map Skill.encode user.positions) )
     , ("location", JS.string user.location)
-    ]
+    ] ++ (
+         user.pictureEditingDetails
+           |> Maybe.map (\details ->
+                          [ ("picture_editing", pictureEditingEncode details) ]
+                       )
+           |> Maybe.withDefault []
+        )
 
 settingsEncode : Settings -> JS.Value
 settingsEncode settings =
   JS.object
     [ ("emails_for_answers", JS.bool settings.emails_for_answers)
     , ("email_address", JS.string settings.email_address)
+    ]
+
+pictureEditingEncode : PictureEditing -> JS.Value
+pictureEditingEncode details =
+  JS.object
+    [ ("url", JS.string details.pictureUrl)
+    , ("x", JS.float details.x)
+    , ("y", JS.float details.y)
+    , ("width", JS.float details.width)
+    , ("height", JS.float details.height)
     ]
 
 userExtraDecoder : Json.Decoder Extra

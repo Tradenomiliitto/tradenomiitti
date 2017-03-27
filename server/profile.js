@@ -30,6 +30,9 @@ module.exports = function initialize(params) {
           positions: positions,
           domains: domains
         }
+        if (databaseUser.data.picture_editing)
+          user.picture_editing = databaseUser.data.picture_editing;
+
         return res.json(user);
       })
       .catch((err) => {

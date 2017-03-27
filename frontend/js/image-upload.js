@@ -1,16 +1,16 @@
 import Cropper from 'cropperjs';
 
-let details = {};
+let details;
 
 export default function initImageUpload(elm2js, js2elm) {
   elm2js.subscribe((detailsIn) => {
-    details = detailsIn;
+    details = detailsIn || {};
     const container = document.getElementById('image-upload');
     container.classList.add('image-upload--active')
     const imageInput =
           `<label for="image-input" class="image-upload__file-label btn btn-primary btn-lg">Lataa kuva</label>
       <input id="image-input" class="image-upload__file-input" type="file" onChange="imageUploadInit();"></input>` ;
-    if (details) {
+    if (details.pictureUrl) {
       initEditor(details.pictureUrl, details);
     } else {
       container.innerHTML = containerHtml(imageInput);
@@ -22,7 +22,7 @@ export default function initImageUpload(elm2js, js2elm) {
       const cropperDiv = `<div>${imgTag}</div>`;
       const editor = `${cropperDiv}
 <div>
-  <button onClick="imageUploadSave();" class="pull-right btn btn-primary" style="margin-right: 25px;">Tallenna</button>
+  <button onClick="imageUploadSave();" class="pull-right btn btn-primary" style="margin-right: 25px;">Valmis</button>
 </div>
 `;
       container.innerHTML = containerHtml(editor);
@@ -45,6 +45,7 @@ export default function initImageUpload(elm2js, js2elm) {
 
     window.imageUploadSave = () => {
       js2elm.send(details);
+      container.classList.remove('image-upload--active')
     };
 
     window.imageUploadClose = () => {
@@ -60,6 +61,7 @@ export default function initImageUpload(elm2js, js2elm) {
       request.onreadystatechange = () => {
         if (request.readyState === XMLHttpRequest.DONE) {
           const fileName = request.responseText;
+          details.pictureUrl = fileName;
           const data = {};
           initEditor(fileName, data);
         }

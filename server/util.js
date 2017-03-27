@@ -33,13 +33,6 @@ module.exports = function initialize(params) {
     formattedUser.location = userData.location || "";
     formattedUser.profile_creation_consented = userData.profile_creation_consented || false;
     formattedUser.croppedPicture = '';
-    formattedUser.picture_editing = {
-      url: '540784ce5f668315423b569afea17dc321af2439.jpg',
-      x: 10,
-      y: 10,
-      width: 300,
-      height: 300
-    }
 
     return formattedUser;
   }
