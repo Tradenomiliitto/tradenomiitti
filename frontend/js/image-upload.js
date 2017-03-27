@@ -2,14 +2,15 @@ import Cropper from 'cropperjs';
 
 let details;
 
+const imageInput =
+      `<label for="image-input" class="image-upload__file-label btn btn-primary btn-lg">Lataa kuva</label>
+      <input id="image-input" class="image-upload__file-input" type="file" onChange="imageUploadInit();"></input>` ;
+
 export default function initImageUpload(elm2js, js2elm) {
   elm2js.subscribe((detailsIn) => {
     details = detailsIn || {};
     const container = document.getElementById('image-upload');
     container.classList.add('image-upload--active')
-    const imageInput =
-          `<label for="image-input" class="image-upload__file-label btn btn-primary btn-lg">Lataa kuva</label>
-      <input id="image-input" class="image-upload__file-input" type="file" onChange="imageUploadInit();"></input>` ;
     if (details.pictureUrl) {
       initEditor(details.pictureUrl, details);
     } else {
@@ -51,14 +52,15 @@ export default function initImageUpload(elm2js, js2elm) {
     };
 
     window.imageUploadRemove = () => {
-      js2elm.send({
-        url: '',
+      details = {
+        pictureUrl: '',
         x: 0,
         y: 0,
         width: 0,
         height: 0
-      });
-      container.classList.remove('image-upload--active')
+      };
+      js2elm.send(details);
+      container.innerHTML = containerHtml(imageInput);
     };
 
     window.imageUploadCancel = () => {
