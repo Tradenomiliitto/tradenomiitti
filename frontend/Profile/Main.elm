@@ -29,12 +29,18 @@ type Msg
   | UpdateUser (Result Http.Error ())
   | UpdateConsent (Result Http.Error ())
   | ChangeImage User
+  | ImageSave PictureEditing
   | MouseEnterProfilePic
   | MouseLeaveProfilePic
   | NoOp
 
 
 port imageUpload : Maybe PictureEditing -> Cmd msg
+port imageSave : (PictureEditing -> msg) -> Sub msg
+
+subscriptions : Sub Msg
+subscriptions =
+  imageSave ImageSave
 
 getMe : Cmd Msg
 getMe =
@@ -177,6 +183,12 @@ update msg model =
 
     ChangeImage user ->
       model ! [ imageUpload user.pictureEditingDetails ]
+
+    ImageSave editingDetails ->
+      let
+        _ = Debug.log "got" editingDetails
+      in
+        model ! []
 
     MouseEnterProfilePic ->
       { model | mouseOverUserImage = True } ! []

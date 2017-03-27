@@ -1,7 +1,10 @@
 import Cropper from 'cropperjs';
 
+let details = {};
+
 export default function initImageUpload(elm2js, js2elm) {
-  elm2js.subscribe((details) => {
+  elm2js.subscribe((detailsIn) => {
+    details = detailsIn;
     const container = document.getElementById('image-upload');
     container.classList.add('image-upload--active')
     const imageInput =
@@ -16,7 +19,12 @@ export default function initImageUpload(elm2js, js2elm) {
 
     function initEditor(fileName, data) {
       const imgTag = `<img src="/static/images/${fileName}" id="image-editor-image" class="image-upload__img" />`;
-      const editor = `<div>${imgTag}</div>`;
+      const cropperDiv = `<div>${imgTag}</div>`;
+      const editor = `${cropperDiv}
+<div>
+  <button onClick="imageUploadSave();" class="pull-right btn btn-primary" style="margin-right: 25px;">Tallenna</button>
+</div>
+`;
       container.innerHTML = containerHtml(editor);
       const imgElement = document.getElementById('image-editor-image')
       const cropper = new Cropper(imgElement, {
@@ -27,13 +35,18 @@ export default function initImageUpload(elm2js, js2elm) {
         rotatable: false,
         data,
         crop: function(e) {
-          console.log(e.detail.x);
-          console.log(e.detail.y);
-          console.log(e.detail.width);
-          console.log(e.detail.height);
+          details.x = e.detail.x;
+          details.y = e.detail.y;
+          details.width = e.detail.width;
+          details.height = e.detail.height;
         }
       });
     }
+
+    window.imageUploadSave = () => {
+      js2elm.send(details);
+    };
+
     window.imageUploadClose = () => {
       container.classList.remove('image-upload--active');
     };

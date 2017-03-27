@@ -226,7 +226,7 @@ update msg model =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-  Sub.none
+  Sub.map ProfileMessage Profile.subscriptions
 
 -- VIEW
 

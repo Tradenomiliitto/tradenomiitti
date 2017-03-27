@@ -15,10 +15,10 @@ type alias Extra =
 
 type alias PictureEditing =
   { pictureUrl : String
-  , x : Int
-  , y : Int
-  , width : Int
-  , height : Int
+  , x : Float
+  , y : Float
+  , width : Float
+  , height : Float
   }
 
 type alias Settings =
@@ -86,10 +86,10 @@ pictureEditingDecoder : Json.Decoder PictureEditing
 pictureEditingDecoder =
   P.decode PictureEditing
     |> P.required "url" Json.string
-    |> P.required "x" Json.int
-    |> P.required "y" Json.int
-    |> P.required "width" Json.int
-    |> P.required "height" Json.int
+    |> P.required "x" Json.float
+    |> P.required "y" Json.float
+    |> P.required "width" Json.float
+    |> P.required "height" Json.float
 
 
 settingsDecoder : Json.Decoder Settings
