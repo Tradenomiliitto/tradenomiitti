@@ -92,7 +92,7 @@ publicInfoEditing model user =
     [ H.div
         [ A.class "profile__editing--public-info row" ]
         [ publicInfo model user
-        , businessCard ]
+        , businessCard user ]
     ]
 
 publicInfo : Model -> User -> H.Html Msg
@@ -104,14 +104,41 @@ publicInfo model user =
     , userInfoBoxEditing model user ]
 
 
-businessCard : H.Html msg
-businessCard =
+businessCard : User -> H.Html msg
+businessCard user =
   H.div
     [ A.class "col-sm-6 profile__editing--public-info--box" ]
     [ H.h3 [A.class "profile__editing--public-info--header"] [H.text "käyntikortti" ]
     , H.p [A.class "profile__editing--public-info--text"] [ H.text "Täydennä alle tiedot, jotka haluat lähettää käyntikortin mukana. "
     , H.span [ A.class "profile__editing--bold" ] [ H.text "Tiedot näkyvät vain niille, joille olet lähettänyt kortin" ]
      ]
+    , businessCardData user
+    ]
+
+businessCardData : User -> H.Html msg
+businessCardData user =
+  H.div
+    [ A.class "profile__business-card" ]
+    [ H.div 
+      [ A.class "profile__business-card--data"] 
+      [ H.span [ A.class "user-page__pic" ] []
+      , H.div
+          [ A.class "inline profile__business-card--data--name-work" ]
+          [ H.h4  []
+            [ H.input [ A.placeholder "Koko nimi" ] []
+            ]
+          , H.h5 []
+            [ H.input [ A.placeholder "Titteli, Työpaikka"] [] ]
+          ]
+      ]
+    , H.div [ A.class "profile__business-card--data--contact"]
+        [ H.p [] [H.input [A.placeholder "Paikkakunta" ] []]
+        , H.hr [] []
+        , H.p [] [H.input [A.placeholder "Puhelinnumero" ] []]
+        , H.hr [] []
+        , H.p [] [H.input [A.placeholder "Sähköposti" ] []] 
+        , H.hr [] []
+        ]
     ]
 
 showProfileView : Model -> RootState.Model ->  H.Html (AppMessage Msg)
