@@ -13,6 +13,14 @@ type alias Extra =
   , positions : List String
   }
 
+type alias PictureEditing =
+  { pictureUrl : String
+  , x : Int
+  , y : Int
+  , width : Int
+  , height : Int
+  }
+
 type alias User =
   { id : Int
   , name : String
@@ -22,6 +30,8 @@ type alias User =
   , positions : List Skill.Model
   , profileCreated : Bool
   , location : String
+  , croppedPictureUrl : Maybe String -- this is for every logged in user
+  , pictureEditingDetails : Maybe PictureEditing
   , extra : Maybe Extra
   }
 
@@ -36,6 +46,9 @@ userDecoder =
     |> P.required "positions" (Json.list Skill.decoder)
     |> P.required "profile_creation_consented" Json.bool
     |> P.required "location" Json.string
+    |> P.required "croppedPicture" (Json.string |> Json.map
+                                     (\str -> if String.length str == 0 then Nothing else Just str))
+    |> P.optional "picture_editing" (Json.map Just pictureEditingDecoder) Nothing
     |> P.optional "extra" (Json.map Just userExtraDecoder) Nothing
 
 encode : User -> JS.Value
@@ -57,3 +70,12 @@ userExtraDecoder =
     |> P.required "nick_name" Json.string
     |> P.required "domains" (Json.list Json.string)
     |> P.required "positions" (Json.list Json.string)
+
+pictureEditingDecoder : Json.Decoder PictureEditing
+pictureEditingDecoder =
+  P.decode PictureEditing
+    |> P.required "url" Json.string
+    |> P.required "x" Json.int
+    |> P.required "y" Json.int
+    |> P.required "width" Json.int
+    |> P.required "height" Json.int

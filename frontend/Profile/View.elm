@@ -6,12 +6,13 @@ import Html.Events as E
 import Json.Decode as Json
 import Link exposing (AppMessage(..))
 import ListAds
+import Models.User exposing (User)
 import Nav
 import Profile.Main exposing (Msg(..))
 import Skill
 import State.Main as RootState
 import State.Profile exposing (Model)
-import Models.User exposing (User)
+import SvgIcons
 
 view : Model -> RootState.Model -> H.Html (AppMessage Msg)
 view model rootState =
@@ -259,7 +260,16 @@ userInfoBoxEditing2 model user =
             [ A.class "user-page__pic"
             , E.onClick ChangeImage
             ]
-            []
+            [ user.croppedPictureUrl
+            |> Maybe.map (\url ->
+                           H.img
+                           [ A.src url
+                           ]
+                           []
+                        )
+            |> Maybe.withDefault
+              SvgIcons.userPicPlaceHolder
+            ]
           ]
         , H.div [A.class "col-md-4" ]
           [ H.h4 [ A.class "user-page__name" ]
