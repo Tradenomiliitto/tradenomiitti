@@ -21,6 +21,11 @@ type alias PictureEditing =
   , height : Int
   }
 
+type alias Settings =
+  { emails_for_answers : Bool
+  , email_address : String
+  }
+
 type alias User =
   { id : Int
   , name : String
@@ -53,14 +58,20 @@ userDecoder =
 
 encode : User -> JS.Value
 encode user =
-  JS.object
+  JS.object <|
     [ ("name", JS.string user.name)
     , ("description", JS.string user.description)
     , ("title", JS.string user.primaryPosition)
     , ("domains", JS.list (List.map Skill.encode user.domains) )
     , ("positions", JS.list (List.map Skill.encode user.positions) )
-    , ("profile_creation_consented", JS.bool user.profileCreated)
     , ("location", JS.string user.location)
+    ]
+
+settingsEncode : Settings -> JS.Value
+settingsEncode settings =
+  JS.object
+    [ ("emails_for_answers", JS.bool settings.emails_for_answers)
+    , ("email_address", JS.string settings.email_address)
     ]
 
 userExtraDecoder : Json.Decoder Extra
@@ -79,3 +90,10 @@ pictureEditingDecoder =
     |> P.required "y" Json.int
     |> P.required "width" Json.int
     |> P.required "height" Json.int
+
+
+settingsDecoder : Json.Decoder Settings
+settingsDecoder =
+  P.decode Settings
+    |> P.required "emails_for_answers" Json.bool
+    |> P.required "email_address" Json.string

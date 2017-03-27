@@ -17,6 +17,7 @@ type Route
   | LoginNeeded (Maybe String)
   | Terms
   | RegisterDescription
+  | Settings
 
 routeToPath : Route -> String
 routeToPath route =
@@ -45,6 +46,8 @@ routeToPath route =
       "/kayttoehdot"
     RegisterDescription ->
       "/rekisteriseloste"
+    Settings ->
+      "/asetukset"
 
 routeToString : Route -> String
 routeToString route =
@@ -73,6 +76,8 @@ routeToString route =
       "Palvelun käyttöehdot"
     RegisterDescription ->
       "Rekisteriseloste"
+    Settings ->
+      "Asetukset"
 
 parseLocation : Navigation.Location -> Route
 parseLocation location =
@@ -96,6 +101,7 @@ routeParser =
     , U.map LoginNeeded (U.s "kirjautuminen-tarvitaan" <?> (U.stringParam "seuraava"))
     , U.map Terms (U.s "kayttoehdot")
     , U.map RegisterDescription (U.s "rekisteriseloste")
+    , U.map Settings (U.s "asetukset")
     ]
 
 ssoUrl : String -> Maybe String -> String

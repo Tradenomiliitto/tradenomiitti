@@ -2,31 +2,33 @@
 module.exports = function initialize(params) {
   const util = params.util;
   const knex = params.knex;
+  const emails = params.emails;
 
-  //comparing function for two objects with createdAt datestring field. Latest will come first.
+  //comparing function for two objects with created_at datestring field. Latest will come first.
   function latestFirst(a, b) {
     const date1 = new Date(a.created_at);
     const date2 = new Date(b.created_at);
     return date2 - date1;
   }
 
-  function formatAd(ad, user) {
+  function formatAd(ad, loggedIn){
     return Promise.all([
       knex('answers').where({ad_id: ad.id})
-        .then(answers => Promise.all(answers.map(formatAnswer))),
+        .then(answers => Promise.all(answers.map(answer => formatAnswer(answer, loggedIn)))),
       knex('users').where({id: ad.user_id}).then(rows => rows[0])
     ]).then(function ([answers, askingUser]) {
-      ad.created_by = util.formatUser(askingUser);
-      ad.answers = user ? answers : answers.length;
+      ad.created_by = util.formatUser(askingUser, loggedIn);
+      ad.answers = loggedIn ? answers : answers.length;
       return ad;
     })
   }
 
-  function formatAnswer(answer) {
+
+  function formatAnswer(answer, loggedIn) {
     return knex('users').where({ id: answer.user_id })
       .then(rows => rows[0])
       .then(function(user) {
-        answer.created_by = util.formatUser(user);
+        answer.created_by = util.formatUser(user, loggedIn);
         answer.data.content = answer.data.content || '';
         return answer;
       })
@@ -49,8 +51,8 @@ module.exports = function initialize(params) {
   function getAd(req, res) {
     return Promise.all([
       knex('ads').where({id: req.params.id}).first(),
-      util.userForSession(req)
-    ]).then(([ad, user]) => formatAd(ad, user))
+      util.loggedIn(req)
+    ]).then(([ad, loggedIn]) => formatAd(ad, loggedIn))
       .then(ad => res.send(ad))
       .catch(e => { console.error(e); res.sendStatus(404) });
   }
@@ -58,9 +60,8 @@ module.exports = function initialize(params) {
   function listAds(req, res) {
     return Promise.all([
       knex('ads').where({}),
-      util.userForSession(req)
-        .catch(e => null)
-    ]).then(([rows, user]) => Promise.all(rows.map(ad => formatAd(ad, user))))
+      util.loggedIn(req)
+    ]).then(([rows, loggedIn]) => Promise.all(rows.map(ad => formatAd(ad, loggedIn))))
       .then(ads => ads.sort(latestFirst))
       .then(ads => res.send(ads))
   }
@@ -83,16 +84,25 @@ module.exports = function initialize(params) {
 
       const alreadyAnswered = answers.some(a => a.user_id === user.id)
       if (alreadyAnswered) return Promise.reject('User tried to answer several times');
-      return knex('answers').insert({
-        user_id: user.id,
-        ad_id,
-        data: req.body
-      }, 'id');
-    }).then(insertResp => res.json(`${insertResp[0]}`))
-      .catch(err => {
-        console.error('Error in /api/ilmoitukset/:id/vastaus', err);
-        res.sendStatus(500);
-      });
+      return Promise.all([
+        knex('answers').insert({
+          user_id: user.id,
+          ad_id,
+          data: req.body
+        }, 'id'),
+        util.userById(ad.user_id).then(dbUser => {
+          emails.sendNotificationForAnswer(dbUser, ad);
+        }).catch(e => {
+          console.error('Error sending email for answer', e);
+          return Promise.resolve(null); // don't crash on failing email
+        })
+      ]);
+    }).then(([ insertResp, emailResp ]) => {
+      res.json(`${insertResp[0]}`);
+    }).catch(err => {
+      console.error('Error in /api/ilmoitukset/:id/vastaus', err);
+      res.sendStatus(500);
+    });
   }
 
   function adsForUser(req, res) {
@@ -106,10 +116,10 @@ module.exports = function initialize(params) {
     return Promise.all([
       getAds,
       getAdsForAnswerer,
-      util.userForSession(req)
-    ]).then(([adsAsAsker, adsAsAnswerer, user]) => {
+      util.loggedIn(req)
+    ]).then(([adsAsAsker, adsAsAnswerer, loggedIn]) => {
       const allAds = adsAsAsker.concat(adsAsAnswerer)
-      return Promise.all(allAds.map(ad => formatAd(ad, user)))
+      return Promise.all(allAds.map(ad => formatAd(ad, loggedIn)))
     }).then(ads => ads.sort(latestFirst))
       .then(ads => res.send(ads))
       .catch(err => {

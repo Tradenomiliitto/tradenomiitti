@@ -21,6 +21,20 @@ authorInfo user =
       ]
     ]
 
+authorInfoWithLocation : User -> H.Html msg
+authorInfoWithLocation user =
+  H.div
+    []
+    [ H.span [ A.class "author-info__pic" ] []
+    , H.span
+      [ A.class "author-info__info" ]
+      [ H.span [ A.class "author-info__name"] [ H.text user.name ]
+      , H.br [] []
+      , H.span [ A.class "author-info__title"] [ H.text user.primaryPosition ]
+      , H.br [] []
+      , showLocation user.location
+      ]
+    ]
 
 link : Route -> (Route -> msg ) -> H.Html msg
 link route toMsg =
@@ -43,3 +57,9 @@ linkAction route toMsg =
     }
     (Json.succeed <| toMsg route)
 
+showLocation : String -> H.Html msg
+showLocation location =
+  H.div [ A.class "profile__location" ]
+    [ H.img [ A.class "profile__location--marker", A.src "/static/lokaatio.svg" ] []
+    , H.span [ A.class "profile__location--text" ] [ H.text (location) ]
+    ]

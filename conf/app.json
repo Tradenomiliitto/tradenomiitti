@@ -11,6 +11,11 @@
         "SEBACON_CUSTOMER": "{{ sebacon_customer }}",
         "SEBACON_USER": "{{ sebacon_user }}",
         "SEBACON_PASSWORD": "{{ sebacon_password }}",
-        "SEBACON_AUTH": "{{ sebacon_auth }}"
+        "SEBACON_AUTH": "{{ sebacon_auth }}",
+        "SMTP_HOST": "{{ smtp_host }}",
+        "SMTP_USER": "{{ smtp_user }}",
+        "SMTP_PASSWORD": "{{ smtp_password }}",
+        "SMTP_TLS": "{{ smtp_tls }}",
+        "MAIL_FROM": "{{ mail_from }}"
       }
 }

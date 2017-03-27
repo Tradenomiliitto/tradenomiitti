@@ -235,6 +235,58 @@ div#not-implemented {
     @include gotham-bold;
     text-transform: uppercase;
   }
+
+  // from http://red-team-design.com/making-html-dropdowns-not-suck/
+  &__competence-select {
+    padding: .5em;
+	  margin: 0;
+		padding-right: 2.5em;
+		border: 0;
+		border-radius: 3px;
+		appearance: none;
+    background-color: $white;
+    color: $pink;
+    @include gotham-bold;
+    width: 100%;
+    border: 1px solid $pink;
+
+    &-container {
+      position: relative;
+		  display: inline-block;
+		  vertical-align: middle;
+      width: 27em;
+
+      &::before,
+      &::after {
+        content: "";
+		    position: absolute;
+		    pointer-events: none;
+      }
+
+      &::after {
+        content: "\25BC";
+		    height: 1em;
+		    font-size: .625em;
+		    line-height: 1;
+		    right: 1.2em;
+		    top: 50%; margin-top: -.5em;
+      }
+
+      &::before {
+        width: 2em;
+		    right: 0; top: 0; bottom: 0;
+		    border-radius: 0 3px 3px 0;
+      }
+    }
+
+    &-label {
+      display: block;
+      margin-top: 20px;
+      margin-bottom: 10px;
+
+    }
+  }
+
   &__activity-header {
     @include gotham-bold;
     text-transform: uppercase;
@@ -330,15 +382,15 @@ div#not-implemented {
 
     &--filled {
       background-color: $pink;
-      @include circle(13px);
+      @include circle(16px);
     }
     &--unfilled {
       background-color: #CCC;
-      @include circle(13px);
+      @include circle(16px);
     }
     &--active {
       background-color: $dark-grey;
-      @include circle(18px);
+      @include circle(22px);
     }
   }
 

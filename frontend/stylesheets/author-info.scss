@@ -11,9 +11,14 @@
   }
   &__name {
     font-weight: bold;
+    @include gotham-bold;
+    color: $green;
+    font-size: 16px;
   }
   &__title {
     font-weight: bold;
+    @include gotham-bold;
+    font-size:12px;
     color: $pink;
   }
 }

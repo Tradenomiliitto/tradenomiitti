@@ -52,10 +52,26 @@ const sebacon = require('./sebaconService')({
   customer: sebaconCustomer, user: sebaconUser,
   password: sebaconPassword, auth: sebaconAuth});
 
+const smtpHost = process.env.SMTP_HOST;
+const smtpUser = process.env.SMTP_USER;
+const smtpPassword = process.env.SMTP_PASSWORD;
+const smtpTls = process.env.SMTP_TLS;
+const mailFrom = process.env.MAIL_FROM;
+if (!smtpHost || !smtpUser || !smtpPassword || !smtpTls || !mailFrom) {
+  console.warn("You should have SMTP_* parameters and MAIL_FROM in ENV");
+}
+const smtp =
+      { host: smtpHost,
+        user: smtpUser,
+        password: smtpPassword,
+        tls: smtpTls === 'true'
+      }
+const emails = require('./emails')({ smtp, mailFrom });
+
 const logon = require('./logonHandling')({ communicationsKey, knex, sebacon });
 const util = require('./util')({ knex });
 const profile = require('./profile')({ knex, sebacon, util, userImagesPath });
-const ads = require('./ads')({ util, knex });
+const ads = require('./ads')({ util, knex, emails });
 
 const urlEncoded = bodyParser.urlencoded();
 const jsonParser = bodyParser.json();
@@ -85,6 +101,31 @@ app.get('/api/ilmoitukset', ads.listAds);
 app.get('/api/ilmoitukset/tradenomilta/:id', ads.adsForUser);
 app.post('/api/ilmoitukset/:id/vastaus', jsonParser, ads.createAnswer);
 
+
+app.get('/api/asetukset', (req, res) => {
+  util.userForSession(req).then(dbUser => {
+    const settings = {};
+    const dbSettings = dbUser.settings || {};
+    settings.emails_for_answers = dbSettings.emails_for_answers || true;
+    settings.email_address = dbSettings.email_address || '';
+    res.json(settings);
+  }).catch(e => {
+    console.error('GET /api/asetukset', e);
+    res.sendStatus(500);
+  });
+});
+
+app.put('/api/asetukset', jsonParser, (req, res) => {
+  util.userForSession(req).then(dbUser => {
+    const newSettings = Object.assign({}, dbUser.settings, req.body);
+    return knex('users').where({ id: dbUser.id }).update('settings', newSettings);
+  }).then(resp => {
+    res.sendStatus(200);
+  }).catch(e => {
+    console.error('PUT /api/asetukset', e);
+    res.sendStatus(500);
+  });
+})
 
 app.get('*', (req, res) => {
   res.sendFile('./index.html', {root: rootDir})
