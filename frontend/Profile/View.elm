@@ -267,16 +267,22 @@ userInfoBoxEditing2 model user =
           [ H.span
             [ A.class "user-page__pic"
             , E.onClick ChangeImage
+            , E.onMouseEnter MouseEnterProfilePic
+            , E.onMouseLeave MouseLeaveProfilePic
             ]
-            [ user.croppedPictureUrl
-            |> Maybe.map (\url ->
-                           H.img
-                           [ A.src url
-                           ]
-                           []
-                        )
-            |> Maybe.withDefault
-              SvgIcons.userPicPlaceHolder
+            [ if model.mouseOverUserImage
+              then
+                SvgIcons.upload
+              else
+                user.croppedPictureUrl
+                  |> Maybe.map (\url ->
+                                H.img
+                                [ A.src url
+                                ]
+                                []
+                              )
+                  |> Maybe.withDefault
+                    SvgIcons.userPicPlaceHolder
             ]
           ]
         , H.div [A.class "col-md-4" ]

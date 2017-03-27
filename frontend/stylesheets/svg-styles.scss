@@ -1,4 +1,5 @@
 .svg {
+  &__upload,
   &__user-pic {
     display: flex;
     align-items: center;
@@ -6,11 +7,21 @@
     height: 100%;
 
     & > svg {
-      fill: none;
       stroke: $white;
-      stroke-width: 6;
-      stroke-miterlimit: 10;
       width: 50%;
     }
+  }
+
+  &__upload {
+    cursor: pointer;
+    svg {
+      fill: $white
+    }
+  }
+
+  &__user-pic svg {
+    fill: none;
+    stroke-width: 6;
+    stroke-miterlimit: 10;
   }
 }

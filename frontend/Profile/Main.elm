@@ -29,6 +29,8 @@ type Msg
   | UpdateUser (Result Http.Error ())
   | UpdateConsent (Result Http.Error ())
   | ChangeImage
+  | MouseEnterProfilePic
+  | MouseLeaveProfilePic
   | NoOp
 
 
@@ -175,6 +177,12 @@ update msg model =
 
     ChangeImage ->
       model ! [ imageUpload True ]
+
+    MouseEnterProfilePic ->
+      { model | mouseOverUserImage = True } ! []
+
+    MouseLeaveProfilePic ->
+      { model | mouseOverUserImage = False } ! []
 
     NoOp ->
       model ! []
