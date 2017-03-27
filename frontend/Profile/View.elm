@@ -277,7 +277,7 @@ userInfoBoxEditing2 model user =
                 user.croppedPictureUrl
                   |> Maybe.map (\url ->
                                 H.img
-                                [ A.src url
+                                [ A.src <| "/static/images/" ++ url
                                 ]
                                 []
                               )

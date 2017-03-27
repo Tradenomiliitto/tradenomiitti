@@ -51,7 +51,7 @@ userDecoder =
     |> P.required "positions" (Json.list Skill.decoder)
     |> P.required "profile_creation_consented" Json.bool
     |> P.required "location" Json.string
-    |> P.required "croppedPicture" (Json.string |> Json.map
+    |> P.required "cropped_picture" (Json.string |> Json.map
                                      (\str -> if String.length str == 0 then Nothing else Just str))
     |> P.optional "picture_editing" (Json.map Just pictureEditingDecoder) Nothing
     |> P.optional "extra" (Json.map Just userExtraDecoder) Nothing

@@ -32,7 +32,7 @@ module.exports = function initialize(params) {
     formattedUser.positions = userData.positions || [];
     formattedUser.location = userData.location || "";
     formattedUser.profile_creation_consented = userData.profile_creation_consented || false;
-    formattedUser.croppedPicture = '';
+    formattedUser.cropped_picture = loggedIn ? (userData.cropped_picture || '') : '';
 
     return formattedUser;
   }

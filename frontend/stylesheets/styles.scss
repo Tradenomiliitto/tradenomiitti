@@ -184,6 +184,10 @@ div#not-implemented {
   &__pic {
     $size: 90px;
     @include round-profile-pic($size, #ccc);
+    overflow: hidden;
+    & img {
+      width: 100%;
+    }
   }
   &__name {
     @include gotham-bold;

@@ -49,8 +49,48 @@ module.exports = function initialize(params) {
 
     return util.userForSession(req)
       .then(user => {
-        const newData = Object.assign({}, user.data, req.body);
-        return knex('users').where({ id: user.id }).update('data', newData);
+        const dataWithoutCroppedPicture = Object.assign({}, user.data, req.body);
+
+        function makeCropped() {
+          const fileName = dataWithoutCroppedPicture.picture_editing.url;
+          const { x, y, width, height } = dataWithoutCroppedPicture.picture_editing;
+          const fullPath = `${userImagesPath}/${fileName}`;
+          return new Promise((resolve, reject) => {
+            gm(fullPath)
+              .crop(width, height, x, y)
+              .resize(250)
+              .toBuffer((err, buffer) => {
+                if (err) reject(err);
+                else {
+
+                  const hash = crypto.createHash('sha1');
+                  hash.update(buffer);
+                  const fileType = getFileType(buffer);
+                  const extension = fileType && fileType.ext;
+
+                  const fileName = `${hash.digest('hex')}.${extension}`;
+                  const fullPath = `${userImagesPath}/${fileName}`;
+                  gm(buffer).write(fullPath, (err) => {
+                    if (err) {
+                      reject(err);
+                    }
+                    resolve(fileName);
+                  })
+                }
+              });
+          })
+        }
+
+        const croppedPicture = dataWithoutCroppedPicture.picture_editing.url.length === 0 ? Promise.resolve('') : makeCropped();
+
+        return croppedPicture.then(picture => {
+          const newData = Object.assign({}, dataWithoutCroppedPicture, {
+            cropped_picture: picture
+          });
+          return [user, newData];
+        })
+      }).then(([user, data ]) => {
+        return knex('users').where({ id: user.id }).update('data', data);
       }).then(resp => {
         res.sendStatus(200);
       }).catch(err => {

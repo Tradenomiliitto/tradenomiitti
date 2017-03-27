@@ -22,7 +22,9 @@ export default function initImageUpload(elm2js, js2elm) {
       const cropperDiv = `<div>${imgTag}</div>`;
       const editor = `${cropperDiv}
 <div>
-  <button onClick="imageUploadSave();" class="pull-right btn btn-primary" style="margin-right: 25px;">Valmis</button>
+  <button onClick="imageUploadCancel();" class="btn btn-danger" style="margin-right: 25px;">Peru</button>
+  <button onClick="imageUploadRemove();" class="btn btn-danger" style="margin-right: 25px;">Poista</button>
+  <button onClick="imageUploadSave();" class="btn btn-primary" style="margin-right: 25px;">Valmis</button>
 </div>
 `;
       container.innerHTML = containerHtml(editor);
@@ -45,6 +47,21 @@ export default function initImageUpload(elm2js, js2elm) {
 
     window.imageUploadSave = () => {
       js2elm.send(details);
+      container.classList.remove('image-upload--active')
+    };
+
+    window.imageUploadRemove = () => {
+      js2elm.send({
+        url: '',
+        x: 0,
+        y: 0,
+        width: 0,
+        height: 0
+      });
+      container.classList.remove('image-upload--active')
+    };
+
+    window.imageUploadCancel = () => {
       container.classList.remove('image-upload--active')
     };
 
