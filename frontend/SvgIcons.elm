@@ -1,6 +1,7 @@
 module SvgIcons exposing (..)
 
 import Html as H
+import Html.Attributes as A
 import Svg
 import Svg.Attributes as SvgA
 
@@ -22,17 +23,20 @@ upload =
 
 userPicPlaceHolder : H.Html msg
 userPicPlaceHolder =
-  Svg.svg
-    [ SvgA.viewBox "-584 355.5 90 90"
-    ]
-    [ Svg.g
-      [
+  H.span
+    [ A.class "svg__user-pic"]
+    [ Svg.svg
+      [ SvgA.viewBox "-584 355.5 90 90"
       ]
-      [ Svg.path
-         [ SvgA.class "st0"
-         , SvgA.d "M-503.4,436.1c0-14.6-8.9-27.3-21.6-32.9c4.7-4,7.7-9.9,7.7-16.6c0-12.1-9.7-21.8-21.8-21.8s-21.8,9.7-21.8,21.8c0,6.7,3,12.7,7.7,16.6c-12.7,5.3-21.6,18-21.6,32.9"
-         ]
-         []
+      [ Svg.g
+        [
+        ]
+        [ Svg.path
+          [ SvgA.class "st0"
+          , SvgA.d "M-503.4,436.1c0-14.6-8.9-27.3-21.6-32.9c4.7-4,7.7-9.9,7.7-16.6c0-12.1-9.7-21.8-21.8-21.8s-21.8,9.7-21.8,21.8c0,6.7,3,12.7,7.7,16.6c-12.7,5.3-21.6,18-21.6,32.9"
+          ]
+          []
+        ]
       ]
     ]
 

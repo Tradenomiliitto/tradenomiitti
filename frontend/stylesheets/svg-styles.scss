@@ -1,0 +1,8 @@
+.svg {
+  &__user-pic {
+    fill: none;
+    stroke: $white;
+    stroke-width: 6;
+    stroke-miterlimit: 10;
+  }
+}
