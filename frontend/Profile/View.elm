@@ -266,7 +266,7 @@ userInfoBoxEditing2 model user =
           [ A.class " user-page__pic-container col-md-1" ]
           [ H.span
             [ A.class "user-page__pic"
-            , E.onClick ChangeImage
+            , E.onClick (ChangeImage user)
             , E.onMouseEnter MouseEnterProfilePic
             , E.onMouseLeave MouseLeaveProfilePic
             ]

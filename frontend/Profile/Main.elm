@@ -4,7 +4,7 @@ import Http
 import Json.Decode as Json
 import Json.Encode as JS
 import Models.Ad
-import Models.User exposing (User)
+import Models.User exposing (User, PictureEditing)
 import Skill
 import State.Profile exposing (Model)
 import Util
@@ -28,13 +28,13 @@ type Msg
   | ChangeDescription String
   | UpdateUser (Result Http.Error ())
   | UpdateConsent (Result Http.Error ())
-  | ChangeImage
+  | ChangeImage User
   | MouseEnterProfilePic
   | MouseLeaveProfilePic
   | NoOp
 
 
-port imageUpload : Bool -> Cmd msg
+port imageUpload : Maybe PictureEditing -> Cmd msg
 
 getMe : Cmd Msg
 getMe =
@@ -175,8 +175,8 @@ update msg model =
       in
         newModel ! []
 
-    ChangeImage ->
-      model ! [ imageUpload True ]
+    ChangeImage user ->
+      model ! [ imageUpload user.pictureEditingDetails ]
 
     MouseEnterProfilePic ->
       { model | mouseOverUserImage = True } ! []
