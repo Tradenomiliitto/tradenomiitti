@@ -13,7 +13,6 @@ import State.Main as RootState
 import State.Profile exposing (Model)
 import Models.User exposing (User)
 
-
 view : Model -> RootState.Model -> H.Html (AppMessage Msg)
 view model rootState =
   if model.editing
@@ -254,9 +253,14 @@ userInfoBoxEditing2 model user =
     [A.class "container"]
     [ H.div
         [A.class "row"]
-        [H.div
+        [ H.div
           [ A.class " user-page__pic-container col-md-1" ]
-          [ H.span [ A.class "user-page__pic" ] [] ]
+          [ H.span
+            [ A.class "user-page__pic"
+            , E.onClick ChangeImage
+            ]
+            []
+          ]
         , H.div [A.class "col-md-4" ]
           [ H.h4 [ A.class "user-page__name" ]
             [

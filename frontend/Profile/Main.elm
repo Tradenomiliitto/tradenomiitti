@@ -1,4 +1,4 @@
-module Profile.Main exposing (..)
+port module Profile.Main exposing (..)
 
 import Http
 import Json.Decode as Json
@@ -29,8 +29,11 @@ type Msg
   | ChangeDescription String
   | UpdateUser (Result Http.Error ())
   | UpdateConsent (Result Http.Error ())
+  | ChangeImage
   | NoOp
 
+
+port imageUpload : Bool -> Cmd msg
 
 getMe : Cmd Msg
 getMe =
@@ -188,6 +191,9 @@ update msg model =
           }
       in
         newModel ! []
+
+    ChangeImage ->
+      model ! [ imageUpload True ]
 
     NoOp ->
       model ! []
