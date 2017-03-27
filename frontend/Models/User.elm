@@ -28,6 +28,15 @@ type alias User =
   , profileCreated : Bool
   , location : String
   , extra : Maybe Extra
+  , businessCard : Maybe BusinessCard
+  }
+
+type alias BusinessCard =
+  { name : String
+  , title : String
+  , location : String
+  , phone : String
+  , email : String
   }
 
 userDecoder : Json.Decoder User
@@ -42,6 +51,7 @@ userDecoder =
     |> P.required "profile_creation_consented" Json.bool
     |> P.required "location" Json.string
     |> P.optional "extra" (Json.map Just userExtraDecoder) Nothing
+    |> P.optional "businessCard" (Json.map Just businessCardDecoder) Nothing
 
 encode : User -> JS.Value
 encode user =
@@ -52,13 +62,24 @@ encode user =
     , ("domains", JS.list (List.map Skill.encode user.domains) )
     , ("positions", JS.list (List.map Skill.encode user.positions) )
     , ("location", JS.string user.location)
-    ]
+    ] ++ case user.businessCard of
+        Nothing -> []
+        Just businessCard -> [("businessCard", JS.object (businessCardEncode businessCard))]
 
 settingsEncode : Settings -> JS.Value
 settingsEncode settings =
   JS.object
     [ ("emails_for_answers", JS.bool settings.emails_for_answers)
     , ("email_address", JS.string settings.email_address)
+    ]
+  
+businessCardEncode : BusinessCard -> List (String, JS.Value)
+businessCardEncode businessCard =
+    [ ("name", JS.string businessCard.name)
+    , ("title", JS.string businessCard.title)
+    , ("location", JS.string businessCard.location)
+    , ("phone", JS.string businessCard.phone)
+    , ("email", JS.string businessCard.email)
     ]
 
 userExtraDecoder : Json.Decoder Extra
@@ -75,3 +96,13 @@ settingsDecoder =
   P.decode Settings
     |> P.required "emails_for_answers" Json.bool
     |> P.required "email_address" Json.string
+
+businessCardDecoder : Json.Decoder BusinessCard
+businessCardDecoder =
+  P.decode BusinessCard
+    |> P.optional "name" Json.string ""
+    |> P.optional "title" Json.string ""
+    |> P.optional "location" Json.string ""
+    |> P.optional "phone" Json.string ""
+    |> P.optional "email" Json.string ""
+

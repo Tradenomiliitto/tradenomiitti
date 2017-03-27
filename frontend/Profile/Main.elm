@@ -4,7 +4,7 @@ import Http
 import Json.Decode as Json
 import Json.Encode as JS
 import Models.Ad
-import Models.User exposing (User)
+import Models.User exposing (User, BusinessCard)
 import Skill
 import State.Profile exposing (Model)
 import Util
@@ -28,6 +28,7 @@ type Msg
   | ChangeDescription String
   | UpdateUser (Result Http.Error ())
   | UpdateConsent (Result Http.Error ())
+  | UpdateBusinessCard BusinessCardField String
   | NoOp
 
 
@@ -82,6 +83,26 @@ deleteFromSkillList index list =
 updateUser : (User -> User) -> Model -> Model
 updateUser update model =
   { model | user = Maybe.map update model.user }
+
+
+type BusinessCardField 
+  = Name
+  | Title
+  | Location
+  | Phone
+  | Email
+
+updateBusinessCard : Maybe BusinessCard -> BusinessCardField -> String -> Maybe BusinessCard
+updateBusinessCard businessCard field value =
+  case businessCard of
+    Just businessCard ->
+      case field of 
+        Name -> Just { businessCard | name = value}
+        Title -> Just { businessCard | name = value }
+        Location -> Just { businessCard | name = value }
+        Phone -> Just { businessCard | name = value }
+        Email -> Just { businessCard | name = value }
+    Nothing -> Nothing
 
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
@@ -157,6 +178,9 @@ update msg model =
 
     UpdateUser (Ok _) ->
       { model | editing = False } ! []
+    
+    UpdateBusinessCard field value ->
+      updateUser (\u -> { u | businessCard = (updateBusinessCard u.businessCard field value) }) model ! []
 
     UpdateConsent (Err _) ->
       model ! [] -- TODO error handling
