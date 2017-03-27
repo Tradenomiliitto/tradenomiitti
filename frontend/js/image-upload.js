@@ -18,7 +18,17 @@ export default function initImageUpload(elm2js, js2elm) {
 
     window.imageUploadInit = () => {
       const input = document.getElementById("image-input");
-      console.log('foobar');
+      const formData = new FormData();
+      const url = '/api/profiilit/oma/kuva';
+      formData.append("image", input.files[0]);
+      const request = new XMLHttpRequest();
+      request.onreadystatechange = () => {
+        if (request.readyState === XMLHttpRequest.DONE) {
+          console.log(request.responseText);
+        }
+      };
+      request.open("PUT", url);
+      request.send(formData);
     }
   })
 }
