@@ -128,7 +128,7 @@ competences model user =
     [ H.div [ A.class "profile__editing--competences--row row" ]
         [
           H.div
-            [ A.class "profile__editing--competences--heading col-md-6" ]
+            [ A.class "profile__editing--competences--heading col-md-7" ]
             [ H.h3
             [ A.class "profile__editing--competences--heading--title" ]
             [ H.text "Muokkaa osaamistasi" ]
@@ -256,8 +256,8 @@ viewUser model user =
   ]
 
 
-userInfoBoxEditing2 : User -> H.Html Msg
-userInfoBoxEditing2 user =
+userInfoBoxEditing2 : Model -> User -> H.Html Msg
+userInfoBoxEditing2 model user =
   H.div
     [A.class "container"]
     [ H.div
@@ -282,6 +282,7 @@ userInfoBoxEditing2 user =
                 ]
                 []
             ]
+          , location model user
           ]
       ]
     ]
@@ -293,7 +294,7 @@ userInfoBoxEditing model user =
     [ A.class "col-md-6" ]
     [ H.div
       [ A.class "row" ]
-      [ userInfoBoxEditing2 user
+      [ userInfoBoxEditing2 model user
       ]
     , userDescription model user
     ]
@@ -332,6 +333,7 @@ userInfoBox model user =
                 []
               else H.text user.primaryPosition
             ]
+          , location model user
           ]
         ]
       ]
@@ -356,6 +358,26 @@ userDescription model user =
       ]
     ]
 
+location : Model -> User -> H.Html Msg
+location model user =
+  H.div [ A.class "profile__location" ]
+    [ H.img [ A.class "profile__location--marker", A.src "/static/lokaatio.svg" ] []
+    , if model.editing
+        then
+          H.select
+            [ E.on "change" (Json.map ChangeLocation E.targetValue) ]
+            (List.map (optionPreselected user.location) finnishRegions)
+        else
+          H.span [A.class "profile__location--text"] [ H.text (user.location) ]
+       
+    ]
+optionPreselected : String -> String -> H.Html msg
+optionPreselected default value =
+  if default == value
+    then H.option [ A.selected True ] [ H.text value ]
+    else H.option [] [ H.text value ]
+
+
 userDomains : Model -> User -> H.Html Msg
 userDomains model user =
   H.div
@@ -374,16 +396,9 @@ userDomains model user =
     ) ++
     (if model.editing
       then
-        [ H.select
-          [ E.on "change" (Json.map ChangeDomainSelect E.targetValue)] <|
-            H.option [] [ H.text "Valitse toimiala"] :: List.map (\o -> H.option [] [ H.text o ]) model.domainOptions
-            , H.button
-              [ A.class "btn"
-              , E.onClick AddDomain
-              ]
-              [ H.text "Lisää toimiala"]
-              ]
-      else [])
+        [ select model.domainOptions ChangeDomainSelect "Valitse toimiala" "Lisää toimiala, josta olet kiinnostunut tai sinulla on osaamista"
+        ]
+     else [])
     )
 
 userPositions : Model -> User -> H.Html Msg
@@ -403,17 +418,27 @@ userPositions model user =
         ) ++
         (if model.editing
           then
-            [ H.select
-              [ E.on "change" (Json.map ChangePositionSelect E.targetValue)] <|
-              H.option [] [ H.text "Valitse tehtäväluokka"] :: List.map (\o -> H.option [] [ H.text o ]) model.positionOptions
-            , H.button
-            [ A.class "btn"
-            , E.onClick AddPosition
-            ]
-            [ H.text "Lisää tehtäväluokka"]
+            [ select model.positionOptions ChangePositionSelect "Valitse tehtäväluokka" "Lisää tehtäväluokka, josta olet kiinnostunut tai sinulla on osaamista"
             ]
           else [])
     )
+
+select : List String -> (String -> msg) -> String -> String -> H.Html msg
+select options toEvent defaultOption heading =
+  H.div
+    []
+    [ H.label
+      [ A.class "user-page__competence-select-label" ]
+      [ H.text heading ]
+    , H.span
+      [ A.class "user-page__competence-select-container" ]
+      [ H.select
+        [ E.on "change" (Json.map toEvent E.targetValue)
+        , A.class "user-page__competence-select"
+        ] <|
+          H.option [] [ H.text defaultOption ] :: List.map (\o -> H.option [] [ H.text o ]) options
+      ]
+    ]
 
 membershipDataBox : User -> H.Html msg
 membershipDataBox user =
@@ -473,3 +498,27 @@ membershipDataBoxEditing user =
         [ A.class "user-page__membership-info" ]
         [ H.h3 [ A.class "user-page__membership-info-heading" ] [ H.text "Jäsentiedot puuttuvat" ]
         ]
+
+finnishRegions : List String
+finnishRegions =
+  [ ""
+  , "Lappi"
+  , "Pohjois-Pohjanmaa"
+  , "Kainuu"
+  , "Pohjois-Karjala"
+  , "Pohjois-Savo"
+  , "Etelä-Savo"
+  , "Etelä-Karjala"
+  , "Keski-Suomi"
+  , "Etelä-Pohjanmaa"
+  , "Pohjanmaa"
+  , "Keski-Pohjanmaa"
+  , "Pirkanmaa"
+  , "Satakunta"
+  , "Päijät-Häme"
+  , "Kanta-Häme"
+  , "Kymenlaakso"
+  , "Uusimaa"
+  , "Varsinais-Suomi"
+  , "Ahvenanmaa"
+  ]

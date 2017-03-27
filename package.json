@@ -7,10 +7,10 @@
     "preansible": "./conf/preinstall.sh",
     "serverinstallbase": "./conf/serverinstallbase.sh",
     "serverinstallpm2": "ansible-playbook conf/pm2install.yml -i conf/inventory.ini --limit ${ENV_TO_DEPLOY:-dev}",
-    "compilelocal": "cd frontend && mkdir -p static && elm-make --yes Main.elm --output static/elm.js && browserify -t babelify js/main.js --outfile static/main.js && node-sass --precision 8 --include-path ../node_modules/bootstrap-sass/assets/stylesheets -r stylesheets/styles.scss -o static/ && cp assets/* ../node_modules/bootstrap-sass/assets/fonts/bootstrap/* ../node_modules/font-awesome/fonts/* ../conf/assets/* static/",
+    "compilelocal": "cd frontend && mkdir -p static && elm-make --yes Main.elm --output static/elm.js && browserify -t babelify js/main.js --outfile static/main.js && node-sass --precision 8 --include-path ../node_modules/bootstrap-sass/assets/stylesheets -r stylesheets/styles.scss  | postcss --use autoprefixer -o static/styles.css && cp assets/* ../node_modules/bootstrap-sass/assets/fonts/bootstrap/* ../node_modules/font-awesome/fonts/* ../conf/assets/* static/",
     "start": "environment=local node server/index.js",
     "compilefrontend": "cd frontend && elm-make --yes Main.elm --output /srv/static/elm.js && browserify -t babelify js/main.js --outfile /srv/static/main.js",
-    "compilescss": "node-sass --precision 8 --include-path node_modules/bootstrap-sass/assets/stylesheets -r frontend/stylesheets/styles.scss -o /srv/static/",
+    "compilescss": "node-sass --precision 8 --include-path node_modules/bootstrap-sass/assets/stylesheets -r frontend/stylesheets/styles.scss | postcss --use autoprefixer -o /srv/static/styles.css",
     "compileassets": "cp frontend/assets/* node_modules/bootstrap-sass/assets/fonts/bootstrap/* node_modules/font-awesome/fonts/* /srv/static/"
   },
   "repository": {
@@ -24,6 +24,7 @@
   },
   "homepage": "https://github.com/futurice/tradenomiitti#readme",
   "dependencies": {
+    "autoprefixer": "^6.7.7",
     "babel-preset-es2015": "^6.24.0",
     "babelify": "^7.3.0",
     "body-parser": "^1.16.0",
@@ -38,6 +39,7 @@
     "knex": "^0.12.6",
     "node-sass": "^4.5.0",
     "pg": "^6.1.2",
+    "postcss-cli": "^3.0.0",
     "request": "^2.79.0",
     "request-promise-native": "^1.0.3",
     "scss-to-json": "^1.1.0",

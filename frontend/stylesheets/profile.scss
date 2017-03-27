@@ -174,4 +174,16 @@
     @include gotham-bold;
     text-transform: uppercase;
   }
+  
+  &__location {
+    &--marker {
+      margin-right: 5px;
+      width: 20px;
+    }
+    &--text {
+      position: relative;
+      top: 3px;
+    }
+  }
 }
+
