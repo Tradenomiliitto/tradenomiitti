@@ -5,7 +5,8 @@ const uuid = require('uuid');
 const request = require('request');
 const cookieSession = require('cookie-session');
 
-const rootDir = "./frontend"
+const rootDir = './frontend';
+const staticDir = process.env.NON_LOCAL ? '/srv/static' : `${rootDir}/static`;
 
 const app = express();
 
@@ -15,7 +16,7 @@ const knex = require('knex')(knex_config[process.env.environment]);
 knex.migrate.latest(knex_config[process.env.environment]);
 
 //serve static files if developing locally (this route is not reached on servers)
-app.use('/static', express.static(rootDir + '/static'));
+app.use('/static', express.static(staticDir));
 
 
 const secret = process.env.NON_LOCAL ? process.env.COOKIE_SECRET : 'local';
@@ -129,7 +130,7 @@ app.put('/api/asetukset', jsonParser, (req, res) => {
 })
 
 app.get('*', (req, res) => {
-  res.sendFile('./index.html', {root: rootDir})
+  res.sendFile('./index.html', {root: staticDir})
 });
 
 app.listen(3000, () => {
