@@ -39,7 +39,10 @@ To deploy:
 git push ENV master
 ```
 
-### Local development with SQLite
+### Local development
+
+* Install and set up PostgreSQL.
+* Install graphics magick
 
 Compile elm & scss
 ```
@@ -47,9 +50,19 @@ npm run compilelocal
 ```
 Run the server:
 ```
+export SEBACON_CUSTOMER=
+export SEBACON_USER=
+export SEBACON_PASSWORD=
+export SEBACON_AUTH=
+export db_user= 
+export db_password= 
+export environment=development
+export COMMUNICATIONS_KEY=
+export SMTP_HOST=
+export SMTP_USER=
+export SMTP_PASSWORD=
+export SMTP_TLS=
+export MAIL_FROM=
+
 npm start
-```
-To seed the database:
-```
-knex seed:run --env local
 ```

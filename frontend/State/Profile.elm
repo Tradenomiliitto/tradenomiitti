@@ -11,6 +11,7 @@ type alias Model =
   , domainOptions : List String
   , selectedPositionOption : String
   , selectedDomainOption : String
+  , mouseOverUserImage : Bool
   }
 
 init : Model
@@ -22,4 +23,5 @@ init =
   , domainOptions = []
   , selectedDomainOption = ""
   , selectedPositionOption = ""
+  , mouseOverUserImage = False
   }
