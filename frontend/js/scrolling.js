@@ -1,4 +1,5 @@
 import { polyfill } from 'smoothscroll-polyfill';
+import 'scroll-restoration-polyfill';
 
 polyfill();
 
