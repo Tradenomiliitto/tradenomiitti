@@ -13,8 +13,8 @@ export default function initImageUpload(elm2js, js2elm) {
     details = detailsIn || {};
     const container = document.getElementById('image-upload');
     container.classList.add('image-upload--active')
-    if (details.pictureUrl) {
-      initEditor(details.pictureUrl, details);
+    if (details.pictureFileName) {
+      initEditor(details.pictureFileName, details);
     } else {
       container.innerHTML = containerHtml(imageInput);
     }
@@ -50,7 +50,7 @@ export default function initImageUpload(elm2js, js2elm) {
 
     window.imageUploadSave = () => {
 
-      const url = `/api/profiilit/oma/kuva/rajattu?x=${details.x}&y=${details.y}&width=${details.width}&height=${details.height}&fileName=${details.pictureUrl}`;
+      const url = `/api/profiilit/oma/kuva/rajattu?x=${details.x}&y=${details.y}&width=${details.width}&height=${details.height}&fileName=${details.pictureFileName}`;
       const request = new XMLHttpRequest();
       request.onreadystatechange = () => {
         if (request.readyState === XMLHttpRequest.DONE) {
@@ -65,7 +65,7 @@ export default function initImageUpload(elm2js, js2elm) {
 
     window.imageUploadRemove = () => {
       details = {
-        pictureUrl: '',
+        pictureFileName: '',
         x: 0,
         y: 0,
         width: 0,
@@ -92,7 +92,7 @@ export default function initImageUpload(elm2js, js2elm) {
       request.onreadystatechange = () => {
         if (request.readyState === XMLHttpRequest.DONE) {
           const fileName = request.responseText;
-          details.pictureUrl = fileName;
+          details.pictureFileName = fileName;
           const data = {};
           initEditor(fileName, data);
         }

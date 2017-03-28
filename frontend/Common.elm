@@ -24,7 +24,7 @@ authorInfo user =
 
 picElementForUser : User -> H.Html msg
 picElementForUser user =
-  user.croppedPictureUrl
+  user.croppedPictureFileName
     |> Maybe.map (\url ->
                    H.img
                      [ A.src <| "/static/images/" ++ url

@@ -14,7 +14,7 @@ type alias Extra =
   }
 
 type alias PictureEditing =
-  { pictureUrl : String
+  { pictureFileName : String
   , x : Float
   , y : Float
   , width : Float
@@ -35,7 +35,7 @@ type alias User =
   , positions : List Skill.Model
   , profileCreated : Bool
   , location : String
-  , croppedPictureUrl : Maybe String -- this is for every logged in user
+  , croppedPictureFileName : Maybe String -- this is for every logged in user
   , pictureEditingDetails : Maybe PictureEditing
   , extra : Maybe Extra
   }
@@ -65,7 +65,7 @@ encode user =
     , ("domains", JS.list (List.map Skill.encode user.domains) )
     , ("positions", JS.list (List.map Skill.encode user.positions) )
     , ("location", JS.string user.location)
-    , ("cropped_picture", JS.string (user.croppedPictureUrl |> Maybe.withDefault ""))
+    , ("cropped_picture", JS.string (user.croppedPictureFileName |> Maybe.withDefault ""))
     ] ++ (
          user.pictureEditingDetails
            |> Maybe.map (\details ->
@@ -84,7 +84,7 @@ settingsEncode settings =
 pictureEditingEncode : PictureEditing -> JS.Value
 pictureEditingEncode details =
   JS.object
-    [ ("url", JS.string details.pictureUrl)
+    [ ("file_name", JS.string details.pictureFileName)
     , ("x", JS.float details.x)
     , ("y", JS.float details.y)
     , ("width", JS.float details.width)
@@ -102,7 +102,7 @@ userExtraDecoder =
 pictureEditingDecoder : Json.Decoder PictureEditing
 pictureEditingDecoder =
   P.decode PictureEditing
-    |> P.required "url" Json.string
+    |> P.required "file_name" Json.string
     |> P.required "x" Json.float
     |> P.required "y" Json.float
     |> P.required "width" Json.float

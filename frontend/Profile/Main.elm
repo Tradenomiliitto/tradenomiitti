@@ -190,7 +190,7 @@ update msg model =
       updateUser (\u ->
                     { u
                       | pictureEditingDetails = Just editingDetails
-                      , croppedPictureUrl =
+                      , croppedPictureFileName =
                         if String.length cropped == 0
                         then
                           Nothing
