@@ -2,7 +2,6 @@ port module Profile.Main exposing (..)
 
 import Http
 import Json.Decode as Json
-import Json.Encode as JS
 import Models.Ad
 import Models.User exposing (User, PictureEditing)
 import Skill
@@ -169,7 +168,11 @@ update msg model =
       model ! [] -- TODO error handling
 
     UpdateUser (Ok _) ->
-      { model | editing = False } ! []
+      { model | editing = False } !
+        (model.user
+           |> Maybe.map (\user -> [ getAds user ])
+           |> Maybe.withDefault []
+        )
 
     UpdateConsent (Err _) ->
       model ! [] -- TODO error handling
