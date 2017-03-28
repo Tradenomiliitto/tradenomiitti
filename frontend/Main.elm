@@ -26,7 +26,8 @@ import User
 
 type alias HtmlId = String
 port animation : (HtmlId, Bool) -> Cmd msg -- send True on splash screen, False otherwise
-port scrollTop : Bool -> Cmd msg
+port scrollTop : Bool -> Cmd msg -- parameter tells whether to scroll
+port sendGaPageView : String -> Cmd msg -- parameter is path
 
 
 main : Program Never Model Msg
@@ -71,7 +72,10 @@ update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
   case msg of
     NewUrl route ->
-      { model | scrollTop = True } ! [ Navigation.newUrl (routeToPath route) ]
+      { model | scrollTop = True } !
+        [ Navigation.newUrl (routeToPath route)
+        , sendGaPageView (routeToPath route)
+        ]
 
     UrlChange location ->
       let
@@ -134,7 +138,7 @@ update msg model =
       in
         if needsLogin
         then
-          model ! [ Navigation.newUrl newRoute ]
+          model ! [ Navigation.modifyUrl newRoute ]
         else
           newModel ! [ cmd
                      , scrollTop shouldScroll
