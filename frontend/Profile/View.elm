@@ -264,7 +264,7 @@ userInfoBoxEditing2 model user =
     [ H.div
         [A.class "row"]
         [ H.div
-          [ A.class " user-page__pic-container col-md-1" ]
+          [ A.class "user-page__pic-container col-md-1" ]
           [ H.span
             [ A.class "user-page__pic"
             , E.onClick (ChangeImage user)
