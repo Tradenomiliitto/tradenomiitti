@@ -13,7 +13,7 @@ authorInfo : User -> H.Html msg
 authorInfo user =
   H.div
     []
-    [ H.span [ A.class "author-info__pic" ] []
+    [ H.span [ A.class "author-info__pic" ] [ picElementForUser user ]
     , H.span
       [ A.class "author-info__info" ]
       [ H.span [ A.class "author-info__name"] [ H.text user.name ]
