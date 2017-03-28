@@ -11,11 +11,12 @@
     display: initial;
   }
 
+  $area-min-height: 50vh;
   &__content {
     background-color: $white;
     border-radius: 15px;
     padding: 60px 20px 30px 20px;
-    min-height: 50vh;
+    min-height: $area-min-height;
     max-height: 90vh;
     margin-top: 10vh;
   }
@@ -37,6 +38,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      min-height: $area-min-height;
     }
   }
 
