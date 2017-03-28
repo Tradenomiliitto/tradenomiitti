@@ -15,7 +15,12 @@
 
     - name: install system dependencies
       apt: pkg={{item}} state=present
-      with_items: [ postgresql, nodejs, git, python-psycopg2 ]
+      with_items:
+        - postgresql
+        - nodejs
+        - git
+        - python-psycopg2
+        - graphicsmagick
 
 
     - name: install nginx basic auth password file
@@ -70,9 +75,9 @@
     - name: database configuration
       template: src=app.json dest=/srv/app.json 
     
-    # create folder for static files
+    # create folders for static files and user images
     - name: static folder creation
-      file: path=/srv/static state=directory mode=0755 owner=ubuntu
+      file: path=/srv/static/images state=directory mode=0755 owner=ubuntu
 
     - name: upload static assets
       copy: src=assets/{{ item }} dest=/srv/static/{{ item }}

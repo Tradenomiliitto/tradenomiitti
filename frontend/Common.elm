@@ -6,13 +6,14 @@ import Html.Events as E
 import Json.Decode as Json
 import Models.User exposing (User)
 import Nav exposing (Route, routeToPath, routeToString)
+import SvgIcons
 
 
 authorInfo : User -> H.Html msg
 authorInfo user =
   H.div
     []
-    [ H.span [ A.class "author-info__pic" ] []
+    [ H.span [ A.class "author-info__pic" ] [ picElementForUser user ]
     , H.span
       [ A.class "author-info__info" ]
       [ H.span [ A.class "author-info__name"] [ H.text user.name ]
@@ -21,11 +22,23 @@ authorInfo user =
       ]
     ]
 
+picElementForUser : User -> H.Html msg
+picElementForUser user =
+  user.croppedPictureFileName
+    |> Maybe.map (\url ->
+                   H.img
+                     [ A.src <| "/static/images/" ++ url
+                     ]
+                     []
+                )
+    |> Maybe.withDefault
+      SvgIcons.userPicPlaceHolder
+
 authorInfoWithLocation : User -> H.Html msg
 authorInfoWithLocation user =
   H.div
     []
-    [ H.span [ A.class "author-info__pic" ] []
+    [ H.span [ A.class "author-info__pic" ] [ picElementForUser user ]
     , H.span
       [ A.class "author-info__info" ]
       [ H.span [ A.class "author-info__name"] [ H.text user.name ]

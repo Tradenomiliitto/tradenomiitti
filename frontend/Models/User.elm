@@ -13,6 +13,14 @@ type alias Extra =
   , positions : List String
   }
 
+type alias PictureEditing =
+  { pictureFileName : String
+  , x : Float
+  , y : Float
+  , width : Float
+  , height : Float
+  }
+
 type alias Settings =
   { emails_for_answers : Bool
   , email_address : String
@@ -27,6 +35,8 @@ type alias User =
   , positions : List Skill.Model
   , profileCreated : Bool
   , location : String
+  , croppedPictureFileName : Maybe String -- this is for every logged in user
+  , pictureEditingDetails : Maybe PictureEditing
   , extra : Maybe Extra
   }
 
@@ -41,6 +51,9 @@ userDecoder =
     |> P.required "positions" (Json.list Skill.decoder)
     |> P.required "profile_creation_consented" Json.bool
     |> P.required "location" Json.string
+    |> P.required "cropped_picture" (Json.string |> Json.map
+                                     (\str -> if String.length str == 0 then Nothing else Just str))
+    |> P.optional "picture_editing" (Json.map Just pictureEditingDecoder) Nothing
     |> P.optional "extra" (Json.map Just userExtraDecoder) Nothing
 
 encode : User -> JS.Value
@@ -52,13 +65,30 @@ encode user =
     , ("domains", JS.list (List.map Skill.encode user.domains) )
     , ("positions", JS.list (List.map Skill.encode user.positions) )
     , ("location", JS.string user.location)
-    ]
+    , ("cropped_picture", JS.string (user.croppedPictureFileName |> Maybe.withDefault ""))
+    ] ++ (
+         user.pictureEditingDetails
+           |> Maybe.map (\details ->
+                          [ ("picture_editing", pictureEditingEncode details) ]
+                       )
+           |> Maybe.withDefault []
+        )
 
 settingsEncode : Settings -> JS.Value
 settingsEncode settings =
   JS.object
     [ ("emails_for_answers", JS.bool settings.emails_for_answers)
     , ("email_address", JS.string settings.email_address)
+    ]
+
+pictureEditingEncode : PictureEditing -> JS.Value
+pictureEditingEncode details =
+  JS.object
+    [ ("file_name", JS.string details.pictureFileName)
+    , ("x", JS.float details.x)
+    , ("y", JS.float details.y)
+    , ("width", JS.float details.width)
+    , ("height", JS.float details.height)
     ]
 
 userExtraDecoder : Json.Decoder Extra
@@ -68,6 +98,15 @@ userExtraDecoder =
     |> P.required "nick_name" Json.string
     |> P.required "domains" (Json.list Json.string)
     |> P.required "positions" (Json.list Json.string)
+
+pictureEditingDecoder : Json.Decoder PictureEditing
+pictureEditingDecoder =
+  P.decode PictureEditing
+    |> P.required "file_name" Json.string
+    |> P.required "x" Json.float
+    |> P.required "y" Json.float
+    |> P.required "width" Json.float
+    |> P.required "height" Json.float
 
 
 settingsDecoder : Json.Decoder Settings

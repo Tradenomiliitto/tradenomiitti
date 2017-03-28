@@ -1,0 +1,58 @@
+#!/usr/bin/env node
+
+// NOTE: This is not suitable for use as is, really check the output and massage the SVG files to fit if need be
+
+const xml2js = require('xml2js');
+const fs = require('fs');
+
+if (process.argv.length !== 3) {
+  console.error('Give svg file name as parameter');
+  process.exit(1);
+}
+
+const svgFileName = process.argv[2];
+const contentsAsString = fs.readFileSync(svgFileName);
+
+xml2js.parseString(contentsAsString, (err, res) => {
+  if (err) {
+    console.error(err);
+    process.exit(2);
+  }
+
+  const svg = res.svg;
+
+  const viewBox = svg.$.viewBox;
+
+  const g = svg.g[0];
+  const gAttributes = !g.$ ? [] : Object.keys(g.$).map(key => {
+    return `SvgA.${key} "${g.$[key]}"`;
+  });
+
+  const childElements = [].concat.apply([], Object.keys(g).filter(key => key !== '$').map(key => {
+    return g[key].map(child => {
+      const childAttributes = !child.$ ? [] : Object.keys(child.$).map(propKey => {
+        return `SvgA.${propKey} "${child.$[propKey].replace(/\s*/g, '')}"`;
+      });
+      return `Svg.${key}
+         [ ${childAttributes.join('\n         , ')}
+         ]
+         []`;
+    })
+  }));
+
+  console.log(`
+  Svg.svg
+    [ SvgA.viewBox "${viewBox}"
+    ]
+    [ Svg.g
+      [ ${gAttributes.join('\n      , ')}
+      ]
+      [ ${childElements.join('\n      , ')}
+      ]
+    ]
+`);
+
+});
+
+
+

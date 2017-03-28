@@ -1,0 +1,27 @@
+.svg {
+  &__upload,
+  &__user-pic {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+
+    & > svg {
+      stroke: $white;
+      width: 50%;
+    }
+  }
+
+  &__upload {
+    cursor: pointer;
+    svg {
+      fill: $white
+    }
+  }
+
+  &__user-pic svg {
+    fill: none;
+    stroke-width: 6;
+    stroke-miterlimit: 10;
+  }
+}

@@ -7,8 +7,8 @@
     "preansible": "./conf/preinstall.sh",
     "serverinstallbase": "./conf/serverinstallbase.sh",
     "serverinstallpm2": "ansible-playbook conf/pm2install.yml -i conf/inventory.ini --limit ${ENV_TO_DEPLOY:-dev}",
-    "compilelocal": "cd frontend && mkdir -p static && elm-make --yes Main.elm --output static/elm.js && browserify -t babelify js/main.js --outfile static/main.js && node-sass --precision 8 --include-path ../node_modules/bootstrap-sass/assets/stylesheets -r stylesheets/styles.scss  | postcss --use autoprefixer -o static/styles.css && cp assets/* ../node_modules/bootstrap-sass/assets/fonts/bootstrap/* ../node_modules/font-awesome/fonts/* ../conf/assets/* static/",
-    "start": "environment=local node server/index.js",
+    "compilelocal": "cd frontend && mkdir -p static/images && elm-make --yes Main.elm --output static/elm.js && browserify -t babelify js/main.js --outfile static/main.js && node-sass --precision 8 --include-path ../node_modules/bootstrap-sass/assets/stylesheets -r stylesheets/styles.scss | postcss --use autoprefixer -o static/styles.css && cp assets/* ../node_modules/bootstrap-sass/assets/fonts/bootstrap/* ../node_modules/font-awesome/fonts/* ../conf/assets/* static/",
+    "start": "node server/index.js",
     "compilefrontend": "cd frontend && elm-make --yes Main.elm --output /srv/static/elm.js && browserify -t babelify js/main.js --outfile /srv/static/main.js",
     "compilescss": "node-sass --precision 8 --include-path node_modules/bootstrap-sass/assets/stylesheets -r frontend/stylesheets/styles.scss | postcss --use autoprefixer -o /srv/static/styles.css",
     "compileassets": "cp frontend/assets/* node_modules/bootstrap-sass/assets/fonts/bootstrap/* node_modules/font-awesome/fonts/* /srv/static/"
@@ -31,11 +31,15 @@
     "bootstrap-sass": "^3.3.7",
     "browserify": "^14.1.0",
     "cookie-session": "^2.0.0-alpha.3",
+    "cropperjs": "^1.0.0-beta.2",
     "d3-timer": "^1.0.5",
     "elm": "^0.18.0",
     "emailjs": "^1.0.8",
     "express": "^4.14.1",
+    "express-fileupload": "^0.1.2",
+    "file-type": "^4.1.0",
     "font-awesome": "^4.7.0",
+    "gm": "^1.23.0",
     "knex": "^0.12.6",
     "node-sass": "^4.5.0",
     "pg": "^6.1.2",
@@ -46,5 +50,8 @@
     "smoothscroll-polyfill": "^0.3.4",
     "sqlite3": "^3.1.8",
     "uuid": "^3.0.1"
+  },
+  "devDependencies": {
+    "xml2js": "^0.4.17"
   }
 }
