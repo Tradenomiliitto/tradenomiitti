@@ -322,7 +322,7 @@ userInfoBox model user =
          [ A.class "col-xs-12"]
          [ H.div
             [ A.class "pull-left user-page__pic-container" ]
-            [ H.span [ A.class "user-page__pic" ] [] ]
+            [ H.span [ A.class "user-page__pic" ] [ Common.picElementForUser user ] ]
           , H.div
               [ A.class "pull-left" ]
               [ H.h4 [ A.class "user-page__name" ]
