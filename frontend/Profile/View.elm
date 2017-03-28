@@ -9,7 +9,7 @@ import Link exposing (AppMessage(..))
 import ListAds
 import Models.User exposing (User)
 import Nav
-import Profile.Main exposing (Msg(..), BusinessCardField)
+import Profile.Main exposing (Msg(..), BusinessCardField(..))
 import Skill
 import State.Main as RootState
 import State.Profile exposing (Model)
@@ -124,19 +124,21 @@ businessCardData : User -> Models.User.BusinessCard -> H.Html Msg
 businessCardData user businessCard =
   H.div
     [ A.class "profile__business-card" ]
-    [ H.div 
-      [ A.class "profile__business-card--data"] 
-      [ H.span [ A.class "user-page__pic" ] []
+    [ H.div [ A.class "profile__business-card--container" ] [ H.div
+      [ A.class "profile__business-card--data"]
+      [ H.span [ A.class "user-page__pic" ] [ Common.picElementForUser user ]
       , H.div
           [ A.class "inline profile__business-card--data--name-work" ]
           [ H.h4  []
-            [ H.input [ A.placeholder "Koko nimi"
+            [ H.input [ A.class "profile__business-card--name-work--input"
+                      , A.placeholder "Koko nimi"
                       , A.value businessCard.name
                       , E.onInput (UpdateBusinessCard Profile.Main.Name)
                       ] []
             ]
           , H.h5 []
-            [ H.input [ A.placeholder "Titteli, Työpaikka"
+            [ H.input [ A.class "profile__business-card--name-work--input"
+                      , A.placeholder "Titteli, Työpaikka"
                       , A.value businessCard.title
                       , E.onInput (UpdateBusinessCard Profile.Main.Title)
                       ] []
@@ -144,29 +146,50 @@ businessCardData user businessCard =
           ]
       ]
     , H.div [ A.class "profile__business-card--data--contact"]
-        [ H.p [] 
-          [ H.input [ A.placeholder "Paikkakunta"
-                    , A.value businessCard.location
-                    , E.onInput (UpdateBusinessCard Profile.Main.Location)
-                    ] []
-          ]
-        , H.hr [] []
-        , H.p [] 
-          [ H.input [ A.placeholder "Puhelinnumero"
-                    , A.value businessCard.phone
-                    , E.onInput (UpdateBusinessCard Profile.Main.Phone)
-                    ] []
-          ]
-        , H.hr [] []
-        , H.p [] 
-          [ H.input [ A.placeholder "Sähköposti"
-                    , A.value businessCard.email
-                    , E.onInput (UpdateBusinessCard Profile.Main.Email)
-                    ] []
-          ]
-        , H.hr [] []
+        [ businessCardDataInput businessCard Location
+        , businessCardDataInput businessCard Phone
+        , businessCardDataInput businessCard Email
         ]
+      ]
     ]
+
+
+businessCardDataInput : Models.User.BusinessCard -> BusinessCardField -> H.Html Msg
+businessCardDataInput card field =
+  let
+    value = 
+      case field of
+        Name -> card.name
+        Title -> card.title
+        Location -> card.location
+        Phone -> card.phone
+        Email -> card.email
+    class = 
+      if value == "" 
+        then "profile__business-card--input--empty profile__business-card--input"
+        else "profile__business-card--input--filled profile__business-card--input"
+      
+  in
+    H.p 
+      [ A.class class] 
+      [ H.span [ A.class class ] [ SvgIcons.answers ]
+      , H.input 
+          [ A.placeholder <| fieldToString field
+          , A.value value
+          , E.onInput (UpdateBusinessCard field)
+          ] []
+      , H.hr [A.class (class ++ " profile__business-card--input--line") ] []
+      ]
+     
+  
+fieldToString : BusinessCardField -> String
+fieldToString field =
+  case field of
+    Name -> "Koko nimi"
+    Title -> "Titteli, Työpaikka"
+    Location -> "Paikkakunta"
+    Phone -> "Puhelinnumero"
+    Email -> "Sähköposti"
 
 
 showProfileView : Model -> RootState.Model ->  H.Html (AppMessage Msg)

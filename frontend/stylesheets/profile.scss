@@ -190,12 +190,74 @@
     box-shadow: 0 2px 2px 1px #CCC;
     padding: 30px;
 
+    &--container {
+      width: 80%;
+    }
+
+    &--name-work--input {
+      padding: 5px;
+      width: 100%;
+    }
+
+    &--input {
+      @include gotham-bold;
+
+      input {
+        border: none;
+        width: 80%;
+        background-color: $light-grey;
+        font-size: 12px;
+      }
+      input:focus{
+        outline:none;
+      }
+      svg {
+        width: 20px;
+        margin-right: 10px;
+        position: relative;
+        top: 5px;
+      }
+      hr {
+        margin-top: 10px !important;
+      }
+      &--empty {
+        color: $inactive-grey;
+        svg {
+          fill: $inactive-grey;
+        }
+        hr {
+        border-top: 1px solid $inactive-grey !important;
+        }
+      }
+      &--filled {
+        color: $pink;
+        svg {
+          fill: $pink;
+        }
+        hr {
+        border-top: 1px solid $pink !important;
+        }
+      }
+    }
+
     &--data {
       &--name-work {
         margin-left: 20px;
-      display: inline-block;
-      position:relative;
-      top: -25px;
+        display: inline-block;
+        position:relative;
+        top: -25px;
+        
+        h4 {
+          color: $green;
+          @include gotham-bold;
+        }
+        h5 {
+          color: $pink;
+          @include gotham-bold;
+        }
+      }
+      &--container {
+        width: 80%;
       }
       &--contact {
         hr {
