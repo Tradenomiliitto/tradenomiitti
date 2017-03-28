@@ -112,10 +112,8 @@ module.exports = function initialize(params) {
       x: req.query.x,
       y: req.query.y
     };
-    console.log(crop);
 
     const fullPath = `${userImagesPath}/${req.query.fileName}`;
-    console.log(fullPath)
     gm(fullPath).toBuffer((err, buffer) => {
       if (err) {
         console.error('PUT Cropped Image', err);
