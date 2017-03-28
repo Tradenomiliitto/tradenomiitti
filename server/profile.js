@@ -19,6 +19,12 @@ module.exports = function initialize(params) {
       })
       .then(([ firstname, nickname, { positions, domains }, databaseUser ]) => {
         const user = util.formatUser(databaseUser);
+
+        if (!databaseUser.data.businessCard) {
+          user.businessCard = emptyBusinessCard;
+        } else {
+          user.businessCard = databaseUser.data.businessCard;
+        }
         user.extra = {
           first_name: firstname,
           nick_name: nickname,
@@ -33,6 +39,15 @@ module.exports = function initialize(params) {
         res.sendStatus(500);
       });
   }
+
+  const emptyBusinessCard = 
+    {
+      name: '',
+      title: '',
+      location: '',
+      phone: '',
+      email: ''
+    }
 
   function putMe(req, res) {
     if (!req.session || !req.session.id) {

@@ -98,10 +98,10 @@ updateBusinessCard businessCard field value =
     Just businessCard ->
       case field of 
         Name -> Just { businessCard | name = value}
-        Title -> Just { businessCard | name = value }
-        Location -> Just { businessCard | name = value }
-        Phone -> Just { businessCard | name = value }
-        Email -> Just { businessCard | name = value }
+        Title -> Just { businessCard | title = value }
+        Location -> Just { businessCard | location = value }
+        Phone -> Just { businessCard | phone = value }
+        Email -> Just { businessCard | email = value }
     Nothing -> Nothing
 
 update : Msg -> Model -> (Model, Cmd Msg)
