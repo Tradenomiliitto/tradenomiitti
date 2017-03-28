@@ -24,7 +24,7 @@ export default function initScrolling(port) {
         window.scroll({
           top: previousScrolls[path]
         });
-      }, 0)
+      }, 50)
     }
   });
 }
