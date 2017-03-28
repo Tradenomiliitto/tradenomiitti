@@ -415,7 +415,7 @@ viewProfileLink model =
           (\u ->
              H.span
              [ A.class "navbar__profile-pic" ]
-             [ {- here an img tag? -}]
+             [ Common.picElementForUser u ]
           )
         |> Maybe.withDefault
           (H.span
