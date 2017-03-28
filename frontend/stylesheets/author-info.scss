@@ -1,7 +1,7 @@
 
 .author-info {
   &__pic {
-    @include round-profile-pic(40px, #ccc);
+    @include round-profile-pic(40px, $pink);
   }
   &__info {
     display: inline-block;

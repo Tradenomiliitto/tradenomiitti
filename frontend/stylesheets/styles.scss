@@ -183,7 +183,7 @@ div#not-implemented {
   }
   &__pic {
     $size: 90px;
-    @include round-profile-pic($size, #ccc);
+    @include round-profile-pic($size, $pink);
   }
   &__name {
     @include gotham-bold;
@@ -308,7 +308,7 @@ div#not-implemented {
     }
     &-profile {
       &-pic {
-        @include round-profile-pic(40px, #ccc);
+        @include round-profile-pic(40px, $pink);
       }
       &-info {
         display: inline-block;
@@ -638,7 +638,7 @@ div#not-implemented {
   padding: 30px;
 
   & .author-info__pic {
-    @include round-profile-pic(60px, #ccc); // Override with bigger picture
+    @include round-profile-pic(60px, $pink); // Override with bigger picture
   }
 }
 
