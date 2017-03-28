@@ -49,6 +49,10 @@ $fullpage-height: calc(100vh - #{ $navbar-height });
   border-radius: #{$diameter / 2};
   background-color: $color;
   display: inline-block;
+  overflow: hidden;
+  & img {
+    width: 100%;
+  }
 }
 
 @mixin button-colors {

@@ -1,5 +1,6 @@
 module Profile.View exposing (..)
 
+import Common
 import Html as H
 import Html.Attributes as A
 import Html.Events as E
@@ -274,15 +275,7 @@ userInfoBoxEditing2 model user =
               then
                 SvgIcons.upload
               else
-                user.croppedPictureUrl
-                  |> Maybe.map (\url ->
-                                H.img
-                                [ A.src <| "/static/images/" ++ url
-                                ]
-                                []
-                              )
-                  |> Maybe.withDefault
-                    SvgIcons.userPicPlaceHolder
+                Common.picElementForUser user
             ]
           ]
         , H.div [A.class "col-md-4" ]
