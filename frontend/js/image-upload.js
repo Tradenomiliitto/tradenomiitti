@@ -3,8 +3,10 @@ import Cropper from 'cropperjs';
 let details;
 
 const imageInput =
-      `<label for="image-input" class="image-upload__file-label btn btn-primary btn-lg">Lataa kuva</label>
-      <input id="image-input" class="image-upload__file-input" type="file" onChange="imageUploadInit();"></input>` ;
+      `<div class="image-upload__file-input-container">
+  <label for="image-input" class="image-upload__file-label btn btn-primary btn-lg">Lataa kuva</label>
+  <input id="image-input" class="image-upload__file-input" type="file" onChange="imageUploadInit();"></input>
+</div>` ;
 
 export default function initImageUpload(elm2js, js2elm) {
   elm2js.subscribe((detailsIn) => {
@@ -21,11 +23,11 @@ export default function initImageUpload(elm2js, js2elm) {
     function initEditor(fileName, data) {
       const imgTag = `<img src="/static/images/${fileName}" id="image-editor-image" class="image-upload__img" />`;
       const cropperDiv = `<div>${imgTag}</div>`;
-      const editor = `${cropperDiv}
-<div>
-  <button onClick="imageUploadCancel();" class="btn btn-danger" style="margin-right: 25px;">Peru</button>
-  <button onClick="imageUploadRemove();" class="btn btn-danger" style="margin-right: 25px;">Poista</button>
-  <button onClick="imageUploadSave();" class="btn btn-primary" style="margin-right: 25px;">Valmis</button>
+      const editor = `<div>${cropperDiv}</div>
+<div class="image-upload__buttons">
+  <button onClick="imageUploadSave();" class="pull-right btn btn-primary">Valmis</button>
+  <button onClick="imageUploadCancel();" class="pull-right btn">Peru</button>
+  <button onClick="imageUploadRemove();" class="pull-right btn">Poista</button>
 </div>
 `;
       container.innerHTML = containerHtml(editor);
