@@ -226,7 +226,7 @@ update msg model =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-  Sub.none
+  Sub.map ProfileMessage Profile.subscriptions
 
 -- VIEW
 
@@ -415,7 +415,7 @@ viewProfileLink model =
           (\u ->
              H.span
              [ A.class "navbar__profile-pic" ]
-             [ {- here an img tag? -}]
+             [ Common.picElementForUser u ]
           )
         |> Maybe.withDefault
           (H.span

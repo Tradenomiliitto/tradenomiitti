@@ -1,5 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const fileUpload = require('express-fileupload');
 const uuid = require('uuid');
 const request = require('request');
 const cookieSession = require('cookie-session');
@@ -30,6 +31,8 @@ app.use(cookieSession({
 if (process.env.NON_LOCAL) {
   app.set('trust proxy', 'loopback');
 }
+
+const userImagesPath = process.env.NON_LOCAL ? '/srv/static/images' : `${__dirname}/../frontend/static/images`;
 
 const communicationsKey = process.env.COMMUNICATIONS_KEY;
 if (!communicationsKey) console.warn("You should have COMMUNICATIONS_KEY for avoine in ENV");
@@ -67,17 +70,20 @@ const emails = require('./emails')({ smtp, mailFrom });
 
 const logon = require('./logonHandling')({ communicationsKey, knex, sebacon });
 const util = require('./util')({ knex });
-const profile = require('./profile')({ knex, sebacon, util});
+const profile = require('./profile')({ knex, sebacon, util, userImagesPath });
 const ads = require('./ads')({ util, knex, emails });
 
 const urlEncoded = bodyParser.urlencoded();
 const jsonParser = bodyParser.json();
+const fileParser = fileUpload();
 
 app.post('/kirjaudu', urlEncoded, logon.login );
 app.get('/uloskirjautuminen', logon.logout);
 
 app.get('/api/profiilit/oma', profile.getMe);
 app.put('/api/profiilit/oma', jsonParser, profile.putMe);
+app.put('/api/profiilit/oma/kuva', fileParser, profile.putImage);
+app.put('/api/profiilit/oma/kuva/rajattu', fileParser, profile.putCroppedImage);
 app.post('/api/profiilit/luo', profile.consentToProfileCreation);
 app.get('/api/profiilit', profile.listProfiles);
 app.get('/api/profiilit/:id', profile.getProfile);

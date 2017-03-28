@@ -1,0 +1,58 @@
+.image-upload {
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background-color: rgba(50, 50, 50, 0.6);
+  z-index: 9342;
+  display: none;
+  &--active {
+    display: initial;
+  }
+
+  $area-min-height: 50vh;
+  &__content {
+    background-color: $white;
+    border-radius: 15px;
+    padding: 60px 30px 40px 30px;
+    min-height: $area-min-height;
+    max-height: 85vh;
+    margin-top: 10vh;
+    overflow-y: auto;
+  }
+
+  &__close-button {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    cursor: pointer;
+  }
+
+  &__file {
+    &-label {
+    }
+    &-input {
+      display: none !important;
+    }
+    &-input-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: $area-min-height;
+    }
+  }
+
+  &__buttons {
+    margin-top: 20px;
+    min-height: 50px;
+    & button {
+      margin-left: 10px;
+    }
+  }
+
+  & img {
+    max-width: 100%;
+  }
+
+}

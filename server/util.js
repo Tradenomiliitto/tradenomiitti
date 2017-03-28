@@ -14,31 +14,26 @@ module.exports = function initialize(params) {
     return knex('users').where({ id }).then(resp => (resp[0]));
   }
 
-  //formats given user as json, giving only fields that current user is allowed to see
-  function formatUserSafe(req, user) {
+  function loggedIn(req) {
     return userForSession(req)
-      .then(_ => formatUser(user))
-      .catch(e => formatUserNotLoggedIn(user));
-  } 
+      .then(_ => true)
+      .catch(_ => false);
+  }
 
-  function formatUser(user) {
+  //formats user as json. loggedIn parameter decides if users name is shown in the json
+  function formatUser(user, loggedIn) {
     const formattedUser = {};
     formattedUser.id = user.id;
     const userData = user.data;
-    formattedUser.name = userData.name || '';
+    formattedUser.name = loggedIn ? (userData.name || '') : 'Tradenomi';
     formattedUser.description = userData.description || '';
     formattedUser.title = userData.title || 'Ei titteliä';
     formattedUser.domains = userData.domains || [];
     formattedUser.positions = userData.positions || [];
     formattedUser.location = userData.location || "";
     formattedUser.profile_creation_consented = userData.profile_creation_consented || false;
+    formattedUser.cropped_picture = loggedIn ? (userData.cropped_picture || '') : '';
 
-    return formattedUser;
-  }
-
-  function formatUserNotLoggedIn(user){
-    formattedUser = formatUser(user);
-    formattedUser.name = 'Tradenomi';
     return formattedUser;
   }
 
@@ -46,6 +41,6 @@ module.exports = function initialize(params) {
     userForSession,
     userById,
     formatUser,
-    formatUserSafe
+    loggedIn
   };
 }

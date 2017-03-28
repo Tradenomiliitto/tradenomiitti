@@ -13,6 +13,14 @@ type alias Extra =
   , positions : List String
   }
 
+type alias PictureEditing =
+  { pictureFileName : String
+  , x : Float
+  , y : Float
+  , width : Float
+  , height : Float
+  }
+
 type alias Settings =
   { emails_for_answers : Bool
   , email_address : String
@@ -27,6 +35,8 @@ type alias User =
   , positions : List Skill.Model
   , profileCreated : Bool
   , location : String
+  , croppedPictureFileName : Maybe String -- this is for every logged in user
+  , pictureEditingDetails : Maybe PictureEditing
   , extra : Maybe Extra
   , businessCard : Maybe BusinessCard
   }
@@ -50,6 +60,9 @@ userDecoder =
     |> P.required "positions" (Json.list Skill.decoder)
     |> P.required "profile_creation_consented" Json.bool
     |> P.required "location" Json.string
+    |> P.required "cropped_picture" (Json.string |> Json.map
+                                     (\str -> if String.length str == 0 then Nothing else Just str))
+    |> P.optional "picture_editing" (Json.map Just pictureEditingDecoder) Nothing
     |> P.optional "extra" (Json.map Just userExtraDecoder) Nothing
     |> P.optional "businessCard" (Json.map Just businessCardDecoder) Nothing
 
@@ -62,7 +75,15 @@ encode user =
     , ("domains", JS.list (List.map Skill.encode user.domains) )
     , ("positions", JS.list (List.map Skill.encode user.positions) )
     , ("location", JS.string user.location)
-    ] ++ case user.businessCard of
+    , ("cropped_picture", JS.string (user.croppedPictureFileName |> Maybe.withDefault ""))
+    ] ++ (
+         user.pictureEditingDetails
+           |> Maybe.map (\details ->
+                          [ ("picture_editing", pictureEditingEncode details) ]
+                       )
+           |> Maybe.withDefault []
+        )
+      ++ case user.businessCard of
         Nothing -> []
         Just businessCard -> [("businessCard", JS.object (businessCardEncode businessCard))]
 
@@ -82,6 +103,16 @@ businessCardEncode businessCard =
     , ("email", JS.string businessCard.email)
     ]
 
+pictureEditingEncode : PictureEditing -> JS.Value
+pictureEditingEncode details =
+  JS.object
+    [ ("file_name", JS.string details.pictureFileName)
+    , ("x", JS.float details.x)
+    , ("y", JS.float details.y)
+    , ("width", JS.float details.width)
+    , ("height", JS.float details.height)
+    ]
+
 userExtraDecoder : Json.Decoder Extra
 userExtraDecoder =
   P.decode Extra
@@ -89,6 +120,15 @@ userExtraDecoder =
     |> P.required "nick_name" Json.string
     |> P.required "domains" (Json.list Json.string)
     |> P.required "positions" (Json.list Json.string)
+
+pictureEditingDecoder : Json.Decoder PictureEditing
+pictureEditingDecoder =
+  P.decode PictureEditing
+    |> P.required "file_name" Json.string
+    |> P.required "x" Json.float
+    |> P.required "y" Json.float
+    |> P.required "width" Json.float
+    |> P.required "height" Json.float
 
 
 settingsDecoder : Json.Decoder Settings

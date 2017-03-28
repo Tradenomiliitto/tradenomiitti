@@ -1,10 +1,9 @@
-module Profile.Main exposing (..)
+port module Profile.Main exposing (..)
 
 import Http
 import Json.Decode as Json
-import Json.Encode as JS
 import Models.Ad
-import Models.User exposing (User, BusinessCard)
+import Models.User exposing (User, BusinessCard, PictureEditing)
 import Skill
 import State.Profile exposing (Model)
 import Util
@@ -29,8 +28,21 @@ type Msg
   | UpdateUser (Result Http.Error ())
   | UpdateConsent (Result Http.Error ())
   | UpdateBusinessCard BusinessCardField String
+  | ChangeImage User
+  | ImageDetailsUpdate (String ,PictureEditing)
+  | MouseEnterProfilePic
+  | MouseLeaveProfilePic
   | NoOp
 
+
+port imageUpload : Maybe PictureEditing -> Cmd msg
+
+-- cropped picture file name and full picture details
+port imageSave : ((String, PictureEditing) -> msg) -> Sub msg
+
+subscriptions : Sub Msg
+subscriptions =
+  imageSave ImageDetailsUpdate
 
 getMe : Cmd Msg
 getMe =
@@ -177,7 +189,11 @@ update msg model =
       model ! [] -- TODO error handling
 
     UpdateUser (Ok _) ->
-      { model | editing = False } ! []
+      { model | editing = False } !
+        (model.user
+           |> Maybe.map (\user -> [ getAds user ])
+           |> Maybe.withDefault []
+        )
     
     UpdateBusinessCard field value ->
       updateUser (\u -> { u | businessCard = (updateBusinessCard u.businessCard field value) }) model ! []
@@ -193,6 +209,27 @@ update msg model =
           }
       in
         newModel ! []
+
+    ChangeImage user ->
+      model ! [ imageUpload user.pictureEditingDetails ]
+
+    ImageDetailsUpdate (cropped, editingDetails) ->
+      updateUser (\u ->
+                    { u
+                      | pictureEditingDetails = Just editingDetails
+                      , croppedPictureFileName =
+                        if String.length cropped == 0
+                        then
+                          Nothing
+                        else
+                          Just cropped
+                    }) model ! []
+
+    MouseEnterProfilePic ->
+      { model | mouseOverUserImage = True } ! []
+
+    MouseLeaveProfilePic ->
+      { model | mouseOverUserImage = False } ! []
 
     NoOp ->
       model ! []

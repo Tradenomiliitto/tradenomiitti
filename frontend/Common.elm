@@ -6,13 +6,14 @@ import Html.Events as E
 import Json.Decode as Json
 import Models.User exposing (User)
 import Nav exposing (Route, routeToPath, routeToString)
+import SvgIcons
 
 
 authorInfo : User -> H.Html msg
 authorInfo user =
   H.div
     []
-    [ H.span [ A.class "author-info__pic" ] []
+    [ H.span [ A.class "author-info__pic" ] [ picElementForUser user ]
     , H.span
       [ A.class "author-info__info" ]
       [ H.span [ A.class "author-info__name"] [ H.text user.name ]
@@ -21,6 +22,32 @@ authorInfo user =
       ]
     ]
 
+picElementForUser : User -> H.Html msg
+picElementForUser user =
+  user.croppedPictureFileName
+    |> Maybe.map (\url ->
+                   H.img
+                     [ A.src <| "/static/images/" ++ url
+                     ]
+                     []
+                )
+    |> Maybe.withDefault
+      SvgIcons.userPicPlaceHolder
+
+authorInfoWithLocation : User -> H.Html msg
+authorInfoWithLocation user =
+  H.div
+    []
+    [ H.span [ A.class "author-info__pic" ] [ picElementForUser user ]
+    , H.span
+      [ A.class "author-info__info" ]
+      [ H.span [ A.class "author-info__name"] [ H.text user.name ]
+      , H.br [] []
+      , H.span [ A.class "author-info__title"] [ H.text user.primaryPosition ]
+      , H.br [] []
+      , showLocation user.location
+      ]
+    ]
 
 link : Route -> (Route -> msg ) -> H.Html msg
 link route toMsg =
@@ -43,3 +70,9 @@ linkAction route toMsg =
     }
     (Json.succeed <| toMsg route)
 
+showLocation : String -> H.Html msg
+showLocation location =
+  H.div [ A.class "profile__location" ]
+    [ H.img [ A.class "profile__location--marker", A.src "/static/lokaatio.svg" ] []
+    , H.span [ A.class "profile__location--text" ] [ H.text (location) ]
+    ]

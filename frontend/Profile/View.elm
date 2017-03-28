@@ -1,18 +1,19 @@
 module Profile.View exposing (..)
 
+import Common
 import Html as H
 import Html.Attributes as A
 import Html.Events as E
 import Json.Decode as Json
 import Link exposing (AppMessage(..))
 import ListAds
+import Models.User exposing (User)
 import Nav
 import Profile.Main exposing (Msg(..), BusinessCardField)
 import Skill
 import State.Main as RootState
 import State.Profile exposing (Model)
-import Models.User exposing (User)
-
+import SvgIcons
 
 view : Model -> RootState.Model -> H.Html (AppMessage Msg)
 view model rootState =
@@ -316,9 +317,21 @@ userInfoBoxEditing2 model user =
     [A.class "container"]
     [ H.div
         [A.class "row"]
-        [H.div
-          [ A.class " user-page__pic-container col-md-1" ]
-          [ H.span [ A.class "user-page__pic" ] [] ]
+        [ H.div
+          [ A.class "user-page__pic-container col-md-1" ]
+          [ H.span
+            [ A.class "user-page__pic"
+            , E.onClick (ChangeImage user)
+            , E.onMouseEnter MouseEnterProfilePic
+            , E.onMouseLeave MouseLeaveProfilePic
+            ]
+            [ if model.mouseOverUserImage
+              then
+                SvgIcons.upload
+              else
+                Common.picElementForUser user
+            ]
+          ]
         , H.div [A.class "col-md-4" ]
           [ H.h4 [ A.class "user-page__name" ]
             [
@@ -363,7 +376,7 @@ userInfoBox model user =
          [ A.class "col-xs-12"]
          [ H.div
             [ A.class "pull-left user-page__pic-container" ]
-            [ H.span [ A.class "user-page__pic" ] [] ]
+            [ H.span [ A.class "user-page__pic" ] [ Common.picElementForUser user ] ]
           , H.div
               [ A.class "pull-left" ]
               [ H.h4 [ A.class "user-page__name" ]
@@ -423,8 +436,9 @@ location model user =
             (List.map (optionPreselected user.location) finnishRegions)
         else
           H.span [A.class "profile__location--text"] [ H.text (user.location) ]
-       
     ]
+
+
 optionPreselected : String -> String -> H.Html msg
 optionPreselected default value =
   if default == value
