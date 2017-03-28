@@ -14,6 +14,7 @@ window.addEventListener('scroll', (e) => {
 export default function initScrolling(port) {
   port.subscribe(shouldScroll => {
     const path = document.location.pathname
+    const previousScrollInPath = previousScrolls[path];
     if (shouldScroll) {
       previousScrolls[path] = 0;
       window.scroll({
@@ -23,7 +24,7 @@ export default function initScrolling(port) {
     } else {
       setTimeout(() => {
         window.scroll({
-          top: previousScrolls[path]
+          top: previousScrollInPath
         });
       }, 50)
     }
