@@ -15,10 +15,11 @@
   &__content {
     background-color: $white;
     border-radius: 15px;
-    padding: 60px 20px 30px 20px;
+    padding: 60px 30px 40px 30px;
     min-height: $area-min-height;
-    max-height: 90vh;
+    max-height: 85vh;
     margin-top: 10vh;
+    overflow-y: auto;
   }
 
   &__close-button {
@@ -44,6 +45,7 @@
 
   &__buttons {
     margin-top: 20px;
+    min-height: 50px;
     & button {
       margin-left: 10px;
     }
