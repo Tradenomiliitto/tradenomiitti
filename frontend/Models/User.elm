@@ -65,6 +65,7 @@ encode user =
     , ("domains", JS.list (List.map Skill.encode user.domains) )
     , ("positions", JS.list (List.map Skill.encode user.positions) )
     , ("location", JS.string user.location)
+    , ("cropped_picture", JS.string (user.croppedPictureUrl |> Maybe.withDefault ""))
     ] ++ (
          user.pictureEditingDetails
            |> Maybe.map (\details ->

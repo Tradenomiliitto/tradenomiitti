@@ -83,6 +83,7 @@ app.get('/uloskirjautuminen', logon.logout);
 app.get('/api/profiilit/oma', profile.getMe);
 app.put('/api/profiilit/oma', jsonParser, profile.putMe);
 app.put('/api/profiilit/oma/kuva', fileParser, profile.putImage);
+app.put('/api/profiilit/oma/kuva/rajattu', fileParser, profile.putCroppedImage);
 app.post('/api/profiilit/luo', profile.consentToProfileCreation);
 app.get('/api/profiilit', profile.listProfiles);
 app.get('/api/profiilit/:id', profile.getProfile);

@@ -29,14 +29,16 @@ type Msg
   | UpdateUser (Result Http.Error ())
   | UpdateConsent (Result Http.Error ())
   | ChangeImage User
-  | ImageDetailsUpdate PictureEditing
+  | ImageDetailsUpdate (String ,PictureEditing)
   | MouseEnterProfilePic
   | MouseLeaveProfilePic
   | NoOp
 
 
 port imageUpload : Maybe PictureEditing -> Cmd msg
-port imageSave : (PictureEditing -> msg) -> Sub msg
+
+-- cropped picture file name and full picture details
+port imageSave : ((String, PictureEditing) -> msg) -> Sub msg
 
 subscriptions : Sub Msg
 subscriptions =
@@ -184,8 +186,17 @@ update msg model =
     ChangeImage user ->
       model ! [ imageUpload user.pictureEditingDetails ]
 
-    ImageDetailsUpdate editingDetails ->
-      updateUser (\u -> { u | pictureEditingDetails = Just editingDetails }) model ! []
+    ImageDetailsUpdate (cropped, editingDetails) ->
+      updateUser (\u ->
+                    { u
+                      | pictureEditingDetails = Just editingDetails
+                      , croppedPictureUrl =
+                        if String.length cropped == 0
+                        then
+                          Nothing
+                        else
+                          Just cropped
+                    }) model ! []
 
     MouseEnterProfilePic ->
       { model | mouseOverUserImage = True } ! []

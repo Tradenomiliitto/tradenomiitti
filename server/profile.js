@@ -49,48 +49,9 @@ module.exports = function initialize(params) {
 
     return util.userForSession(req)
       .then(user => {
-        const dataWithoutCroppedPicture = Object.assign({}, user.data, req.body);
+        const newData = Object.assign({}, user.data, req.body);
 
-        function makeCropped() {
-          const fileName = dataWithoutCroppedPicture.picture_editing.url;
-          const { x, y, width, height } = dataWithoutCroppedPicture.picture_editing;
-          const fullPath = `${userImagesPath}/${fileName}`;
-          return new Promise((resolve, reject) => {
-            gm(fullPath)
-              .crop(width, height, x, y)
-              .resize(250)
-              .toBuffer((err, buffer) => {
-                if (err) reject(err);
-                else {
-
-                  const hash = crypto.createHash('sha1');
-                  hash.update(buffer);
-                  const fileType = getFileType(buffer);
-                  const extension = fileType && fileType.ext;
-
-                  const fileName = `${hash.digest('hex')}.${extension}`;
-                  const fullPath = `${userImagesPath}/${fileName}`;
-                  gm(buffer).write(fullPath, (err) => {
-                    if (err) {
-                      reject(err);
-                    }
-                    resolve(fileName);
-                  })
-                }
-              });
-          })
-        }
-
-        const croppedPicture = dataWithoutCroppedPicture.picture_editing.url.length === 0 ? Promise.resolve('') : makeCropped();
-
-        return croppedPicture.then(picture => {
-          const newData = Object.assign({}, dataWithoutCroppedPicture, {
-            cropped_picture: picture
-          });
-          return [user, newData];
-        })
-      }).then(([user, data ]) => {
-        return knex('users').where({ id: user.id }).update('data', data);
+        return knex('users').where({ id: user.id }).update('data', newData);
       }).then(resp => {
         res.sendStatus(200);
       }).catch(err => {
@@ -99,20 +60,22 @@ module.exports = function initialize(params) {
       })
   }
 
-  function putImage(req, res) {
-    if (!req.files || !req.files.image)
-      return res.status(400).send('No image found');
-
-    const originalBuffer = req.files.image.data;
+  function putAnyimage(req, res, size, originalBuffer, crop) {
     const fileType = getFileType(originalBuffer);
     const extension = fileType && fileType.ext;
     if (!['png', 'jpg'].includes(extension))
       return res.status(400).send('Wrong file format');
 
-    return gm(originalBuffer)
-      .resize(1024) // width 1024, keep aspect ratio
-      .autoOrient() // avoid rotating via exif issues
-      .noProfile()
+    const commonTasks = gm(originalBuffer)
+          .autoOrient() // avoid rotating exif issues
+          .noProfile();
+
+    const withPossibleCrop = crop
+          ? commonTasks.crop(crop.width, crop.height, crop.x, crop.y)
+          : commonTasks;
+
+    return withPossibleCrop
+      .resize(size) // width size, keep aspect ratio
       .toBuffer((err, buffer) => {
         if (err) {
           console.error(err);
@@ -132,7 +95,34 @@ module.exports = function initialize(params) {
           return res.send(fileName);
         })
       });
+  }
 
+  function putImage(req, res) {
+    if (!req.files || !req.files.image)
+      return res.status(400).send('No image found');
+
+    const originalBuffer = req.files.image.data;
+    return putAnyimage(req, res, 1024, originalBuffer, null);
+  }
+
+  function putCroppedImage(req, res) {
+    const crop = {
+      width: req.query.width,
+      height: req.query.height,
+      x: req.query.x,
+      y: req.query.y
+    };
+    console.log(crop);
+
+    const fullPath = `${userImagesPath}/${req.query.fileName}`;
+    console.log(fullPath)
+    gm(fullPath).toBuffer((err, buffer) => {
+      if (err) {
+        console.error('PUT Cropped Image', err);
+        return res.sendStatus(500);
+      }
+      return putAnyimage(req, res, 250, buffer, crop);
+    });
   }
 
   function consentToProfileCreation(req, res) {
@@ -179,6 +169,7 @@ module.exports = function initialize(params) {
     getMe,
     putMe,
     putImage,
+    putCroppedImage,
     consentToProfileCreation,
     listProfiles,
     getProfile

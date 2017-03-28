@@ -47,8 +47,18 @@ export default function initImageUpload(elm2js, js2elm) {
     }
 
     window.imageUploadSave = () => {
-      js2elm.send(details);
-      container.classList.remove('image-upload--active')
+
+      const url = `/api/profiilit/oma/kuva/rajattu?x=${details.x}&y=${details.y}&width=${details.width}&height=${details.height}&fileName=${details.pictureUrl}`;
+      const request = new XMLHttpRequest();
+      request.onreadystatechange = () => {
+        if (request.readyState === XMLHttpRequest.DONE) {
+          const croppedFileName = request.responseText;
+          js2elm.send([ croppedFileName, details ]);
+          container.classList.remove('image-upload--active')
+        }
+      };
+      request.open("PUT", url);
+      request.send();
     };
 
     window.imageUploadRemove = () => {
@@ -59,7 +69,7 @@ export default function initImageUpload(elm2js, js2elm) {
         width: 0,
         height: 0
       };
-      js2elm.send(details);
+      js2elm.send(['', details ]);
       container.innerHTML = containerHtml(imageInput);
     };
 
