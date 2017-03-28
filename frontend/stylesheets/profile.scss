@@ -62,18 +62,16 @@
       }
     }
     &--public-info {
-      margin-top: 50px;
+      padding-top: 50px;
+      padding-bottom: 100px;
       margin-left: 8%;
       margin-right: 8%;
+
       &--header {
         color: $pink;
         text-transform: uppercase;
         @include gotham-bold;
       }
-
-      &--box {
-      }
-
       &--text {
         font-size: 16px;
         margin-top: 30px;
@@ -191,7 +189,6 @@
     padding: 30px;
 
     &--container {
-      width: 80%;
     }
 
     &--name-work--input {
@@ -204,7 +201,6 @@
 
       input {
         border: none;
-        width: 80%;
         background-color: $light-grey;
         font-size: 12px;
       }
@@ -256,10 +252,8 @@
           @include gotham-bold;
         }
       }
-      &--container {
-        width: 80%;
-      }
       &--contact {
+        width: 80%;
         hr {
           margin-top: 0px;
           margin-bottom: 0px;
