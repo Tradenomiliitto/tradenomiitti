@@ -6,10 +6,11 @@ import Html.Attributes as A
 import Html.Events as E
 import Http
 import Json.Decode as Json
-import Models.User exposing (User)
-import State.ListUsers exposing (..)
 import Link exposing (AppMessage(..))
+import Models.User exposing (User)
 import Nav
+import State.ListUsers exposing (..)
+import Util
 
 type Msg
   = UpdateUsers (Result Http.Error (List User))
@@ -68,7 +69,7 @@ viewUser user =
       [ A.class "user-card" ]
       [ Common.authorInfoWithLocation user
       , H.hr [] []
-      , H.p [] [ H.text user.description ]
+      , H.p [] [ H.text (Util.truncateContent user.description 200) ]
       ]
     ]
 
