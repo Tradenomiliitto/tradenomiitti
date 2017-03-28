@@ -134,7 +134,7 @@ update msg model =
       in
         if needsLogin
         then
-          model ! [ Navigation.newUrl newRoute ]
+          model ! [ Navigation.modifyUrl newRoute ]
         else
           newModel ! [ cmd
                      , scrollTop shouldScroll
