@@ -1,9 +1,13 @@
 /* global describe, beforeEach, afterEach, it */
-const knex_config = require('../../knexfile');
-const knex = require('knex')(knex_config['test']);
 
 const chai = require('chai');
 const should = chai.should();
+
+const knex_config = require('../../knexfile');
+const knex = require('knex')(knex_config['test']);
+
+const util = require('../util')({ knex });
+const service = require('./ads')({ knex, util });
 
 describe('Handle ads', function() {
 
@@ -29,6 +33,9 @@ describe('Handle ads', function() {
 
 
   it('should list ads in order', (done) => {
-    done();
+    service.listAds(false).then((ads) => {
+      ads.map(ad => ad.id).should.eql([2, 3, 1]);
+      done();
+    })
   })
 });
