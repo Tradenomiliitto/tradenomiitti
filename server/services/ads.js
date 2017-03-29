@@ -2,8 +2,11 @@ module.exports = function initialize(params) {
   const knex = params.knex;
   const util = params.util;
 
-  function listAds(loggedIn) {
-    return knex('ads').where({}).orderBy('created_at', 'desc')
+  function listAds(loggedIn, limit, offset) {
+    let query = knex('ads').where({}).orderBy('created_at', 'desc');
+    if (limit !== undefined) query = query.limit(limit);
+    if (offset !== undefined) query = query.offset(offset);
+    return query
       .then(rows => Promise.all(rows.map(ad => util.formatAd(ad, loggedIn))))
   }
 

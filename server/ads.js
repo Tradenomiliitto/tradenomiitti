@@ -31,7 +31,7 @@ module.exports = function initialize(params) {
 
   function listAds(req, res) {
     util.loggedIn(req)
-      .then(loggedIn => service.listAds(loggedIn))
+      .then(loggedIn => service.listAds(loggedIn, req.query.limit, req.query.offset))
       .then(ads => res.send(ads))
   }
 

@@ -37,5 +37,15 @@ describe('Handle ads', function() {
       ads.map(ad => ad.id).should.eql([2, 3, 1]);
       done();
     })
+  });
+
+  it('should respect limit and offset', (done) => {
+    const limit = 1;
+    const offset = 2
+    service.listAds(false, limit, offset).then((ads) => {
+      ads.should.have.length(1);
+      ads[0].id.should.equal(1);
+      done();
+    })
   })
 });
