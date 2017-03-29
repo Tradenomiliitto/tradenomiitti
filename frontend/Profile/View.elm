@@ -291,7 +291,7 @@ userInfoBoxEditing2 model user =
             [
                 H.input
                 [ A.value user.primaryPosition
-                , E.on "change" (Json.map ChangeTitle E.targetValue)
+                , E.onInput ChangeTitle
                 ]
                 []
             ]
@@ -315,7 +315,7 @@ userInfoBoxEditing model user =
 userInfoBox : Model -> User -> H.Html Msg
 userInfoBox model user =
   H.div
-    [ A.class "col-md-6" ]
+    []
     [ H.div
       [ A.class "row" ]
       [ H.div

@@ -11,6 +11,7 @@ import Models.Ad
 import Nav
 import State.ListAds exposing (..)
 import SvgIcons
+import Util
 
 type Msg
   = UpdateAds (Result Http.Error (List Models.Ad.Ad))
@@ -100,7 +101,7 @@ adListView ad =
       [ H.h3
         [ A.class "list-ads__ad-preview-heading"]
         [ H.text ad.heading ]
-      , H.p [ A.class "list-ads__ad-preview-content" ] [ H.text (truncateContent ad.content 200) ]
+      , H.p [ A.class "list-ads__ad-preview-content" ] [ H.text (Util.truncateContent ad.content 200) ]
       , H.hr [] []
       , H.div
         [ A.class "list-ads__ad-preview-answer-count" ]
@@ -125,25 +126,3 @@ rowFolder x acc =
         el1 :: el2 :: els -> [x] :: row :: rows
         el :: els -> [el, x] :: rows
         els -> (x :: els) :: rows
-
--- truncates content so that the result includes at most numChars characters, taking full words. "…" is added if the content is truncated
-truncateContent : String -> Int -> String
-truncateContent content numChars =
-  if (String.length content) < numChars
-    then content
-    else
-      let
-        truncated = List.foldl (takeNChars numChars) "" (String.words content)
-      in
-        -- drop extra whitespace created by takeNChars and add three dots
-        (String.dropRight 1 truncated) ++ "…"
-
--- takes first x words where sum of the characters is less than n
-takeNChars : Int -> String -> String -> String
-takeNChars n word accumulator =
-  let
-    totalLength = (String.length accumulator) + (String.length word)
-  in
-    if totalLength < n
-      then accumulator ++ word ++ " "
-      else accumulator
