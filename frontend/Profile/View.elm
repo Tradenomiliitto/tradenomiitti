@@ -307,7 +307,7 @@ viewUser model user =
     [ H.div
       [ A.class "row user-page__section" ]
       [ H.map LocalMessage (userInfoBox model user)
-      , H.map LocalMessage (membershipDataBox user)
+      , H.map LocalMessage (contactUser user)
       ]
     ]
   , H.hr [ A.class "full-width-ruler" ] []
@@ -333,6 +333,13 @@ viewUser model user =
     ]
   ]
 
+contactUser : User -> H.Html Msg
+contactUser user =
+  H.div
+    []
+    [ H.p [] [ H.text ("Voisiko " ++ user.name ++ " auttaa sinua? Jaa käyntikorttisi tästä. ") ]
+    , H.button [ E.onClick (AddContact user)] [ H.text "ota yhteyttä" ]
+    ]
 
 userInfoBoxEditing2 : Model -> User -> H.Html Msg
 userInfoBoxEditing2 model user =

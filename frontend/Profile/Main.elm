@@ -32,6 +32,7 @@ type Msg
   | ImageDetailsUpdate (String ,PictureEditing)
   | MouseEnterProfilePic
   | MouseLeaveProfilePic
+  | AddContact User
   | NoOp
 
 
@@ -96,6 +97,10 @@ updateUser : (User -> User) -> Model -> Model
 updateUser update model =
   { model | user = Maybe.map update model.user }
 
+addContact : User -> Cmd Msg
+addContact user =
+  Http.post ("/api/kontaktit/" ++ (toString user.id)) Http.emptyBody (Json.succeed ())
+    |> Http.send (\result -> NoOp)
 
 type BusinessCardField 
   = Name
@@ -230,6 +235,9 @@ update msg model =
 
     MouseLeaveProfilePic ->
       { model | mouseOverUserImage = False } ! []
+
+    AddContact user ->
+      model ! [ addContact user ]
 
     NoOp ->
       model ! []

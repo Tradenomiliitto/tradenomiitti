@@ -8,6 +8,7 @@ module.exports = function initialize(params) {
   const sebacon = params.sebacon;
   const util = params.util;
   const userImagesPath = params.userImagesPath;
+  const emails = params.emails;
 
   function getMe(req, res) {
     if (!req.session || !req.session.id) {
@@ -183,26 +184,32 @@ module.exports = function initialize(params) {
   //gives business card from session user to user, whose id is given in request params
   function addContact(req, res) {
     return util.userForSession(req)
+      .then(user => {
+        if (user.id == req.params.user_id) {
+          return Promise.reject("User cannot add contact to himself");
+        }
+        return user;
+      })
       .then(user => 
         Promise.all(
           [ knex('contacts').where({ from_user: user.id, to_user: req.params.user_id }),     
-            Promise.resolve(user)]))
-      .then(([rows, user]) => {
-        if (rows == []) {
-          knex('contacts').insert({ from_user: user.id, to_id: req.params.user_id })
-            .then(_ => knex('users').where({ id: req.params.user_id }))
+            Promise.resolve(user) ]))
+      .then(([resp, user]) => {
+        if (resp.length == 0) {
+          knex('contacts').insert({ from_user: user.id, to_user: req.params.user_id })
+            .then(_ => util.userById(req.params.user_id))
             .then(receiver => {
-              sendNotificationForContact(receiver, user);
-              res.status(200).send();
+              emails.sendNotificationForContact(receiver, user);
+              return res.status(200).send();
             })
         }
         else {
-          Promise.reject("User has already given their business card to this user")
+          return Promise.reject("User has already given their business card to this user");
         }
       })
       .catch(e => {
         console.log("Add contact error: " + e);
-        res.status(400).send();
+        return res.status(400).send();
       })
   }
 

@@ -34,7 +34,7 @@ update msg model =
     UpdateAds (Err _) ->
       model ! [] -- TODO: show error
 
-    ProfileMessage _ ->
+    ProfileMessage message ->
       model ! [] -- TODO not like this
 
     NoOp ->
@@ -59,6 +59,7 @@ getAds userId =
 
 -- VIEW
 
+view : Model -> H.Html (AppMessage Profile.Msg)
 view model =
   let
     profileInit = State.Profile.init
@@ -68,4 +69,4 @@ view model =
       |> Maybe.withDefault []
 
   in
-    H.map ProfileMessage <| H.div [] views
+   H.div [] views

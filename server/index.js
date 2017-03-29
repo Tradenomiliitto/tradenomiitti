@@ -71,7 +71,7 @@ const emails = require('./emails')({ smtp, mailFrom });
 
 const logon = require('./logonHandling')({ communicationsKey, knex, sebacon });
 const util = require('./util')({ knex });
-const profile = require('./profile')({ knex, sebacon, util, userImagesPath });
+const profile = require('./profile')({ knex, sebacon, util, userImagesPath, emails});
 const ads = require('./ads')({ util, knex, emails });
 
 const urlEncoded = bodyParser.urlencoded();
