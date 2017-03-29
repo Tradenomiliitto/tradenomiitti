@@ -15,6 +15,7 @@ module.exports = function initialize(params) {
   }
 
   return {
-    listAds
+    listAds,
+    latestFirst
   };
 }
