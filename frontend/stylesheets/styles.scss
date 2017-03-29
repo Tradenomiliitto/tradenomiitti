@@ -133,6 +133,10 @@ $navbar-element-height: 35px;
   margin-left: 10px;
 }
 
+.navbar {
+  font-size: 18px;
+}
+
 .navbar__profile-pic {
   @include round-profile-pic($navbar-element-height, $white);
   margin-top: #{-$navbar-element-height / 4};
