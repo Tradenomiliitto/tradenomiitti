@@ -3,9 +3,8 @@ module.exports = function initialize(params) {
   const util = params.util;
 
   function listAds(loggedIn) {
-    return knex('ads').where({})
+    return knex('ads').where({}).orderBy('created_at', 'desc')
       .then(rows => Promise.all(rows.map(ad => util.formatAd(ad, loggedIn))))
-      .then(ads => ads.sort(latestFirst))
   }
 
   function latestFirst(a, b) {
