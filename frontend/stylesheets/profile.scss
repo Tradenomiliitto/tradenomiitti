@@ -130,7 +130,7 @@
     z-index: 8001;
     background-color: $medium-grey;
     &--editing {
-      background-color: $dark-grey;
+      background-color: $green;
 
       color: $white;
       & a {
@@ -188,9 +188,6 @@
     box-shadow: 0 2px 2px 1px #CCC;
     padding: 30px;
 
-    &--container {
-    }
-
     &--name-work--input {
       padding: 5px;
       width: 100%;
@@ -203,9 +200,6 @@
         border: none;
         background-color: $light-grey;
         font-size: 12px;
-      }
-      input:focus{
-        outline:none;
       }
       svg {
         width: 20px;
