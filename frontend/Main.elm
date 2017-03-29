@@ -44,11 +44,10 @@ init location =
   let
     model = initState location
 
-   -- We want to react initially to UrlChange as well
-    urlCmd = Navigation.modifyUrl (routeToPath (parseLocation location))
+    -- after the profile is loaded, an urlchange event is triggered
     profileCmd = Cmd.map ProfileMessage Profile.getMe
   in
-    model ! [ urlCmd, profileCmd ]
+    model ! [ profileCmd ]
 
 
 -- UPDATE
@@ -85,34 +84,63 @@ update msg model =
         ( newModel, cmd ) =
           case route of
             ShowAd adId ->
-              modelWithRoute ! [ Cmd.map AdMessage (Ad.getAd adId) ]
+              modelWithRoute !
+                [ if shouldScroll then
+                    Cmd.map AdMessage (Ad.getAd adId)
+                  else Cmd.none
+                ]
 
             Profile ->
-              modelWithRoute ! [ Cmd.map ProfileMessage Profile.initTasks ]
+              modelWithRoute !
+                [ if shouldScroll then
+                    Cmd.map ProfileMessage Profile.initTasks
+                  else Cmd.none
+                ]
 
             ListAds ->
-              modelWithRoute ! [ Cmd.map ListAdsMessage ListAds.getAds ]
+              modelWithRoute !
+                  [ if shouldScroll then
+                      Cmd.map ListAdsMessage ListAds.getAds
+                    else Cmd.none
+                  ]
 
             Home ->
-              modelWithRoute ! [ Cmd.map HomeMessage Home.initTasks
-                               , animation ("home-intro-canvas", False)
-                               ]
+              modelWithRoute !
+                [ if shouldScroll then
+                    Cmd.map HomeMessage Home.initTasks
+                  else Cmd.none
+                , animation ("home-intro-canvas", False)
+                ]
 
             User userId ->
               if Just userId == Maybe.map .id model.profile.user
               then
                 { model | route = Profile } ! [ Navigation.modifyUrl (routeToPath Profile) ]
               else
-                (modelWithRoute, Cmd.batch [ User.getUser userId, User.getAds userId ] |> Cmd.map UserMessage)
+                (modelWithRoute,
+                   if shouldScroll then
+                     Cmd.batch
+                       [ User.getUser userId, User.getAds userId
+                       ] |> Cmd.map UserMessage
+                   else Cmd.none
+                )
 
             ListUsers ->
-              modelWithRoute ! [ Cmd.map ListUsersMessage ListUsers.getUsers ]
+              modelWithRoute !
+                [ if shouldScroll then
+                    Cmd.map ListUsersMessage ListUsers.getUsers
+                  else Cmd.none
+                ]
 
             LoginNeeded _ ->
               modelWithRoute ! [ animation ("login-needed-canvas", False) ]
 
             Settings ->
-              modelWithRoute ! [ Cmd.map SettingsMessage Settings.initTasks ]
+              modelWithRoute !
+                [ if shouldScroll then
+                    Cmd.map SettingsMessage Settings.initTasks
+                  else Cmd.none
+                ]
 
             newRoute ->
               (modelWithRoute, Cmd.none)

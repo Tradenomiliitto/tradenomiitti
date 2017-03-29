@@ -46,6 +46,7 @@
     "postcss-cli": "^3.0.0",
     "request": "^2.79.0",
     "request-promise-native": "^1.0.3",
+    "scroll-restoration-polyfill": "^0.6.1",
     "scss-to-json": "^1.1.0",
     "smoothscroll-polyfill": "^0.3.4",
     "sqlite3": "^3.1.8",
