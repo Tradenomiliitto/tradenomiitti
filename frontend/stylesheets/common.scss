@@ -43,6 +43,11 @@ $fullpage-height: calc(100vh - #{ $navbar-height });
   src: url("/static/MundoSansStd-Light.otf");
 }
 
+@font-face  {
+  font-family: mundoSansLightItalic;
+  src: url("/static/MundoSansStd-LightItalic.otf");
+}
+
 @mixin round-profile-pic($diameter, $color) {
   width: $diameter;
   height: $diameter;
@@ -53,6 +58,13 @@ $fullpage-height: calc(100vh - #{ $navbar-height });
   & img {
     width: 100%;
   }
+}
+
+@mixin basic-header {
+  @include gotham-bold;
+  text-transform: uppercase;
+  margin-bottom: 50px;
+  margin-top: 50px;
 }
 
 @mixin button-colors {

@@ -101,7 +101,7 @@ viewAd adId model userMaybe rootUrl ad =
         [ H.div
           [ A.class "col-xs-12 col-sm-6 ad-page__ad" ]
           [ viewDate ad.createdAt
-          , H.h3 [ A.class "user-page__activity-item-heading" ] [ H.text ad.heading ]
+          , H.h1 [ A.class "user-page__activity-item-heading" ] [ H.text ad.heading ]
           , H.p [ A.class "user-page__activity-item-content" ]  [ H.text ad.content ]
           , H.hr [] []
           , Common.authorInfo ad.createdBy

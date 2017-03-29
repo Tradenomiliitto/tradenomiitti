@@ -11,7 +11,7 @@ view heading texts =
       [ A.class "row"]
       [ H.div
         [ A.class "col-sm-12" ] <|
-        [ H.h3 [ A.class "preformatted__heading" ] [ H.text heading ]
+        [ H.h1 [ A.class "preformatted__heading" ] [ H.text heading ]
         ] ++ (List.indexedMap viewSingleSection texts |> List.concat)
       ]
     ]
