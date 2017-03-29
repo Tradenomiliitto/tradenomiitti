@@ -144,10 +144,9 @@ module.exports = function initialize(params) {
   }
 
   function listProfiles(req, res) {
-    return Promise.all([ knex('users').where({}), util.loggedIn(req) ])
-      .then(([resp, loggedIn]) => {
-        return resp.map(user => util.formatUser(user, loggedIn));
-      }).then(users => res.json(users))
+    util.loggedIn(req)
+      .then(loggedIn => service.listProfiles(loggedIn, req.query.limit, req.query.offset))
+      .then(users => res.json(users))
       .catch(err => {
         console.error(err);
         res.sendStatus(500);
