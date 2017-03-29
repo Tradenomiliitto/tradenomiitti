@@ -18,6 +18,22 @@ module.exports = {
     }
   },
 
+  test: {
+    client: 'postgresql',
+    connection: {
+      database: 'tradenomiitti-test',
+      user: process.env.db_user,
+      password: process.env.db_password
+    },
+    pool: {
+      min: 2,
+      max: 5
+    },
+    migration: {
+      tableName: 'knex_migrations'
+    }
+  },
+
   production: {
     client: 'postgresql',
     connection: {
