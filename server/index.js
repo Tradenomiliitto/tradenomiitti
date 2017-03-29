@@ -129,6 +129,8 @@ app.put('/api/asetukset', jsonParser, (req, res) => {
   });
 })
 
+app.post('/api/kontaktit/:user_id', profile.addContact)
+
 app.get('*', (req, res) => {
   res.sendFile('./index.html', {root: staticDir})
 });

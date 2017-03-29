@@ -180,6 +180,32 @@ module.exports = function initialize(params) {
       });
   }
 
+  //gives business card from session user to user, whose id is given in request params
+  function addContact(req, res) {
+    return util.userForSession(req)
+      .then(user => 
+        Promise.all(
+          [ knex('contacts').where({ from_user: user.id, to_user: req.params.user_id }),     
+            Promise.resolve(user)]))
+      .then(([rows, user]) => {
+        if (rows == []) {
+          knex('contacts').insert({ from_user: user.id, to_id: req.params.user_id })
+            .then(_ => knex('users').where({ id: req.params.user_id }))
+            .then(receiver => {
+              sendNotificationForContact(receiver, user);
+              res.status(200).send();
+            })
+        }
+        else {
+          Promise.reject("User has already given their business card to this user")
+        }
+      })
+      .catch(e => {
+        console.log("Add contact error: " + e);
+        res.status(400).send();
+      })
+  }
+
   return {
     getMe,
     putMe,
@@ -187,6 +213,7 @@ module.exports = function initialize(params) {
     putCroppedImage,
     consentToProfileCreation,
     listProfiles,
-    getProfile
+    getProfile,
+    addContact
   };
 }
