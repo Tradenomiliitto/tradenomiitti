@@ -11,7 +11,10 @@ import Nav
 import State.ListAds exposing (..)
 import SvgIcons
 
-type Msg = GetAds | UpdateAds (Result Http.Error (List Models.Ad.Ad))
+type Msg
+  = GetAds
+  | UpdateAds (Result Http.Error (List Models.Ad.Ad))
+  | FooterAppeared
 
 
 update : Msg -> Model -> (Model, Cmd Msg)
@@ -24,6 +27,11 @@ update msg model =
       (model, Cmd.none)
     GetAds ->
       (model, getAds)
+    FooterAppeared ->
+      let
+        _ = Debug.log "Footer appeared in" "listads"
+      in
+        model ! []
 
 
 getAds : Cmd Msg

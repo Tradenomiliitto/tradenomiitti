@@ -13,6 +13,7 @@ import Nav
 
 type Msg
   = UpdateUsers (Result Http.Error (List User))
+  | FooterAppeared
 
 getUsers : Cmd Msg
 getUsers =
@@ -27,6 +28,11 @@ update msg model =
       { model | users = users } ! []
     UpdateUsers (Err _) ->
       model ! [] -- TODO error handling
+    FooterAppeared ->
+      let
+        _ = Debug.log "Footer appeared in" "listusers"
+      in
+        model ! []
 
 view : Model -> H.Html (AppMessage msg)
 view model =
