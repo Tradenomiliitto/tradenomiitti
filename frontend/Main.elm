@@ -101,14 +101,14 @@ update msg model =
             ListAds ->
               modelWithRoute !
                   [ if shouldScroll then
-                      Cmd.map ListAdsMessage ListAds.getAds
+                      Cmd.map ListAdsMessage (ListAds.initTasks modelWithRoute.listAds)
                     else Cmd.none
                   ]
 
             Home ->
               modelWithRoute !
                 [ if shouldScroll then
-                    Cmd.map HomeMessage Home.initTasks
+                    Cmd.map HomeMessage (Home.initTasks modelWithRoute.home)
                   else Cmd.none
                 , animation ("home-intro-canvas", False)
                 ]

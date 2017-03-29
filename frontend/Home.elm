@@ -32,8 +32,12 @@ update msg model =
     ClickCreateProfile ->
       { model | createProfileClicked = True } ! []
 
-initTasks : Cmd Msg
-initTasks = Cmd.batch [ Cmd.map ListAdsMessage ListAds.getAds, Cmd.map ListUsersMessage ListUsers.getUsers ]
+initTasks : Model -> Cmd Msg
+initTasks model =
+  Cmd.batch
+    [ Cmd.map ListAdsMessage (ListAds.initTasks model.listAds)
+    , Cmd.map ListUsersMessage ListUsers.getUsers
+    ]
 
 
 view : Model -> Maybe User -> H.Html (AppMessage Msg)
