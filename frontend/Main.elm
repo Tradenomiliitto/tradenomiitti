@@ -129,7 +129,7 @@ update msg model =
             ListUsers ->
               modelWithRoute !
                 [ if shouldScroll then
-                    Cmd.map ListUsersMessage ListUsers.getUsers
+                    Cmd.map ListUsersMessage (ListUsers.initTasks model.listUsers)
                   else Cmd.none
                 ]
 

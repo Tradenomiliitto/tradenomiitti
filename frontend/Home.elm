@@ -36,7 +36,7 @@ initTasks : Model -> Cmd Msg
 initTasks model =
   Cmd.batch
     [ Cmd.map ListAdsMessage (ListAds.initTasks model.listAds)
-    , Cmd.map ListUsersMessage ListUsers.getUsers
+    , Cmd.map ListUsersMessage (ListUsers.initTasks model.listUsers)
     ]
 
 
