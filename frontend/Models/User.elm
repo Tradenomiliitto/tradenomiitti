@@ -141,9 +141,8 @@ settingsDecoder =
 businessCardDecoder : Json.Decoder BusinessCard
 businessCardDecoder =
   P.decode BusinessCard
-    |> P.optional "name" Json.string ""
-    |> P.optional "title" Json.string ""
-    |> P.optional "location" Json.string ""
-    |> P.optional "phone" Json.string ""
-    |> P.optional "email" Json.string ""
-
+    |> P.required "name" Json.string
+    |> P.required "title" Json.string
+    |> P.required "location" Json.string
+    |> P.required "phone" Json.string
+    |> P.required "email" Json.string

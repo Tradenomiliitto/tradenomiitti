@@ -165,20 +165,21 @@ businessCardDataInput card field =
         Phone -> card.phone
         Email -> card.email
     class = 
-      if value == "" 
-        then "profile__business-card--input--empty profile__business-card--input"
-        else "profile__business-card--input--filled profile__business-card--input"
-      
+      A.classList
+        [ ("profile__business-card--input", True)
+        , ("profile__business-card--input--empty", value == "")
+        , ("profile__business-card--input--filled", value /= "") 
+        ]
   in
     H.p 
-      [ A.class class] 
-      [ H.span [ A.class class ] [ SvgIcons.answers ]
+      [ class ] 
+      [ H.span [ class ] [ SvgIcons.answers ]
       , H.input 
           [ A.placeholder <| fieldToString field
           , A.value value
           , E.onInput (UpdateBusinessCard field)
           ] []
-      , H.hr [A.class (class ++ " profile__business-card--input--line") ] []
+      , H.hr [ A.class "profile__business-card--input--line", class ] []
       ]
      
   
