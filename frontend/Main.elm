@@ -487,7 +487,7 @@ viewPage model =
     content =
       case model.route of
         User userId ->
-          H.map UserMessage <| User.view model.user
+          H.map (mapAppMessage ProfileMessage) <| User.view model.user
         Profile ->
           H.map (mapAppMessage ProfileMessage) <| Profile.View.view model.profile model
         LoginNeeded route ->

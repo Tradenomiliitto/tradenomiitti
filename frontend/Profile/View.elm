@@ -9,7 +9,7 @@ import Link exposing (AppMessage(..))
 import ListAds
 import Models.User exposing (User)
 import Nav
-import Profile.Main exposing (Msg(..))
+import Profile.Main exposing (Msg(..), BusinessCardField(..))
 import Skill
 import State.Main as RootState
 import State.Profile exposing (Model)
@@ -93,7 +93,7 @@ publicInfoEditing model user =
     [ H.div
         [ A.class "profile__editing--public-info row" ]
         [ publicInfo model user
-        , businessCard ]
+        , businessCard user ]
     ]
 
 publicInfo : Model -> User -> H.Html Msg
@@ -105,21 +105,99 @@ publicInfo model user =
     , userInfoBoxEditing model user ]
 
 
-businessCard : H.Html msg
-businessCard =
+businessCard : User -> H.Html Msg
+businessCard user =
   H.div
     [ A.class "col-sm-6 profile__editing--public-info--box" ]
     [ H.h3 [A.class "profile__editing--public-info--header"] [H.text "käyntikortti" ]
     , H.p [A.class "profile__editing--public-info--text"] [ H.text "Täydennä alle tiedot, jotka haluat lähettää käyntikortin mukana. "
     , H.span [ A.class "profile__editing--bold" ] [ H.text "Tiedot näkyvät vain niille, joille olet lähettänyt kortin" ]
      ]
+    , case user.businessCard of
+        Just businessCard ->
+          businessCardData user businessCard
+        Nothing ->
+          H.div [] [ H.text "Käyntikorttia ei löytynyt" ]
     ]
+
+businessCardData : User -> Models.User.BusinessCard -> H.Html Msg
+businessCardData user businessCard =
+  H.div
+    [ A.class "profile__business-card" ]
+    [ H.div [ A.class "profile__business-card--container" ] [ H.div
+      [ A.class "profile__business-card--data"]
+      [ H.span [ A.class "user-page__pic" ] [ Common.picElementForUser user ]
+      , H.div
+          [ A.class "inline profile__business-card--data--name-work" ]
+          [ H.h4  []
+            [ H.input [ A.class "profile__business-card--name-work--input"
+                      , A.placeholder "Koko nimi"
+                      , A.value businessCard.name
+                      , E.onInput (UpdateBusinessCard Profile.Main.Name)
+                      ] []
+            ]
+          , H.h5 []
+            [ H.input [ A.class "profile__business-card--name-work--input"
+                      , A.placeholder "Titteli, Työpaikka"
+                      , A.value businessCard.title
+                      , E.onInput (UpdateBusinessCard Profile.Main.Title)
+                      ] []
+            ]
+          ]
+      ]
+    , H.div [ A.class "profile__business-card--data--contact"]
+        [ businessCardDataInput businessCard Location
+        , businessCardDataInput businessCard Phone
+        , businessCardDataInput businessCard Email
+        ]
+      ]
+    ]
+
+
+businessCardDataInput : Models.User.BusinessCard -> BusinessCardField -> H.Html Msg
+businessCardDataInput card field =
+  let
+    value = 
+      case field of
+        Name -> card.name
+        Title -> card.title
+        Location -> card.location
+        Phone -> card.phone
+        Email -> card.email
+    class = 
+      A.classList
+        [ ("profile__business-card--input", True)
+        , ("profile__business-card--input--empty", value == "")
+        , ("profile__business-card--input--filled", value /= "")
+        ]
+  in
+    H.p 
+      [ class ]
+      [ H.span [ class ] [ SvgIcons.answers ]
+      , H.input 
+          [ A.placeholder <| fieldToString field
+          , A.value value
+          , E.onInput (UpdateBusinessCard field)
+          ] []
+      , H.hr [ A.class "profile__business-card--input--line", class ] []
+      ]
+     
+  
+fieldToString : BusinessCardField -> String
+fieldToString field =
+  case field of
+    Name -> "Koko nimi"
+    Title -> "Titteli, Työpaikka"
+    Location -> "Paikkakunta"
+    Phone -> "Puhelinnumero"
+    Email -> "Sähköposti"
+
 
 showProfileView : Model -> RootState.Model ->  H.Html (AppMessage Msg)
 showProfileView model rootState =
   H.div [ A.class "user-page" ] <|
     [ profileTopRow model rootState
-    ] ++ (viewUserMaybe model)
+    ] ++ (viewUserMaybe model True)
 
 
 competences : Model -> User -> H.Html Msg
@@ -210,10 +288,10 @@ profileTopRow model rootState =
         ]
       ]
 
-viewUserMaybe : Model -> List (H.Html (AppMessage Msg))
-viewUserMaybe model =
+viewUserMaybe : Model -> Bool -> List (H.Html (AppMessage Msg))
+viewUserMaybe model ownProfile =
   model.user
-    |> Maybe.map (viewUser model)
+    |> Maybe.map (viewUser model ownProfile)
     |> Maybe.withDefault
       [ H.div
         [ A.class "container"]
@@ -223,14 +301,16 @@ viewUserMaybe model =
       ]
 
 
-viewUser : Model -> User -> List (H.Html (AppMessage Msg))
-viewUser model user =
+viewUser : Model -> Bool -> User -> List (H.Html (AppMessage Msg))
+viewUser model ownProfile user =
   [ H.div
     [ A.class "container" ]
     [ H.div
-      [ A.class "row user-page__section" ]
+      [ A.class "row user-page__section user-page__first-block" ]
       [ H.map LocalMessage (userInfoBox model user)
-      , H.map LocalMessage (membershipDataBox user)
+      , if ownProfile
+          then H.map LocalMessage (membershipDataBox user)
+          else H.map LocalMessage (contactUser user)
       ]
     ]
   , H.hr [ A.class "full-width-ruler" ] []
@@ -256,6 +336,13 @@ viewUser model user =
     ]
   ]
 
+contactUser : User -> H.Html Msg
+contactUser user =
+  H.div
+    [ A.class "col-md-6 user-page__contact-user"]
+    [ H.p [] [ H.text ("Voisiko " ++ user.name ++ " auttaa sinua? Jaa käyntikorttisi tästä. ") ]
+    , H.button [ E.onClick (AddContact user) , A.class "btn btn-primary" ] [ H.text "ota yhteyttä" ]
+    ]
 
 userInfoBoxEditing2 : Model -> User -> H.Html Msg
 userInfoBoxEditing2 model user =
@@ -315,7 +402,7 @@ userInfoBoxEditing model user =
 userInfoBox : Model -> User -> H.Html Msg
 userInfoBox model user =
   H.div
-    []
+    [ A.class "col-md-6 user-page__user-info-box" ]
     [ H.div
       [ A.class "row" ]
       [ H.div
