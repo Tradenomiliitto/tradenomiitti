@@ -112,6 +112,7 @@ $navbar-element-height: 35px;
 .navbar__inverse-button {
   height: $navbar-height;
   $inverse-button-height: $navbar-element-height;
+  font-size: 15px;
 
   @include gotham-bold;
 
