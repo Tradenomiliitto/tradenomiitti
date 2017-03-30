@@ -305,7 +305,7 @@ viewUser model ownProfile user =
   [ H.div
     [ A.class "container" ]
     [ H.div
-      [ A.class "row user-page__section" ]
+      [ A.class "row user-page__section user-page__first-block" ]
       [ H.map LocalMessage (userInfoBox model user)
       , if ownProfile
           then H.map LocalMessage (membershipDataBox user)
@@ -338,9 +338,9 @@ viewUser model ownProfile user =
 contactUser : User -> H.Html Msg
 contactUser user =
   H.div
-    []
+    [ A.class "col-md-6 user-page__contact-user"]
     [ H.p [] [ H.text ("Voisiko " ++ user.name ++ " auttaa sinua? Jaa käyntikorttisi tästä. ") ]
-    , H.button [ E.onClick (AddContact user)] [ H.text "ota yhteyttä" ]
+    , H.button [ E.onClick (AddContact user) , A.class "btn btn-primary" ] [ H.text "ota yhteyttä" ]
     ]
 
 userInfoBoxEditing2 : Model -> User -> H.Html Msg
@@ -401,7 +401,7 @@ userInfoBoxEditing model user =
 userInfoBox : Model -> User -> H.Html Msg
 userInfoBox model user =
   H.div
-    [ A.class "col-md-6" ]
+    [ A.class "col-md-6 user-page__user-info-box" ]
     [ H.div
       [ A.class "row" ]
       [ H.div
