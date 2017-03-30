@@ -168,11 +168,11 @@ businessCardDataInput card field =
       A.classList
         [ ("profile__business-card--input", True)
         , ("profile__business-card--input--empty", value == "")
-        , ("profile__business-card--input--filled", value /= "") 
+        , ("profile__business-card--input--filled", value /= "")
         ]
   in
     H.p 
-      [ class ] 
+      [ class ]
       [ H.span [ class ] [ SvgIcons.answers ]
       , H.input 
           [ A.placeholder <| fieldToString field
