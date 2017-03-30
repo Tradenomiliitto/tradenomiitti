@@ -94,6 +94,7 @@ update msg model =
                        case appMsg of
                          LocalUpdateMessage msg -> mapper msg
                          ApiError err -> Error err
+                         Reroute route -> NewUrl route
                     ) cmd
           else
             Cmd.none

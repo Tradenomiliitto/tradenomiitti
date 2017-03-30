@@ -12,6 +12,7 @@ type ViewMessage msg
 type UpdateMessage msg
   = LocalUpdateMessage msg
   | ApiError Http.Error
+  | Reroute Route
 
 
 localMap : (msg1 -> msg2) -> Cmd (UpdateMessage msg1) -> Cmd (UpdateMessage msg2)
@@ -21,6 +22,7 @@ localMap msgMapper cmd =
       case appMsg of
         LocalUpdateMessage msg -> LocalUpdateMessage <| msgMapper msg
         ApiError err -> ApiError err
+        Reroute route -> Reroute route
   in
     Cmd.map mapper cmd
 
