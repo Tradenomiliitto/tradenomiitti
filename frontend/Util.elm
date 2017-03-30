@@ -2,6 +2,11 @@ module Util exposing (..)
 
 import Http
 import Json.Encode as JS
+import Nav exposing (Route)
+
+
+type AppMessage msg  = Link Route | LocalMessage msg
+
 
 put : String -> JS.Value -> Http.Request ()
 put url body =

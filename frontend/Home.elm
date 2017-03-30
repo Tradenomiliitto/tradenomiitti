@@ -2,12 +2,13 @@ module Home exposing (..)
 
 import Html as H
 import Html.Attributes as A
-import Link exposing (..)
+import Link
 import ListAds
 import ListUsers
 import Models.User exposing (User)
 import Nav
 import State.Home exposing (..)
+import Util exposing (AppMessage(..))
 
 type Msg
   = ListAdsMessage ListAds.Msg
@@ -60,7 +61,7 @@ introAnimation =
            , A.class "home__intro-canvas"
            ] []
 
-introBoxes : Maybe User -> List ( H.Html (Link.AppMessage Msg) )
+introBoxes : Maybe User -> List ( H.Html (AppMessage Msg) )
 introBoxes userMaybe =
   let
     createProfile =

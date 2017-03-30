@@ -9,7 +9,6 @@ import Html as H
 import Html.Attributes as A
 import Html.Events as E
 import Json.Decode as Json
-import Link exposing (..)
 import ListAds
 import ListUsers
 import LoginNeeded
@@ -23,6 +22,7 @@ import Settings
 import State.Main exposing (..)
 import Static
 import User
+import Util exposing (AppMessage(..))
 
 type alias HtmlId = String
 port animation : (HtmlId, Bool) -> Cmd msg -- send True on splash screen, False otherwise

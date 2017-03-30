@@ -1,11 +1,11 @@
 module Link exposing (..)
-import Nav exposing (Route, routeToPath, routeToString)
-import Html as H
-import Html.Events as E
-import Html.Attributes as A
-import Json.Decode as Json
 
-type AppMessage msg  = Link Route | LocalMessage msg
+import Html as H
+import Html.Attributes as A
+import Html.Events as E
+import Json.Decode as Json
+import Nav exposing (Route, routeToPath, routeToString)
+import Util exposing (AppMessage(..))
 
 
 link : Route -> String -> H.Html (AppMessage msg)

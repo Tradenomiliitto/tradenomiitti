@@ -3,7 +3,7 @@ module User exposing (..)
 import Html as H
 import Http
 import Json.Decode as Json
-import Link exposing (AppMessage)
+import Util exposing (AppMessage)
 import Models.Ad exposing (Ad)
 import Models.User exposing (User)
 import Profile.View

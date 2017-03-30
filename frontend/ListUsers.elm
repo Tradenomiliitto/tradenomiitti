@@ -6,11 +6,11 @@ import Html.Attributes as A
 import Html.Events as E
 import Http
 import Json.Decode as Json
-import Link exposing (AppMessage(..))
+import Link
 import Models.User exposing (User)
 import Nav
 import State.ListUsers exposing (..)
-import Util
+import Util exposing (AppMessage(..))
 
 type Msg
   = UpdateUsers (Result Http.Error (List User))

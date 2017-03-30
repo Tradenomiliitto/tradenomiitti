@@ -5,12 +5,12 @@ import Html as H
 import Html.Attributes as A
 import Http
 import Json.Decode as Json
-import Link exposing (AppMessage(..))
+import Link
 import Models.Ad
 import Nav
 import State.ListAds exposing (..)
 import SvgIcons
-import Util
+import Util exposing (AppMessage(..))
 
 type Msg = GetAds | UpdateAds (Result Http.Error (List Models.Ad.Ad))
 

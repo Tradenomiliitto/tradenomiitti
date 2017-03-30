@@ -5,7 +5,7 @@ import Html as H
 import Html.Attributes as A
 import Html.Events as E
 import Json.Decode as Json
-import Link exposing (AppMessage(..))
+import Util exposing (AppMessage(..))
 import ListAds
 import Models.User exposing (User)
 import Nav
