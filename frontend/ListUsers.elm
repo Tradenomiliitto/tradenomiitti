@@ -10,21 +10,44 @@ import Models.User exposing (User)
 import Nav
 import State.ListUsers exposing (..)
 import Util exposing (ViewMessage(..), UpdateMessage(..))
+import List.Extra as List
+
+
+getUsers : Model -> Cmd (UpdateMessage Msg)
+getUsers model =
+  let
+    url = "/api/profiilit/?limit="
+      ++ toString limit
+      ++ "&offset="
+      ++ toString model.cursor
+  in
+    Http.get url (Json.list Models.User.userDecoder)
+      |> Util.errorHandlingSend UpdateUsers
 
 type Msg
   = UpdateUsers (List User)
+  | FooterAppeared
 
-getUsers : Cmd (UpdateMessage Msg)
-getUsers =
-  Http.get "/api/profiilit" (Json.list Models.User.userDecoder)
-    |> Util.errorHandlingSend UpdateUsers
+initTasks : Model -> Cmd (UpdateMessage Msg)
+initTasks = getUsers
 
 
-update : Msg -> Model -> (Model, Cmd Msg)
+update : Msg -> Model -> (Model, Cmd (UpdateMessage Msg))
 update msg model =
   case msg of
     UpdateUsers users ->
-      { model | users = users } ! []
+      { model
+        | users = List.uniqueBy .id <| model.users ++ users
+        -- always advance by full amount, so we know when to stop asking for more
+        , cursor = model.cursor + limit
+      } ! []
+
+    FooterAppeared ->
+      if model.cursor > List.length model.users
+      then
+        model ! []
+      else
+        model ! [ getUsers model ]
 
 view : Model -> H.Html (ViewMessage msg)
 view model =

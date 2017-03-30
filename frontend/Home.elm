@@ -16,28 +16,29 @@ type Msg
   | ClickCreateProfile
 
 
-update : Msg -> Model -> (Model, Cmd Msg)
+update : Msg -> Model -> (Model, Cmd (UpdateMessage Msg))
 update msg model =
   case msg of
     ListAdsMessage msg ->
       let
         (listAdsModel, cmd) = ListAds.update msg model.listAds
       in
-        { model | listAds = listAdsModel } ! [ Cmd.map ListAdsMessage cmd ]
+        { model | listAds = listAdsModel } ! [ Cmd.map (LocalUpdateMessage << ListAdsMessage) cmd ]
     ListUsersMessage msg ->
       let
         (listUsersModel, cmd) = ListUsers.update msg model.listUsers
       in
-        { model | listUsers = listUsersModel } ! [ Cmd.map ListUsersMessage cmd ]
+        { model | listUsers = listUsersModel } ! [ Util.localMap ListUsersMessage cmd ]
 
     ClickCreateProfile ->
       { model | createProfileClicked = True } ! []
 
-initTasks : Cmd (UpdateMessage Msg)
-initTasks = Cmd.batch
-            [ Cmd.map (LocalUpdateMessage << ListAdsMessage) ListAds.getAds
-            , Util.localMap ListUsersMessage ListUsers.getUsers
-            ]
+initTasks : Model -> Cmd (UpdateMessage Msg)
+initTasks model =
+  Cmd.batch
+    [ Cmd.map (LocalUpdateMessage << ListAdsMessage) (ListAds.initTasks model.listAds)
+    , Util.localMap ListUsersMessage (ListUsers.initTasks model.listUsers)
+    ]
 
 
 view : Model -> Maybe User -> H.Html (ViewMessage Msg)

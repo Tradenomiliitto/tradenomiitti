@@ -29,6 +29,7 @@ type alias HtmlId = String
 port animation : (HtmlId, Bool) -> Cmd msg -- send True on splash screen, False otherwise
 port scrollTop : Bool -> Cmd msg -- parameter tells whether to scroll
 port sendGaPageView : String -> Cmd msg -- parameter is path
+port footerAppeared : (Bool -> msg) -> Sub msg
 
 
 main : Program Never Model Msg
@@ -110,12 +111,11 @@ update msg model =
 
             ListAds ->
               modelWithRoute !
-                  [ init ListAdsMessage ListAds.getAds
-                  ]
+                  [ init ListAdsMessage (ListAds.initTasks modelWithRoute.listAds) ]
 
             Home ->
               modelWithRoute !
-                [ initWithUpdateMessage HomeMessage Home.initTasks
+                [ initWithUpdateMessage HomeMessage (Home.initTasks modelWithRoute.home)
                 , animation ("home-intro-canvas", False)
                 ]
 
@@ -130,7 +130,7 @@ update msg model =
 
             ListUsers ->
               modelWithRoute !
-                [ initWithUpdateMessage ListUsersMessage ListUsers.getUsers
+                [ initWithUpdateMessage ListUsersMessage (ListUsers.initTasks model.listUsers)
                 ]
 
             LoginNeeded _ ->
@@ -234,7 +234,7 @@ update msg model =
       let
         (listUsersModel, cmd) = ListUsers.update msg model.listUsers
       in
-        { model | listUsers = listUsersModel } ! [ Cmd.map ListUsersMessage cmd ]
+        { model | listUsers = listUsersModel } ! [ unpackUpdateMessage ListUsersMessage cmd ]
 
     AdMessage msg ->
       let
@@ -246,7 +246,7 @@ update msg model =
       let
         (homeModel, cmd) = Home.update msg model.home
       in
-        { model | home = homeModel } ! [ Cmd.map HomeMessage cmd ]
+        { model | home = homeModel } ! [ unpackUpdateMessage HomeMessage cmd ]
 
     SettingsMessage msg ->
       let
@@ -267,7 +267,20 @@ update msg model =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-  Sub.map ProfileMessage Profile.subscriptions
+  let
+    footerListener =
+      case model.route of
+        ListAds ->
+          Sub.map ListAdsMessage (footerAppeared (always ListAds.FooterAppeared))
+        ListUsers ->
+          Sub.map ListUsersMessage (footerAppeared (always ListUsers.FooterAppeared))
+        _ ->
+          Sub.none
+  in
+    Sub.batch
+      [ Sub.map ProfileMessage Profile.subscriptions
+      , footerListener
+      ]
 
 -- VIEW
 
