@@ -79,36 +79,34 @@ update msg model =
     UrlChange location ->
       let
         shouldScroll = model.scrollTop
+
+        init mapper task =
+          if shouldScroll then
+            Cmd.map mapper task
+          else Cmd.none
+
         route = parseLocation location
         modelWithRoute = { model | route = route, scrollTop = False }
         ( newModel, cmd ) =
           case route of
             ShowAd adId ->
               modelWithRoute !
-                [ if shouldScroll then
-                    Cmd.map AdMessage (Ad.getAd adId)
-                  else Cmd.none
+                [ init AdMessage (Ad.getAd adId)
                 ]
 
             Profile ->
               modelWithRoute !
-                [ if shouldScroll then
-                    Cmd.map ProfileMessage Profile.initTasks
-                  else Cmd.none
+                [ init ProfileMessage Profile.initTasks
                 ]
 
             ListAds ->
               modelWithRoute !
-                  [ if shouldScroll then
-                      Cmd.map ListAdsMessage ListAds.getAds
-                    else Cmd.none
+                  [ init ListAdsMessage ListAds.getAds
                   ]
 
             Home ->
               modelWithRoute !
-                [ if shouldScroll then
-                    Cmd.map HomeMessage Home.initTasks
-                  else Cmd.none
+                [ init HomeMessage Home.initTasks
                 , animation ("home-intro-canvas", False)
                 ]
 
@@ -118,16 +116,12 @@ update msg model =
                 { model | route = Profile } ! [ Navigation.modifyUrl (routeToPath Profile) ]
               else
                 (modelWithRoute,
-                   if shouldScroll then
-                     Cmd.map UserMessage (User.initTasks userId)
-                   else Cmd.none
+                   init UserMessage (User.initTasks userId)
                 )
 
             ListUsers ->
               modelWithRoute !
-                [ if shouldScroll then
-                    Cmd.map ListUsersMessage ListUsers.getUsers
-                  else Cmd.none
+                [ init ListUsersMessage ListUsers.getUsers
                 ]
 
             LoginNeeded _ ->
@@ -135,9 +129,7 @@ update msg model =
 
             Settings ->
               modelWithRoute !
-                [ if shouldScroll then
-                    Cmd.map SettingsMessage Settings.initTasks
-                  else Cmd.none
+                [ init SettingsMessage Settings.initTasks
                 ]
 
             newRoute ->
