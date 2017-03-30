@@ -42,13 +42,18 @@ git push ENV master
 ### Local development
 
 * Install and set up PostgreSQL.
-* Install graphics magick
+   * Set up databases `tradenomiitti` and `tradenomiitti-test`
+* Install graphicsmagick
+   * It's under that name in most package managers (Ubuntu, Arch, brew for macOS)
 
 Compile elm & scss
+
 ```
 npm run compilelocal
 ```
+
 Run the server:
+
 ```
 export SEBACON_CUSTOMER=
 export SEBACON_USER=
@@ -65,4 +70,10 @@ export SMTP_TLS=
 export MAIL_FROM=
 
 npm start
+```
+
+Run tests:
+
+```
+npm test
 ```

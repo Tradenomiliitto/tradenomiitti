@@ -7,17 +7,8 @@ const scssVars = scssToJson(colorsFilepath);
 module.exports = function init(params) {
 
   function sendNotificationForAnswer(dbUser, ad) {
-    const { email_address, emails_for_answers } = dbUser.settings || {};
-    if (! (emails_for_answers && email_address && email_address.includes('@'))) {
-      return;
-    }
-    const server = emailjs.server.connect(params.smtp);
-    server.send({
-      from: params.mailFrom,
-      to: email_address,
-      text: 'Kirjaudu Tradenomiittiin nähdäksesi vastauksen',
-      subject: 'Ilmoitukseesi on vastattu',
-      attachment: [
+
+    const attachment = [
         { data: answerNotificationHtml(ad), alternative: true,
           related: [
             { path: `${__dirname}/../frontend/assets/tradenomiitti-tunnus-email.png`, type: 'image/png',
@@ -27,10 +18,47 @@ module.exports = function init(params) {
           ]
         },
       ]
+    const text = 'Kirjaudu Tradenomiittiin nähdäksesi vastauksen';
+    const subject = 'Ilmoitukseesi on vastattu'
+    sendEmail(dbUser, text, subject, attachment);
+  }
+
+  function sendNotificationForContact(receiver, contactUser) {
+    const attachment = [
+        { data: contactNotificationHtml(contactUser), alternative: true,
+          related: [
+            { path: `${__dirname}/../frontend/assets/tradenomiitti-tunnus-email.png`, type: 'image/png',
+              headers: {"Content-ID":"<logo.png>"},
+              name: 'logo.png'
+            }
+          ]
+        },
+      ]
+    const text = 'Kirjaudu Tradenomiittiin nähdäksesi kontaktin profiilin'
+    const subject = 'Olet saanut uuden kontaktin'
+
+    sendEmail(receiver, text, subject, attachment);
+  }
+
+  function sendEmail(receiver, text, subject, attachment) {
+    const { email_address, emails_for_answers } = receiver.settings || {};
+    if (! (emails_for_answers && email_address && email_address.includes('@'))) {
+      return;
+    }
+    const server = emailjs.server.connect(params.smtp);
+    server.send({
+      from: params.mailFrom,
+      to: email_address,
+      text: text,
+      subject: subject,
+      attachment: attachment
     }, (err, message) => {
-      console.log(err || message);
+      if(err) {
+        console.log(err);
+      }
     });
   }
+  
 
   function answerNotificationHtml(ad) {
     return (
@@ -56,7 +84,30 @@ module.exports = function init(params) {
     );
   }
 
+  function contactNotificationHtml(user) {
+    return (
+`
+<html>
+  <head></head>
+  <body style="text-align: center; width: 600px; font-family: Arial, sans-serif; margin-left: auto; margin-right: auto;">
+    <img style="width: 45px;" src="cid:logo.png" alt="logo" />
+    <h1 style="margin-bottom: 50px; color: ${scssVars.$pink}">Olet saanut uuden kontaktin</h1>
+    <p>Toinen tradenomi on antanut sinulle käyntikorttinsa Tradenomiitti-palvelussa. Voitte nyt olla yhteydessä ja jakaa osaamistanne vaikka kasvotusten.</p>
+    <p>Profiili-sivun kautta voit lähettää oman käyntikorttisi</p>
+    <p style="margin-top: 80px;">
+      <a style="text-transform: uppercase; background-color: ${scssVars.$pink}; padding-left: 45px; padding-right: 45px; padding-top: 25px; padding-bottom: 25px; color: ${scssVars.$white}; text-decoration: none;" href="https://tradenomiitti.fi/tradenomit/${user.id}">Katso profiili</a>
+    </p>
+    <p>Tähän tulee saateviesti...</p>
+    <p>...ja tähän käyntikortti</p>
+    <p style="margin-top: 50px;">Etkö halua enää sähköposteja? Voit muokata sähköpostiasetuksiasi <a href="https://tradenomiitti.fi/asetukset" style="text-decoration: none; color: inherit; font-weight: bold;">Käyttäjätilin asetuksista</a>.</p>
+  </body>
+</html>
+`
+    );
+  }
+
   return {
-    sendNotificationForAnswer
+    sendNotificationForAnswer,
+    sendNotificationForContact
   };
 }

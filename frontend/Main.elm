@@ -29,6 +29,7 @@ type alias HtmlId = String
 port animation : (HtmlId, Bool) -> Cmd msg -- send True on splash screen, False otherwise
 port scrollTop : Bool -> Cmd msg -- parameter tells whether to scroll
 port sendGaPageView : String -> Cmd msg -- parameter is path
+port footerAppeared : (Bool -> msg) -> Sub msg
 
 
 main : Program Never Model Msg
@@ -101,14 +102,14 @@ update msg model =
             ListAds ->
               modelWithRoute !
                   [ if shouldScroll then
-                      Cmd.map ListAdsMessage ListAds.getAds
+                      Cmd.map ListAdsMessage (ListAds.initTasks modelWithRoute.listAds)
                     else Cmd.none
                   ]
 
             Home ->
               modelWithRoute !
                 [ if shouldScroll then
-                    Cmd.map HomeMessage Home.initTasks
+                    Cmd.map HomeMessage (Home.initTasks modelWithRoute.home)
                   else Cmd.none
                 , animation ("home-intro-canvas", False)
                 ]
@@ -129,7 +130,7 @@ update msg model =
             ListUsers ->
               modelWithRoute !
                 [ if shouldScroll then
-                    Cmd.map ListUsersMessage ListUsers.getUsers
+                    Cmd.map ListUsersMessage (ListUsers.initTasks model.listUsers)
                   else Cmd.none
                 ]
 
@@ -259,7 +260,20 @@ update msg model =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-  Sub.map ProfileMessage Profile.subscriptions
+  let
+    footerListener =
+      case model.route of
+        ListAds ->
+          Sub.map ListAdsMessage (footerAppeared (always ListAds.FooterAppeared))
+        ListUsers ->
+          Sub.map ListUsersMessage (footerAppeared (always ListUsers.FooterAppeared))
+        _ ->
+          Sub.none
+  in
+    Sub.batch
+      [ Sub.map ProfileMessage Profile.subscriptions
+      , footerListener
+      ]
 
 -- VIEW
 
@@ -474,7 +488,7 @@ viewPage model =
     content =
       case model.route of
         User userId ->
-          H.map UserMessage <| User.view model.user
+          H.map (mapAppMessage ProfileMessage) <| User.view model.user
         Profile ->
           H.map (mapAppMessage ProfileMessage) <| Profile.View.view model.profile model
         LoginNeeded route ->
