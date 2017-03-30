@@ -37,10 +37,35 @@ module.exports = function initialize(params) {
     return formattedUser;
   }
 
+  function formatAd(ad, loggedIn){
+    return Promise.all([
+      knex('answers').where({ad_id: ad.id})
+        .then(answers => Promise.all(answers.map(answer => formatAnswer(answer, loggedIn)))),
+      knex('users').where({id: ad.user_id}).then(rows => rows[0])
+    ]).then(function ([answers, askingUser]) {
+      ad.created_by = formatUser(askingUser, loggedIn);
+      ad.answers = loggedIn ? answers : answers.length;
+      return ad;
+    })
+  }
+
+
+  function formatAnswer(answer, loggedIn) {
+    return knex('users').where({ id: answer.user_id })
+      .then(rows => rows[0])
+      .then(function(user) {
+        answer.created_by = formatUser(user, loggedIn);
+        answer.data.content = answer.data.content || '';
+        return answer;
+      })
+  }
+
   return  {
     userForSession,
     userById,
     formatUser,
+    formatAd,
+    formatAnswer,
     loggedIn
   };
 }

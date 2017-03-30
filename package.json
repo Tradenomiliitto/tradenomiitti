@@ -11,7 +11,8 @@
     "start": "node server/index.js",
     "compilefrontend": "cd frontend && elm-make --yes Main.elm --output /srv/static/elm.js && browserify -t babelify js/main.js --outfile /srv/static/main.js",
     "compilescss": "node-sass --precision 8 --include-path node_modules/bootstrap-sass/assets/stylesheets -r frontend/stylesheets/styles.scss | postcss --use autoprefixer -o /srv/static/styles.css",
-    "compileassets": "cp frontend/assets/* node_modules/bootstrap-sass/assets/fonts/bootstrap/* node_modules/font-awesome/fonts/* /srv/static/ && ./conf/copy-index-with-ga.sh"
+    "compileassets": "cp frontend/assets/* node_modules/bootstrap-sass/assets/fonts/bootstrap/* node_modules/font-awesome/fonts/* /srv/static/ && ./conf/copy-index-with-ga.sh",
+    "test": "mocha server/**/*.js"
   },
   "repository": {
     "type": "git",
@@ -49,10 +50,11 @@
     "scroll-restoration-polyfill": "^0.6.1",
     "scss-to-json": "^1.1.0",
     "smoothscroll-polyfill": "^0.3.4",
-    "sqlite3": "^3.1.8",
     "uuid": "^3.0.1"
   },
   "devDependencies": {
+    "chai": "^3.5.0",
+    "mocha": "^3.2.0",
     "xml2js": "^0.4.17"
   }
 }

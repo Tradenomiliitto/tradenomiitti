@@ -8,6 +8,7 @@ module.exports = function initialize(params) {
   const sebacon = params.sebacon;
   const util = params.util;
   const userImagesPath = params.userImagesPath;
+  const service = require('./services/profiles')({ knex, util });
 
   function getMe(req, res) {
     if (!req.session || !req.session.id) {
@@ -144,10 +145,9 @@ module.exports = function initialize(params) {
   }
 
   function listProfiles(req, res) {
-    return Promise.all([ knex('users').where({}), util.loggedIn(req) ])
-      .then(([resp, loggedIn]) => {
-        return resp.map(user => util.formatUser(user, loggedIn));
-      }).then(users => res.json(users))
+    util.loggedIn(req)
+      .then(loggedIn => service.listProfiles(loggedIn, req.query.limit, req.query.offset))
+      .then(users => res.json(users))
       .catch(err => {
         console.error(err);
         res.sendStatus(500);
