@@ -8,6 +8,7 @@ import Home
 import Html as H
 import Html.Attributes as A
 import Html.Events as E
+import Http
 import Json.Decode as Json
 import ListAds
 import ListUsers
@@ -22,7 +23,7 @@ import Settings
 import State.Main exposing (..)
 import Static
 import User
-import Util exposing (AppMessage(..))
+import Util exposing (ViewMessage(..), UpdateMessage(..))
 
 type alias HtmlId = String
 port animation : (HtmlId, Bool) -> Cmd msg -- send True on splash screen, False otherwise
@@ -65,6 +66,8 @@ type Msg
   | AdMessage Ad.Msg
   | HomeMessage Home.Msg
   | SettingsMessage Settings.Msg
+  | Error Http.Error
+  | NoOp
 
 
 update : Msg -> Model -> (Model, Cmd Msg)
@@ -80,10 +83,20 @@ update msg model =
       let
         shouldScroll = model.scrollTop
 
-        init mapper task =
+        init mapper cmd =
           if shouldScroll then
-            Cmd.map mapper task
+            Cmd.map mapper cmd
           else Cmd.none
+
+        initAppMessage mapper cmd =
+          if shouldScroll then
+            Cmd.map (\appMsg ->
+                       case appMsg of
+                         LocalUpdateMessage msg -> mapper msg
+                         ApiError err -> Error err
+                    ) cmd
+          else
+            Cmd.none
 
         route = parseLocation location
         modelWithRoute = { model | route = route, scrollTop = False }
@@ -106,7 +119,7 @@ update msg model =
 
             Home ->
               modelWithRoute !
-                [ init HomeMessage Home.initTasks
+                [ initAppMessage HomeMessage Home.initTasks
                 , animation ("home-intro-canvas", False)
                 ]
 
@@ -121,7 +134,7 @@ update msg model =
 
             ListUsers ->
               modelWithRoute !
-                [ init ListUsersMessage ListUsers.getUsers
+                [ initAppMessage ListUsersMessage ListUsers.getUsers
                 ]
 
             LoginNeeded _ ->
@@ -243,6 +256,15 @@ update msg model =
         (settingsModel, cmd) = Settings.update msg model.settings
       in
         { model | settings = settingsModel } ! [ Cmd.map SettingsMessage cmd ]
+
+    Error err ->
+      let
+        _ = Debug.log "Error" err
+      in
+        model ! []
+
+    NoOp ->
+      model ! []
 
 --SUBSCRIPTIONS
 
@@ -492,12 +514,12 @@ viewPage model =
       [ content ]
 
 
-mapAppMessage : (msg -> Msg) -> AppMessage msg -> Msg
+mapAppMessage : (msg -> Msg) -> ViewMessage msg -> Msg
 mapAppMessage func message =
   case message of
     Link route ->
       NewUrl route
-    LocalMessage mesg ->
+    LocalViewMessage mesg ->
       func mesg
 
 notImplementedYet : H.Html Msg

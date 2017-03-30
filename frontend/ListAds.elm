@@ -10,7 +10,7 @@ import Models.Ad
 import Nav
 import State.ListAds exposing (..)
 import SvgIcons
-import Util exposing (AppMessage(..))
+import Util exposing (ViewMessage(..))
 
 type Msg = GetAds | UpdateAds (Result Http.Error (List Models.Ad.Ad))
 
@@ -36,7 +36,7 @@ getAds =
     Http.send UpdateAds request
 
 
-view : Model -> H.Html (AppMessage Msg)
+view : Model -> H.Html (ViewMessage Msg)
 view model =
   H.div []
     [ H.div
@@ -59,7 +59,7 @@ view model =
       ]
     ]
 
-viewAds : List Models.Ad.Ad -> List (H.Html (AppMessage msg))
+viewAds : List Models.Ad.Ad -> List (H.Html (ViewMessage msg))
 viewAds ads =
   let
     adsHtml = List.map adListView ads
@@ -74,7 +74,7 @@ row ads =
     [ A.class "row" ]
     ads
 
-adListView : Models.Ad.Ad -> H.Html (AppMessage msg)
+adListView : Models.Ad.Ad -> H.Html (ViewMessage msg)
 adListView ad =
   H.a
     [ A.class "col-xs-12 col-sm-6 card-link"

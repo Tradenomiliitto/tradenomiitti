@@ -5,7 +5,7 @@ import Html as H
 import Html.Attributes as A
 import Html.Events as E
 import Json.Decode as Json
-import Util exposing (AppMessage(..))
+import Util exposing (ViewMessage(..))
 import ListAds
 import Models.User exposing (User)
 import Nav
@@ -15,14 +15,14 @@ import State.Main as RootState
 import State.Profile exposing (Model)
 import SvgIcons
 
-view : Model -> RootState.Model -> H.Html (AppMessage Msg)
+view : Model -> RootState.Model -> H.Html (ViewMessage Msg)
 view model rootState =
   if model.editing
     then editProfileView model rootState
     else showProfileView model rootState
 
 
-editProfileView : Model -> RootState.Model -> H.Html (AppMessage Msg)
+editProfileView : Model -> RootState.Model -> H.Html (ViewMessage Msg)
 editProfileView model rootState =
   case model.user of
     Just user ->
@@ -31,8 +31,8 @@ editProfileView model rootState =
         [ profileTopRow model rootState
         , editProfileHeading
         , membershipInfoEditing user
-        , H.map LocalMessage (publicInfoEditing model user)
-        , H.map LocalMessage (competences model user)
+        , H.map LocalViewMessage (publicInfoEditing model user)
+        , H.map LocalViewMessage (competences model user)
         ]
     Nothing -> H.div [] []
 
@@ -115,7 +115,7 @@ businessCard =
      ]
     ]
 
-showProfileView : Model -> RootState.Model ->  H.Html (AppMessage Msg)
+showProfileView : Model -> RootState.Model ->  H.Html (ViewMessage Msg)
 showProfileView model rootState =
   H.div [ A.class "user-page" ] <|
     [ profileTopRow model rootState
@@ -148,7 +148,7 @@ competences model user =
     ]
 
 
-profileTopRow : Model -> RootState.Model -> H.Html (AppMessage Msg)
+profileTopRow : Model -> RootState.Model -> H.Html (ViewMessage Msg)
 profileTopRow model rootState =
   let
     logonLink =
@@ -171,7 +171,7 @@ profileTopRow model rootState =
         Just user ->
           H.button
             [ A.class "btn btn-primary profile__top-row-edit-button"
-            , E.onClick <| if model.editing then LocalMessage (Save user) else LocalMessage Edit
+            , E.onClick <| if model.editing then LocalViewMessage (Save user) else LocalViewMessage Edit
             ]
             [ H.text (if model.editing then "Tallenna profiili" else "Muokkaa profiilia") ]
         Nothing ->
@@ -210,7 +210,7 @@ profileTopRow model rootState =
         ]
       ]
 
-viewUserMaybe : Model -> List (H.Html (AppMessage Msg))
+viewUserMaybe : Model -> List (H.Html (ViewMessage Msg))
 viewUserMaybe model =
   model.user
     |> Maybe.map (viewUser model)
@@ -223,14 +223,14 @@ viewUserMaybe model =
       ]
 
 
-viewUser : Model -> User -> List (H.Html (AppMessage Msg))
+viewUser : Model -> User -> List (H.Html (ViewMessage Msg))
 viewUser model user =
   [ H.div
     [ A.class "container" ]
     [ H.div
       [ A.class "row user-page__section" ]
-      [ H.map LocalMessage (userInfoBox model user)
-      , H.map LocalMessage (membershipDataBox user)
+      [ H.map LocalViewMessage (userInfoBox model user)
+      , H.map LocalViewMessage (membershipDataBox user)
       ]
     ]
   , H.hr [ A.class "full-width-ruler" ] []
@@ -250,8 +250,8 @@ viewUser model user =
     [ A.class "container" ]
     [ H.div
       [ A.class "row" ]
-      [ H.map LocalMessage (userDomains model user)
-      , H.map LocalMessage (userPositions model user)
+      [ H.map LocalViewMessage (userDomains model user)
+      , H.map LocalViewMessage (userPositions model user)
       ]
     ]
   ]

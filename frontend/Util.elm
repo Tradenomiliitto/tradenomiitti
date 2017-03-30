@@ -5,8 +5,35 @@ import Json.Encode as JS
 import Nav exposing (Route)
 
 
-type AppMessage msg  = Link Route | LocalMessage msg
+type ViewMessage msg
+  = Link Route
+  | LocalViewMessage msg
 
+type UpdateMessage msg
+  = LocalUpdateMessage msg
+  | ApiError Http.Error
+
+
+localMap : (msg1 -> msg2) -> Cmd (UpdateMessage msg1) -> Cmd (UpdateMessage msg2)
+localMap msgMapper cmd =
+  let
+    mapper appMsg =
+      case appMsg of
+        LocalUpdateMessage msg -> LocalUpdateMessage <| msgMapper msg
+        ApiError err -> ApiError err
+  in
+    Cmd.map mapper cmd
+
+
+errorHandlingSend : (a -> msg) -> Http.Request a -> Cmd (UpdateMessage msg)
+errorHandlingSend happyPath request =
+  let
+    handler result =
+      case result of
+        Ok happy -> LocalUpdateMessage <| happyPath happy
+        Err err -> ApiError err
+  in
+    Http.send handler request
 
 put : String -> JS.Value -> Http.Request ()
 put url body =

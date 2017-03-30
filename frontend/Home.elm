@@ -8,7 +8,7 @@ import ListUsers
 import Models.User exposing (User)
 import Nav
 import State.Home exposing (..)
-import Util exposing (AppMessage(..))
+import Util exposing (ViewMessage(..), UpdateMessage(..))
 
 type Msg
   = ListAdsMessage ListAds.Msg
@@ -33,11 +33,14 @@ update msg model =
     ClickCreateProfile ->
       { model | createProfileClicked = True } ! []
 
-initTasks : Cmd Msg
-initTasks = Cmd.batch [ Cmd.map ListAdsMessage ListAds.getAds, Cmd.map ListUsersMessage ListUsers.getUsers ]
+initTasks : Cmd (UpdateMessage Msg)
+initTasks = Cmd.batch
+            [ Cmd.map (LocalUpdateMessage << ListAdsMessage) ListAds.getAds
+            , Util.localMap ListUsersMessage ListUsers.getUsers
+            ]
 
 
-view : Model -> Maybe User -> H.Html (AppMessage Msg)
+view : Model -> Maybe User -> H.Html (ViewMessage Msg)
 view model userMaybe =
   H.div
     []
@@ -49,7 +52,7 @@ view model userMaybe =
 
 -- FIRST INFO SCREEN --
 
-introScreen : Maybe User -> H.Html (AppMessage Msg)
+introScreen : Maybe User -> H.Html (ViewMessage Msg)
 introScreen userMaybe =
   H.div
     [ A.class "home__intro-screen" ]
@@ -61,7 +64,7 @@ introAnimation =
            , A.class "home__intro-canvas"
            ] []
 
-introBoxes : Maybe User -> List ( H.Html (AppMessage Msg) )
+introBoxes : Maybe User -> List ( H.Html (ViewMessage Msg) )
 introBoxes userMaybe =
   let
     createProfile =
@@ -92,7 +95,7 @@ introBoxes userMaybe =
 
 -- LIST LATEST ADS --
 
-listLatestAds : Model -> H.Html (AppMessage Msg)
+listLatestAds : Model -> H.Html (ViewMessage Msg)
 listLatestAds model =
   H.div
     [ A.class "home__latest-ads" ]
@@ -103,7 +106,7 @@ listLatestAds model =
       ]
      ]
 
-listAdsHeading : H.Html (AppMessage Msg)
+listAdsHeading : H.Html (ViewMessage Msg)
 listAdsHeading =
   H.div
     [ A.class "home__section--heading row" ]
@@ -111,7 +114,7 @@ listAdsHeading =
     , listAdsButtons
     ]
 
-listAdsButtons : H.Html (AppMessage Msg)
+listAdsButtons : H.Html (ViewMessage Msg)
 listAdsButtons =
   H.div
     [ A.class "home__section--heading--buttons col-sm-7" ]
@@ -131,7 +134,7 @@ sectionHeader title =
     [ A.class "home__section--heading--text col-sm-5" ]
     [ H.text title ]
 
-listFourAds : Model -> H.Html (AppMessage msg)
+listFourAds : Model -> H.Html (ViewMessage msg)
 listFourAds model =
   H.div
     []
@@ -139,7 +142,7 @@ listFourAds model =
 
 -- LIST USERS --
 
-listUsers : Model -> H.Html (AppMessage msg)
+listUsers : Model -> H.Html (ViewMessage msg)
 listUsers model =
   H.div
     [ A.class "home__list-users" ]
@@ -150,7 +153,7 @@ listUsers model =
       ]
      ]
 
-listUsersHeading : H.Html (AppMessage msg)
+listUsersHeading : H.Html (ViewMessage msg)
 listUsersHeading =
   H.div
     [ A.class "home__section--heading row" ]
@@ -158,7 +161,7 @@ listUsersHeading =
     , listUsersButtons
     ]
 
-listUsersButtons : H.Html (AppMessage msg)
+listUsersButtons : H.Html (ViewMessage msg)
 listUsersButtons =
   H.div
     [ A.class "home__section--heading--buttons col-sm-7" ]
@@ -172,7 +175,7 @@ listUsersButtons =
         Nav.Profile
     ]
 
-listThreeUsers : Model -> H.Html (AppMessage msg)
+listThreeUsers : Model -> H.Html (ViewMessage msg)
 listThreeUsers model =
   H.div
     [ A.class "row" ]
@@ -180,7 +183,7 @@ listThreeUsers model =
 
   -- TRADENOMIITTI AD --
 
-tradenomiittiSection : H.Html (AppMessage msg)
+tradenomiittiSection : H.Html (ViewMessage msg)
 tradenomiittiSection =
   H.div
     [ A.class "home__tradenomiitti--background" ]
@@ -188,7 +191,7 @@ tradenomiittiSection =
         [ A.class "home__tradenomiitti--container" ]
         [ tradenomiittiRow ]
     ]
-tradenomiittiRow : H.Html (AppMessage msg)
+tradenomiittiRow : H.Html (ViewMessage msg)
 tradenomiittiRow =
   H.div
     [ A.class "row"]
@@ -196,7 +199,7 @@ tradenomiittiRow =
     , tradenomiImage
     ]
 
-tradenomiittiInfo : H.Html (AppMessage msg)
+tradenomiittiInfo : H.Html (ViewMessage msg)
 tradenomiittiInfo =
   H.div
     [ A.class "home__tradenomiitti--info" ]
@@ -217,7 +220,7 @@ tradenomiittiInfoText =
     [ A.class "home__tradenomiitti--info--text" ]
     [ H.text "Tähän kuvaava teksti Tradenomiitistä. Hyötynäkökuma, eli mitä täällä voi tehdä ja miksi pitäisi liittyä. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua." ]
 
-readMoreButton : H.Html (AppMessage msg)
+readMoreButton : H.Html (ViewMessage msg)
 readMoreButton =
   Link.button
     "lue lisää"

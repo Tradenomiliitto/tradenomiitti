@@ -3,33 +3,30 @@ module ListUsers exposing (..)
 import Common
 import Html as H
 import Html.Attributes as A
-import Html.Events as E
 import Http
 import Json.Decode as Json
 import Link
 import Models.User exposing (User)
 import Nav
 import State.ListUsers exposing (..)
-import Util exposing (AppMessage(..))
+import Util exposing (ViewMessage(..), UpdateMessage(..))
 
 type Msg
-  = UpdateUsers (Result Http.Error (List User))
+  = UpdateUsers (List User)
 
-getUsers : Cmd Msg
+getUsers : Cmd (UpdateMessage Msg)
 getUsers =
   Http.get "/api/profiilit" (Json.list Models.User.userDecoder)
-    |> Http.send UpdateUsers
+    |> Util.errorHandlingSend UpdateUsers
 
 
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
   case msg of
-    UpdateUsers (Ok users) ->
+    UpdateUsers users ->
       { model | users = users } ! []
-    UpdateUsers (Err _) ->
-      model ! [] -- TODO error handling
 
-view : Model -> H.Html (AppMessage msg)
+view : Model -> H.Html (ViewMessage msg)
 view model =
   let
     usersHtml = List.map viewUser model.users
@@ -58,7 +55,7 @@ view model =
         ]
       ]
 
-viewUser : User -> H.Html (AppMessage msg)
+viewUser : User -> H.Html (ViewMessage msg)
 viewUser user =
   H.a
     [ A.class "col-xs-12 col-sm-6 col-md-4 card-link"
