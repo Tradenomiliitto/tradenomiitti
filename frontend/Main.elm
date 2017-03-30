@@ -491,21 +491,21 @@ viewPage model =
     content =
       case model.route of
         User userId ->
-          H.map (mapAppMessage ProfileMessage) <| User.view model.user
+          H.map (mapViewMessage ProfileMessage) <| User.view model.user
         Profile ->
-          H.map (mapAppMessage ProfileMessage) <| Profile.View.view model.profile model
+          H.map (mapViewMessage ProfileMessage) <| Profile.View.view model.profile model
         LoginNeeded route ->
           LoginNeeded.view <| ssoUrl model.rootUrl route
         CreateAd ->
           H.map CreateAdMessage <| CreateAd.view model.createAd
         ListAds ->
-          H.map (mapAppMessage ListAdsMessage) <| ListAds.view model.listAds
+          H.map (mapViewMessage ListAdsMessage) <| ListAds.view model.listAds
         ShowAd adId ->
           H.map AdMessage <| Ad.view model.ad adId model.profile.user model.rootUrl
         Home ->
-          H.map (mapAppMessage HomeMessage) <| Home.view model.home model.profile.user
+          H.map (mapViewMessage HomeMessage) <| Home.view model.home model.profile.user
         ListUsers ->
-          H.map (mapAppMessage ListUsersMessage) <| ListUsers.view model.listUsers
+          H.map (mapViewMessage ListUsersMessage) <| ListUsers.view model.listUsers
         Terms ->
           PreformattedText.view Static.termsHeading Static.termsTexts
         RegisterDescription ->
@@ -522,8 +522,8 @@ viewPage model =
       [ content ]
 
 
-mapAppMessage : (msg -> Msg) -> ViewMessage msg -> Msg
-mapAppMessage func message =
+mapViewMessage : (msg -> Msg) -> ViewMessage msg -> Msg
+mapViewMessage func message =
   case message of
     Link route ->
       NewUrl route
