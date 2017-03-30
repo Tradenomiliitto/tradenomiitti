@@ -28,6 +28,7 @@ type alias HtmlId = String
 port animation : (HtmlId, Bool) -> Cmd msg -- send True on splash screen, False otherwise
 port scrollTop : Bool -> Cmd msg -- parameter tells whether to scroll
 port sendGaPageView : String -> Cmd msg -- parameter is path
+port footerAppeared : (Bool -> msg) -> Sub msg
 
 
 main : Program Never Model Msg
@@ -44,11 +45,10 @@ init location =
   let
     model = initState location
 
-   -- We want to react initially to UrlChange as well
-    urlCmd = Navigation.modifyUrl (routeToPath (parseLocation location))
+    -- after the profile is loaded, an urlchange event is triggered
     profileCmd = Cmd.map ProfileMessage Profile.getMe
   in
-    model ! [ urlCmd, profileCmd ]
+    model ! [ profileCmd ]
 
 
 -- UPDATE
@@ -85,34 +85,63 @@ update msg model =
         ( newModel, cmd ) =
           case route of
             ShowAd adId ->
-              modelWithRoute ! [ Cmd.map AdMessage (Ad.getAd adId) ]
+              modelWithRoute !
+                [ if shouldScroll then
+                    Cmd.map AdMessage (Ad.getAd adId)
+                  else Cmd.none
+                ]
 
             Profile ->
-              modelWithRoute ! [ Cmd.map ProfileMessage Profile.initTasks ]
+              modelWithRoute !
+                [ if shouldScroll then
+                    Cmd.map ProfileMessage Profile.initTasks
+                  else Cmd.none
+                ]
 
             ListAds ->
-              modelWithRoute ! [ Cmd.map ListAdsMessage ListAds.getAds ]
+              modelWithRoute !
+                  [ if shouldScroll then
+                      Cmd.map ListAdsMessage (ListAds.initTasks modelWithRoute.listAds)
+                    else Cmd.none
+                  ]
 
             Home ->
-              modelWithRoute ! [ Cmd.map HomeMessage Home.initTasks
-                               , animation ("home-intro-canvas", False)
-                               ]
+              modelWithRoute !
+                [ if shouldScroll then
+                    Cmd.map HomeMessage (Home.initTasks modelWithRoute.home)
+                  else Cmd.none
+                , animation ("home-intro-canvas", False)
+                ]
 
             User userId ->
               if Just userId == Maybe.map .id model.profile.user
               then
                 { model | route = Profile } ! [ Navigation.modifyUrl (routeToPath Profile) ]
               else
-                (modelWithRoute, Cmd.batch [ User.getUser userId, User.getAds userId ] |> Cmd.map UserMessage)
+                (modelWithRoute,
+                   if shouldScroll then
+                     Cmd.batch
+                       [ User.getUser userId, User.getAds userId
+                       ] |> Cmd.map UserMessage
+                   else Cmd.none
+                )
 
             ListUsers ->
-              modelWithRoute ! [ Cmd.map ListUsersMessage ListUsers.getUsers ]
+              modelWithRoute !
+                [ if shouldScroll then
+                    Cmd.map ListUsersMessage (ListUsers.initTasks model.listUsers)
+                  else Cmd.none
+                ]
 
             LoginNeeded _ ->
               modelWithRoute ! [ animation ("login-needed-canvas", False) ]
 
             Settings ->
-              modelWithRoute ! [ Cmd.map SettingsMessage Settings.initTasks ]
+              modelWithRoute !
+                [ if shouldScroll then
+                    Cmd.map SettingsMessage Settings.initTasks
+                  else Cmd.none
+                ]
 
             newRoute ->
               (modelWithRoute, Cmd.none)
@@ -230,7 +259,20 @@ update msg model =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-  Sub.map ProfileMessage Profile.subscriptions
+  let
+    footerListener =
+      case model.route of
+        ListAds ->
+          Sub.map ListAdsMessage (footerAppeared (always ListAds.FooterAppeared))
+        ListUsers ->
+          Sub.map ListUsersMessage (footerAppeared (always ListUsers.FooterAppeared))
+        _ ->
+          Sub.none
+  in
+    Sub.batch
+      [ Sub.map ProfileMessage Profile.subscriptions
+      , footerListener
+      ]
 
 -- VIEW
 

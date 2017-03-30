@@ -378,7 +378,7 @@ userInfoBoxEditing2 model user =
             [
                 H.input
                 [ A.value user.primaryPosition
-                , E.on "change" (Json.map ChangeTitle E.targetValue)
+                , E.onInput ChangeTitle
                 ]
                 []
             ]

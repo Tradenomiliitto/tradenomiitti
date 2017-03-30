@@ -34,7 +34,7 @@ initState : Navigation.Location -> Model
 initState location =
   { route = parseLocation location
   , rootUrl = location.origin
-  , scrollTop = False
+  , scrollTop = True -- initially start at top and init
   , user = State.User.init
   , listUsers = State.ListUsers.init
   , profile = ProfileState.init

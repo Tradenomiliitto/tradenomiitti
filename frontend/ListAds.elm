@@ -6,30 +6,47 @@ import Html.Attributes as A
 import Http
 import Json.Decode as Json
 import Link exposing (AppMessage(..))
+import List.Extra as List
 import Models.Ad
 import Nav
 import State.ListAds exposing (..)
 import SvgIcons
+import Util
 
-type Msg = GetAds | UpdateAds (Result Http.Error (List Models.Ad.Ad))
+type Msg
+  = UpdateAds (Result Http.Error (List Models.Ad.Ad))
+  | FooterAppeared
 
 
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
   case msg of
     UpdateAds (Ok ads) ->
-      ({ model | ads = ads }, Cmd.none )
+      { model
+        | ads = List.uniqueBy .id <| model.ads ++ ads
+        -- always advance by full amount, so we know when to stop asking for more
+        , cursor = model.cursor + limit
+      } ! []
     --TODO: show error
     UpdateAds (Err _) ->
       (model, Cmd.none)
-    GetAds ->
-      (model, getAds)
+    FooterAppeared ->
+      if model.cursor > List.length model.ads
+      then
+        model ! []
+      else
+        model ! [ getAds model ]
 
+initTasks : Model -> Cmd Msg
+initTasks = getAds
 
-getAds : Cmd Msg
-getAds =
+getAds : Model -> Cmd Msg
+getAds model =
   let
-    url = "/api/ilmoitukset/"
+    url = "/api/ilmoitukset/?limit="
+      ++ toString limit
+      ++ "&offset="
+      ++ toString model.cursor
     request = Http.get url (Json.list Models.Ad.adDecoder)
   in
     Http.send UpdateAds request
@@ -84,7 +101,7 @@ adListView ad =
       [ H.h3
         [ A.class "list-ads__ad-preview-heading"]
         [ H.text ad.heading ]
-      , H.p [ A.class "list-ads__ad-preview-content" ] [ H.text (truncateContent ad.content 200) ]
+      , H.p [ A.class "list-ads__ad-preview-content" ] [ H.text (Util.truncateContent ad.content 200) ]
       , H.hr [] []
       , H.div
         [ A.class "list-ads__ad-preview-answer-count" ]
@@ -109,25 +126,3 @@ rowFolder x acc =
         el1 :: el2 :: els -> [x] :: row :: rows
         el :: els -> [el, x] :: rows
         els -> (x :: els) :: rows
-
--- truncates content so that the result includes at most numChars characters, taking full words. "…" is added if the content is truncated
-truncateContent : String -> Int -> String
-truncateContent content numChars =
-  if (String.length content) < numChars
-    then content
-    else
-      let
-        truncated = List.foldl (takeNChars numChars) "" (String.words content)
-      in
-        -- drop extra whitespace created by takeNChars and add three dots
-        (String.dropRight 1 truncated) ++ "…"
-
--- takes first x words where sum of the characters is less than n
-takeNChars : Int -> String -> String -> String
-takeNChars n word accumulator =
-  let
-    totalLength = (String.length accumulator) + (String.length word)
-  in
-    if totalLength < n
-      then accumulator ++ word ++ " "
-      else accumulator

@@ -3,20 +3,33 @@ module ListUsers exposing (..)
 import Common
 import Html as H
 import Html.Attributes as A
-import Html.Events as E
 import Http
 import Json.Decode as Json
-import Models.User exposing (User)
-import State.ListUsers exposing (..)
 import Link exposing (AppMessage(..))
+import List.Extra as List
+import Models.User exposing (User)
+import Models.User exposing (User)
 import Nav
+import State.ListUsers exposing (..)
+import State.ListUsers exposing (..)
+import Util
 
 type Msg
   = UpdateUsers (Result Http.Error (List User))
+  | FooterAppeared
 
-getUsers : Cmd Msg
-getUsers =
-  Http.get "/api/profiilit" (Json.list Models.User.userDecoder)
+initTasks : Model -> Cmd Msg
+initTasks = getUsers
+
+getUsers : Model -> Cmd Msg
+getUsers model =
+  let
+    url = "/api/profiilit/?limit="
+      ++ toString limit
+      ++ "&offset="
+      ++ toString model.cursor
+  in
+  Http.get url (Json.list Models.User.userDecoder)
     |> Http.send UpdateUsers
 
 
@@ -24,9 +37,19 @@ update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
   case msg of
     UpdateUsers (Ok users) ->
-      { model | users = users } ! []
+      { model
+        | users = List.uniqueBy .id <| model.users ++ users
+        -- always advance by full amount, so we know when to stop asking for more
+        , cursor = model.cursor + limit
+      } ! []
     UpdateUsers (Err _) ->
       model ! [] -- TODO error handling
+    FooterAppeared ->
+      if model.cursor > List.length model.users
+      then
+        model ! []
+      else
+        model ! [ getUsers model ]
 
 view : Model -> H.Html (AppMessage msg)
 view model =
@@ -68,7 +91,7 @@ viewUser user =
       [ A.class "user-card" ]
       [ Common.authorInfoWithLocation user
       , H.hr [] []
-      , H.p [] [ H.text user.description ]
+      , H.p [] [ H.text (Util.truncateContent user.description 200) ]
       ]
     ]
 
