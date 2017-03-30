@@ -119,9 +119,7 @@ update msg model =
               else
                 (modelWithRoute,
                    if shouldScroll then
-                     Cmd.batch
-                       [ User.getUser userId, User.getAds userId
-                       ] |> Cmd.map UserMessage
+                     Cmd.map UserMessage (User.initTasks userId)
                    else Cmd.none
                 )
 

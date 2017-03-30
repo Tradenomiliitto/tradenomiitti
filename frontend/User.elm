@@ -40,6 +40,13 @@ update msg model =
     NoOp ->
       model ! []
 
+initTasks : Int -> Cmd Msg
+initTasks userId =
+  Cmd.batch
+    [ getUser userId
+    , getAds userId
+    ]
+
 getUser : Int -> Cmd Msg
 getUser userId =
   let
