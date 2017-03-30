@@ -88,7 +88,7 @@ update msg model =
             Cmd.map mapper cmd
           else Cmd.none
 
-        initAppMessage mapper cmd =
+        initWithUpdateMessage mapper cmd =
           if shouldScroll then
             unpackUpdateMessage mapper cmd
           else
@@ -100,12 +100,12 @@ update msg model =
           case route of
             ShowAd adId ->
               modelWithRoute !
-                [ initAppMessage AdMessage (Ad.getAd adId)
+                [ initWithUpdateMessage AdMessage (Ad.getAd adId)
                 ]
 
             Profile ->
               modelWithRoute !
-                [ initAppMessage ProfileMessage Profile.initTasks
+                [ initWithUpdateMessage ProfileMessage Profile.initTasks
                 ]
 
             ListAds ->
@@ -115,7 +115,7 @@ update msg model =
 
             Home ->
               modelWithRoute !
-                [ initAppMessage HomeMessage Home.initTasks
+                [ initWithUpdateMessage HomeMessage Home.initTasks
                 , animation ("home-intro-canvas", False)
                 ]
 
@@ -130,7 +130,7 @@ update msg model =
 
             ListUsers ->
               modelWithRoute !
-                [ initAppMessage ListUsersMessage ListUsers.getUsers
+                [ initWithUpdateMessage ListUsersMessage ListUsers.getUsers
                 ]
 
             LoginNeeded _ ->
