@@ -46,7 +46,7 @@ init location =
     model = initState location
 
     -- after the profile is loaded, an urlchange event is triggered
-    profileCmd = Cmd.map ProfileMessage Profile.getMe
+    profileCmd = unpackUpdateMessage ProfileMessage Profile.getMe
   in
     model ! [ profileCmd ]
 
@@ -105,7 +105,7 @@ update msg model =
 
             Profile ->
               modelWithRoute !
-                [ init ProfileMessage Profile.initTasks
+                [ initAppMessage ProfileMessage Profile.initTasks
                 ]
 
             ListAds ->
@@ -183,7 +183,7 @@ update msg model =
         (profileModel, cmd) = Profile.update Profile.AllowProfileCreation model.profile
         newModel = { model | profile = profileModel, needsConsent = False }
       in
-        newModel ! [ Cmd.map ProfileMessage cmd ]
+        newModel ! [ unpackUpdateMessage ProfileMessage cmd ]
 
     ToggleAcceptTerms ->
       { model | acceptsTerms = not model.acceptsTerms } ! []
@@ -213,7 +213,7 @@ update msg model =
           | profile = profileModel
           , initialLoading = initialLoading
           , needsConsent = needsConsent
-        } ! [ Cmd.map ProfileMessage cmd
+        } ! [ unpackUpdateMessage ProfileMessage cmd
             , redoNewUrlCmd
             ]
 

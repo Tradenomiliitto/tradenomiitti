@@ -6,12 +6,12 @@ import Models.Ad
 import Models.User exposing (User, PictureEditing)
 import Skill
 import State.Profile exposing (Model)
-import Util
+import Util exposing (UpdateMessage(..))
 
 
 type Msg
   = GetMe (Result Http.Error User)
-  | GetAds (Result Http.Error (List Models.Ad.Ad))
+  | GetAds (List Models.Ad.Ad)
   | Save User
   | Edit
   | AllowProfileCreation
@@ -20,13 +20,13 @@ type Msg
   | ChangeDomainSelect String
   | ChangePositionSelect String
   | ChangeLocation String
-  | GetDomainOptions (Result Http.Error (List String))
-  | GetPositionOptions (Result Http.Error (List String))
+  | GetDomainOptions (List String)
+  | GetPositionOptions (List String)
   | ChangeTitle String
   | ChangeNickname String
   | ChangeDescription String
-  | UpdateUser (Result Http.Error ())
-  | UpdateConsent (Result Http.Error ())
+  | UpdateUser ()
+  | UpdateConsent ()
   | ChangeImage User
   | ImageDetailsUpdate (String ,PictureEditing)
   | MouseEnterProfilePic
@@ -43,41 +43,41 @@ subscriptions : Sub Msg
 subscriptions =
   imageSave ImageDetailsUpdate
 
-getMe : Cmd Msg
+getMe : Cmd (UpdateMessage Msg)
 getMe =
   Http.get "/api/profiilit/oma" Models.User.userDecoder
-    |> Http.send GetMe
+    |> Http.send (LocalUpdateMessage << GetMe)
 
 
-getAds : User -> Cmd Msg
+getAds : User -> Cmd (UpdateMessage Msg)
 getAds u =
   Http.get ("/api/ilmoitukset/tradenomilta/" ++ toString u.id) (Json.list Models.Ad.adDecoder)
-    |> Http.send GetAds
+    |> Util.errorHandlingSend GetAds
 
 
-initTasks : Cmd Msg
+initTasks : Cmd (UpdateMessage Msg)
 initTasks =
   Cmd.batch [ getPositionOptions, getDomainOptions ]
 
-getDomainOptions : Cmd Msg
+getDomainOptions : Cmd (UpdateMessage Msg)
 getDomainOptions =
   Http.get "/api/toimialat" (Json.list Json.string)
-    |> Http.send GetDomainOptions
+    |> Util.errorHandlingSend GetDomainOptions
 
-getPositionOptions : Cmd Msg
+getPositionOptions : Cmd (UpdateMessage Msg)
 getPositionOptions =
   Http.get "/api/tehtavaluokat" (Json.list Json.string)
-    |> Http.send GetPositionOptions
+    |> Util.errorHandlingSend GetPositionOptions
 
-updateMe : User -> Cmd Msg
+updateMe : User -> Cmd (UpdateMessage Msg)
 updateMe user =
   Util.put "/api/profiilit/oma" (Models.User.encode user)
-    |> Http.send UpdateUser
+    |> Util.errorHandlingSend UpdateUser
 
-updateConsent : Cmd Msg
+updateConsent : Cmd (UpdateMessage Msg)
 updateConsent =
   Http.post "/api/profiilit/luo" Http.emptyBody (Json.succeed ())
-    |> Http.send UpdateConsent
+    |> Util.errorHandlingSend UpdateConsent
 
 updateSkillList : Int -> Skill.SkillLevel -> List Skill.Model -> List Skill.Model
 updateSkillList index skillLevel list =
@@ -95,7 +95,7 @@ updateUser : (User -> User) -> Model -> Model
 updateUser update model =
   { model | user = Maybe.map update model.user }
 
-update : Msg -> Model -> (Model, Cmd Msg)
+update : Msg -> Model -> (Model, Cmd (UpdateMessage Msg))
 update msg model =
   case msg of
     GetMe (Err _) ->
@@ -104,10 +104,7 @@ update msg model =
     GetMe (Ok user) ->
       { model | user = Just user } ! [ getAds user ]
 
-    GetAds (Err _) ->
-      model ! []
-
-    GetAds (Ok ads) ->
+    GetAds ads ->
       { model | ads = ads } ! []
 
     Save user ->
@@ -152,32 +149,20 @@ update msg model =
     ChangeDescription str ->
       updateUser (\u -> { u | description = str }) model ! []
 
-    GetPositionOptions (Ok list) ->
+    GetPositionOptions list ->
       { model | positionOptions = list } ! []
 
-    GetDomainOptions (Ok list) ->
+    GetDomainOptions list ->
       { model | domainOptions = list } ! []
 
-    GetPositionOptions (Err _) ->
-      model ! [] -- TODO error handling
-
-    GetDomainOptions (Err _) ->
-      model ! [] -- TODO error handling
-
-    UpdateUser (Err _) ->
-      model ! [] -- TODO error handling
-
-    UpdateUser (Ok _) ->
+    UpdateUser _ ->
       { model | editing = False } !
         (model.user
            |> Maybe.map (\user -> [ getAds user ])
            |> Maybe.withDefault []
         )
 
-    UpdateConsent (Err _) ->
-      model ! [] -- TODO error handling
-
-    UpdateConsent (Ok _) ->
+    UpdateConsent _ ->
       let
         newModel =
           { model
