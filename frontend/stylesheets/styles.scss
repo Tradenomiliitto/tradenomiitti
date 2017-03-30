@@ -681,7 +681,7 @@ body {
 
 .page-layout {
   position: relative;
-  min-height: 100%;
+  min-height: 100vh;
 }
 
 .footer {
@@ -718,12 +718,19 @@ body {
   }
 }
 
+.info {
+  &__heading {
+    @include basic-header
+  }
+
+  &__tral-in-general {
+    font-family: mundoSansLightItalic;
+  }
+}
+
 .preformatted {
   &__heading {
-    @include gotham-bold;
-    text-transform: uppercase;
-    margin-bottom: 50px;
-    margin-top: 50px;
+    @include basic-header;
   }
 
   &__section-heading {

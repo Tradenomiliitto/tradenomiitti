@@ -8,6 +8,7 @@ import Home
 import Html as H
 import Html.Attributes as A
 import Html.Events as E
+import Info
 import Json.Decode as Json
 import Link exposing (..)
 import ListAds
@@ -508,7 +509,9 @@ viewPage model =
           PreformattedText.view Static.registerDescriptionHeading Static.registerDescriptionTexts
         Settings ->
           H.map SettingsMessage <| Settings.view model.settings
-        route ->
+        Info ->
+          Info.view
+        NotFound ->
           notImplementedYet
   in
     H.div
