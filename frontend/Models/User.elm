@@ -38,6 +38,15 @@ type alias User =
   , croppedPictureFileName : Maybe String -- this is for every logged in user
   , pictureEditingDetails : Maybe PictureEditing
   , extra : Maybe Extra
+  , businessCard : Maybe BusinessCard
+  }
+
+type alias BusinessCard =
+  { name : String
+  , title : String
+  , location : String
+  , phone : String
+  , email : String
   }
 
 userDecoder : Json.Decoder User
@@ -55,6 +64,7 @@ userDecoder =
                                      (\str -> if String.length str == 0 then Nothing else Just str))
     |> P.optional "picture_editing" (Json.map Just pictureEditingDecoder) Nothing
     |> P.optional "extra" (Json.map Just userExtraDecoder) Nothing
+    |> P.optional "business_card" (Json.map Just businessCardDecoder) Nothing
 
 encode : User -> JS.Value
 encode user =
@@ -73,12 +83,25 @@ encode user =
                        )
            |> Maybe.withDefault []
         )
+      ++ case user.businessCard of
+        Nothing -> []
+        Just businessCard -> [("business_card", businessCardEncode businessCard)]
 
 settingsEncode : Settings -> JS.Value
 settingsEncode settings =
   JS.object
     [ ("emails_for_answers", JS.bool settings.emails_for_answers)
     , ("email_address", JS.string settings.email_address)
+    ]
+  
+businessCardEncode : BusinessCard -> JS.Value
+businessCardEncode businessCard =
+  JS.object
+    [ ("name", JS.string businessCard.name)
+    , ("title", JS.string businessCard.title)
+    , ("location", JS.string businessCard.location)
+    , ("phone", JS.string businessCard.phone)
+    , ("email", JS.string businessCard.email)
     ]
 
 pictureEditingEncode : PictureEditing -> JS.Value
@@ -114,3 +137,12 @@ settingsDecoder =
   P.decode Settings
     |> P.required "emails_for_answers" Json.bool
     |> P.required "email_address" Json.string
+
+businessCardDecoder : Json.Decoder BusinessCard
+businessCardDecoder =
+  P.decode BusinessCard
+    |> P.required "name" Json.string
+    |> P.required "title" Json.string
+    |> P.required "location" Json.string
+    |> P.required "phone" Json.string
+    |> P.required "email" Json.string

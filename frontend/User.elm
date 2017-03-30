@@ -61,14 +61,14 @@ getAds userId =
 
 -- VIEW
 
-view : Model -> H.Html Msg
+view : Model -> H.Html (ViewMessage Profile.Msg)
 view model =
   let
     profileInit = State.Profile.init
     profile = { profileInit | ads = model.ads }
     views = model.user
-      |> Maybe.map (\u ->  Profile.View.viewUser profile u)
+      |> Maybe.map (\u ->  Profile.View.viewUser profile False u)
       |> Maybe.withDefault []
 
   in
-    H.map ProfileMessage <| H.div [] views
+   H.div [] views

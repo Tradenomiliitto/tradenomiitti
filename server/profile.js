@@ -8,6 +8,7 @@ module.exports = function initialize(params) {
   const sebacon = params.sebacon;
   const util = params.util;
   const userImagesPath = params.userImagesPath;
+  const emails = params.emails;
   const service = require('./services/profiles')({ knex, util });
 
   function getMe(req, res) {
@@ -24,7 +25,15 @@ module.exports = function initialize(params) {
         ])
       })
       .then(([ firstname, nickname, { positions, domains }, databaseUser ]) => {
+
         const user = util.formatUser(databaseUser, true);
+
+        if (!databaseUser.data.business_card) {
+          user.business_card = emptyBusinessCard;
+        } else {
+          user.business_card = databaseUser.data.business_card;
+        }
+
         user.extra = {
           first_name: firstname,
           nick_name: nickname,
@@ -42,6 +51,15 @@ module.exports = function initialize(params) {
         res.sendStatus(500);
       });
   }
+
+  const emptyBusinessCard = 
+    {
+      name: '',
+      title: '',
+      location: '',
+      phone: '',
+      email: ''
+    }
 
   function putMe(req, res) {
     if (!req.session || !req.session.id) {
@@ -163,6 +181,38 @@ module.exports = function initialize(params) {
       });
   }
 
+  //gives business card from session user to user, whose id is given in request params
+  function addContact(req, res) {
+    return util.userForSession(req)
+      .then(user => {
+        if (user.id == req.params.user_id) {
+          return Promise.reject("User cannot add contact to himself");
+        }
+        return user;
+      })
+      .then(user => 
+        Promise.all(
+          [ knex('contacts').where({ from_user: user.id, to_user: req.params.user_id }),     
+            Promise.resolve(user) ]))
+      .then(([resp, user]) => {
+        if (resp.length == 0) {
+          knex('contacts').insert({ from_user: user.id, to_user: req.params.user_id })
+            .then(_ => util.userById(req.params.user_id))
+            .then(receiver => {
+              emails.sendNotificationForContact(receiver, user);
+              return res.status(200).send();
+            })
+        }
+        else {
+          return Promise.reject("User has already given their business card to this user");
+        }
+      })
+      .catch(e => {
+        console.log("Add contact error: " + e);
+        return res.status(400).send();
+      })
+  }
+
   return {
     getMe,
     putMe,
@@ -170,6 +220,7 @@ module.exports = function initialize(params) {
     putCroppedImage,
     consentToProfileCreation,
     listProfiles,
-    getProfile
+    getProfile,
+    addContact
   };
 }

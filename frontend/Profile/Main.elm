@@ -3,7 +3,7 @@ port module Profile.Main exposing (..)
 import Http
 import Json.Decode as Json
 import Models.Ad
-import Models.User exposing (User, PictureEditing)
+import Models.User exposing (User, BusinessCard, PictureEditing)
 import Skill
 import State.Profile exposing (Model)
 import Util exposing (UpdateMessage(..))
@@ -27,10 +27,12 @@ type Msg
   | ChangeDescription String
   | UpdateUser ()
   | UpdateConsent ()
+  | UpdateBusinessCard BusinessCardField String
   | ChangeImage User
   | ImageDetailsUpdate (String ,PictureEditing)
   | MouseEnterProfilePic
   | MouseLeaveProfilePic
+  | AddContact User
   | NoOp
 
 
@@ -94,6 +96,30 @@ deleteFromSkillList index list =
 updateUser : (User -> User) -> Model -> Model
 updateUser update model =
   { model | user = Maybe.map update model.user }
+
+addContact : User -> Cmd (UpdateMessage Msg)
+addContact user =
+  Http.post ("/api/kontaktit/" ++ (toString user.id)) Http.emptyBody (Json.succeed ())
+    |> Util.errorHandlingSend (always NoOp)
+
+type BusinessCardField
+  = Name
+  | Title
+  | Location
+  | Phone
+  | Email
+
+updateBusinessCard : Maybe BusinessCard -> BusinessCardField -> String -> Maybe BusinessCard
+updateBusinessCard businessCard field value =
+  case businessCard of
+    Just businessCard ->
+      case field of
+        Name -> Just { businessCard | name = value}
+        Title -> Just { businessCard | title = value }
+        Location -> Just { businessCard | location = value }
+        Phone -> Just { businessCard | phone = value }
+        Email -> Just { businessCard | email = value }
+    Nothing -> Nothing
 
 update : Msg -> Model -> (Model, Cmd (UpdateMessage Msg))
 update msg model =
@@ -162,6 +188,9 @@ update msg model =
            |> Maybe.withDefault []
         )
 
+    UpdateBusinessCard field value ->
+      updateUser (\u -> { u | businessCard = (updateBusinessCard u.businessCard field value) }) model ! []
+
     UpdateConsent _ ->
       let
         newModel =
@@ -191,6 +220,9 @@ update msg model =
 
     MouseLeaveProfilePic ->
       { model | mouseOverUserImage = False } ! []
+
+    AddContact user ->
+      model ! [ addContact user ]
 
     NoOp ->
       model ! []

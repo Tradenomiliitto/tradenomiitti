@@ -9,6 +9,7 @@ import Html as H
 import Html.Attributes as A
 import Html.Events as E
 import Http
+import Info
 import Json.Decode as Json
 import ListAds
 import ListUsers
@@ -490,7 +491,7 @@ viewPage model =
     content =
       case model.route of
         User userId ->
-          H.map UserMessage <| User.view model.user
+          H.map (mapAppMessage ProfileMessage) <| User.view model.user
         Profile ->
           H.map (mapAppMessage ProfileMessage) <| Profile.View.view model.profile model
         LoginNeeded route ->
@@ -511,7 +512,9 @@ viewPage model =
           PreformattedText.view Static.registerDescriptionHeading Static.registerDescriptionTexts
         Settings ->
           H.map SettingsMessage <| Settings.view model.settings
-        route ->
+        Info ->
+          Info.view
+        NotFound ->
           notImplementedYet
   in
     H.div
