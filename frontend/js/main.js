@@ -4,6 +4,7 @@ import initScrolling from './scrolling';
 import initGoogleAnalytics from './google-analytics';
 import initImageUpload from './image-upload';
 import initFooterVisibleListener from './footer-visible';
+import initCloseMobileMenu from './mobile-menu';
 
 const app = Elm.Main.embed(document.getElementById('app'));
 
@@ -12,3 +13,4 @@ initScrolling(app.ports.scrollTop);
 initGoogleAnalytics(app.ports.sendGaPageView);
 initImageUpload(app.ports.imageUpload, app.ports.imageSave);
 initFooterVisibleListener(app.ports.footerAppeared);
+initCloseMobileMenu(app.ports.closeMenu);
