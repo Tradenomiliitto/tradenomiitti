@@ -138,7 +138,7 @@ update msg model =
 
             Settings ->
               modelWithRoute !
-                [ init SettingsMessage Settings.initTasks
+                [ initWithUpdateMessage SettingsMessage Settings.initTasks
                 ]
 
             newRoute ->
@@ -252,7 +252,7 @@ update msg model =
       let
         (settingsModel, cmd) = Settings.update msg model.settings
       in
-        { model | settings = settingsModel } ! [ Cmd.map SettingsMessage cmd ]
+        { model | settings = settingsModel } ! [ unpackUpdateMessage SettingsMessage cmd ]
 
     Error err ->
       let
