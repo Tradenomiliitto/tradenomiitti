@@ -196,7 +196,7 @@ showProfileView : Model -> RootState.Model ->  H.Html (AppMessage Msg)
 showProfileView model rootState =
   H.div [ A.class "user-page" ] <|
     [ profileTopRow model rootState
-    ] ++ (viewUserMaybe model)
+    ] ++ (viewUserMaybe model True)
 
 
 competences : Model -> User -> H.Html Msg
@@ -287,10 +287,10 @@ profileTopRow model rootState =
         ]
       ]
 
-viewUserMaybe : Model -> List (H.Html (AppMessage Msg))
-viewUserMaybe model =
+viewUserMaybe : Model -> Bool -> List (H.Html (AppMessage Msg))
+viewUserMaybe model ownProfile =
   model.user
-    |> Maybe.map (viewUser model)
+    |> Maybe.map (viewUser model ownProfile)
     |> Maybe.withDefault
       [ H.div
         [ A.class "container"]
@@ -300,14 +300,16 @@ viewUserMaybe model =
       ]
 
 
-viewUser : Model -> User -> List (H.Html (AppMessage Msg))
-viewUser model user =
+viewUser : Model -> Bool -> User -> List (H.Html (AppMessage Msg))
+viewUser model ownProfile user =
   [ H.div
     [ A.class "container" ]
     [ H.div
       [ A.class "row user-page__section" ]
       [ H.map LocalMessage (userInfoBox model user)
-      , H.map LocalMessage (contactUser user)
+      , if ownProfile
+          then H.map LocalMessage (membershipDataBox user)
+          else H.map LocalMessage (contactUser user)
       ]
     ]
   , H.hr [ A.class "full-width-ruler" ] []
