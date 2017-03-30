@@ -90,12 +90,7 @@ update msg model =
 
         initAppMessage mapper cmd =
           if shouldScroll then
-            Cmd.map (\appMsg ->
-                       case appMsg of
-                         LocalUpdateMessage msg -> mapper msg
-                         ApiError err -> Error err
-                         Reroute route -> NewUrl route
-                    ) cmd
+            unpackUpdateMessage mapper cmd
           else
             Cmd.none
 
@@ -226,7 +221,8 @@ update msg model =
       let
         (createAdModel, cmd) = CreateAd.update msg model.createAd
       in
-        { model | createAd = createAdModel } ! [ Cmd.map CreateAdMessage cmd]
+        { model | createAd = createAdModel } !
+          [ unpackUpdateMessage CreateAdMessage cmd]
 
     ListAdsMessage msg ->
       let
@@ -522,6 +518,15 @@ mapAppMessage func message =
       NewUrl route
     LocalViewMessage mesg ->
       func mesg
+
+unpackUpdateMessage : (msg -> Msg) -> Cmd (UpdateMessage msg) -> Cmd Msg
+unpackUpdateMessage mapper cmd =
+  Cmd.map (\appMsg ->
+             case appMsg of
+               LocalUpdateMessage msg -> mapper msg
+               ApiError err -> Error err
+               Reroute route -> NewUrl route
+          ) cmd
 
 notImplementedYet : H.Html Msg
 notImplementedYet =

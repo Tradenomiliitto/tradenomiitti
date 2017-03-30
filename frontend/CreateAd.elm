@@ -10,6 +10,7 @@ import Nav
 import Navigation
 import State.CreateAd exposing (..)
 import State.Util exposing (SendingStatus(..))
+import Util exposing (UpdateMessage(..))
 
 type Msg
   = NoOp
@@ -31,7 +32,7 @@ sendAd model =
     Http.post "/api/ilmoitukset" (Http.jsonBody encoded) Json.int
       |> Http.send SendResponse
 
-update : Msg -> Model -> (Model, Cmd Msg)
+update : Msg -> Model -> (Model, Cmd (UpdateMessage Msg))
 update msg model =
   case msg of
     ChangeHeading str ->
@@ -39,12 +40,12 @@ update msg model =
     ChangeContent str ->
       { model | content = str } ! []
     Send ->
-      { model | sending = Sending } ! [ sendAd model ]
+      { model | sending = Sending } ! [ Cmd.map LocalUpdateMessage <| sendAd model ]
     SendResponse (Err _) ->
       { model | sending = FinishedFail } ! []
     SendResponse (Ok id) ->
       init !
-        [ Navigation.newUrl (Nav.routeToPath (Nav.ShowAd id)) ]
+        [ Util.reroute (Nav.ShowAd id) ]
     NoOp ->
       model ! []
 
