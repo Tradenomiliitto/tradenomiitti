@@ -84,11 +84,6 @@ update msg model =
       let
         shouldScroll = model.scrollTop
 
-        init mapper cmd =
-          if shouldScroll then
-            Cmd.map mapper cmd
-          else Cmd.none
-
         initWithUpdateMessage mapper cmd =
           if shouldScroll then
             unpackUpdateMessage mapper cmd
@@ -111,7 +106,7 @@ update msg model =
 
             ListAds ->
               modelWithRoute !
-                  [ init ListAdsMessage (ListAds.initTasks modelWithRoute.listAds) ]
+                  [ initWithUpdateMessage ListAdsMessage (ListAds.initTasks modelWithRoute.listAds) ]
 
             Home ->
               modelWithRoute !
@@ -228,7 +223,7 @@ update msg model =
       let
         (listAdsModel, cmd) = ListAds.update msg model.listAds
       in
-        { model | listAds = listAdsModel } ! [ Cmd.map ListAdsMessage cmd ]
+        { model | listAds = listAdsModel } ! [ unpackUpdateMessage ListAdsMessage cmd ]
 
     ListUsersMessage msg ->
       let

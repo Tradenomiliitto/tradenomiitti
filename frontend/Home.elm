@@ -23,7 +23,7 @@ update msg model =
       let
         (listAdsModel, cmd) = ListAds.update msg model.listAds
       in
-        { model | listAds = listAdsModel } ! [ Cmd.map (LocalUpdateMessage << ListAdsMessage) cmd ]
+        { model | listAds = listAdsModel } ! [ Util.localMap ListAdsMessage cmd ]
     ListUsersMessage msg ->
       let
         (listUsersModel, cmd) = ListUsers.update msg model.listUsers
@@ -36,7 +36,7 @@ update msg model =
 initTasks : Model -> Cmd (UpdateMessage Msg)
 initTasks model =
   Cmd.batch
-    [ Cmd.map (LocalUpdateMessage << ListAdsMessage) (ListAds.initTasks model.listAds)
+    [ Util.localMap ListAdsMessage (ListAds.initTasks model.listAds)
     , Util.localMap ListUsersMessage (ListUsers.initTasks model.listUsers)
     ]
 
