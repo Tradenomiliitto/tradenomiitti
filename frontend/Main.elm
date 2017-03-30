@@ -100,7 +100,7 @@ update msg model =
           case route of
             ShowAd adId ->
               modelWithRoute !
-                [ init AdMessage (Ad.getAd adId)
+                [ initAppMessage AdMessage (Ad.getAd adId)
                 ]
 
             Profile ->
@@ -240,7 +240,7 @@ update msg model =
       let
         (adModel, cmd) = Ad.update msg model.ad
       in
-        { model | ad = adModel } ! [ Cmd.map AdMessage cmd ]
+        { model | ad = adModel } ! [ unpackUpdateMessage AdMessage cmd ]
 
     HomeMessage msg ->
       let
