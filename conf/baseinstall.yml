@@ -81,7 +81,7 @@
 
     - name: upload static assets
       copy: src=assets/{{ item }} dest=/srv/static/{{ item }}
-      with_items: [ MundoSansStd-Light.otf, tral_person_image_square_1.jpg ]
+      with_items: [ MundoSansStd.otf, tral_person_image_square_1.jpg ]
 
     - name: upload google analytics id
       template: src=google-analytics-id dest=/srv/static/google-analytics-id
