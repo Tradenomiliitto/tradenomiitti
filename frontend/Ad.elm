@@ -241,7 +241,7 @@ leaveAnswerPrompt canAnswer isAsker hasAnswered =
     else
       [ H.p
           [ A.class "ad-page__leave-answer-text"]
-          [ H.text "Kokemuksellasi on aina arvoa. Jää näkemyksesi vastaamalla ilmoitukseen." ]
+          [ H.text "Kokemuksellasi on aina arvoa. Jaa näkemyksesi vastaamalla ilmoitukseen." ]
       , H.button
         [ A.class "btn btn-primary btn-lg ad-page__leave-answer-button"
         , E.onClick StartAddAnswer
