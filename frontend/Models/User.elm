@@ -64,7 +64,7 @@ userDecoder =
                                      (\str -> if String.length str == 0 then Nothing else Just str))
     |> P.optional "picture_editing" (Json.map Just pictureEditingDecoder) Nothing
     |> P.optional "extra" (Json.map Just userExtraDecoder) Nothing
-    |> P.optional "businessCard" (Json.map Just businessCardDecoder) Nothing
+    |> P.optional "business_card" (Json.map Just businessCardDecoder) Nothing
 
 encode : User -> JS.Value
 encode user =
@@ -85,7 +85,7 @@ encode user =
         )
       ++ case user.businessCard of
         Nothing -> []
-        Just businessCard -> [("businessCard", JS.object (businessCardEncode businessCard))]
+        Just businessCard -> [("business_card", businessCardEncode businessCard)]
 
 settingsEncode : Settings -> JS.Value
 settingsEncode settings =
@@ -94,8 +94,9 @@ settingsEncode settings =
     , ("email_address", JS.string settings.email_address)
     ]
   
-businessCardEncode : BusinessCard -> List (String, JS.Value)
+businessCardEncode : BusinessCard -> JS.Value
 businessCardEncode businessCard =
+  JS.object
     [ ("name", JS.string businessCard.name)
     , ("title", JS.string businessCard.title)
     , ("location", JS.string businessCard.location)

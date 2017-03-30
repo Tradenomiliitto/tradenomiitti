@@ -27,10 +27,10 @@ module.exports = function initialize(params) {
 
         const user = util.formatUser(databaseUser, true);
 
-        if (!databaseUser.data.businessCard) {
-          user.businessCard = emptyBusinessCard;
+        if (!databaseUser.data.business_card) {
+          user.business_card = emptyBusinessCard;
         } else {
-          user.businessCard = databaseUser.data.businessCard;
+          user.business_card = databaseUser.data.business_card;
         }
 
         user.extra = {
