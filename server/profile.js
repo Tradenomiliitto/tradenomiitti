@@ -8,6 +8,7 @@ module.exports = function initialize(params) {
   const sebacon = params.sebacon;
   const util = params.util;
   const userImagesPath = params.userImagesPath;
+  const service = require('./services/profiles')({ knex, util });
 
   function getMe(req, res) {
     if (!req.session || !req.session.id) {
