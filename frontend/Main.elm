@@ -125,7 +125,7 @@ update msg model =
                 { model | route = Profile } ! [ Navigation.modifyUrl (routeToPath Profile) ]
               else
                 (modelWithRoute,
-                   init UserMessage (User.initTasks userId)
+                   initWithUpdateMessage UserMessage (User.initTasks userId)
                 )
 
             ListUsers ->
