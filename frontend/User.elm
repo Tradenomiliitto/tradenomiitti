@@ -66,6 +66,7 @@ getAds userId =
 
 -- VIEW
 
+view : Model -> H.Html Msg
 view model =
   let
     profileInit = State.Profile.init
