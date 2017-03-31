@@ -136,6 +136,10 @@ $navbar-element-height: 35px;
 
 .navbar {
   font-size: 18px;
+  &-fixed-top,
+  &-collapse {
+    z-index: 8300;
+  }
 }
 
 .navbar__profile-pic {
