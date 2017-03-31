@@ -81,13 +81,13 @@ introBoxes userMaybe =
           ]
   in
     [ H.div
-      [ A.class "home__introbox col-sm-6 col-sm-offset-3" ]
+      [ A.class "home__introbox col-xs-11 col-sm-6 col-sm-offset-3" ]
       [ H.h2
           [ A.class "home__introbox--heading" ]
           [ H.text "Kohtaa tradenomi" ]
       ]
     , H.div
-      [ A.class "home__introbox col-sm-6 col-sm-offset-3" ]
+      [ A.class "home__introbox col-xs-11 col-sm-6 col-sm-offset-3" ]
       [ H.div
           [ A.class "home__introbox--content" ]
           [ H.text "Tradenomiitti on tradenomien oma kohtaamispaikka, jossa jäsenet löytävät toisensa yhteisten aiheiden ympäriltä ja hyötyvät toistensa kokemuksista." ]
