@@ -309,7 +309,7 @@ viewUser model ownProfile user =
       [ A.class "row user-page__section user-page__first-block" ]
       [ H.map LocalViewMessage (userInfoBox model user)
       , if ownProfile
-          then H.map LocalViewMessage (membershipDataBox user)
+          then H.map LocalViewMessage (editProfileBox user)
           else H.map LocalViewMessage (contactUser user)
       ]
     ]
@@ -336,10 +336,22 @@ viewUser model ownProfile user =
     ]
   ]
 
+editProfileBox : User -> H.Html Msg
+editProfileBox user =
+  H.div
+    [ A.class "col-md-6 user-page__edit-or-contact-user"]
+    [ H.p [] [ H.text ("Onhan profiilisi ajan tasalla? Mielenkiintoinen ja aktiivinen profiili auttaa luomaan kontakteja") ]
+    , H.button
+            [ A.class "btn btn-primary profile__top-row-edit-button"
+            , E.onClick Edit
+            ]
+            [ H.text  "Muokkaa profiilia" ]
+    ]
+
 contactUser : User -> H.Html Msg
 contactUser user =
   H.div
-    [ A.class "col-md-6 user-page__contact-user"]
+    [ A.class "col-md-6 user-page__edit-or-contact-user"]
     [ H.p [] [ H.text ("Voisiko " ++ user.name ++ " auttaa sinua? Jaa käyntikorttisi tästä. ") ]
     , H.button [ E.onClick (AddContact user) , A.class "btn btn-primary" ] [ H.text "ota yhteyttä" ]
     ]
