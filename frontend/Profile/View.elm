@@ -579,6 +579,7 @@ tralInfo extra =
       , row "Toimiala" (String.join ", " extra.domains)
       , row "Sähköposti" extra.email
       , row "Matkapuhelinnumero" extra.phone
+      , row "Maakunta" extra.geoArea
       ]
 
 

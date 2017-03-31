@@ -23,10 +23,11 @@ module.exports = function initialize(params) {
           sebacon.getUserEmploymentExtras(user.remote_id),
           sebacon.getUserEmail(user.remote_id),
           sebacon.getUserPhoneNumber(user.remote_id),
+          sebacon.getUserGeoArea(user.remote_id),
           user
         ])
       })
-      .then(([ firstname, nickname, { positions, domains }, email, phone, databaseUser ]) => {
+      .then(([ firstname, nickname, { positions, domains }, email, phone, geoArea, databaseUser ]) => {
 
         const user = util.formatUser(databaseUser, true);
 
@@ -42,7 +43,8 @@ module.exports = function initialize(params) {
           positions,
           domains,
           email,
-          phone
+          phone,
+          geo_area: geoArea
         }
         if (databaseUser.data.picture_editing)
           user.picture_editing = databaseUser.data.picture_editing;
