@@ -564,25 +564,20 @@ membershipDataBox user =
 
 tralInfo : Models.User.Extra -> H.Html msg
 tralInfo extra =
-  H.table
-    [ A.class "user-page__membership-info-definitions" ]
-    [ H.tr []
-      [ H.td [] [ H.text "Kutsumanimi" ]
-      , H.td [] [ H.text extra.nick_name ]
+  let
+    row title value =
+      H.tr []
+        [ H.td [] [ H.text title ]
+        , H.td [] [ H.text value ]
+        ]
+  in
+    H.table
+      [ A.class "user-page__membership-info-definitions" ]
+      [ row "Kutsumanimi" extra.nick_name
+      , row "Etunimi" extra.first_name
+      , row "Tehtäväluokat" (String.join ", " extra.positions)
+      , row "Toimiala" (String.join ", " extra.domains)
       ]
-    , H.tr []
-      [ H.td [] [ H.text "Etunimi" ]
-      , H.td [] [ H.text extra.first_name ]
-      ]
-    , H.tr []
-      [ H.td [] [ H.text "Tehtäväluokat" ]
-      , H.td [] [ H.text (String.join ", " extra.positions)]
-      ]
-    , H.tr []
-      [ H.td [] [ H.text "Toimiala" ]
-      , H.td [] [ H.text (String.join ", " extra.domains) ]
-      ]
-    ]
 
 
 membershipDataBoxEditing : User -> H.Html msg
