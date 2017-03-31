@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const fileUpload = require('express-fileupload');
 const uuid = require('uuid');
+const crypto = require('crypto');
 const request = require('request');
 const cookieSession = require('cookie-session');
 
@@ -134,6 +135,14 @@ app.post('/api/kontaktit/:user_id', profile.addContact)
 app.get('*', (req, res) => {
   res.sendFile('./index.html', {root: staticDir})
 });
+
+app.use(function(err, req, res, next) {
+  const hash = crypto.createHash('sha1');
+  hash.update(uuid.v4());
+  const errorHash = hash.digest('hex').substr(0, 10);
+  console.log(`${errorHash} ${req.method} ${req.url} ↯`, err);
+  res.status(err.status || 500).send(errorHash);
+})
 
 app.listen(3000, () => {
   console.log('Listening on 3000');
