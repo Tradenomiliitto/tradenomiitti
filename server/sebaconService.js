@@ -142,6 +142,11 @@ module.exports = function initialize(params) {
       .then(res => res.result.email1 || res.result.email2 || '');
   }
 
+  function getUserPhoneNumber(id) {
+    return getUser(id)
+      .then(res => res.result.matkapuhelin || '');
+  }
+
   return {
     getUserPositions,
     getUserFirstName,
@@ -149,6 +154,7 @@ module.exports = function initialize(params) {
     getUserDomains,
     getUserEmploymentExtras,
     getUserEmail,
+    getUserPhoneNumber,
     getPositionTitles,
     getDomainTitles
   }

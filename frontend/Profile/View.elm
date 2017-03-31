@@ -578,6 +578,7 @@ tralInfo extra =
       , row "Tehtäväluokat" (String.join ", " extra.positions)
       , row "Toimiala" (String.join ", " extra.domains)
       , row "Sähköposti" extra.email
+      , row "Matkapuhelinnumero" extra.phone
       ]
 
 
