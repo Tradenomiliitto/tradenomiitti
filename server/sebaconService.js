@@ -6,7 +6,7 @@ module.exports = function initialize(params) {
     return `https://voltage.sebacon.net/SebaconAPI/?auth=${params.auth}`;
   }
 
-  function getMetaList(meta) {
+  function getMetaList(meta, fuzzCapitalisation) {
     return request.post({
       url: url(),
       auth: {
@@ -23,18 +23,24 @@ module.exports = function initialize(params) {
       const obj = {};
       res.result.forEach(o => {
         const str = o.otsikko;
-        obj[o.id] = str.charAt(0).toLocaleUpperCase() + str.slice(1).toLocaleLowerCase();
+        obj[o.id] = fuzzCapitalisation
+          ? str.charAt(0).toLocaleUpperCase() + str.slice(1).toLocaleLowerCase()
+          : str;
       });
       return obj;
     })
   }
 
   function getPositionTitles() {
-    return getMetaList('tehtavanimikkeet');
+    return getMetaList('tehtavanimikkeet', false);
   }
 
   function getDomainTitles() {
-    return getMetaList('sopimusalat');
+    return getMetaList('sopimusalat', true);
+  }
+
+  function getGeoAreas() {
+    return getMetaList('maakunnat', false);
   }
 
   function getUserEmploymentHistory(id) {
@@ -142,6 +148,18 @@ module.exports = function initialize(params) {
       .then(res => res.result.email1 || res.result.email2 || '');
   }
 
+  function getUserPhoneNumber(id) {
+    return getUser(id)
+      .then(res => res.result.matkapuhelin || '');
+  }
+
+  function getUserGeoArea(id) {
+    return Promise.all([
+      getGeoAreas(),
+      getUser(id)
+    ]).then(([ titles, res ]) => titles[res.result.maakunta || ''] || '')
+  }
+
   return {
     getUserPositions,
     getUserFirstName,
@@ -149,7 +167,9 @@ module.exports = function initialize(params) {
     getUserDomains,
     getUserEmploymentExtras,
     getUserEmail,
+    getUserPhoneNumber,
     getPositionTitles,
+    getUserGeoArea,
     getDomainTitles
   }
 }

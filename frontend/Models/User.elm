@@ -11,6 +11,9 @@ type alias Extra =
   , nick_name : String
   , domains : List String
   , positions : List String
+  , email : String
+  , phone : String
+  , geoArea : String
   }
 
 type alias PictureEditing =
@@ -121,6 +124,9 @@ userExtraDecoder =
     |> P.required "nick_name" Json.string
     |> P.required "domains" (Json.list Json.string)
     |> P.required "positions" (Json.list Json.string)
+    |> P.required "email" Json.string
+    |> P.required "phone" Json.string
+    |> P.required "geo_area" Json.string
 
 pictureEditingDecoder : Json.Decoder PictureEditing
 pictureEditingDecoder =
