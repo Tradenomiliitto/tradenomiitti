@@ -13,7 +13,7 @@ module.exports = function initialize(params) {
 
   function getMe(req, res) {
     if (!req.session || !req.session.id) {
-      return res.sendStatus(403);
+      return res.sendStatus(401);
     }
     return util.userForSession(req)
       .then(user => {
@@ -46,9 +46,12 @@ module.exports = function initialize(params) {
         return res.json(user);
       })
       .catch((err) => {
-        console.error('Error in /api/me', err);
-        req.session = null;
-        res.sendStatus(500);
+        if (err.status === 403) {
+          req.session = null;
+          return res.sendStatus(err.status);
+        }
+        // fall back to default error handler for errors other than session missing from db
+        return Promise.reject(err);
       });
   }
 
@@ -73,10 +76,25 @@ module.exports = function initialize(params) {
         return knex('users').where({ id: user.id }).update('data', newData);
       }).then(resp => {
         res.sendStatus(200);
-      }).catch(err => {
-        console.error(err);
-        res.sendStatus(500);
       })
+  }
+
+  function toBufferPromise(gmObject) {
+    return new Promise((resolve, reject) => {
+      gmObject.toBuffer((err, buffer) => {
+        if (err) reject(err);
+        else resolve(buffer);
+      });
+    });
+  }
+
+  function writePromise(gmObject, path) {
+    return new Promise((resolve, reject) => {
+      gmObject.write(path, (err) => {
+        if (err) reject(err);
+        else resolve();
+      })
+    })
   }
 
   function putAnyimage(req, res, size, originalBuffer, crop) {
@@ -93,27 +111,20 @@ module.exports = function initialize(params) {
           ? commonTasks.crop(crop.width, crop.height, crop.x, crop.y)
           : commonTasks;
 
-    return withPossibleCrop
-      .resize(size) // width size, keep aspect ratio
-      .toBuffer((err, buffer) => {
-        if (err) {
-          console.error(err);
-          return res.sendStatus(500);
-        }
+    return toBufferPromise(withPossibleCrop
+      .resize(size)) // width size, keep aspect ratio
+      .then(buffer => {
         const hash = crypto.createHash('sha1');
         hash.update(buffer);
 
         const fileName = `${hash.digest('hex')}.${extension}`;
         const fullPath = `${userImagesPath}/${fileName}`;
 
-        return gm(buffer).write(fullPath, (err) => {
-          if (err) {
-            console.error(err);
-            return res.sendStatus(500);
-          }
-          return res.send(fileName);
-        })
-      });
+        return writePromise(gm(buffer), fullPath)
+          .then(() => fileName)
+      }).then(fileName => {
+        return res.send(fileName);
+      })
   }
 
   function putImage(req, res) {
@@ -133,11 +144,7 @@ module.exports = function initialize(params) {
     };
 
     const fullPath = `${userImagesPath}/${req.query.fileName}`;
-    gm(fullPath).toBuffer((err, buffer) => {
-      if (err) {
-        console.error('PUT Cropped Image', err);
-        return res.sendStatus(500);
-      }
+    toBufferPromise(gm(fullPath)).then(buffer => {
       return putAnyimage(req, res, 250, buffer, crop);
     });
   }
@@ -156,9 +163,6 @@ module.exports = function initialize(params) {
           .update('data', user.data)
       }).then(resp => {
         res.sendStatus(200);
-      }).catch(err => {
-        console.error('Error in /api/profiilit/luo', err);
-        res.sendStatus(500);
       });
   }
 
@@ -166,10 +170,6 @@ module.exports = function initialize(params) {
     util.loggedIn(req)
       .then(loggedIn => service.listProfiles(loggedIn, req.query.limit, req.query.offset))
       .then(users => res.json(users))
-      .catch(err => {
-        console.error(err);
-        res.sendStatus(500);
-      })
   }
 
   function getProfile(req, res) {

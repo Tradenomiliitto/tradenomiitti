@@ -68,9 +68,6 @@ module.exports = function initialize(params) {
       ]);
     }).then(([ insertResp, emailResp ]) => {
       res.json(`${insertResp[0]}`);
-    }).catch(err => {
-      console.error('Error in /api/ilmoitukset/:id/vastaus', err);
-      res.sendStatus(500);
     });
   }
 
@@ -91,10 +88,6 @@ module.exports = function initialize(params) {
       return Promise.all(allAds.map(ad => util.formatAd(ad, loggedIn)))
     }).then(ads => ads.sort(service.latestFirst))
       .then(ads => res.send(ads))
-      .catch(err => {
-        console.error(err);
-        res.sendStatus(500);
-      })
   }
 
   return {

@@ -112,9 +112,6 @@ app.get('/api/asetukset', (req, res) => {
     settings.emails_for_answers = dbSettings.emails_for_answers || true;
     settings.email_address = dbSettings.email_address || '';
     res.json(settings);
-  }).catch(e => {
-    console.error('GET /api/asetukset', e);
-    res.sendStatus(500);
   });
 });
 
@@ -124,9 +121,6 @@ app.put('/api/asetukset', jsonParser, (req, res) => {
     return knex('users').where({ id: dbUser.id }).update('settings', newSettings);
   }).then(resp => {
     res.sendStatus(200);
-  }).catch(e => {
-    console.error('PUT /api/asetukset', e);
-    res.sendStatus(500);
   });
 })
 
