@@ -396,6 +396,7 @@ logoImage width =
   H.img
     [ A.alt "Tradenomiitti"
     , A.src "/static/tradenomiitti_logo.svg"
+    , A.class "logo-image"
     , A.width width
     ]
     []

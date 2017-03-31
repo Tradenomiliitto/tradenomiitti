@@ -65,6 +65,10 @@ $fullpage-height: calc(100vh - #{ $navbar-height });
   text-transform: uppercase;
   margin-bottom: 50px;
   margin-top: 50px;
+  color: $green;
+  @media (max-width: $screen-xs-max) {
+    font-size: 24px;
+  }
 }
 
 @mixin button-colors {
