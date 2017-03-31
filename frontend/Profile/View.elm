@@ -5,7 +5,7 @@ import Html as H
 import Html.Attributes as A
 import Html.Events as E
 import Json.Decode as Json
-import Link exposing (AppMessage(..))
+import Util exposing (ViewMessage(..))
 import ListAds
 import Models.User exposing (User)
 import Nav
@@ -15,14 +15,14 @@ import State.Main as RootState
 import State.Profile exposing (Model)
 import SvgIcons
 
-view : Model -> RootState.Model -> H.Html (AppMessage Msg)
+view : Model -> RootState.Model -> H.Html (ViewMessage Msg)
 view model rootState =
   if model.editing
     then editProfileView model rootState
     else showProfileView model rootState
 
 
-editProfileView : Model -> RootState.Model -> H.Html (AppMessage Msg)
+editProfileView : Model -> RootState.Model -> H.Html (ViewMessage Msg)
 editProfileView model rootState =
   case model.user of
     Just user ->
@@ -31,8 +31,8 @@ editProfileView model rootState =
         [ profileTopRow model rootState
         , editProfileHeading
         , membershipInfoEditing user
-        , H.map LocalMessage (publicInfoEditing model user)
-        , H.map LocalMessage (competences model user)
+        , H.map LocalViewMessage (publicInfoEditing model user)
+        , H.map LocalViewMessage (competences model user)
         ]
     Nothing -> H.div [] []
 
@@ -157,32 +157,32 @@ businessCardData user businessCard =
 businessCardDataInput : Models.User.BusinessCard -> BusinessCardField -> H.Html Msg
 businessCardDataInput card field =
   let
-    value = 
+    value =
       case field of
         Name -> card.name
         Title -> card.title
         Location -> card.location
         Phone -> card.phone
         Email -> card.email
-    class = 
+    class =
       A.classList
         [ ("profile__business-card--input", True)
         , ("profile__business-card--input--empty", value == "")
         , ("profile__business-card--input--filled", value /= "")
         ]
   in
-    H.p 
+    H.p
       [ class ]
       [ H.span [ class ] [ SvgIcons.answers ]
-      , H.input 
+      , H.input
           [ A.placeholder <| fieldToString field
           , A.value value
           , E.onInput (UpdateBusinessCard field)
           ] []
       , H.hr [ A.class "profile__business-card--input--line", class ] []
       ]
-     
-  
+
+
 fieldToString : BusinessCardField -> String
 fieldToString field =
   case field of
@@ -193,7 +193,7 @@ fieldToString field =
     Email -> "Sähköposti"
 
 
-showProfileView : Model -> RootState.Model ->  H.Html (AppMessage Msg)
+showProfileView : Model -> RootState.Model ->  H.Html (ViewMessage Msg)
 showProfileView model rootState =
   H.div [ A.class "user-page" ] <|
     [ profileTopRow model rootState
@@ -226,7 +226,7 @@ competences model user =
     ]
 
 
-profileTopRow : Model -> RootState.Model -> H.Html (AppMessage Msg)
+profileTopRow : Model -> RootState.Model -> H.Html (ViewMessage Msg)
 profileTopRow model rootState =
   let
     logonLink =
@@ -249,7 +249,7 @@ profileTopRow model rootState =
         Just user ->
           H.button
             [ A.class "btn btn-primary profile__top-row-edit-button"
-            , E.onClick <| if model.editing then LocalMessage (Save user) else LocalMessage Edit
+            , E.onClick <| if model.editing then LocalViewMessage (Save user) else LocalViewMessage Edit
             ]
             [ H.text (if model.editing then "Tallenna profiili" else "Muokkaa profiilia") ]
         Nothing ->
@@ -288,7 +288,7 @@ profileTopRow model rootState =
         ]
       ]
 
-viewUserMaybe : Model -> Bool -> List (H.Html (AppMessage Msg))
+viewUserMaybe : Model -> Bool -> List (H.Html (ViewMessage Msg))
 viewUserMaybe model ownProfile =
   model.user
     |> Maybe.map (viewUser model ownProfile)
@@ -301,16 +301,16 @@ viewUserMaybe model ownProfile =
       ]
 
 
-viewUser : Model -> Bool -> User -> List (H.Html (AppMessage Msg))
+viewUser : Model -> Bool -> User -> List (H.Html (ViewMessage Msg))
 viewUser model ownProfile user =
   [ H.div
     [ A.class "container" ]
     [ H.div
       [ A.class "row user-page__section user-page__first-block" ]
-      [ H.map LocalMessage (userInfoBox model user)
+      [ H.map LocalViewMessage (userInfoBox model user)
       , if ownProfile
-          then H.map LocalMessage (membershipDataBox user)
-          else H.map LocalMessage (contactUser user)
+          then H.map LocalViewMessage (membershipDataBox user)
+          else H.map LocalViewMessage (contactUser user)
       ]
     ]
   , H.hr [ A.class "full-width-ruler" ] []
@@ -330,8 +330,8 @@ viewUser model ownProfile user =
     [ A.class "container" ]
     [ H.div
       [ A.class "row" ]
-      [ H.map LocalMessage (userDomains model user)
-      , H.map LocalMessage (userPositions model user)
+      [ H.map LocalViewMessage (userDomains model user)
+      , H.map LocalViewMessage (userPositions model user)
       ]
     ]
   ]

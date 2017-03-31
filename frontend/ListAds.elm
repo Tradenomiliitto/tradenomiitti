@@ -5,31 +5,29 @@ import Html as H
 import Html.Attributes as A
 import Http
 import Json.Decode as Json
-import Link exposing (AppMessage(..))
+import Link
 import List.Extra as List
 import Models.Ad
 import Nav
 import State.ListAds exposing (..)
 import SvgIcons
-import Util
+import Util exposing (ViewMessage(..), UpdateMessage(..))
 
 type Msg
-  = UpdateAds (Result Http.Error (List Models.Ad.Ad))
+  = UpdateAds (List Models.Ad.Ad)
   | FooterAppeared
 
 
-update : Msg -> Model -> (Model, Cmd Msg)
+update : Msg -> Model -> (Model, Cmd (UpdateMessage Msg))
 update msg model =
   case msg of
-    UpdateAds (Ok ads) ->
+    UpdateAds ads ->
       { model
         | ads = List.uniqueBy .id <| model.ads ++ ads
         -- always advance by full amount, so we know when to stop asking for more
         , cursor = model.cursor + limit
       } ! []
-    --TODO: show error
-    UpdateAds (Err _) ->
-      (model, Cmd.none)
+
     FooterAppeared ->
       if model.cursor > List.length model.ads
       then
@@ -37,10 +35,10 @@ update msg model =
       else
         model ! [ getAds model ]
 
-initTasks : Model -> Cmd Msg
+initTasks : Model -> Cmd (UpdateMessage Msg)
 initTasks = getAds
 
-getAds : Model -> Cmd Msg
+getAds : Model -> Cmd (UpdateMessage Msg)
 getAds model =
   let
     url = "/api/ilmoitukset/?limit="
@@ -49,10 +47,10 @@ getAds model =
       ++ toString model.cursor
     request = Http.get url (Json.list Models.Ad.adDecoder)
   in
-    Http.send UpdateAds request
+    Util.errorHandlingSend UpdateAds request
 
 
-view : Model -> H.Html (AppMessage Msg)
+view : Model -> H.Html (ViewMessage Msg)
 view model =
   H.div []
     [ H.div
@@ -75,7 +73,7 @@ view model =
       ]
     ]
 
-viewAds : List Models.Ad.Ad -> List (H.Html (AppMessage msg))
+viewAds : List Models.Ad.Ad -> List (H.Html (ViewMessage msg))
 viewAds ads =
   let
     adsHtml = List.map adListView ads
@@ -90,7 +88,7 @@ row ads =
     [ A.class "row" ]
     ads
 
-adListView : Models.Ad.Ad -> H.Html (AppMessage msg)
+adListView : Models.Ad.Ad -> H.Html (ViewMessage msg)
 adListView ad =
   H.a
     [ A.class "col-xs-12 col-sm-6 card-link"

@@ -7,42 +7,39 @@ import Http
 import Models.User exposing (Settings)
 import State.Settings exposing (..)
 import State.Util exposing (SendingStatus(..))
-import Util
+import Util exposing (UpdateMessage(..))
 
 type Msg
-  = GetSettings (Result Http.Error Settings)
+  = GetSettings Settings
   | UpdateSettings (Result Http.Error ())
   | ToggleEmailsForAnswers Settings
   | ChangeEmailAddress Settings String
   | Save Settings
 
-getSettings : Cmd Msg
+getSettings : Cmd (UpdateMessage Msg)
 getSettings =
   Http.get "/api/asetukset" Models.User.settingsDecoder
-    |> Http.send GetSettings
+    |> Util.errorHandlingSend GetSettings
 
-updateSettings : Settings -> Cmd Msg
+updateSettings : Settings -> Cmd (UpdateMessage Msg)
 updateSettings settings =
   Util.put "/api/asetukset" (Models.User.settingsEncode settings)
-    |> Http.send UpdateSettings
+    |> Http.send (LocalUpdateMessage << UpdateSettings)
 
-initTasks : Cmd Msg
+initTasks : Cmd (UpdateMessage Msg)
 initTasks = getSettings
 
-update : Msg -> Model -> (Model, Cmd Msg)
+update : Msg -> Model -> (Model, Cmd (UpdateMessage Msg))
 update msg model =
   case msg of
-    GetSettings (Ok settings) ->
+    GetSettings settings ->
       { model | settings = Just settings } ! []
-
-    GetSettings (Err _) ->
-      model ! [] -- TODO error handling
 
     UpdateSettings (Ok _) ->
       { model | sending = FinishedSuccess "" } ! []
 
     UpdateSettings (Err _) ->
-      { model | sending = FinishedFail } ! [] -- TODO error handling
+      { model | sending = FinishedFail } ! []
 
     ToggleEmailsForAnswers settings ->
       { model

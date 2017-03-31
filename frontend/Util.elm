@@ -2,6 +2,50 @@ module Util exposing (..)
 
 import Http
 import Json.Encode as JS
+import Nav exposing (Route)
+import Task
+
+
+type ViewMessage msg
+  = Link Route
+  | LocalViewMessage msg
+
+type UpdateMessage msg
+  = LocalUpdateMessage msg
+  | ApiError Http.Error
+  | Reroute Route
+
+
+makeCmd : msg -> Cmd msg
+makeCmd msg =
+  Task.succeed msg
+    |> Task.perform identity
+
+localMap : (msg1 -> msg2) -> Cmd (UpdateMessage msg1) -> Cmd (UpdateMessage msg2)
+localMap msgMapper cmd =
+  let
+    mapper appMsg =
+      case appMsg of
+        LocalUpdateMessage msg -> LocalUpdateMessage <| msgMapper msg
+        ApiError err -> ApiError err
+        Reroute route -> Reroute route
+  in
+    Cmd.map mapper cmd
+
+reroute : Route -> Cmd (UpdateMessage msg)
+reroute route =
+  makeCmd (Reroute route)
+
+
+errorHandlingSend : (a -> msg) -> Http.Request a -> Cmd (UpdateMessage msg)
+errorHandlingSend happyPath request =
+  let
+    handler result =
+      case result of
+        Ok happy -> LocalUpdateMessage <| happyPath happy
+        Err err -> ApiError err
+  in
+    Http.send handler request
 
 put : String -> JS.Value -> Http.Request ()
 put url body =

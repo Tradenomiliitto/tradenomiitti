@@ -8,9 +8,9 @@ import Home
 import Html as H
 import Html.Attributes as A
 import Html.Events as E
+import Http
 import Info
 import Json.Decode as Json
-import Link exposing (..)
 import ListAds
 import ListUsers
 import LoginNeeded
@@ -24,6 +24,7 @@ import Settings
 import State.Main exposing (..)
 import Static
 import User
+import Util exposing (ViewMessage(..), UpdateMessage(..))
 
 type alias HtmlId = String
 port animation : (HtmlId, Bool) -> Cmd msg -- send True on splash screen, False otherwise
@@ -47,7 +48,7 @@ init location =
     model = initState location
 
     -- after the profile is loaded, an urlchange event is triggered
-    profileCmd = Cmd.map ProfileMessage Profile.getMe
+    profileCmd = unpackUpdateMessage ProfileMessage Profile.getMe
   in
     model ! [ profileCmd ]
 
@@ -67,6 +68,8 @@ type Msg
   | AdMessage Ad.Msg
   | HomeMessage Home.Msg
   | SettingsMessage Settings.Msg
+  | Error Http.Error
+  | NoOp
 
 
 update : Msg -> Model -> (Model, Cmd Msg)
@@ -81,36 +84,34 @@ update msg model =
     UrlChange location ->
       let
         shouldScroll = model.scrollTop
+
+        initWithUpdateMessage mapper cmd =
+          if shouldScroll then
+            unpackUpdateMessage mapper cmd
+          else
+            Cmd.none
+
         route = parseLocation location
         modelWithRoute = { model | route = route, scrollTop = False }
         ( newModel, cmd ) =
           case route of
             ShowAd adId ->
               modelWithRoute !
-                [ if shouldScroll then
-                    Cmd.map AdMessage (Ad.getAd adId)
-                  else Cmd.none
+                [ initWithUpdateMessage AdMessage (Ad.getAd adId)
                 ]
 
             Profile ->
               modelWithRoute !
-                [ if shouldScroll then
-                    Cmd.map ProfileMessage Profile.initTasks
-                  else Cmd.none
+                [ initWithUpdateMessage ProfileMessage Profile.initTasks
                 ]
 
             ListAds ->
               modelWithRoute !
-                  [ if shouldScroll then
-                      Cmd.map ListAdsMessage (ListAds.initTasks modelWithRoute.listAds)
-                    else Cmd.none
-                  ]
+                  [ initWithUpdateMessage ListAdsMessage (ListAds.initTasks modelWithRoute.listAds) ]
 
             Home ->
               modelWithRoute !
-                [ if shouldScroll then
-                    Cmd.map HomeMessage (Home.initTasks modelWithRoute.home)
-                  else Cmd.none
+                [ initWithUpdateMessage HomeMessage (Home.initTasks modelWithRoute.home)
                 , animation ("home-intro-canvas", False)
                 ]
 
@@ -120,18 +121,12 @@ update msg model =
                 { model | route = Profile } ! [ Navigation.modifyUrl (routeToPath Profile) ]
               else
                 (modelWithRoute,
-                   if shouldScroll then
-                     Cmd.batch
-                       [ User.getUser userId, User.getAds userId
-                       ] |> Cmd.map UserMessage
-                   else Cmd.none
+                   initWithUpdateMessage UserMessage (User.initTasks userId)
                 )
 
             ListUsers ->
               modelWithRoute !
-                [ if shouldScroll then
-                    Cmd.map ListUsersMessage (ListUsers.initTasks model.listUsers)
-                  else Cmd.none
+                [ initWithUpdateMessage ListUsersMessage (ListUsers.initTasks model.listUsers)
                 ]
 
             LoginNeeded _ ->
@@ -139,9 +134,7 @@ update msg model =
 
             Settings ->
               modelWithRoute !
-                [ if shouldScroll then
-                    Cmd.map SettingsMessage Settings.initTasks
-                  else Cmd.none
+                [ initWithUpdateMessage SettingsMessage Settings.initTasks
                 ]
 
             newRoute ->
@@ -186,7 +179,7 @@ update msg model =
         (profileModel, cmd) = Profile.update Profile.AllowProfileCreation model.profile
         newModel = { model | profile = profileModel, needsConsent = False }
       in
-        newModel ! [ Cmd.map ProfileMessage cmd ]
+        newModel ! [ unpackUpdateMessage ProfileMessage cmd ]
 
     ToggleAcceptTerms ->
       { model | acceptsTerms = not model.acceptsTerms } ! []
@@ -216,7 +209,7 @@ update msg model =
           | profile = profileModel
           , initialLoading = initialLoading
           , needsConsent = needsConsent
-        } ! [ Cmd.map ProfileMessage cmd
+        } ! [ unpackUpdateMessage ProfileMessage cmd
             , redoNewUrlCmd
             ]
 
@@ -224,37 +217,47 @@ update msg model =
       let
         (createAdModel, cmd) = CreateAd.update msg model.createAd
       in
-        { model | createAd = createAdModel } ! [ Cmd.map CreateAdMessage cmd]
+        { model | createAd = createAdModel } !
+          [ unpackUpdateMessage CreateAdMessage cmd]
 
     ListAdsMessage msg ->
       let
         (listAdsModel, cmd) = ListAds.update msg model.listAds
       in
-        { model | listAds = listAdsModel } ! [ Cmd.map ListAdsMessage cmd ]
+        { model | listAds = listAdsModel } ! [ unpackUpdateMessage ListAdsMessage cmd ]
 
     ListUsersMessage msg ->
       let
         (listUsersModel, cmd) = ListUsers.update msg model.listUsers
       in
-        { model | listUsers = listUsersModel } ! [ Cmd.map ListUsersMessage cmd ]
+        { model | listUsers = listUsersModel } ! [ unpackUpdateMessage ListUsersMessage cmd ]
 
     AdMessage msg ->
       let
         (adModel, cmd) = Ad.update msg model.ad
       in
-        { model | ad = adModel } ! [ Cmd.map AdMessage cmd ]
+        { model | ad = adModel } ! [ unpackUpdateMessage AdMessage cmd ]
 
     HomeMessage msg ->
       let
         (homeModel, cmd) = Home.update msg model.home
       in
-        { model | home = homeModel } ! [ Cmd.map HomeMessage cmd ]
+        { model | home = homeModel } ! [ unpackUpdateMessage HomeMessage cmd ]
 
     SettingsMessage msg ->
       let
         (settingsModel, cmd) = Settings.update msg model.settings
       in
-        { model | settings = settingsModel } ! [ Cmd.map SettingsMessage cmd ]
+        { model | settings = settingsModel } ! [ unpackUpdateMessage SettingsMessage cmd ]
+
+    Error err ->
+      let
+        _ = Debug.log "Error" err
+      in
+        model ! []
+
+    NoOp ->
+      model ! []
 
 --SUBSCRIPTIONS
 
@@ -488,21 +491,21 @@ viewPage model =
     content =
       case model.route of
         User userId ->
-          H.map (mapAppMessage ProfileMessage) <| User.view model.user
+          H.map (mapViewMessage ProfileMessage) <| User.view model.user
         Profile ->
-          H.map (mapAppMessage ProfileMessage) <| Profile.View.view model.profile model
+          H.map (mapViewMessage ProfileMessage) <| Profile.View.view model.profile model
         LoginNeeded route ->
           LoginNeeded.view <| ssoUrl model.rootUrl route
         CreateAd ->
           H.map CreateAdMessage <| CreateAd.view model.createAd
         ListAds ->
-          H.map (mapAppMessage ListAdsMessage) <| ListAds.view model.listAds
+          H.map (mapViewMessage ListAdsMessage) <| ListAds.view model.listAds
         ShowAd adId ->
           H.map AdMessage <| Ad.view model.ad adId model.profile.user model.rootUrl
         Home ->
-          H.map (mapAppMessage HomeMessage) <| Home.view model.home model.profile.user
+          H.map (mapViewMessage HomeMessage) <| Home.view model.home model.profile.user
         ListUsers ->
-          H.map (mapAppMessage ListUsersMessage) <| ListUsers.view model.listUsers
+          H.map (mapViewMessage ListUsersMessage) <| ListUsers.view model.listUsers
         Terms ->
           PreformattedText.view Static.termsHeading Static.termsTexts
         RegisterDescription ->
@@ -519,13 +522,22 @@ viewPage model =
       [ content ]
 
 
-mapAppMessage : (msg -> Msg) -> AppMessage msg -> Msg
-mapAppMessage func message =
+mapViewMessage : (msg -> Msg) -> ViewMessage msg -> Msg
+mapViewMessage func message =
   case message of
     Link route ->
       NewUrl route
-    LocalMessage mesg ->
+    LocalViewMessage mesg ->
       func mesg
+
+unpackUpdateMessage : (msg -> Msg) -> Cmd (UpdateMessage msg) -> Cmd Msg
+unpackUpdateMessage mapper cmd =
+  Cmd.map (\appMsg ->
+             case appMsg of
+               LocalUpdateMessage msg -> mapper msg
+               ApiError err -> Error err
+               Reroute route -> NewUrl route
+          ) cmd
 
 notImplementedYet : H.Html Msg
 notImplementedYet =

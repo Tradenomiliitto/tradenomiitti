@@ -5,23 +5,15 @@ import Html as H
 import Html.Attributes as A
 import Http
 import Json.Decode as Json
-import Link exposing (AppMessage(..))
-import List.Extra as List
-import Models.User exposing (User)
+import Link
 import Models.User exposing (User)
 import Nav
 import State.ListUsers exposing (..)
-import State.ListUsers exposing (..)
-import Util
+import Util exposing (ViewMessage(..), UpdateMessage(..))
+import List.Extra as List
 
-type Msg
-  = UpdateUsers (Result Http.Error (List User))
-  | FooterAppeared
 
-initTasks : Model -> Cmd Msg
-initTasks = getUsers
-
-getUsers : Model -> Cmd Msg
+getUsers : Model -> Cmd (UpdateMessage Msg)
 getUsers model =
   let
     url = "/api/profiilit/?limit="
@@ -29,21 +21,27 @@ getUsers model =
       ++ "&offset="
       ++ toString model.cursor
   in
-  Http.get url (Json.list Models.User.userDecoder)
-    |> Http.send UpdateUsers
+    Http.get url (Json.list Models.User.userDecoder)
+      |> Util.errorHandlingSend UpdateUsers
+
+type Msg
+  = UpdateUsers (List User)
+  | FooterAppeared
+
+initTasks : Model -> Cmd (UpdateMessage Msg)
+initTasks = getUsers
 
 
-update : Msg -> Model -> (Model, Cmd Msg)
+update : Msg -> Model -> (Model, Cmd (UpdateMessage Msg))
 update msg model =
   case msg of
-    UpdateUsers (Ok users) ->
+    UpdateUsers users ->
       { model
         | users = List.uniqueBy .id <| model.users ++ users
         -- always advance by full amount, so we know when to stop asking for more
         , cursor = model.cursor + limit
       } ! []
-    UpdateUsers (Err _) ->
-      model ! [] -- TODO error handling
+
     FooterAppeared ->
       if model.cursor > List.length model.users
       then
@@ -51,7 +49,7 @@ update msg model =
       else
         model ! [ getUsers model ]
 
-view : Model -> H.Html (AppMessage msg)
+view : Model -> H.Html (ViewMessage msg)
 view model =
   let
     usersHtml = List.map viewUser model.users
@@ -80,7 +78,7 @@ view model =
         ]
       ]
 
-viewUser : User -> H.Html (AppMessage msg)
+viewUser : User -> H.Html (ViewMessage msg)
 viewUser user =
   H.a
     [ A.class "col-xs-12 col-sm-6 col-md-4 card-link"

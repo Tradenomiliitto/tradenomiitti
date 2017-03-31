@@ -14,21 +14,22 @@ import Models.User exposing (User)
 import Nav
 import State.Ad exposing (..)
 import State.Util exposing (SendingStatus(..))
+import Util exposing (UpdateMessage(..))
 
 type Msg
   = StartAddAnswer
   | ChangeAnswerText String
   | SendAnswer Int
   | SendAnswerResponse Int (Result Http.Error String)
-  | GetAd (Result Http.Error Ad)
+  | GetAd Ad
 
 
-getAd : Int -> Cmd Msg
+getAd : Int -> Cmd (UpdateMessage Msg)
 getAd adId =
   Http.get ("/api/ilmoitukset/" ++ toString adId) Models.Ad.adDecoder
-    |> Http.send GetAd
+    |> Util.errorHandlingSend GetAd
 
-sendAnswer : Model -> Int -> Cmd Msg
+sendAnswer : Model -> Int -> Cmd (UpdateMessage Msg)
 sendAnswer model adId =
   let
     encoded =
@@ -36,10 +37,10 @@ sendAnswer model adId =
         [ ("content", JS.string model.answerText)]
   in
     Http.post ("/api/ilmoitukset/" ++ toString adId ++ "/vastaus") (Http.jsonBody encoded) Json.string
-      |> Http.send (SendAnswerResponse adId)
+      |> Http.send (LocalUpdateMessage << SendAnswerResponse adId)
 
 
-update : Msg -> Model -> (Model, Cmd Msg)
+update : Msg -> Model -> (Model, Cmd (UpdateMessage Msg))
 update msg model =
   case msg of
     StartAddAnswer ->
@@ -61,11 +62,8 @@ update msg model =
     SendAnswerResponse adId (Err _) ->
       { model | sending = FinishedFail } ! []
 
-    GetAd (Ok ad) ->
+    GetAd ad ->
       { model | ad = Just ad } ! []
-
-    GetAd (Err _) ->
-      { model | ad = Nothing } ! [] -- TODO error handling
 
 view : Model -> Int -> Maybe User -> String -> H.Html Msg
 view model adId user rootUrl =
@@ -243,7 +241,7 @@ leaveAnswerPrompt canAnswer isAsker hasAnswered =
     else
       [ H.p
           [ A.class "ad-page__leave-answer-text"]
-          [ H.text "Kokemuksellasi on aina arvoa. Jää näkemyksesi vastaamalla ilmoitukseen." ]
+          [ H.text "Kokemuksellasi on aina arvoa. Jaa näkemyksesi vastaamalla ilmoitukseen." ]
       , H.button
         [ A.class "btn btn-primary btn-lg ad-page__leave-answer-button"
         , E.onClick StartAddAnswer
