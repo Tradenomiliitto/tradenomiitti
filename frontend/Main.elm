@@ -70,6 +70,7 @@ type Msg
   | HomeMessage Home.Msg
   | SettingsMessage Settings.Msg
   | Error Http.Error
+  | SendErrorResponse (Result Http.Error String)
   | NoOp
 
 
@@ -254,20 +255,24 @@ update msg model =
 
     Error err ->
       let
-        message =
+        cmd =
           case err of
-            Http.BadUrl str -> "Ohjelmointivirhe"
-            Http.Timeout -> "Vastausken saaminen kesti liian kauan, yritä myöhemmin uudelleen"
-            Http.NetworkError -> "Yhteydessä on ongelma, yritä myöhemmin uudelleen"
-            Http.BadPayload error { body } -> "Jotain meni pieleen. Verkosta tuli "
+            Http.BadUrl str -> sendError <| "BadUrl " ++ str
+            Http.Timeout -> showAlert "Vastauksen saaminen kesti liian kauan, yritä myöhemmin uudelleen"
+            Http.NetworkError -> showAlert "Yhteydessä on ongelma, yritä myöhemmin uudelleen"
+            Http.BadPayload error { body } -> sendError <| "Jotain meni pieleen. Verkosta tuli\n\n"
                                              ++ body
-                                             ++ " ja virhe oli "
+                                             ++ "\n\nja virhe oli\n\n"
                                              ++ error
-            Http.BadStatus { body } -> "Jotain meni pieleen. Virheen tunnus on "
-                                      ++ body
-                                      ++ "."
+            Http.BadStatus { body } -> showAlert <| errorCodeToUserVisibleErrorMessage body
       in
-        model ! [ showAlert <| message ]
+        model ! [ cmd ]
+
+    SendErrorResponse (Ok str) ->
+      model ! [ showAlert <| errorCodeToUserVisibleErrorMessage str ]
+
+    SendErrorResponse (Err err) ->
+      model ! [ showAlert <| toString err ++ "Järjestelmässä on jotain pahasti pielessä, tutkimme asiaa" ]
 
     NoOp ->
       model ! []
@@ -557,3 +562,15 @@ notImplementedYet =
   H.div
     [ A.id "not-implemented" ]
     [ H.text "Tätä ominaisuutta ei ole vielä toteutettu" ]
+
+
+sendError : String -> Cmd Msg
+sendError msg =
+  Http.post "/api/virhe" (Http.stringBody "text/plain" msg) Json.string
+    |> Http.send SendErrorResponse
+
+errorCodeToUserVisibleErrorMessage : String -> String
+errorCodeToUserVisibleErrorMessage body =
+  "Jotain meni pieleen. Virheen tunnus on "
+                                      ++ body
+                                      ++ "."
