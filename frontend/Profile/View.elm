@@ -577,6 +577,7 @@ tralInfo extra =
       , row "Etunimi" extra.first_name
       , row "Tehtäväluokat" (String.join ", " extra.positions)
       , row "Toimiala" (String.join ", " extra.domains)
+      , row "Sähköposti" extra.email
       ]
 
 
