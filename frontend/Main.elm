@@ -253,7 +253,21 @@ update msg model =
         { model | settings = settingsModel } ! [ unpackUpdateMessage SettingsMessage cmd ]
 
     Error err ->
-      model ! [ showAlert <| toString err]
+      let
+        message =
+          case err of
+            Http.BadUrl str -> "Ohjelmointivirhe"
+            Http.Timeout -> "Vastausken saaminen kesti liian kauan, yritä myöhemmin uudelleen"
+            Http.NetworkError -> "Yhteydessä on ongelma, yritä myöhemmin uudelleen"
+            Http.BadPayload error { body } -> "Jotain meni pieleen. Verkosta tuli "
+                                             ++ body
+                                             ++ " ja virhe oli "
+                                             ++ error
+            Http.BadStatus { body } -> "Jotain meni pieleen. Virheen tunnus on "
+                                      ++ body
+                                      ++ "."
+      in
+        model ! [ showAlert <| message ]
 
     NoOp ->
       model ! []

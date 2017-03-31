@@ -124,8 +124,21 @@ updateBusinessCard businessCard field value =
 update : Msg -> Model -> (Model, Cmd (UpdateMessage Msg))
 update msg model =
   case msg of
-    GetMe (Err _) ->
-      { model | user = Nothing } ! []
+    GetMe (Err err) ->
+      let
+        cmd =
+          case err of
+            Http.BadStatus { status } ->
+              if status.code == 403 || status.code == 401
+              then
+                Cmd.none
+              else
+                Util.asApiError err
+            _ ->
+              Util.asApiError err
+
+      in
+        { model | user = Nothing } ! [ cmd ]
 
     GetMe (Ok user) ->
       { model | user = Just user } ! [ getAds user ]

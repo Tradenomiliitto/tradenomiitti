@@ -37,6 +37,11 @@ reroute route =
   makeCmd (Reroute route)
 
 
+asApiError : Http.Error -> Cmd (UpdateMessage msg)
+asApiError err =
+  makeCmd (ApiError err)
+
+
 errorHandlingSend : (a -> msg) -> Http.Request a -> Cmd (UpdateMessage msg)
 errorHandlingSend happyPath request =
   let
