@@ -11,9 +11,9 @@ module.exports = function initialize(params) {
   const emails = params.emails;
   const service = require('./services/profiles')({ knex, util });
 
-  function getMe(req, res) {
+  function getMe(req, res, next) {
     if (!req.session || !req.session.id) {
-      return res.sendStatus(403);
+      return res.sendStatus(401);
     }
     return util.userForSession(req)
       .then(user => {
@@ -52,13 +52,16 @@ module.exports = function initialize(params) {
         return res.json(user);
       })
       .catch((err) => {
-        console.error('Error in /api/me', err);
-        req.session = null;
-        res.sendStatus(500);
+        if (err.status === 403) {
+          req.session = null;
+          return res.sendStatus(err.status);
+        }
+        // fall back to default error handler for errors other than session missing from db
+        return next(err);
       });
   }
 
-  const emptyBusinessCard = 
+  const emptyBusinessCard =
     {
       name: '',
       title: '',
@@ -67,7 +70,7 @@ module.exports = function initialize(params) {
       email: ''
     }
 
-  function putMe(req, res) {
+  function putMe(req, res, next) {
     if (!req.session || !req.session.id) {
       return res.sendStatus(403);
     }
@@ -79,10 +82,25 @@ module.exports = function initialize(params) {
         return knex('users').where({ id: user.id }).update('data', newData);
       }).then(resp => {
         res.sendStatus(200);
-      }).catch(err => {
-        console.error(err);
-        res.sendStatus(500);
+      }).catch(next)
+  }
+
+  function toBufferPromise(gmObject) {
+    return new Promise((resolve, reject) => {
+      gmObject.toBuffer((err, buffer) => {
+        if (err) reject(err);
+        else resolve(buffer);
+      });
+    });
+  }
+
+  function writePromise(gmObject, path) {
+    return new Promise((resolve, reject) => {
+      gmObject.write(path, (err) => {
+        if (err) reject(err);
+        else resolve();
       })
+    })
   }
 
   function putAnyimage(req, res, size, originalBuffer, crop) {
@@ -99,38 +117,32 @@ module.exports = function initialize(params) {
           ? commonTasks.crop(crop.width, crop.height, crop.x, crop.y)
           : commonTasks;
 
-    return withPossibleCrop
-      .resize(size) // width size, keep aspect ratio
-      .toBuffer((err, buffer) => {
-        if (err) {
-          console.error(err);
-          return res.sendStatus(500);
-        }
+    return toBufferPromise(withPossibleCrop
+      .resize(size)) // width size, keep aspect ratio
+      .then(buffer => {
         const hash = crypto.createHash('sha1');
         hash.update(buffer);
 
         const fileName = `${hash.digest('hex')}.${extension}`;
         const fullPath = `${userImagesPath}/${fileName}`;
 
-        return gm(buffer).write(fullPath, (err) => {
-          if (err) {
-            console.error(err);
-            return res.sendStatus(500);
-          }
-          return res.send(fileName);
-        })
-      });
+        return writePromise(gm(buffer), fullPath)
+          .then(() => fileName)
+      }).then(fileName => {
+        return res.send(fileName);
+      })
   }
 
-  function putImage(req, res) {
+  function putImage(req, res, next) {
     if (!req.files || !req.files.image)
       return res.status(400).send('No image found');
 
     const originalBuffer = req.files.image.data;
-    return putAnyimage(req, res, 1024, originalBuffer, null);
+    return putAnyimage(req, res, 1024, originalBuffer, null)
+      .catch(next);
   }
 
-  function putCroppedImage(req, res) {
+  function putCroppedImage(req, res, next) {
     const crop = {
       width: req.query.width,
       height: req.query.height,
@@ -139,16 +151,12 @@ module.exports = function initialize(params) {
     };
 
     const fullPath = `${userImagesPath}/${req.query.fileName}`;
-    gm(fullPath).toBuffer((err, buffer) => {
-      if (err) {
-        console.error('PUT Cropped Image', err);
-        return res.sendStatus(500);
-      }
+    toBufferPromise(gm(fullPath)).then(buffer => {
       return putAnyimage(req, res, 250, buffer, crop);
-    });
+    }).catch(next);
   }
 
-  function consentToProfileCreation(req, res) {
+  function consentToProfileCreation(req, res, next) {
     if (!req.session || !req.session.id) {
       return res.sendStatus(403);
     }
@@ -162,43 +170,37 @@ module.exports = function initialize(params) {
           .update('data', user.data)
       }).then(resp => {
         res.sendStatus(200);
-      }).catch(err => {
-        console.error('Error in /api/profiilit/luo', err);
-        res.sendStatus(500);
-      });
+      }).catch(next);
   }
 
-  function listProfiles(req, res) {
+  function listProfiles(req, res, next) {
     util.loggedIn(req)
       .then(loggedIn => service.listProfiles(loggedIn, req.query.limit, req.query.offset))
       .then(users => res.json(users))
-      .catch(err => {
-        console.error(err);
-        res.sendStatus(500);
-      })
+      .catch(next)
   }
 
-  function getProfile(req, res) {
+  function getProfile(req, res, next) {
     return Promise.all([ knex('users').where('id', req.params.id).first(), util.loggedIn(req)])
       .then(([ user, loggedIn ]) => util.formatUser(user, loggedIn))
       .then(user => res.json(user))
       .catch(err => {
-        return res.sendStatus(404)
+        next({ status: 404, msg: err})
       });
   }
 
   //gives business card from session user to user, whose id is given in request params
-  function addContact(req, res) {
+  function addContact(req, res, next) {
     return util.userForSession(req)
       .then(user => {
         if (user.id == req.params.user_id) {
-          return Promise.reject("User cannot add contact to himself");
+          return Promise.reject({ status: 400, msg: 'User cannot add contact to himself' });
         }
         return user;
       })
-      .then(user => 
+      .then(user =>
         Promise.all(
-          [ knex('contacts').where({ from_user: user.id, to_user: req.params.user_id }),     
+          [ knex('contacts').where({ from_user: user.id, to_user: req.params.user_id }),
             Promise.resolve(user) ]))
       .then(([resp, user]) => {
         if (resp.length == 0) {
@@ -206,17 +208,14 @@ module.exports = function initialize(params) {
             .then(_ => util.userById(req.params.user_id))
             .then(receiver => {
               emails.sendNotificationForContact(receiver, user);
-              return res.status(200).send();
+              return res.sendStatus(200);
             })
         }
         else {
           return Promise.reject("User has already given their business card to this user");
         }
       })
-      .catch(e => {
-        console.log("Add contact error: " + e);
-        return res.status(400).send();
-      })
+      .catch(next)
   }
 
   return {

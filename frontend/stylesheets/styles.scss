@@ -761,3 +761,10 @@ body {
     text-decoration: none;
   }
 }
+
+.error-messages {
+  position: fixed;
+  bottom: 20px;
+  left: 3%;
+  width: 94%;
+}

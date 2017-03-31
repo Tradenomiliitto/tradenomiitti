@@ -77,6 +77,7 @@ const ads = require('./ads')({ util, knex, emails });
 
 const urlEncoded = bodyParser.urlencoded();
 const jsonParser = bodyParser.json();
+const textParser = bodyParser.text();
 const fileParser = fileUpload();
 
 app.post('/kirjaudu', urlEncoded, logon.login );
@@ -112,9 +113,6 @@ app.get('/api/asetukset', (req, res) => {
     settings.emails_for_answers = dbSettings.emails_for_answers || true;
     settings.email_address = dbSettings.email_address || '';
     res.json(settings);
-  }).catch(e => {
-    console.error('GET /api/asetukset', e);
-    res.sendStatus(500);
   });
 });
 
@@ -124,25 +122,32 @@ app.put('/api/asetukset', jsonParser, (req, res) => {
     return knex('users').where({ id: dbUser.id }).update('settings', newSettings);
   }).then(resp => {
     res.sendStatus(200);
-  }).catch(e => {
-    console.error('PUT /api/asetukset', e);
-    res.sendStatus(500);
   });
 })
 
 app.post('/api/kontaktit/:user_id', profile.addContact)
+
+app.post('/api/virhe', textParser, (req, res) => {
+  const errorHash = logError(req, req.body);
+  res.json(errorHash);
+});
 
 app.get('*', (req, res) => {
   res.sendFile('./index.html', {root: staticDir})
 });
 
 app.use(function(err, req, res, next) {
+  const errorHash = logError(req, err);
+  res.status(err.status || 500).send(errorHash);
+});
+
+function logError(req, err) {
   const hash = crypto.createHash('sha1');
   hash.update(uuid.v4());
   const errorHash = hash.digest('hex').substr(0, 10);
-  console.log(`${errorHash} ${req.method} ${req.url} ↯`, err);
-  res.status(err.status || 500).send(errorHash);
-})
+  console.error(`${errorHash} ${req.method} ${req.url} ↯`, err);
+  return errorHash;
+}
 
 app.listen(3000, () => {
   console.log('Listening on 3000');

@@ -32,7 +32,7 @@ port scrollTop : Bool -> Cmd msg -- parameter tells whether to scroll
 port sendGaPageView : String -> Cmd msg -- parameter is path
 port footerAppeared : (Bool -> msg) -> Sub msg
 port closeMenu : Bool -> Cmd msg -- parameter is ignored
-
+port showAlert : String -> Cmd msg
 
 main : Program Never Model Msg
 main =
@@ -70,6 +70,7 @@ type Msg
   | HomeMessage Home.Msg
   | SettingsMessage Settings.Msg
   | Error Http.Error
+  | SendErrorResponse (Result Http.Error String)
   | NoOp
 
 
@@ -254,9 +255,24 @@ update msg model =
 
     Error err ->
       let
-        _ = Debug.log "Error" err
+        cmd =
+          case err of
+            Http.BadUrl str -> sendError <| "BadUrl " ++ str
+            Http.Timeout -> showAlert "Vastauksen saaminen kesti liian kauan, yritä myöhemmin uudelleen"
+            Http.NetworkError -> showAlert "Yhteydessä on ongelma, yritä myöhemmin uudelleen"
+            Http.BadPayload error { body } -> sendError <| "Jotain meni pieleen. Verkosta tuli\n\n"
+                                             ++ body
+                                             ++ "\n\nja virhe oli\n\n"
+                                             ++ error
+            Http.BadStatus { body } -> showAlert <| errorCodeToUserVisibleErrorMessage body
       in
-        model ! []
+        model ! [ cmd ]
+
+    SendErrorResponse (Ok str) ->
+      model ! [ showAlert <| errorCodeToUserVisibleErrorMessage str ]
+
+    SendErrorResponse (Err err) ->
+      model ! [ showAlert <| toString err ++ "Järjestelmässä on jotain pahasti pielessä, tutkimme asiaa" ]
 
     NoOp ->
       model ! []
@@ -547,3 +563,15 @@ notImplementedYet =
   H.div
     [ A.id "not-implemented" ]
     [ H.text "Tätä ominaisuutta ei ole vielä toteutettu" ]
+
+
+sendError : String -> Cmd Msg
+sendError msg =
+  Http.post "/api/virhe" (Http.stringBody "text/plain" msg) Json.string
+    |> Http.send SendErrorResponse
+
+errorCodeToUserVisibleErrorMessage : String -> String
+errorCodeToUserVisibleErrorMessage body =
+  "Jotain meni pieleen. Virheen tunnus on "
+                                      ++ body
+                                      ++ "."

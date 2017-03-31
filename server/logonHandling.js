@@ -7,7 +7,7 @@ module.exports = function initialize(params) {
   const knex = params.knex;
   const sebacon = params.sebacon;
 
-  function login(req, res) {
+  function login(req, res, next) {
     const ssoId = req.body.ssoid;
     const validationReq = {
       id: uuid.v4(),
@@ -75,15 +75,16 @@ module.exports = function initialize(params) {
             req.session.id = sessionId;
             return res.redirect(req.query.path || '/');
           });
-        })
+        }).catch(next)
     });
   }
 
-  function logout(req, res) {
+  function logout(req, res, next) {
     const sessionId = req.session.id || 'nosession';
     req.session = null;
     return knex('sessions').where({id: sessionId}).del()
-      .then(() => res.redirect('https://tunnistus.avoine.fi/sso-logout/'));
+      .then(() => res.redirect('https://tunnistus.avoine.fi/sso-logout/'))
+      .catch(next);
   }
 
   return {

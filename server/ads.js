@@ -5,8 +5,7 @@ module.exports = function initialize(params) {
   const emails = params.emails;
   const service = require('./services/ads')({ knex, util });
 
-  //comparing function for two objects with created_at datestring field. Latest will come first.
-  function createAd(req, res) {
+  function createAd(req, res, next) {
     if (!req.session || !req.session.id) {
       return res.sendStatus(403);
     }
@@ -17,25 +16,27 @@ module.exports = function initialize(params) {
           user_id: user.id,
           data: req.body
         }, 'id');
-      }).then(insertResp => res.json(insertResp[0]));
+      }).then(insertResp => res.json(insertResp[0]))
+      .catch(next)
   }
 
-  function getAd(req, res) {
+  function getAd(req, res, next) {
     return Promise.all([
       knex('ads').where({id: req.params.id}).first(),
       util.loggedIn(req)
     ]).then(([ad, loggedIn]) => util.formatAd(ad, loggedIn))
       .then(ad => res.send(ad))
-      .catch(e => { console.error(e); res.sendStatus(404) });
+      .catch(e => next({ status: 404, msg: e}));
   }
 
-  function listAds(req, res) {
+  function listAds(req, res, next) {
     util.loggedIn(req)
       .then(loggedIn => service.listAds(loggedIn, req.query.limit, req.query.offset))
       .then(ads => res.send(ads))
+      .catch(next)
   }
 
-  function createAnswer(req, res) {
+  function createAnswer(req, res, next) {
     if (!req.session || !req.session.id) {
       return res.sendStatus(403);
     }
@@ -68,13 +69,10 @@ module.exports = function initialize(params) {
       ]);
     }).then(([ insertResp, emailResp ]) => {
       res.json(`${insertResp[0]}`);
-    }).catch(err => {
-      console.error('Error in /api/ilmoitukset/:id/vastaus', err);
-      res.sendStatus(500);
-    });
+    }).catch(next);
   }
 
-  function adsForUser(req, res) {
+  function adsForUser(req, res, next) {
     const getAds = knex('ads').where('user_id', req.params.id);
     const getAnswers = knex('answers').where('user_id', req.params.id).select('ad_id').distinct()
           .then(results => results.map(o => o.ad_id));
@@ -91,10 +89,7 @@ module.exports = function initialize(params) {
       return Promise.all(allAds.map(ad => util.formatAd(ad, loggedIn)))
     }).then(ads => ads.sort(service.latestFirst))
       .then(ads => res.send(ads))
-      .catch(err => {
-        console.error(err);
-        res.sendStatus(500);
-      })
+      .catch(next)
   }
 
   return {
