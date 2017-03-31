@@ -140,6 +140,11 @@ $navbar-element-height: 35px;
   @media (max-width: $screen-sm-max) {
     font-size: 16px;
   }
+
+  &-fixed-top,
+  &-collapse {
+    z-index: 8300;
+  }
 }
 
 .navbar__profile-pic {

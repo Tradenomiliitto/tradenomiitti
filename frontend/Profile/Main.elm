@@ -173,7 +173,7 @@ update msg model =
       updateUser (\u -> { u | name = str }) model ! []
 
     ChangeDescription str ->
-      updateUser (\u -> { u | description = str }) model ! []
+      updateUser (\u -> { u | description = String.slice 0 300 str }) model ! []
 
     GetPositionOptions list ->
       { model | positionOptions = list } ! []

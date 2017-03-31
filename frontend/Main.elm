@@ -31,6 +31,7 @@ port animation : (HtmlId, Bool) -> Cmd msg -- send True on splash screen, False 
 port scrollTop : Bool -> Cmd msg -- parameter tells whether to scroll
 port sendGaPageView : String -> Cmd msg -- parameter is path
 port footerAppeared : (Bool -> msg) -> Sub msg
+port closeMenu : Bool -> Cmd msg -- parameter is ignored
 
 
 main : Program Never Model Msg
@@ -79,6 +80,7 @@ update msg model =
       { model | scrollTop = True } !
         [ Navigation.newUrl (routeToPath route)
         , sendGaPageView (routeToPath route)
+        , closeMenu True
         ]
 
     UrlChange location ->
