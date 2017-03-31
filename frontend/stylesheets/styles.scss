@@ -159,6 +159,11 @@ $navbar-element-height: 35px;
   align-items: center;
   width: 100vw;
   height: 100vh;
+  @media (max-width: $screen-xs-max) {
+    & .logo-image {
+      width: 250px;
+    }
+  }
 }
 
 .app-content {
