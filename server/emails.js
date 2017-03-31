@@ -98,7 +98,16 @@ module.exports = function init(params) {
       <a style="text-transform: uppercase; background-color: ${scssVars.$pink}; padding-left: 45px; padding-right: 45px; padding-top: 25px; padding-bottom: 25px; color: ${scssVars.$white}; text-decoration: none;" href="https://tradenomiitti.fi/tradenomit/${user.id}">Katso profiili</a>
     </p>
     <p>Tähän tulee saateviesti...</p>
-    <p>...ja tähän käyntikortti</p>
+    <div style="padding: 30px; background-color: ${scssVars['$light-grey-background']}; text-align: left;">
+      <h2>${user.data.business_card.name}</h2>
+      <h3 style="color: ${scssVars.$pink};">${user.data.business_card.title}</h3>
+      <p style="color: ${scssVars.$pink};">${user.data.business_card.location}</p>
+      <hr style="background-color: ${scssVars['$inactive-grey']}; height: 1px; border: 0;"></hr>
+      <p style="color: ${scssVars.$pink};">${user.data.business_card.phone}</p>
+      <hr style="background-color: ${scssVars['$inactive-grey']}; height: 1px; border: 0;"></hr>
+      <p style="color: ${scssVars.$pink};">${user.data.business_card.email}</p>
+      <hr style="background-color: ${scssVars['$inactive-grey']}; height: 1px; border: 0;"></hr>
+    </div>
     <p style="margin-top: 50px;">Etkö halua enää sähköposteja? Voit muokata sähköpostiasetuksiasi <a href="https://tradenomiitti.fi/asetukset" style="text-decoration: none; color: inherit; font-weight: bold;">Käyttäjätilin asetuksista</a>.</p>
   </body>
 </html>

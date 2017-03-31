@@ -194,6 +194,9 @@ module.exports = function initialize(params) {
         if (user.id == req.params.user_id) {
           return Promise.reject("User cannot add contact to himself");
         }
+        if(!user.data.business_card) {
+          return Promise.reject("User has no business card")
+        }
         return user;
       })
       .then(user => 
