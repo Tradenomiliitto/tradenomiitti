@@ -68,7 +68,7 @@ const smtp =
         password: smtpPassword,
         tls: smtpTls === 'true'
       }
-const emails = require('./emails')({ smtp, mailFrom });
+const emails = require('./emails')({ smtp, mailFrom, staticDir });
 
 const logon = require('./logonHandling')({ communicationsKey, knex, sebacon });
 const util = require('./util')({ knex });

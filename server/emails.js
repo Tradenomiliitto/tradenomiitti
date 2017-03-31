@@ -30,6 +30,10 @@ module.exports = function init(params) {
             { path: `${__dirname}/../frontend/assets/tradenomiitti-tunnus-email.png`, type: 'image/png',
               headers: {"Content-ID":"<logo.png>"},
               name: 'logo.png'
+            },
+            { path: `${params.staticDir}/images/${contactUser.data.cropped_picture}`, type: 'image/png',
+              headers: {"Content-ID":"<picture.png>"},
+              name: 'picture.png'
             }
           ]
         },
@@ -99,8 +103,14 @@ module.exports = function init(params) {
     </p>
     <p>Tähän tulee saateviesti...</p>
     <div style="padding: 30px; background-color: ${scssVars['$light-grey-background']}; text-align: left;">
-      <h2>${user.data.business_card.name}</h2>
-      <h3 style="color: ${scssVars.$pink};">${user.data.business_card.title}</h3>
+      <span style="width: 80px; height: 80px; border-radius: 40px; display: inline-block; overflow: hidden; background-color: ${scssVars.$pink};">
+        <img src="cid:picture.png" style="width: 100%;">
+        </img>
+      </span>
+      <span>
+        <h2>${user.data.business_card.name}</h2>
+        <h3 style="color: ${scssVars.$pink};">${user.data.business_card.title}</h3>
+      </span>
       <p style="color: ${scssVars.$pink};">${user.data.business_card.location}</p>
       <hr style="background-color: ${scssVars['$inactive-grey']}; height: 1px; border: 0;"></hr>
       <p style="color: ${scssVars.$pink};">${user.data.business_card.phone}</p>
