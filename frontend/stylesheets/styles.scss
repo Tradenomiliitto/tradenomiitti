@@ -675,6 +675,7 @@ div#not-implemented {
   background-color: $white;
   box-shadow: 0 2px 2px 1px #CCC;
   padding: 30px;
+  margin-top: 25px;
 
   & .author-info__pic {
     @include round-profile-pic(60px, $pink); // Override with bigger picture
