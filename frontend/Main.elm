@@ -32,7 +32,7 @@ port scrollTop : Bool -> Cmd msg -- parameter tells whether to scroll
 port sendGaPageView : String -> Cmd msg -- parameter is path
 port footerAppeared : (Bool -> msg) -> Sub msg
 port closeMenu : Bool -> Cmd msg -- parameter is ignored
-
+port showAlert : String -> Cmd msg
 
 main : Program Never Model Msg
 main =
@@ -253,10 +253,7 @@ update msg model =
         { model | settings = settingsModel } ! [ unpackUpdateMessage SettingsMessage cmd ]
 
     Error err ->
-      let
-        _ = Debug.log "Error" err
-      in
-        model ! []
+      model ! [ showAlert <| toString err]
 
     NoOp ->
       model ! []
