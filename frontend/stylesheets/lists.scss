@@ -1,13 +1,8 @@
-@import 'common';
-
 .list-users,
 .list-ads {
 
   &__header {
-    @include gotham-bold;
-    text-transform: uppercase;
-    margin-bottom: 50px;
-    margin-top: 50px;
+    @include basic-header;
   }
 
   &__list-background {
