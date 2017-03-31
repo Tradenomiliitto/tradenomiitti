@@ -19,6 +19,9 @@
       @media screen and (max-width: $screen-xs-max) {
         margin-top: 20vh;
       }
+      @media screen and (max-height: 600px) {
+        margin-top: 5vh;
+      }
       @include gotham-bold;
       text-transform: uppercase;
       font-size: 42px;

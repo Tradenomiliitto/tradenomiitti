@@ -74,7 +74,7 @@ introBoxes userMaybe =
           []
         Nothing ->
           [ H.div
-            [ A.class "home__introbox home__introbox--button-container col-sm-4 col-sm-offset-4" ]
+            [ A.class "home__introbox home__introbox--button-container col-xs-11 col-sm-4 col-sm-offset-4" ]
             [ Link.button "Luo oma profiili" "home__introbox--button btn btn-primary"
                 (Nav.LoginNeeded (Nav.Home |> Nav.routeToPath |> Just))
             ]

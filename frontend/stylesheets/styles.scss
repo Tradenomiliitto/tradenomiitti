@@ -12,6 +12,7 @@
 
 body {
   overflow-x: hidden;
+  width: 100vw;
 }
 
 
@@ -175,7 +176,6 @@ $navbar-element-height: 35px;
   padding-top: $navbar-height;
   padding-bottom: #{$footer-height + 50px};
   @media (max-width: $screen-xs-max) {
-    padding-top: 0;
     padding-bottom: #{$footer-height-mobile + 35px };
   }
 }
