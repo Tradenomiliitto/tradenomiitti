@@ -350,13 +350,20 @@ editProfileBox user =
 
 contactUser : User -> H.Html Msg
 contactUser user =
-  H.div
-    [ A.class "col-md-6 user-page__edit-or-contact-user"]
-    [ H.p [] [ H.text ("Voisiko " ++ user.name ++ " auttaa sinua? Jaa käyntikorttisi tästä. ") ]
-    , H.button [ E.onClick (AddContact user)
-               , A.class "btn btn-primary"
-               ] [ H.text "Ota yhteyttä" ]
-    ]
+  if user.contacted
+  then
+    H.div
+      [ A.class "col-md-6 user-page__edit-or-contact-user"]
+      [ H.p [] [ H.text "Olet lähettänyt käyntikortin tälle tradenomille." ]
+      ]
+  else
+    H.div
+      [ A.class "col-md-6 user-page__edit-or-contact-user"]
+      [ H.p [] [ H.text ("Voisiko " ++ user.name ++ " auttaa sinua? Jaa käyntikorttisi tästä. ") ]
+      , H.button [ E.onClick (AddContact user)
+                , A.class "btn btn-primary"
+                ] [ H.text "Ota yhteyttä" ]
+      ]
 
 userInfoBoxEditing2 : Model -> User -> H.Html Msg
 userInfoBoxEditing2 model user =

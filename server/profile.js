@@ -181,9 +181,29 @@ module.exports = function initialize(params) {
   }
 
   function getProfile(req, res, next) {
-    return Promise.all([ knex('users').where('id', req.params.id).first(), util.loggedIn(req)])
-      .then(([ user, loggedIn ]) => util.formatUser(user, loggedIn))
-      .then(user => res.json(user))
+    return Promise.all([ util.userById(req.params.id),
+                         util.loggedIn(req),
+                         util.userForSession(req)
+                       ])
+      .then(([ user, loggedIn ]) => {
+        if (loggedIn) {
+          // this trainwreck checks whether the logged in user
+          // has shared their business card with the requested user
+          return util.userForSession(req).then(loggedInUser => {
+            return knex('contacts').where({
+              from_user: loggedInUser.id,
+              to_user: user.id
+            }).then(resp => resp.length > 0)
+              .then(contactExists => {
+                const formattedUser = util.formatUser(user, loggedIn)
+                formattedUser.contacted = contactExists;
+                return formattedUser;
+              })
+          })
+        }
+
+        return util.formatUser(user, loggedIn);
+      }).then(user => res.json(user))
       .catch(err => {
         next({ status: 404, msg: err})
       });

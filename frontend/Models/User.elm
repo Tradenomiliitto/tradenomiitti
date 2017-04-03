@@ -42,6 +42,7 @@ type alias User =
   , pictureEditingDetails : Maybe PictureEditing
   , extra : Maybe Extra
   , businessCard : Maybe BusinessCard
+  , contacted : Bool
   }
 
 type alias BusinessCard =
@@ -68,6 +69,7 @@ userDecoder =
     |> P.optional "picture_editing" (Json.map Just pictureEditingDecoder) Nothing
     |> P.optional "extra" (Json.map Just userExtraDecoder) Nothing
     |> P.optional "business_card" (Json.map Just businessCardDecoder) Nothing
+    |> P.optional "contacted" Json.bool False
 
 encode : User -> JS.Value
 encode user =
