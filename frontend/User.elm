@@ -77,9 +77,13 @@ getAds userId =
 
 addContact : User -> String -> Cmd (UpdateMessage Msg)
 addContact user str =
-  Http.post ("/api/kontaktit/" ++ (toString user.id))
-    (Http.jsonBody (JS.string str)) (Json.succeed ())
-    |> Util.errorHandlingSend (always (Refresh user.id))
+  let
+    encoded =
+      JS.object [ ("message", JS.string str)]
+  in
+    Http.post ("/api/kontaktit/" ++ (toString user.id))
+      (Http.jsonBody encoded) (Json.succeed ())
+      |> Util.errorHandlingSend (always (Refresh user.id))
 
 
 
@@ -93,15 +97,15 @@ view model =
     views = model.user
       |> Maybe.map
         (\u ->
-           List.map (Util.localViewMap ProfileMessage) <| Profile.View.viewUser profile False (contactUser u) u)
+           List.map (Util.localViewMap ProfileMessage) <| Profile.View.viewUser profile False (contactUser model u) u)
       |> Maybe.withDefault []
 
   in
    H.div [] views
 
 
-contactUser : User -> H.Html Profile.Msg
-contactUser user =
+contactUser : Model -> User -> H.Html Profile.Msg
+contactUser model user =
   if user.contacted
   then
     H.div
@@ -109,10 +113,28 @@ contactUser user =
       [ H.p [] [ H.text "Olet lähettänyt käyntikortin tälle tradenomille." ]
       ]
   else
-    H.div
-      [ A.class "col-md-6 user-page__edit-or-contact-user"]
-      [ H.p [] [ H.text ("Voisiko " ++ user.name ++ " auttaa sinua? Jaa käyntikorttisi tästä. ") ]
-      , H.button [ E.onClick Profile.StartAddContact
-                , A.class "btn btn-primary"
-                ] [ H.text "Ota yhteyttä" ]
-      ]
+    if model.addingContact
+    then
+      H.div
+        [ A.class "col-md-6 user-page__edit-or-contact-user"]
+        [ H.p [] [ H.text "Kirjoita napakka esittelyteksti"
+                 ]
+        , H.textarea
+          [ A.placeholder "Vähintään 10 merkkiä"
+          , A.class "user-page__add-contact-textcontent"
+          , E.onInput Profile.ChangeContactAddingText
+          , A.value model.addContactText
+          ] []
+        , H.button [ E.onClick (Profile.AddContact user)
+                   , A.class "btn btn-primary"
+                   , A.disabled (String.length model.addContactText < 10)
+                   ] [ H.text "Lähetä" ]
+        ]
+    else
+      H.div
+        [ A.class "col-md-6 user-page__edit-or-contact-user"]
+        [ H.p [] [ H.text ("Voisiko " ++ user.name ++ " auttaa sinua? Jaa käyntikorttisi tästä. ") ]
+        , H.button [ E.onClick Profile.StartAddContact
+                  , A.class "btn btn-primary"
+                  ] [ H.text "Ota yhteyttä" ]
+        ]

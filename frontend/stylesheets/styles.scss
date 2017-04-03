@@ -222,6 +222,14 @@ div#not-implemented {
       color: $dark-grey;
     }
   }
+
+  &__add-contact-textcontent {
+    margin-top: 10px;
+    margin-bottom: 20px;
+    padding: $input-padding;
+    width: 80%;
+    min-height: 80px;
+  }
   &__pic-container {
     margin-right: 20px;
   }
@@ -461,7 +469,6 @@ div#not-implemented {
     padding-bottom: $box-padding;
   }
 
-  $input-padding: 8px;
   &__heading {
     &-input {
       color: $pink;
