@@ -131,7 +131,7 @@ module.exports = function init(params) {
   function makeBusinessCardLine(detailTitle, detailValue) {
     if (detailValue && detailValue.length > 0) {
         return `
-    <p>
+    <p style="margin-top: 10px; margin-bottom: 10px;">
       <span style="font-weight: bold; margin-right: 5px;">${detailTitle}:</span>
       <span style="color: ${scssVars.$pink};">${detailValue}</span>
     </p>
