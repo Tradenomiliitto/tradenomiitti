@@ -97,11 +97,6 @@ updateUser : (User -> User) -> Model -> Model
 updateUser update model =
   { model | user = Maybe.map update model.user }
 
-addContact : User -> Cmd (UpdateMessage Msg)
-addContact user =
-  Http.post ("/api/kontaktit/" ++ (toString user.id)) Http.emptyBody (Json.succeed ())
-    |> Util.errorHandlingSend (always NoOp)
-
 type BusinessCardField
   = Name
   | Title
@@ -235,7 +230,7 @@ update msg model =
       { model | mouseOverUserImage = False } ! []
 
     AddContact user ->
-      model ! [ addContact user ]
+      model ! [] -- handled in User
 
     NoOp ->
       model ! []

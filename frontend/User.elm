@@ -17,10 +17,16 @@ import Util exposing (ViewMessage, UpdateMessage(..))
 type Msg
   = UpdateUser User
   | UpdateAds (List Ad)
-  | ProfileMessage (ViewMessage Profile.Msg)
+  | ProfileMessage Profile.Msg
   | NoOp
 
-update : Msg -> Model -> ( Model, Cmd Msg)
+addContact : User -> Cmd (UpdateMessage Msg)
+addContact user =
+  Http.post ("/api/kontaktit/" ++ (toString user.id)) Http.emptyBody (Json.succeed ())
+    |> Util.errorHandlingSend (always NoOp)
+
+
+update : Msg -> Model -> ( Model, Cmd (UpdateMessage Msg))
 update msg model =
   case msg of
     UpdateUser updatedUser ->
@@ -29,8 +35,12 @@ update msg model =
     UpdateAds ads ->
       { model | ads = ads } ! []
 
+    ProfileMessage (Profile.AddContact user) ->
+      model ! [ addContact user ]
+
     ProfileMessage _ ->
-      model ! [] -- TODO not like this
+      model ! [] -- only handle profile messages that we care about
+
 
     NoOp ->
       model ! []
@@ -61,13 +71,15 @@ getAds userId =
 
 -- VIEW
 
-view : Model -> H.Html (ViewMessage Profile.Msg)
+view : Model -> H.Html (ViewMessage Msg)
 view model =
   let
     profileInit = State.Profile.init
     profile = { profileInit | ads = model.ads }
     views = model.user
-      |> Maybe.map (\u ->  Profile.View.viewUser profile False u)
+      |> Maybe.map
+        (\u ->
+           List.map (Util.localViewMap ProfileMessage) <| Profile.View.viewUser profile False u)
       |> Maybe.withDefault []
 
   in
