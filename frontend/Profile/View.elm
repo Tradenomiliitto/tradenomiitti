@@ -164,6 +164,12 @@ businessCardDataInput card field =
         Location -> card.location
         Phone -> card.phone
         Email -> card.email
+    icon =
+      case field of
+        Location -> [ SvgIcons.location ]
+        Phone -> [ SvgIcons.phone ]
+        Email -> [ SvgIcons.email ]
+        _ -> []
     class =
       A.classList
         [ ("profile__business-card--input", True)
@@ -173,13 +179,13 @@ businessCardDataInput card field =
   in
     H.p
       [ class ]
-      [ H.span [ class ] [ SvgIcons.answers ]
+      [ H.span [ class ] icon
       , H.input
           [ A.placeholder <| fieldToString field
           , A.value value
           , E.onInput (UpdateBusinessCard field)
           ] []
-      , H.hr [ A.class "profile__business-card--input--line", class ] []
+      , H.hr [ A.class "profile__business-card--input-line", class ] []
       ]
 
 

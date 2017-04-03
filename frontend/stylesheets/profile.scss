@@ -42,7 +42,7 @@
             content: ':';
             }
           }
-        } 
+        }
       }
       //margin-left: 4%;
       //margin-right: 4%;
@@ -172,7 +172,7 @@
     @include gotham-bold;
     text-transform: uppercase;
   }
-  
+
   &__location {
     &--marker {
       margin-right: 5px;
@@ -197,8 +197,7 @@
       @include gotham-bold;
 
       input {
-        border: none;
-        background-color: $light-grey;
+        width: calc(100% - 30px);
         font-size: 12px;
       }
       svg {
@@ -207,8 +206,9 @@
         position: relative;
         top: 5px;
       }
-      hr {
-        margin-top: 10px !important;
+      &-line {
+        margin-top: 10px;
+        margin-bottom: 10px;
       }
       &--empty {
         color: $inactive-grey;
@@ -236,7 +236,7 @@
         display: inline-block;
         position:relative;
         top: -25px;
-        
+
         h4 {
           color: $green;
           @include gotham-bold;
@@ -248,10 +248,6 @@
       }
       &--contact {
         width: 80%;
-        hr {
-          margin-top: 0px;
-          margin-bottom: 0px;
-        }
         p {
           margin-top: 0px;
           margin-bottom: 0px;
@@ -261,4 +257,3 @@
     }
   }
 }
-
