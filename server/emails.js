@@ -6,15 +6,18 @@ const scssVars = scssToJson(colorsFilepath);
 
 module.exports = function init(params) {
 
+  const logo = {
+    path: `${__dirname}/../frontend/assets/tradenomiitti-tunnus-email.png`, type: 'image/png',
+    headers: {"Content-ID":"<logo.png>"},
+    name: 'logo.png'
+  };
+
   function sendNotificationForAnswer(dbUser, ad) {
 
     const attachment = [
         { data: answerNotificationHtml(ad), alternative: true,
           related: [
-            { path: `${__dirname}/../frontend/assets/tradenomiitti-tunnus-email.png`, type: 'image/png',
-              headers: {"Content-ID":"<logo.png>"},
-              name: 'logo.png'
-            }
+            logo
           ]
         },
       ]
@@ -24,16 +27,17 @@ module.exports = function init(params) {
   }
 
   function sendNotificationForContact(receiver, contactUser) {
+
+    const pic = contactUser.data.cropped_picture;
+    const imageType = pic.endsWith('.jpg') ? 'image/jpg' : 'image/png';
+
     const attachment = [
         { data: contactNotificationHtml(contactUser), alternative: true,
           related: [
-            { path: `${__dirname}/../frontend/assets/tradenomiitti-tunnus-email.png`, type: 'image/png',
-              headers: {"Content-ID":"<logo.png>"},
-              name: 'logo.png'
-            },
-            { path: `${params.staticDir}/images/${contactUser.data.cropped_picture}`, type: 'image/png',
-              headers: {"Content-ID":"<picture.png>"},
-              name: 'picture.png'
+            logo,
+            { path: `${params.staticDir}/images/${pic}`, type: imageType,
+              headers: {"Content-ID":"<picture>"},
+              name: pic
             }
           ]
         },
@@ -104,7 +108,7 @@ module.exports = function init(params) {
     <p>Tähän tulee saateviesti...</p>
     <div style="padding: 30px; background-color: ${scssVars['$light-grey-background']}; text-align: left;">
       <span style="width: 80px; height: 80px; border-radius: 40px; display: inline-block; overflow: hidden; background-color: ${scssVars.$pink};">
-        <img src="cid:picture.png" style="width: 100%;">
+        <img src="cid:picture" style="width: 100%;">
         </img>
       </span>
       <span>
