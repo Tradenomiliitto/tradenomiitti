@@ -6,15 +6,18 @@ const scssVars = scssToJson(colorsFilepath);
 
 module.exports = function init(params) {
 
+  const logo = {
+    path: `${__dirname}/../frontend/assets/tradenomiitti-tunnus-email.png`, type: 'image/png',
+    headers: {"Content-ID":"<logo.png>"},
+    name: 'logo.png'
+  };
+
   function sendNotificationForAnswer(dbUser, ad) {
 
     const attachment = [
         { data: answerNotificationHtml(ad), alternative: true,
           related: [
-            { path: `${__dirname}/../frontend/assets/tradenomiitti-tunnus-email.png`, type: 'image/png',
-              headers: {"Content-ID":"<logo.png>"},
-              name: 'logo.png'
-            }
+            logo
           ]
         },
       ]
@@ -23,17 +26,18 @@ module.exports = function init(params) {
     sendEmail(dbUser, text, subject, attachment);
   }
 
-  function sendNotificationForContact(receiver, contactUser) {
+  function sendNotificationForContact(receiver, contactUser, introductionText) {
+
+    const pic = contactUser.data.cropped_picture;
+    const imageType = pic.endsWith('.jpg') ? 'image/jpg' : 'image/png';
+
     const attachment = [
-        { data: contactNotificationHtml(contactUser), alternative: true,
+      { data: contactNotificationHtml(contactUser, introductionText), alternative: true,
           related: [
-            { path: `${__dirname}/../frontend/assets/tradenomiitti-tunnus-email.png`, type: 'image/png',
-              headers: {"Content-ID":"<logo.png>"},
-              name: 'logo.png'
-            },
-            { path: `${params.staticDir}/images/${contactUser.data.cropped_picture}`, type: 'image/png',
-              headers: {"Content-ID":"<picture.png>"},
-              name: 'picture.png'
+            logo,
+            { path: `${params.staticDir}/images/${pic}`, type: imageType,
+              headers: {"Content-ID":"<picture>"},
+              name: pic
             }
           ]
         },
@@ -88,7 +92,7 @@ module.exports = function init(params) {
     );
   }
 
-  function contactNotificationHtml(user) {
+  function contactNotificationHtml(user, message) {
     return (
 `
 <html>
@@ -101,28 +105,39 @@ module.exports = function init(params) {
     <p style="margin-top: 80px;">
       <a style="text-transform: uppercase; background-color: ${scssVars.$pink}; padding-left: 45px; padding-right: 45px; padding-top: 25px; padding-bottom: 25px; color: ${scssVars.$white}; text-decoration: none;" href="https://tradenomiitti.fi/tradenomit/${user.id}">Katso profiili</a>
     </p>
-    <p>Tähän tulee saateviesti...</p>
+    <p style="margin-top: 75px;margin-bottom: 50px;font-weight: bold;">“${message}”</p>
     <div style="padding: 30px; background-color: ${scssVars['$light-grey-background']}; text-align: left;">
-      <span style="width: 80px; height: 80px; border-radius: 40px; display: inline-block; overflow: hidden; background-color: ${scssVars.$pink};">
-        <img src="cid:picture.png" style="width: 100%;">
+      <span style="width: 80px; height: 80px; border-radius: 40px; display: inline-block; overflow: hidden; background-color: ${scssVars.$pink}; float: left; margin-bottom: 25px; margin-right: 10px;">
+        <img src="cid:picture" style="width: 100%;">
         </img>
       </span>
-      <span>
-        <h2>${user.data.business_card.name}</h2>
-        <h3 style="color: ${scssVars.$pink};">${user.data.business_card.title}</h3>
+      <span style="float: left;">
+        <h3 style="margin-bottom: 5px;">${user.data.business_card.name}</h2>
+        <h5 style="color: ${scssVars.$pink}; margin-top: 0;">${user.data.business_card.title}</h3>
       </span>
-      <p style="color: ${scssVars.$pink};">${user.data.business_card.location}</p>
-      <hr style="background-color: ${scssVars['$inactive-grey']}; height: 1px; border: 0;"></hr>
-      <p style="color: ${scssVars.$pink};">${user.data.business_card.phone}</p>
-      <hr style="background-color: ${scssVars['$inactive-grey']}; height: 1px; border: 0;"></hr>
-      <p style="color: ${scssVars.$pink};">${user.data.business_card.email}</p>
-      <hr style="background-color: ${scssVars['$inactive-grey']}; height: 1px; border: 0;"></hr>
+      <div style="clear: left;">
+        ${makeBusinessCardLine('Sijainti', user.data.business_card.location)}
+        ${makeBusinessCardLine('Puhelinnumero', user.data.business_card.phone)}
+        ${makeBusinessCardLine('Sähköpostiosoite', user.data.business_card.email)}
+      </div>
     </div>
     <p style="margin-top: 50px;">Etkö halua enää sähköposteja? Voit muokata sähköpostiasetuksiasi <a href="https://tradenomiitti.fi/asetukset" style="text-decoration: none; color: inherit; font-weight: bold;">Käyttäjätilin asetuksista</a>.</p>
   </body>
 </html>
 `
     );
+  }
+
+  function makeBusinessCardLine(detailTitle, detailValue) {
+    if (detailValue && detailValue.length > 0) {
+        return `
+    <p style="margin-top: 10px; margin-bottom: 10px;">
+      <span style="font-weight: bold; margin-right: 5px;">${detailTitle}:</span>
+      <span style="color: ${scssVars.$pink};">${detailValue}</span>
+    </p>
+    <hr style="background-color: ${scssVars['$inactive-grey']}; height: 1px; border: 0;"></hr>`
+    }
+    return '';
   }
 
   return {

@@ -1,5 +1,6 @@
 module Util exposing (..)
 
+import Html as H
 import Http
 import Json.Encode as JS
 import Nav exposing (Route)
@@ -31,6 +32,18 @@ localMap msgMapper cmd =
         Reroute route -> Reroute route
   in
     Cmd.map mapper cmd
+
+
+localViewMap : (msg1 -> msg2) -> H.Html (ViewMessage msg1) -> H.Html (ViewMessage msg2)
+localViewMap msgMapper html =
+  let
+    mapper appMsg =
+      case appMsg of
+        LocalViewMessage msg -> LocalViewMessage <| msgMapper msg
+        Link route -> Link route
+  in
+    H.map mapper html
+
 
 reroute : Route -> Cmd (UpdateMessage msg)
 reroute route =

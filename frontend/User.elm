@@ -1,8 +1,11 @@
 module User exposing (..)
 
 import Html as H
+import Html.Attributes as A
+import Html.Events as E
 import Http
 import Json.Decode as Json
+import Json.Encode as JS
 import Models.Ad exposing (Ad)
 import Models.User exposing (User)
 import Profile.Main as Profile
@@ -17,23 +20,37 @@ import Util exposing (ViewMessage, UpdateMessage(..))
 type Msg
   = UpdateUser User
   | UpdateAds (List Ad)
-  | ProfileMessage (ViewMessage Profile.Msg)
-  | NoOp
+  | ProfileMessage Profile.Msg
+  | Refresh Int
 
-update : Msg -> Model -> ( Model, Cmd Msg)
+update : Msg -> Model -> ( Model, Cmd (UpdateMessage Msg))
 update msg model =
   case msg of
     UpdateUser updatedUser ->
-      { model | user = Just updatedUser } ! []
+      { model
+        | user = Just updatedUser
+        , addingContact = False
+      } ! []
 
     UpdateAds ads ->
       { model | ads = ads } ! []
 
-    ProfileMessage _ ->
-      model ! [] -- TODO not like this
+    ProfileMessage Profile.StartAddContact ->
+      { model
+        | addingContact = True
+        , addContactText = ""
+      } ! []
+    ProfileMessage (Profile.ChangeContactAddingText str) ->
+      { model | addContactText = str} ! []
+    ProfileMessage (Profile.AddContact user) ->
+      model ! [ addContact user model.addContactText ]
 
-    NoOp ->
-      model ! []
+    ProfileMessage _ ->
+      model ! [] -- only handle profile messages that we care about
+
+    Refresh userId ->
+      model ! [ getUser userId ]
+
 
 initTasks : Int -> Cmd (UpdateMessage Msg)
 initTasks userId =
@@ -58,17 +75,66 @@ getAds userId =
   in
     Util.errorHandlingSend UpdateAds request
 
+addContact : User -> String -> Cmd (UpdateMessage Msg)
+addContact user str =
+  let
+    encoded =
+      JS.object [ ("message", JS.string str)]
+  in
+    Http.post ("/api/kontaktit/" ++ (toString user.id))
+      (Http.jsonBody encoded) (Json.succeed ())
+      |> Util.errorHandlingSend (always (Refresh user.id))
+
+
 
 -- VIEW
 
-view : Model -> H.Html (ViewMessage Profile.Msg)
+view : Model -> H.Html (ViewMessage Msg)
 view model =
   let
     profileInit = State.Profile.init
     profile = { profileInit | ads = model.ads }
     views = model.user
-      |> Maybe.map (\u ->  Profile.View.viewUser profile False u)
+      |> Maybe.map
+        (\u ->
+           List.map (Util.localViewMap ProfileMessage) <| Profile.View.viewUser profile False (contactUser model u) u)
       |> Maybe.withDefault []
 
   in
    H.div [] views
+
+
+contactUser : Model -> User -> H.Html Profile.Msg
+contactUser model user =
+  if user.contacted
+  then
+    H.div
+      [ A.class "col-md-6 user-page__edit-or-contact-user"]
+      [ H.p [] [ H.text "Olet lähettänyt käyntikortin tälle tradenomille." ]
+      ]
+  else
+    if model.addingContact
+    then
+      H.div
+        [ A.class "col-md-6 user-page__edit-or-contact-user"]
+        [ H.p [] [ H.text "Kirjoita napakka esittelyteksti"
+                 ]
+        , H.textarea
+          [ A.placeholder "Vähintään 10 merkkiä"
+          , A.class "user-page__add-contact-textcontent"
+          , E.onInput Profile.ChangeContactAddingText
+          , A.value model.addContactText
+          ] []
+        , H.button [ E.onClick (Profile.AddContact user)
+                   , A.class "btn btn-primary"
+                   , A.disabled (String.length model.addContactText < 10)
+                   ] [ H.text "Lähetä" ]
+        ]
+    else
+      H.div
+        [ A.class "col-md-6 user-page__edit-or-contact-user"]
+        [ H.p [] [ H.text ("Voisiko " ++ user.name ++ " auttaa sinua? Jaa käyntikorttisi tästä. ") ]
+        , H.button [ E.onClick Profile.StartAddContact
+                  , A.class "btn btn-primary"
+                  ] [ H.text "Ota yhteyttä" ]
+        ]

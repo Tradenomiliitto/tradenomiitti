@@ -175,7 +175,7 @@ update msg model =
       let
         (userModel, cmd) = User.update msg model.user
       in
-        ( { model | user = userModel}, Cmd.map UserMessage cmd )
+        ( { model | user = userModel}, unpackUpdateMessage UserMessage cmd )
 
     AllowProfileCreation ->
       let
@@ -510,7 +510,7 @@ viewPage model =
     content =
       case model.route of
         User userId ->
-          H.map (mapViewMessage ProfileMessage) <| User.view model.user
+          H.map (mapViewMessage UserMessage) <| User.view model.user
         Profile ->
           H.map (mapViewMessage ProfileMessage) <| Profile.View.view model.profile model
         LoginNeeded route ->

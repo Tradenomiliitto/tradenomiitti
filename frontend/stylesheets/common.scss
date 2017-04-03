@@ -26,6 +26,8 @@ $icon-font-path: "/static/";
 
 $fullpage-height: calc(100vh - #{ $navbar-height });
 
+$input-padding: 8px;
+
 #navbar-height-to-js { height: $navbar-height; }
 #pink-to-js { color: $pink; }
 #green-to-js { color: $green; }

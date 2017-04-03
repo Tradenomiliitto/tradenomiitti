@@ -32,6 +32,8 @@ type Msg
   | ImageDetailsUpdate (String ,PictureEditing)
   | MouseEnterProfilePic
   | MouseLeaveProfilePic
+  | StartAddContact
+  | ChangeContactAddingText String
   | AddContact User
   | NoOp
 
@@ -96,11 +98,6 @@ deleteFromSkillList index list =
 updateUser : (User -> User) -> Model -> Model
 updateUser update model =
   { model | user = Maybe.map update model.user }
-
-addContact : User -> Cmd (UpdateMessage Msg)
-addContact user =
-  Http.post ("/api/kontaktit/" ++ (toString user.id)) Http.emptyBody (Json.succeed ())
-    |> Util.errorHandlingSend (always NoOp)
 
 type BusinessCardField
   = Name
@@ -234,8 +231,13 @@ update msg model =
     MouseLeaveProfilePic ->
       { model | mouseOverUserImage = False } ! []
 
+    -- handled in User
+    StartAddContact ->
+      model ! []
+    ChangeContactAddingText str ->
+      model ! []
     AddContact user ->
-      model ! [ addContact user ]
+      model ! []
 
     NoOp ->
       model ! []

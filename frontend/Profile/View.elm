@@ -291,7 +291,7 @@ profileTopRow model rootState =
 viewUserMaybe : Model -> Bool -> List (H.Html (ViewMessage Msg))
 viewUserMaybe model ownProfile =
   model.user
-    |> Maybe.map (viewUser model ownProfile)
+    |> Maybe.map (viewUser model ownProfile (H.div [] []))
     |> Maybe.withDefault
       [ H.div
         [ A.class "container"]
@@ -301,8 +301,8 @@ viewUserMaybe model ownProfile =
       ]
 
 
-viewUser : Model -> Bool -> User -> List (H.Html (ViewMessage Msg))
-viewUser model ownProfile user =
+viewUser : Model -> Bool -> H.Html Msg -> User -> List (H.Html (ViewMessage Msg))
+viewUser model ownProfile contactUser user =
   [ H.div
     [ A.class "container" ]
     [ H.div
@@ -310,7 +310,7 @@ viewUser model ownProfile user =
       [ H.map LocalViewMessage (userInfoBox model user)
       , if ownProfile
           then H.map LocalViewMessage (editProfileBox user)
-          else H.map LocalViewMessage (contactUser user)
+          else H.map LocalViewMessage contactUser
       ]
     ]
   , H.hr [ A.class "full-width-ruler" ] []
@@ -348,13 +348,6 @@ editProfileBox user =
             [ H.text  "Muokkaa profiilia" ]
     ]
 
-contactUser : User -> H.Html Msg
-contactUser user =
-  H.div
-    [ A.class "col-md-6 user-page__edit-or-contact-user"]
-    [ H.p [] [ H.text ("Voisiko " ++ user.name ++ " auttaa sinua? Jaa käyntikorttisi tästä. ") ]
-    , H.button [ E.onClick (AddContact user) , A.class "btn btn-primary" ] [ H.text "ota yhteyttä" ]
-    ]
 
 userInfoBoxEditing2 : Model -> User -> H.Html Msg
 userInfoBoxEditing2 model user =

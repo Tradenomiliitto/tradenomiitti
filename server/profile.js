@@ -181,9 +181,29 @@ module.exports = function initialize(params) {
   }
 
   function getProfile(req, res, next) {
-    return Promise.all([ knex('users').where('id', req.params.id).first(), util.loggedIn(req)])
-      .then(([ user, loggedIn ]) => util.formatUser(user, loggedIn))
-      .then(user => res.json(user))
+    return Promise.all([ util.userById(req.params.id),
+                         util.loggedIn(req),
+                         util.userForSession(req)
+                       ])
+      .then(([ user, loggedIn ]) => {
+        if (loggedIn) {
+          // this trainwreck checks whether the logged in user
+          // has shared their business card with the requested user
+          return util.userForSession(req).then(loggedInUser => {
+            return knex('contacts').where({
+              from_user: loggedInUser.id,
+              to_user: user.id
+            }).then(resp => resp.length > 0)
+              .then(contactExists => {
+                const formattedUser = util.formatUser(user, loggedIn)
+                formattedUser.contacted = contactExists;
+                return formattedUser;
+              })
+          })
+        }
+
+        return util.formatUser(user, loggedIn);
+      }).then(user => res.json(user))
       .catch(err => {
         next({ status: 404, msg: err})
       });
@@ -191,6 +211,11 @@ module.exports = function initialize(params) {
 
   //gives business card from session user to user, whose id is given in request params
   function addContact(req, res, next) {
+    const introductionText = req.body.message;
+    if (typeof introductionText !== 'string' || introductionText.length < 10) {
+      return Promise.reject({ status: 400, msg: 'Introduction text is mandatory'});
+    }
+
     return util.userForSession(req)
       .then(user => {
         if (user.id == req.params.user_id) {
@@ -210,8 +235,8 @@ module.exports = function initialize(params) {
           knex('contacts').insert({ from_user: user.id, to_user: req.params.user_id })
             .then(_ => util.userById(req.params.user_id))
             .then(receiver => {
-              emails.sendNotificationForContact(receiver, user);
-              return res.sendStatus(200);
+              emails.sendNotificationForContact(receiver, user, introductionText);
+              return res.json("Ok");
             })
         }
         else {
