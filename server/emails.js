@@ -107,7 +107,7 @@ module.exports = function init(params) {
     </p>
     <p style="margin-top: 75px;margin-bottom: 50px;font-weight: bold;">“${message}”</p>
     <div style="padding: 30px; background-color: ${scssVars['$light-grey-background']}; text-align: left;">
-      <span style="width: 80px; height: 80px; border-radius: 40px; display: inline-block; overflow: hidden; background-color: ${scssVars.$pink}; float: left; margin-bottom: 15px; margin-right: 10px;">
+      <span style="width: 80px; height: 80px; border-radius: 40px; display: inline-block; overflow: hidden; background-color: ${scssVars.$pink}; float: left; margin-bottom: 25px; margin-right: 10px;">
         <img src="cid:picture" style="width: 100%;">
         </img>
       </span>
@@ -115,18 +115,29 @@ module.exports = function init(params) {
         <h3 style="margin-bottom: 5px;">${user.data.business_card.name}</h2>
         <h5 style="color: ${scssVars.$pink}; margin-top: 0;">${user.data.business_card.title}</h3>
       </span>
-      <p style="color: ${scssVars.$pink}; clear: left;">${user.data.business_card.location}</p>
-      <hr style="background-color: ${scssVars['$inactive-grey']}; height: 1px; border: 0;"></hr>
-      <p style="color: ${scssVars.$pink};">${user.data.business_card.phone}</p>
-      <hr style="background-color: ${scssVars['$inactive-grey']}; height: 1px; border: 0;"></hr>
-      <p style="color: ${scssVars.$pink};">${user.data.business_card.email}</p>
-      <hr style="background-color: ${scssVars['$inactive-grey']}; height: 1px; border: 0;"></hr>
+      <div style="clear: left;">
+        ${makeBusinessCardLine('Sijainti', user.data.business_card.location)}
+        ${makeBusinessCardLine('Puhelinnumero', user.data.business_card.phone)}
+        ${makeBusinessCardLine('Sähköpostiosoite', user.data.business_card.email)}
+      </div>
     </div>
     <p style="margin-top: 50px;">Etkö halua enää sähköposteja? Voit muokata sähköpostiasetuksiasi <a href="https://tradenomiitti.fi/asetukset" style="text-decoration: none; color: inherit; font-weight: bold;">Käyttäjätilin asetuksista</a>.</p>
   </body>
 </html>
 `
     );
+  }
+
+  function makeBusinessCardLine(detailTitle, detailValue) {
+    if (detailValue && detailValue.length > 0) {
+        return `
+    <p>
+      <span style="font-weight: bold; margin-right: 5px;">${detailTitle}:</span>
+      <span style="color: ${scssVars.$pink};">${detailValue}</span>
+    </p>
+    <hr style="background-color: ${scssVars['$inactive-grey']}; height: 1px; border: 0;"></hr>`
+    }
+    return '';
   }
 
   return {
