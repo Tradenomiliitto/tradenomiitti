@@ -32,6 +32,8 @@ type Msg
   | ImageDetailsUpdate (String ,PictureEditing)
   | MouseEnterProfilePic
   | MouseLeaveProfilePic
+  | StartAddContact
+  | ChangeContactAddingText String
   | AddContact User
   | NoOp
 
@@ -229,8 +231,13 @@ update msg model =
     MouseLeaveProfilePic ->
       { model | mouseOverUserImage = False } ! []
 
+    -- handled in User
+    StartAddContact ->
+      model ! []
+    ChangeContactAddingText str ->
+      model ! []
     AddContact user ->
-      model ! [] -- handled in User
+      model ! []
 
     NoOp ->
       model ! []

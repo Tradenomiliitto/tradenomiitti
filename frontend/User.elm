@@ -1,8 +1,11 @@
 module User exposing (..)
 
 import Html as H
+import Html.Attributes as A
+import Html.Events as E
 import Http
 import Json.Decode as Json
+import Json.Encode as JS
 import Models.Ad exposing (Ad)
 import Models.User exposing (User)
 import Profile.Main as Profile
@@ -24,13 +27,23 @@ update : Msg -> Model -> ( Model, Cmd (UpdateMessage Msg))
 update msg model =
   case msg of
     UpdateUser updatedUser ->
-      { model | user = Just updatedUser } ! []
+      { model
+        | user = Just updatedUser
+        , addingContact = False
+      } ! []
 
     UpdateAds ads ->
       { model | ads = ads } ! []
 
+    ProfileMessage Profile.StartAddContact ->
+      { model
+        | addingContact = True
+        , addContactText = ""
+      } ! []
+    ProfileMessage (Profile.ChangeContactAddingText str) ->
+      { model | addContactText = str} ! []
     ProfileMessage (Profile.AddContact user) ->
-      model ! [ addContact user ]
+      model ! [ addContact user model.addContactText ]
 
     ProfileMessage _ ->
       model ! [] -- only handle profile messages that we care about
@@ -62,9 +75,10 @@ getAds userId =
   in
     Util.errorHandlingSend UpdateAds request
 
-addContact : User -> Cmd (UpdateMessage Msg)
-addContact user =
-  Http.post ("/api/kontaktit/" ++ (toString user.id)) Http.emptyBody (Json.succeed ())
+addContact : User -> String -> Cmd (UpdateMessage Msg)
+addContact user str =
+  Http.post ("/api/kontaktit/" ++ (toString user.id))
+    (Http.jsonBody (JS.string str)) (Json.succeed ())
     |> Util.errorHandlingSend (always (Refresh user.id))
 
 
@@ -79,8 +93,26 @@ view model =
     views = model.user
       |> Maybe.map
         (\u ->
-           List.map (Util.localViewMap ProfileMessage) <| Profile.View.viewUser profile False u)
+           List.map (Util.localViewMap ProfileMessage) <| Profile.View.viewUser profile False (contactUser u) u)
       |> Maybe.withDefault []
 
   in
    H.div [] views
+
+
+contactUser : User -> H.Html Profile.Msg
+contactUser user =
+  if user.contacted
+  then
+    H.div
+      [ A.class "col-md-6 user-page__edit-or-contact-user"]
+      [ H.p [] [ H.text "Olet lähettänyt käyntikortin tälle tradenomille." ]
+      ]
+  else
+    H.div
+      [ A.class "col-md-6 user-page__edit-or-contact-user"]
+      [ H.p [] [ H.text ("Voisiko " ++ user.name ++ " auttaa sinua? Jaa käyntikorttisi tästä. ") ]
+      , H.button [ E.onClick Profile.StartAddContact
+                , A.class "btn btn-primary"
+                ] [ H.text "Ota yhteyttä" ]
+      ]

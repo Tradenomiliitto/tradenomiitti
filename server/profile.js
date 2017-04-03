@@ -211,6 +211,11 @@ module.exports = function initialize(params) {
 
   //gives business card from session user to user, whose id is given in request params
   function addContact(req, res, next) {
+    const introductionText = req.body;
+    if (typeof introductionText !== 'string' || introductionText.length < 10) {
+      return Promise.reject({ status: 400, msg: 'Introduction text is mandatory'});
+    }
+
     return util.userForSession(req)
       .then(user => {
         if (user.id == req.params.user_id) {
@@ -230,7 +235,7 @@ module.exports = function initialize(params) {
           knex('contacts').insert({ from_user: user.id, to_user: req.params.user_id })
             .then(_ => util.userById(req.params.user_id))
             .then(receiver => {
-              emails.sendNotificationForContact(receiver, user);
+              emails.sendNotificationForContact(receiver, user, introductionText);
               return res.json("Ok");
             })
         }

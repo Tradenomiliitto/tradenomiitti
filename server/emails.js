@@ -26,13 +26,13 @@ module.exports = function init(params) {
     sendEmail(dbUser, text, subject, attachment);
   }
 
-  function sendNotificationForContact(receiver, contactUser) {
+  function sendNotificationForContact(receiver, contactUser, introductionText) {
 
     const pic = contactUser.data.cropped_picture;
     const imageType = pic.endsWith('.jpg') ? 'image/jpg' : 'image/png';
 
     const attachment = [
-        { data: contactNotificationHtml(contactUser), alternative: true,
+      { data: contactNotificationHtml(contactUser, introductionText), alternative: true,
           related: [
             logo,
             { path: `${params.staticDir}/images/${pic}`, type: imageType,
