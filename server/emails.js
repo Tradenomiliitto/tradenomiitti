@@ -92,7 +92,7 @@ module.exports = function init(params) {
     );
   }
 
-  function contactNotificationHtml(user) {
+  function contactNotificationHtml(user, message) {
     return (
 `
 <html>
@@ -105,17 +105,17 @@ module.exports = function init(params) {
     <p style="margin-top: 80px;">
       <a style="text-transform: uppercase; background-color: ${scssVars.$pink}; padding-left: 45px; padding-right: 45px; padding-top: 25px; padding-bottom: 25px; color: ${scssVars.$white}; text-decoration: none;" href="https://tradenomiitti.fi/tradenomit/${user.id}">Katso profiili</a>
     </p>
-    <p>Tähän tulee saateviesti...</p>
+    <p style="margin-top: 75px;margin-bottom: 50px;font-weight: bold;">“${message}”</p>
     <div style="padding: 30px; background-color: ${scssVars['$light-grey-background']}; text-align: left;">
-      <span style="width: 80px; height: 80px; border-radius: 40px; display: inline-block; overflow: hidden; background-color: ${scssVars.$pink};">
+      <span style="width: 80px; height: 80px; border-radius: 40px; display: inline-block; overflow: hidden; background-color: ${scssVars.$pink}; float: left; margin-bottom: 15px; margin-right: 10px;">
         <img src="cid:picture" style="width: 100%;">
         </img>
       </span>
-      <span>
-        <h2>${user.data.business_card.name}</h2>
-        <h3 style="color: ${scssVars.$pink};">${user.data.business_card.title}</h3>
+      <span style="float: left;">
+        <h3 style="margin-bottom: 5px;">${user.data.business_card.name}</h2>
+        <h5 style="color: ${scssVars.$pink}; margin-top: 0;">${user.data.business_card.title}</h3>
       </span>
-      <p style="color: ${scssVars.$pink};">${user.data.business_card.location}</p>
+      <p style="color: ${scssVars.$pink}; clear: left;">${user.data.business_card.location}</p>
       <hr style="background-color: ${scssVars['$inactive-grey']}; height: 1px; border: 0;"></hr>
       <p style="color: ${scssVars.$pink};">${user.data.business_card.phone}</p>
       <hr style="background-color: ${scssVars['$inactive-grey']}; height: 1px; border: 0;"></hr>
