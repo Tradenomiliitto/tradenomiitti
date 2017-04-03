@@ -231,7 +231,7 @@ module.exports = function initialize(params) {
             .then(_ => util.userById(req.params.user_id))
             .then(receiver => {
               emails.sendNotificationForContact(receiver, user);
-              return res.sendStatus(200);
+              return res.json("Ok");
             })
         }
         else {

@@ -18,13 +18,7 @@ type Msg
   = UpdateUser User
   | UpdateAds (List Ad)
   | ProfileMessage Profile.Msg
-  | NoOp
-
-addContact : User -> Cmd (UpdateMessage Msg)
-addContact user =
-  Http.post ("/api/kontaktit/" ++ (toString user.id)) Http.emptyBody (Json.succeed ())
-    |> Util.errorHandlingSend (always NoOp)
-
+  | Refresh Int
 
 update : Msg -> Model -> ( Model, Cmd (UpdateMessage Msg))
 update msg model =
@@ -41,9 +35,9 @@ update msg model =
     ProfileMessage _ ->
       model ! [] -- only handle profile messages that we care about
 
+    Refresh userId ->
+      model ! [ getUser userId ]
 
-    NoOp ->
-      model ! []
 
 initTasks : Int -> Cmd (UpdateMessage Msg)
 initTasks userId =
@@ -67,6 +61,12 @@ getAds userId =
     request = Http.get url (Json.list Models.Ad.adDecoder)
   in
     Util.errorHandlingSend UpdateAds request
+
+addContact : User -> Cmd (UpdateMessage Msg)
+addContact user =
+  Http.post ("/api/kontaktit/" ++ (toString user.id)) Http.emptyBody (Json.succeed ())
+    |> Util.errorHandlingSend (always (Refresh user.id))
+
 
 
 -- VIEW
