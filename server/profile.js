@@ -182,8 +182,7 @@ module.exports = function initialize(params) {
 
   function getProfile(req, res, next) {
     return Promise.all([ util.userById(req.params.id),
-                         util.loggedIn(req),
-                         util.userForSession(req)
+                         util.loggedIn(req)
                        ])
       .then(([ user, loggedIn ]) => {
         if (loggedIn) {
