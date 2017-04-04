@@ -21,7 +21,14 @@ import PreformattedText
 import Profile.Main as Profile
 import Profile.View
 import Settings
+import State.Ad
+import State.Home
+import State.ListAds
+import State.ListUsers
 import State.Main exposing (..)
+import State.Profile
+import State.Settings
+import State.User
 import Static
 import User
 import Util exposing (ViewMessage(..), UpdateMessage(..))
@@ -88,57 +95,59 @@ update msg model =
       let
         shouldScroll = model.scrollTop
 
-        initWithUpdateMessage mapper cmd =
-          if shouldScroll then
-            unpackUpdateMessage mapper cmd
-          else
-            Cmd.none
-
         route = parseLocation location
         modelWithRoute = { model | route = route, scrollTop = False }
+
+        initWithUpdateMessage initModel mapper cmd =
+          if shouldScroll then
+            initModel ! [ unpackUpdateMessage mapper cmd ]
+          else
+            modelWithRoute ! []
+
         ( newModel, cmd ) =
           case route of
             ShowAd adId ->
-              modelWithRoute !
-                [ initWithUpdateMessage AdMessage (Ad.getAd adId)
-                ]
+              initWithUpdateMessage { modelWithRoute | ad = State.Ad.init }
+                AdMessage (Ad.getAd adId)
 
             Profile ->
-              modelWithRoute !
-                [ initWithUpdateMessage ProfileMessage Profile.initTasks
-                ]
+              initWithUpdateMessage { modelWithRoute | profile = State.Profile.init }
+                ProfileMessage Profile.initTasks
 
             ListAds ->
-              modelWithRoute !
-                  [ initWithUpdateMessage ListAdsMessage (ListAds.initTasks modelWithRoute.listAds) ]
+              let newListAds = State.ListAds.init
+              in
+                initWithUpdateMessage { modelWithRoute | listAds = newListAds }
+                ListAdsMessage (ListAds.initTasks newListAds)
 
             Home ->
-              modelWithRoute !
-                [ initWithUpdateMessage HomeMessage (Home.initTasks modelWithRoute.home)
-                , animation ("home-intro-canvas", False)
-                ]
+              let
+                newHome = State.Home.init
+                (newModel, cmd) =
+                  initWithUpdateMessage { modelWithRoute | home = newHome }
+                    HomeMessage (Home.initTasks newHome)
+              in
+                newModel ! [ cmd, animation ("home-intro-canvas", False) ]
 
             User userId ->
               if Just userId == Maybe.map .id model.profile.user
               then
                 { model | route = Profile } ! [ Navigation.modifyUrl (routeToPath Profile) ]
               else
-                (modelWithRoute,
-                   initWithUpdateMessage UserMessage (User.initTasks userId)
-                )
+                initWithUpdateMessage { modelWithRoute | user = State.User.init }
+                  UserMessage (User.initTasks userId)
 
             ListUsers ->
-              modelWithRoute !
-                [ initWithUpdateMessage ListUsersMessage (ListUsers.initTasks model.listUsers)
-                ]
+              let newListUsers = State.ListUsers.init
+              in
+                initWithUpdateMessage { modelWithRoute | listUsers = newListUsers }
+                  ListUsersMessage (ListUsers.initTasks newListUsers)
 
             LoginNeeded _ ->
               modelWithRoute ! [ animation ("login-needed-canvas", False) ]
 
             Settings ->
-              modelWithRoute !
-                [ initWithUpdateMessage SettingsMessage Settings.initTasks
-                ]
+              initWithUpdateMessage { modelWithRoute | settings = State.Settings.init } SettingsMessage Settings.initTasks
 
             newRoute ->
               (modelWithRoute, Cmd.none)
