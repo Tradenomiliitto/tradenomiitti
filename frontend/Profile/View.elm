@@ -355,57 +355,56 @@ editProfileBox user =
     ]
 
 
-userInfoBoxEditing2 : Model -> User -> H.Html Msg
+userInfoBoxEditing2 : Model -> User -> List (H.Html Msg)
 userInfoBoxEditing2 model user =
-  H.div
-    [A.class "container"]
-    [ H.div
-        [A.class "row"]
-        [ H.div
-          [ A.class "user-page__pic-container col-md-1" ]
-          [ H.span
-            [ A.class "user-page__pic"
-            , E.onClick (ChangeImage user)
-            , E.onMouseEnter MouseEnterProfilePic
-            , E.onMouseLeave MouseLeaveProfilePic
-            ]
-            [ if model.mouseOverUserImage
-              then
-                SvgIcons.upload
-              else
-                Common.picElementForUser user
-            ]
-          ]
-        , H.div [A.class "col-md-4" ]
-          [ H.h4 [ A.class "user-page__name" ]
-            [
-                  H.input [ A.placeholder "Miksi kutsumme sinua?"
-                  , A.value user.name
-                  , E.onInput ChangeNickname
-                  ] []
-              ]
-          , H.p
-            [ A.class "user-page__work-details" ]
-            [
-                H.input
-                [ A.value user.primaryPosition
-                , E.onInput ChangeTitle
-                ]
-                []
-            ]
-          , location model user
-          ]
+  [ H.div
+    [ A.class "user-page__pic-container" ]
+    [ H.span
+      [ A.class "user-page__pic"
+      , E.onClick (ChangeImage user)
+      , E.onMouseEnter MouseEnterProfilePic
+      , E.onMouseLeave MouseLeaveProfilePic
       ]
+      [ if model.mouseOverUserImage
+        then
+          SvgIcons.upload
+        else
+          Common.picElementForUser user
+      ]
+      ]
+  , H.div
+    [ A.class "user-page__editing-name-details" ]
+    [ H.h4 [ A.class "user-page__name" ]
+      [
+            H.input
+              [ A.placeholder "Miksi kutsumme sinua?"
+              , A.value user.name
+              , E.onInput ChangeNickname
+              ] []
+        ]
+    , H.p
+      [ A.class "user-page__work-details" ]
+      [
+          H.input
+          [ A.value user.primaryPosition
+          , E.onInput ChangeTitle
+          ]
+          []
+      ]
+    , location model user
     ]
+  ]
 
 
 userInfoBoxEditing : Model -> User -> H.Html Msg
 userInfoBoxEditing model user =
   H.div
-    [ A.class "col-md-6" ]
+    []
     [ H.div
       [ A.class "row" ]
-      [ userInfoBoxEditing2 model user
+      [ H.div
+        [ A.class "col-xs-12 user-page__editing-pic-and-name" ]
+          (userInfoBoxEditing2 model user)
       ]
     , userDescription model user
     ]
