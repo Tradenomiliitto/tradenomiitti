@@ -249,6 +249,11 @@ div#not-implemented {
     display: flex;
   }
 
+  &__editing-location {
+    width: 100%;
+    display: flex;
+  }
+
   &__name {
     @include gotham-bold;
   }
@@ -302,6 +307,7 @@ div#not-implemented {
   }
 
   // from http://red-team-design.com/making-html-dropdowns-not-suck/
+  &__location-select,
   &__competence-select {
     padding: .5em;
 	  margin: 0;
@@ -350,6 +356,10 @@ div#not-implemented {
       margin-bottom: 10px;
 
     }
+  }
+
+  &__location-select-container {
+    flex-grow: 1;
   }
 
   &__activity-header {

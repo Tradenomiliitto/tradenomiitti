@@ -470,13 +470,16 @@ userDescription model user =
 
 location : Model -> User -> H.Html Msg
 location model user =
-  H.div [ A.class "profile__location" ]
+  H.div
+    [ A.classList
+      [ ("profile__location", True)
+      , ("user-page__editing-location", model.editing)
+      ]
+    ]
     [ H.img [ A.class "profile__location--marker", A.src "/static/lokaatio.svg" ] []
     , if model.editing
         then
-          H.select
-            [ E.on "change" (Json.map ChangeLocation E.targetValue) ]
-            (List.map (optionPreselected user.location) finnishRegions)
+          locationSelect user
         else
           H.span [A.class "profile__location--text"] [ H.text (user.location) ]
     ]
@@ -533,6 +536,17 @@ userPositions model user =
             ]
           else [])
     )
+
+locationSelect : User -> H.Html Msg
+locationSelect user =
+  H.span
+    [ A.class "user-page__location-select-container" ]
+    [ H.select
+      [ E.on "change" (Json.map ChangeLocation E.targetValue)
+      , A.class "user-page__location-select"
+      ]
+      (List.map (optionPreselected user.location) finnishRegions)
+    ]
 
 select : List String -> (String -> msg) -> String -> String -> H.Html msg
 select options toEvent defaultOption heading =
