@@ -1,5 +1,6 @@
 module CreateAd exposing (..)
 
+import Common
 import Html as H
 import Html.Attributes as A
 import Html.Events as E
@@ -76,19 +77,7 @@ view model =
                   ]
                   []
                 ]
-            , H.span
-              [ A.class "create-ad__heading-length-hint" ]
-              [ H.text <|
-                if String.length model.heading < minHeading
-                then
-                  "Vielä vähintään " ++ toString (minHeading - String.length model.heading) ++ " merkkiä"
-                else
-                  if String.length model.heading <= maxHeading
-                  then
-                    "Enää korkeintaan " ++ toString (maxHeading - String.length model.heading) ++ " merkkiä"
-                  else
-                    toString (String.length model.heading - maxHeading) ++ " merkkiä liian pitkä"
-              ]
+            , Common.lengthHint "create-ad__heading-length-hint" model.heading minHeading maxHeading
             , H.textarea
               [ A.placeholder "Kirjoita ytimekäs ilmoitus"
               , A.class "create-ad__textcontent"
