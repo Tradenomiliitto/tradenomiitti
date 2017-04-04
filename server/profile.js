@@ -169,7 +169,7 @@ module.exports = function initialize(params) {
           .where({ id: user.id })
           .update('data', user.data)
       }).then(resp => {
-        res.sendStatus(200);
+        res.json("Ok"); // Elm Http.post expects Json
       }).catch(next);
   }
 

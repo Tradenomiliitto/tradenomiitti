@@ -180,7 +180,7 @@ update msg model =
     AllowProfileCreation ->
       let
         (profileModel, cmd) = Profile.update Profile.AllowProfileCreation model.profile
-        newModel = { model | profile = profileModel, needsConsent = False }
+        newModel = { model | profile = profileModel }
       in
         newModel ! [ unpackUpdateMessage ProfileMessage cmd ]
 

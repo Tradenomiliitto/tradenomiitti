@@ -26,7 +26,7 @@ type Msg
   | ChangeNickname String
   | ChangeDescription String
   | UpdateUser ()
-  | UpdateConsent ()
+  | UpdateConsent
   | UpdateBusinessCard BusinessCardField String
   | ChangeImage User
   | ImageDetailsUpdate (String ,PictureEditing)
@@ -81,7 +81,7 @@ updateMe user =
 updateConsent : Cmd (UpdateMessage Msg)
 updateConsent =
   Http.post "/api/profiilit/luo" Http.emptyBody (Json.succeed ())
-    |> Util.errorHandlingSend UpdateConsent
+    |> Util.errorHandlingSend (always UpdateConsent)
 
 updateSkillList : Int -> Skill.SkillLevel -> List Skill.Model -> List Skill.Model
 updateSkillList index skillLevel list =
@@ -201,14 +201,8 @@ update msg model =
     UpdateBusinessCard field value ->
       updateUser (\u -> { u | businessCard = (updateBusinessCard u.businessCard field value) }) model ! []
 
-    UpdateConsent _ ->
-      let
-        newModel =
-          { model
-            | user = Maybe.map (\u -> { u | profileCreated = True }) model.user
-          }
-      in
-        newModel ! []
+    UpdateConsent ->
+      model ! [ getMe ]
 
     ChangeImage user ->
       model ! [ imageUpload user.pictureEditingDetails ]
