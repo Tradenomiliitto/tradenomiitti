@@ -14,7 +14,7 @@ import Models.User exposing (User)
 import Nav
 import State.Ad exposing (..)
 import State.Util exposing (SendingStatus(..))
-import Util exposing (UpdateMessage(..))
+import Util exposing (UpdateMessage(..), ViewMessage(..))
 
 type Msg
   = StartAddAnswer
@@ -65,13 +65,13 @@ update msg model =
     GetAd ad ->
       { model | ad = Just ad } ! []
 
-view : Model -> Int -> Maybe User -> String -> H.Html Msg
+view : Model -> Int -> Maybe User -> String -> H.Html (ViewMessage Msg)
 view model adId user rootUrl =
   model.ad
     |> Maybe.map (viewAd adId model user rootUrl)
     |> Maybe.withDefault (H.div [] [ H.text "Ilmoituksen haku epäonnistui" ])
 
-viewAd : Int -> Model -> Maybe User -> String -> Ad -> H.Html Msg
+viewAd : Int -> Model -> Maybe User -> String -> Ad -> H.Html (ViewMessage Msg)
 viewAd adId model userMaybe rootUrl ad =
   let
     (canAnswer, isAsker, hasAnswered) =
@@ -114,7 +114,7 @@ viewAd adId model userMaybe rootUrl ad =
       ]
 
 
-viewAnswers : Answers -> Int -> String -> H.Html Msg
+viewAnswers : Answers -> Int -> String -> H.Html (ViewMessage Msg)
 viewAnswers answers adId rootUrl =
   case answers of
     AnswerCount num ->
@@ -128,13 +128,13 @@ viewAnswers answers adId rootUrl =
         , H.p [] [ H.text "Lisää omasi ylhäällä" ]
         ]
 
-viewAnswerList : List Answer -> H.Html Msg
+viewAnswerList : List Answer -> H.Html (ViewMessage Msg)
 viewAnswerList answers =
   H.div
     [ A.class "ad-page__answers" ]
     (List.indexedMap (\i answer -> viewAnswer answer ((i+1) % 2 == 0)) answers)
 
-viewAnswer : Answer -> Bool -> H.Html Msg
+viewAnswer : Answer -> Bool -> H.Html (ViewMessage Msg)
 viewAnswer answer isEven =
   H.div
     [ A.class "row ad-page__answers-row" ] <|
@@ -172,7 +172,7 @@ viewAnswer answer isEven =
       ]
     ]
 
-viewAnswerCount : Int -> Int -> String -> H.Html Msg
+viewAnswerCount : Int -> Int -> String -> H.Html msg
 viewAnswerCount num adId rootUrl =
   let
     (heading, text) =
@@ -253,12 +253,13 @@ leaveAnswerPrompt canAnswer isAsker hasAnswered =
         [ H.text "Vastaa ilmoitukseen" ]
       ]
 
-leaveAnswer : List (H.Html Msg) -> H.Html Msg
+leaveAnswer : List (H.Html Msg) -> H.Html (ViewMessage Msg)
 leaveAnswer contents =
-  H.div
-    [ A.class "col-xs-12 col-sm-6 ad-page__leave-answer" ]
-    contents
+  H.map LocalViewMessage <|
+    H.div
+      [ A.class "col-xs-12 col-sm-6 ad-page__leave-answer" ]
+      contents
 
-viewDate : Date.Date -> H.Html Msg
+viewDate : Date.Date -> H.Html msg
 viewDate date =
   H.p [ A.class "ad-page__date" ] [ H.text (Date.toFormattedString "d.M.y" date) ]

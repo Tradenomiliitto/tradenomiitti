@@ -510,21 +510,21 @@ viewPage model =
     content =
       case model.route of
         User userId ->
-          H.map (mapViewMessage UserMessage) <| User.view model.user
+          unpackViewMessage UserMessage <| User.view model.user
         Profile ->
-          H.map (mapViewMessage ProfileMessage) <| Profile.View.view model.profile model
+          unpackViewMessage ProfileMessage <| Profile.View.view model.profile model
         LoginNeeded route ->
           LoginNeeded.view <| ssoUrl model.rootUrl route
         CreateAd ->
           H.map CreateAdMessage <| CreateAd.view model.createAd
         ListAds ->
-          H.map (mapViewMessage ListAdsMessage) <| ListAds.view model.listAds
+          unpackViewMessage ListAdsMessage <| ListAds.view model.listAds
         ShowAd adId ->
-          H.map AdMessage <| Ad.view model.ad adId model.profile.user model.rootUrl
+          unpackViewMessage AdMessage <| Ad.view model.ad adId model.profile.user model.rootUrl
         Home ->
-          H.map (mapViewMessage HomeMessage) <| Home.view model.home model.profile.user
+          unpackViewMessage HomeMessage <| Home.view model.home model.profile.user
         ListUsers ->
-          H.map (mapViewMessage ListUsersMessage) <| ListUsers.view model.listUsers
+          unpackViewMessage ListUsersMessage <| ListUsers.view model.listUsers
         Terms ->
           PreformattedText.view Static.termsHeading Static.termsTexts
         RegisterDescription ->
@@ -541,13 +541,13 @@ viewPage model =
       [ content ]
 
 
-mapViewMessage : (msg -> Msg) -> ViewMessage msg -> Msg
-mapViewMessage func message =
-  case message of
-    Link route ->
-      NewUrl route
-    LocalViewMessage mesg ->
-      func mesg
+unpackViewMessage : (msg -> Msg) -> H.Html (ViewMessage msg) -> H.Html Msg
+unpackViewMessage func html =
+  H.map (\message ->
+           case message of
+             Link route -> NewUrl route
+             LocalViewMessage mesg -> func mesg
+        ) html
 
 unpackUpdateMessage : (msg -> Msg) -> Cmd (UpdateMessage msg) -> Cmd Msg
 unpackUpdateMessage mapper cmd =

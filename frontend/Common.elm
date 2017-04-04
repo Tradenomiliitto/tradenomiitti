@@ -4,21 +4,26 @@ import Html as H
 import Html.Attributes as A
 import Html.Events as E
 import Json.Decode as Json
+import Link
 import Models.User exposing (User)
 import Nav exposing (Route, routeToPath, routeToString)
 import SvgIcons
+import Util exposing (ViewMessage(..))
 
 
-authorInfo : User -> H.Html msg
+authorInfo : User -> H.Html (ViewMessage msg)
 authorInfo user =
-  H.div
-    []
-    [ H.span [ A.class "author-info__pic" ] [ picElementForUser user ]
-    , H.span
-      [ A.class "author-info__info" ]
-      [ H.span [ A.class "author-info__name"] [ H.text user.name ]
-      , H.br [] []
-      , H.span [ A.class "author-info__title"] [ H.text user.primaryPosition ]
+  H.a
+    [ Link.action (Nav.User user.id)]
+    [ H.div
+      []
+      [ H.span [ A.class "author-info__pic" ] [ picElementForUser user ]
+      , H.span
+        [ A.class "author-info__info" ]
+        [ H.span [ A.class "author-info__name"] [ H.text user.name ]
+        , H.br [] []
+        , H.span [ A.class "author-info__title"] [ H.text user.primaryPosition ]
+        ]
       ]
     ]
 
@@ -34,18 +39,21 @@ picElementForUser user =
     |> Maybe.withDefault
       SvgIcons.userPicPlaceHolder
 
-authorInfoWithLocation : User -> H.Html msg
+authorInfoWithLocation : User -> H.Html (ViewMessage msg)
 authorInfoWithLocation user =
-  H.div
-    []
-    [ H.span [ A.class "author-info__pic" ] [ picElementForUser user ]
-    , H.span
-      [ A.class "author-info__info" ]
-      [ H.span [ A.class "author-info__name"] [ H.text user.name ]
-      , H.br [] []
-      , H.span [ A.class "author-info__title"] [ H.text user.primaryPosition ]
-      , H.br [] []
-      , showLocation user.location
+  H.a
+    [ Link.action (Nav.User user.id)]
+    [ H.div
+      []
+      [ H.span [ A.class "author-info__pic" ] [ picElementForUser user ]
+      , H.span
+        [ A.class "author-info__info" ]
+        [ H.span [ A.class "author-info__name"] [ H.text user.name ]
+        , H.br [] []
+        , H.span [ A.class "author-info__title"] [ H.text user.primaryPosition ]
+        , H.br [] []
+        , showLocation user.location
+        ]
       ]
     ]
 
