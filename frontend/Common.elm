@@ -14,7 +14,9 @@ import Util exposing (ViewMessage(..))
 authorInfo : User -> H.Html (ViewMessage msg)
 authorInfo user =
   H.a
-    [ Link.action (Nav.User user.id)]
+    [ Link.action (Nav.User user.id)
+    , A.href (Nav.routeToPath (Nav.User user.id))
+    ]
     [ H.div
       []
       [ H.span [ A.class "author-info__pic" ] [ picElementForUser user ]
@@ -42,7 +44,9 @@ picElementForUser user =
 authorInfoWithLocation : User -> H.Html (ViewMessage msg)
 authorInfoWithLocation user =
   H.a
-    [ Link.action (Nav.User user.id)]
+    [ Link.action (Nav.User user.id)
+    , A.href (Nav.routeToPath (Nav.User user.id))
+    ]
     [ H.div
       []
       [ H.span [ A.class "author-info__pic" ] [ picElementForUser user ]
