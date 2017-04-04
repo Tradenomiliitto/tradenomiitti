@@ -45,6 +45,7 @@ git push ENV master
    * Set up databases `tradenomiitti` and `tradenomiitti-test`
 * Install graphicsmagick
    * It's under that name in most package managers (Ubuntu, Arch, brew for macOS)
+* If you didn't already do it above, run `npm install` and copy assets to `conf/assets/`
 
 Compile elm & scss
 
