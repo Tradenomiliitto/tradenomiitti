@@ -92,11 +92,11 @@ app.get('/api/profiilit', profile.listProfiles);
 app.get('/api/profiilit/:id', profile.getProfile);
 
 app.get('/api/tehtavaluokat', (req, res) => {
-  return sebacon.getPositionTitles().then(positions => res.json(Object.values(positions)));
+  return sebacon.getPositionTitles().then(positions => res.json(Object.values(positions).sort()));
 });
 
 app.get('/api/toimialat', (req, res) => {
-  return sebacon.getDomainTitles().then(domains => res.json(Object.values(domains)));
+  return sebacon.getDomainTitles().then(domains => res.json(Object.values(domains).sort()));
 });
 
 app.post('/api/ilmoitukset', jsonParser, ads.createAd);
