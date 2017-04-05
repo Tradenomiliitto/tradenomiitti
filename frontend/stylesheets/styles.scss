@@ -146,6 +146,10 @@ $navbar-element-height: 35px;
   &-collapse {
     z-index: 8300;
   }
+  &__login-link {
+    position: relative;
+    top: -2px;
+  }
 }
 
 .navbar__profile-pic {

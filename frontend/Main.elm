@@ -507,7 +507,10 @@ viewProfileLink model =
           ( action ++
           [ A.href endpoint
           ])
-          [ H.text linkText
+          [ H.span
+            [ A.class "navbar__login-link"]
+            [ H.text linkText
+            ]
           , linkGraphic
           ]
       ]
