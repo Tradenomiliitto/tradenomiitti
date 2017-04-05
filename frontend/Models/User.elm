@@ -9,6 +9,7 @@ import Skill
 type alias Extra =
   { first_name : String
   , nick_name : String
+  , last_name : String
   , domains : List String
   , positions : List String
   , email : String
@@ -124,6 +125,7 @@ userExtraDecoder =
   P.decode Extra
     |> P.required "first_name" Json.string
     |> P.required "nick_name" Json.string
+    |> P.required "last_name" Json.string
     |> P.required "domains" (Json.list Json.string)
     |> P.required "positions" (Json.list Json.string)
     |> P.required "email" Json.string
