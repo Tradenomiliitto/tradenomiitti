@@ -93,6 +93,10 @@ introBoxes userMaybe =
           [ H.text "Tradenomiitti on tradenomien oma kohtaamispaikka, jossa jäsenet löytävät toisensa yhteisten aiheiden ympäriltä ja hyötyvät toistensa kokemuksista." ]
       ]
     ] ++ createProfile
+      ++ [ H.i
+        [ A.class "fa fa-angle-double-down fa-3x home__introbox-check-more" ]
+        []
+      ]
 
 -- LIST LATEST ADS --
 

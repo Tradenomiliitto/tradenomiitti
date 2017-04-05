@@ -40,6 +40,13 @@
       @include button-paddings;
       @include button-colors;
     }
+    &-check-more {
+      color: $medium-grey;
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      top: 96vh;
+    }
   }
 
   &__section {
