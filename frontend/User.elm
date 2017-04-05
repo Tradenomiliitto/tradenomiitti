@@ -135,6 +135,6 @@ contactUser model user =
         [ A.class "col-md-6 user-page__edit-or-contact-user"]
         [ H.p [] [ H.text ("Voisiko " ++ user.name ++ " auttaa sinua? Jaa käyntikorttisi tästä. ") ]
         , H.button [ E.onClick Profile.StartAddContact
-                  , A.class "btn btn-primary"
-                  ] [ H.text "Ota yhteyttä" ]
+                   , A.class "btn btn-primary"
+                   ] [ H.text "Ota yhteyttä" ]
         ]
