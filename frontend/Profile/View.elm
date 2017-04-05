@@ -552,27 +552,6 @@ select options toEvent defaultOption heading =
       ]
     ]
 
-membershipDataBox : User -> H.Html msg
-membershipDataBox user =
-  case user.extra of
-    Just extra ->
-      H.div
-        [ A.class "col-md-6 user-page__membership-info" ]
-        [ H.h3 [ A.class "user-page__membership-info-heading" ] [ H.text "Jäsentiedot:" ]
-        , H.span [] [ H.text "(eivät näy muille)"]
-        , tralInfo extra
-        , H.p [] [ H.text "Ovathan jäsentietosi ajan tasalla?" ]
-        , H.p [] [ H.a
-                     [ A.href "https://asiointi.tral.fi/" ]
-                     [ H.text "Päivitä tiedot" ]
-                 ]
-        ]
-    Nothing ->
-      H.div
-        [ A.class "col-md-6 user-page__membership-info" ]
-        [ H.h3 [ A.class "user-page__membership-info-heading" ] [ H.text "Jäsentiedot puuttuvat" ]
-        ]
-
 tralInfo : Models.User.Extra -> H.Html msg
 tralInfo extra =
   let
