@@ -9,8 +9,6 @@ type alias Model =
   , editing : Bool
   , positionOptions : List String
   , domainOptions : List String
-  , selectedPositionOption : String
-  , selectedDomainOption : String
   , mouseOverUserImage : Bool
   }
 
@@ -21,7 +19,5 @@ init =
   , editing = False
   , positionOptions = []
   , domainOptions = []
-  , selectedDomainOption = ""
-  , selectedPositionOption = ""
   , mouseOverUserImage = False
   }
