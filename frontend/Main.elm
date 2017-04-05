@@ -111,8 +111,13 @@ update msg model =
                 AdMessage (Ad.getAd adId)
 
             Profile ->
-              initWithUpdateMessage { modelWithRoute | profile = State.Profile.init }
-                ProfileMessage Profile.initTasks
+              let
+                cleanProfile = State.Profile.init
+                initializedWithOldUser = { cleanProfile | user = modelWithRoute.profile.user }
+                initialModel = { modelWithRoute | profile = initializedWithOldUser }
+              in
+                initWithUpdateMessage initialModel
+                  ProfileMessage Profile.initTasks
 
             ListAds ->
               let newListAds = State.ListAds.init
