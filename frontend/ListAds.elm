@@ -14,18 +14,18 @@ import SvgIcons
 import Util exposing (ViewMessage(..), UpdateMessage(..))
 
 type Msg
-  = UpdateAds (List Models.Ad.Ad)
+  = UpdateAds Int (List Models.Ad.Ad)
   | FooterAppeared
 
 
 update : Msg -> Model -> (Model, Cmd (UpdateMessage Msg))
 update msg model =
   case msg of
-    UpdateAds ads ->
+    UpdateAds previousCursor ads ->
       { model
         | ads = List.uniqueBy .id <| model.ads ++ ads
         -- always advance by full amount, so we know when to stop asking for more
-        , cursor = model.cursor + limit
+        , cursor = previousCursor + limit
       } ! []
 
     FooterAppeared ->
@@ -47,7 +47,7 @@ getAds model =
       ++ toString model.cursor
     request = Http.get url (Json.list Models.Ad.adDecoder)
   in
-    Util.errorHandlingSend UpdateAds request
+    Util.errorHandlingSend (UpdateAds model.cursor) request
 
 
 view : Model -> H.Html (ViewMessage Msg)
