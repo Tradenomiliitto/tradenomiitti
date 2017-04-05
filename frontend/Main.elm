@@ -537,7 +537,7 @@ viewPage model =
           notImplementedYet
   in
     H.div
-      [ A.class "container-fluid app-content" ]
+      [ A.class "app-content" ]
       [ content ]
 
 

@@ -188,8 +188,7 @@ div#not-implemented {
 }
 
 .full-width-ruler {
-  width: 210vw;
-  margin-left: -100vw;
+  width: 100vw;
   border-color: rgba(0, 0, 0, 0.35);
   margin-top: 70px;
 }
@@ -307,7 +306,10 @@ div#not-implemented {
       position: relative;
 		  display: inline-block;
 		  vertical-align: middle;
-      width: 27em;
+      width: 80%;
+      @media (max-width: $screen-xs-max) {
+        width: 100%;
+      }
 
       &::before,
       &::after {

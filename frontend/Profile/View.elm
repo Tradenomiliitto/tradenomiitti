@@ -277,8 +277,7 @@ profileTopRow model rootState =
   in
     H.div
       [ A.classList
-          [ ("row", True)
-          , ("profile__top-row", True)
+          [ ("profile__top-row", True)
           , ("profile__top-row--editing", model.editing)
           ]
       ]
