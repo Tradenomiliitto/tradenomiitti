@@ -90,16 +90,21 @@ row ads =
 
 adListView : Models.Ad.Ad -> H.Html (ViewMessage msg)
 adListView ad =
-  H.a
-    [ A.class "col-xs-12 col-sm-6 card-link"
-    , A.href (Nav.routeToPath (Nav.ShowAd ad.id))
-    , Link.action (Nav.ShowAd ad.id)]
+  H.div
+    [ A.class "col-xs-12 col-sm-6"
+    ]
     [ H.div
       [ A.class "list-ads__ad-preview" ]
-      [ H.h3
-        [ A.class "list-ads__ad-preview-heading"]
-        [ H.text ad.heading ]
-      , H.p [ A.class "list-ads__ad-preview-content" ] [ H.text (Util.truncateContent ad.content 200) ]
+      [ H.a
+        [ A.href (Nav.routeToPath (Nav.ShowAd ad.id))
+        , Link.action (Nav.ShowAd ad.id)
+        , A.class "card-link"
+        ]
+        [ H.h3
+          [ A.class "list-ads__ad-preview-heading"]
+          [ H.text ad.heading ]
+        , H.p [ A.class "list-ads__ad-preview-content" ] [ H.text (Util.truncateContent ad.content 200) ]
+        ]
       , H.hr [] []
       , H.div
         [ A.class "list-ads__ad-preview-answer-count" ]
