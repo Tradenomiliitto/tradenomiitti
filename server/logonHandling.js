@@ -33,6 +33,9 @@ module.exports = function initialize(params) {
         return res.status(400).send('Kirjautuminen epäonnistui');
       }
 
+      // http://stackoverflow.com/a/14438954/1517818
+      const unique = (value, i, array) => array.indexOf(value) === i;
+
       const sessionId = uuid.v4();
       const remoteId = body.result.local_id;
       return knex('users').where({ remote_id: remoteId })
@@ -50,8 +53,8 @@ module.exports = function initialize(params) {
                   remote_id: body.result.local_id,
                   data: {
                     name: nickname || firstname,
-                    domains: domains.map(d => ({ heading: d, skill_level: 1 })),
-                    positions: positions.map(d => ({ heading: d, skill_level: 1 })),
+                    domains: domains.filter(unique).map(d => ({ heading: d, skill_level: 1 })),
+                    positions: positions.filter(unique).map(d => ({ heading: d, skill_level: 1 })),
                     profile_creation_consented: false
                   },
                   settings: {
