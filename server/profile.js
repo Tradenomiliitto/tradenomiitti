@@ -34,7 +34,7 @@ module.exports = function initialize(params) {
         if (!databaseUser.data.business_card) {
           user.business_card = emptyBusinessCard;
         } else {
-          user.business_card = databaseUser.data.business_card;
+          user.business_card = util.formatBusinessCard(databaseUser.data.business_card);
         }
 
         user.extra = {
@@ -220,8 +220,12 @@ module.exports = function initialize(params) {
         if (user.id == req.params.user_id) {
           return Promise.reject({ status: 400, msg: 'User cannot add contact to himself' });
         }
-        if(!user.data.business_card) {
-          return Promise.reject("User has no business card")
+        const businessCard = user.data.business_card;
+        if(!businessCard) {
+          return Promise.reject('User has no business card');
+        }
+        if(businessCard.phone.length === 0 && businessCard.email.length === 0) {
+          return Promise.reject('User is missing details from business card');
         }
         return user;
       })

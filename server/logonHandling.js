@@ -44,10 +44,12 @@ module.exports = function initialize(params) {
             return Promise.all([
               sebacon.getUserFirstName(remoteId),
               sebacon.getUserNickName(remoteId),
+              sebacon.getUserLastName(remoteId),
               sebacon.getUserEmail(remoteId),
+              sebacon.getUserPhoneNumber(remoteId),
               sebacon.getUserPositions(remoteId),
               sebacon.getUserDomains(remoteId)
-            ]).then(([firstname, nickname, email, positions, domains]) => {
+            ]).then(([firstname, nickname, lastname, email, phone, positions, domains]) => {
               return knex('users')
                 .insert({
                   remote_id: body.result.local_id,
@@ -55,7 +57,12 @@ module.exports = function initialize(params) {
                     name: nickname || firstname,
                     domains: domains.filter(unique).map(d => ({ heading: d, skill_level: 1 })),
                     positions: positions.filter(unique).map(d => ({ heading: d, skill_level: 1 })),
-                    profile_creation_consented: false
+                    profile_creation_consented: false,
+                    business_card: {
+                      name: `${firstname} ${lastname}`, // This works for most Finnish names
+                      phone: phone,
+                      email: email
+                    }
                   },
                   settings: {
                     email_address: email,
