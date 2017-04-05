@@ -61,7 +61,7 @@ getAds u =
 
 initTasks : Cmd (UpdateMessage Msg)
 initTasks =
-  Cmd.batch [ getPositionOptions, getDomainOptions ]
+  Cmd.batch [ getMe, getPositionOptions, getDomainOptions ]
 
 getDomainOptions : Cmd (UpdateMessage Msg)
 getDomainOptions =
