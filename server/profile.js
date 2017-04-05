@@ -20,6 +20,7 @@ module.exports = function initialize(params) {
         return Promise.all([
           sebacon.getUserFirstName(user.remote_id),
           sebacon.getUserNickName(user.remote_id),
+          sebacon.getUserLastName(user.remote_id),
           sebacon.getUserEmploymentExtras(user.remote_id),
           sebacon.getUserEmail(user.remote_id),
           sebacon.getUserPhoneNumber(user.remote_id),
@@ -27,19 +28,20 @@ module.exports = function initialize(params) {
           user
         ])
       })
-      .then(([ firstname, nickname, { positions, domains }, email, phone, geoArea, databaseUser ]) => {
+      .then(([ firstname, nickname, lastname, { positions, domains }, email, phone, geoArea, databaseUser ]) => {
 
         const user = util.formatUser(databaseUser, true);
 
         if (!databaseUser.data.business_card) {
           user.business_card = emptyBusinessCard;
         } else {
-          user.business_card = databaseUser.data.business_card;
+          user.business_card = util.formatBusinessCard(databaseUser.data.business_card);
         }
 
         user.extra = {
           first_name: firstname,
           nick_name: nickname,
+          last_name: lastname,
           positions,
           domains,
           email,
@@ -220,8 +222,12 @@ module.exports = function initialize(params) {
         if (user.id == req.params.user_id) {
           return Promise.reject({ status: 400, msg: 'User cannot add contact to himself' });
         }
-        if(!user.data.business_card) {
-          return Promise.reject("User has no business card")
+        const businessCard = util.formatBusinessCard(user.data.business_card);
+        if(!businessCard) {
+          return Promise.reject('User has no business card');
+        }
+        if(businessCard.phone.length === 0 && businessCard.email.length === 0) {
+          return Promise.reject('User is missing details from business card');
         }
         return user;
       })

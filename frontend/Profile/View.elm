@@ -584,6 +584,7 @@ tralInfo extra =
       [ A.class "user-page__membership-info-definitions" ]
       [ row "Kutsumanimi" extra.nick_name
       , row "Etunimi" extra.first_name
+      , row "Sukunimi" extra.last_name
       , row "Tehtäväluokat" (String.join ", " extra.positions)
       , row "Toimiala" (String.join ", " extra.domains)
       , row "Sähköposti" extra.email

@@ -37,6 +37,17 @@ module.exports = function initialize(params) {
     return formattedUser;
   }
 
+  function formatBusinessCard(dbCard) {
+    const formatted = {};
+    formatted.name = dbCard.name || '';
+    formatted.title = dbCard.title || '';
+    formatted.location = dbCard.location || '';
+    formatted.phone = dbCard.phone || '';
+    formatted.email = dbCard.email || '';
+
+    return formatted;
+  }
+
   function formatAd(ad, loggedIn){
     return Promise.all([
       knex('answers').where({ad_id: ad.id})
@@ -64,6 +75,7 @@ module.exports = function initialize(params) {
     userForSession,
     userById,
     formatUser,
+    formatBusinessCard,
     formatAd,
     formatAnswer,
     loggedIn

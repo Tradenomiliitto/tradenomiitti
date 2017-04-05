@@ -143,6 +143,11 @@ module.exports = function initialize(params) {
       .then(res => res.result.kutsumanimi || '');
   }
 
+  function getUserLastName(id) {
+    return getUser(id)
+      .then(res => res.result.lastname || '');
+  }
+
   function getUserEmail(id) {
     return getUser(id)
       .then(res => res.result.email1 || res.result.email2 || '');
@@ -164,6 +169,7 @@ module.exports = function initialize(params) {
     getUserPositions,
     getUserFirstName,
     getUserNickName,
+    getUserLastName,
     getUserDomains,
     getUserEmploymentExtras,
     getUserEmail,

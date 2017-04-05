@@ -519,7 +519,7 @@ viewPage model =
     content =
       case model.route of
         User userId ->
-          unpackViewMessage UserMessage <| User.view model.user
+          unpackViewMessage UserMessage <| User.view model.user model.profile.user
         Profile ->
           unpackViewMessage ProfileMessage <| Profile.View.view model.profile model
         LoginNeeded route ->

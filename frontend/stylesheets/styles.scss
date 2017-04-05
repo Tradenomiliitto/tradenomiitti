@@ -21,6 +21,9 @@ body {
   text-align: center;
   color: $white;
   padding: 85px;
+  @media (max-width: $screen-xs-max) {
+    padding: 0 0 20px 0;
+  }
   z-index: 10;
   border: 1px solid $white;
   background-color: $pink;
@@ -813,6 +816,6 @@ body {
 .error-messages {
   position: fixed;
   bottom: 20px;
-  left: 3%;
-  width: 94%;
+  left: 3vw;
+  width: 94vw;
 }
