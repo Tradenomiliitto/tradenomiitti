@@ -222,7 +222,7 @@ module.exports = function initialize(params) {
         if (user.id == req.params.user_id) {
           return Promise.reject({ status: 400, msg: 'User cannot add contact to himself' });
         }
-        const businessCard = user.data.business_card;
+        const businessCard = util.formatBusinessCard(user.data.business_card);
         if(!businessCard) {
           return Promise.reject('User has no business card');
         }
