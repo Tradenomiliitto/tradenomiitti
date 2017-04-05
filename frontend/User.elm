@@ -89,24 +89,24 @@ addContact user str =
 
 -- VIEW
 
-view : Model -> H.Html (ViewMessage Msg)
-view model =
+view : Model -> Maybe User -> H.Html (ViewMessage Msg)
+view model loggedInUser =
   let
     profileInit = State.Profile.init
     profile = { profileInit | ads = model.ads }
     views = model.user
       |> Maybe.map
         (\u ->
-           List.map (Util.localViewMap ProfileMessage) <| Profile.View.viewUser profile False (contactUser model u) u)
+           List.map (Util.localViewMap ProfileMessage) <| Profile.View.viewUser profile False (contactUser model u loggedInUser) u)
       |> Maybe.withDefault []
 
   in
    H.div [] views
 
 
-contactUser : Model -> User -> H.Html Profile.Msg
-contactUser model user =
-  if user.contacted
+contactUser : Model -> User -> Maybe User -> H.Html Profile.Msg
+contactUser model userToContact loggedInUser =
+  if userToContact.contacted
   then
     H.div
       [ A.class "col-md-6 user-page__edit-or-contact-user"]
@@ -125,16 +125,31 @@ contactUser model user =
           , E.onInput Profile.ChangeContactAddingText
           , A.value model.addContactText
           ] []
-        , H.button [ E.onClick (Profile.AddContact user)
-                   , A.class "btn btn-primary"
-                   , A.disabled (String.length model.addContactText < 10)
-                   ] [ H.text "Lähetä" ]
+        , H.button
+          ([ E.onClick (Profile.AddContact userToContact)
+           , A.class "btn btn-primary"
+           , A.disabled
+             (String.length model.addContactText < 10
+                || not (maybeUserCanSendBusinessCard loggedInUser)
+             )
+           ] ++
+             if maybeUserCanSendBusinessCard loggedInUser
+             then []
+             else [ A.title "Käyntikortissasi täytyy olla vähintään puhelinnumero tai sähköpostiosoite, jotta voisit lähettää sen" ])
+          [ H.text "Lähetä" ]
         ]
     else
       H.div
         [ A.class "col-md-6 user-page__edit-or-contact-user"]
-        [ H.p [] [ H.text ("Voisiko " ++ user.name ++ " auttaa sinua? Jaa käyntikorttisi tästä. ") ]
+        [ H.p [] [ H.text ("Voisiko " ++ userToContact.name ++ " auttaa sinua? Jaa käyntikorttisi tästä. ") ]
         , H.button [ E.onClick Profile.StartAddContact
                    , A.class "btn btn-primary"
                    ] [ H.text "Ota yhteyttä" ]
         ]
+
+maybeUserCanSendBusinessCard : Maybe User -> Bool
+maybeUserCanSendBusinessCard maybeUser =
+  maybeUser
+    |> Maybe.andThen .businessCard
+    |> Maybe.map (\card -> String.length card.phone > 0 || String.length card.email > 0)
+    |> Maybe.withDefault False
