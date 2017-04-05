@@ -7,16 +7,13 @@
 
   &__list-background {
     background-color: $light-grey;
-    padding: 30px 0;
-    width: 100vw;
-    margin-left: -15px;
+    padding-top: 30px;
   }
 
 }
 
 .list-users {
   &__user-row {
-    margin-top: 25px;
   }
 }
 

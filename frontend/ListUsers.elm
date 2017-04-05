@@ -71,7 +71,7 @@ view model =
           ]
         ]
       , H.div
-        [ A.class "list-users__list-background"]
+        [ A.class "list-users__list-background last-row"]
         [ H.div
           [ A.class "container" ]
           rowsHtml

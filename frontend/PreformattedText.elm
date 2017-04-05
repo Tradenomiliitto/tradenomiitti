@@ -8,7 +8,7 @@ view heading texts =
   H.div
     [ A.class "container" ]
     [ H.div
-      [ A.class "row"]
+      [ A.class "row last-row"]
       [ H.div
         [ A.class "col-sm-12" ] <|
         [ H.h1 [ A.class "preformatted__heading" ] [ H.text heading ]

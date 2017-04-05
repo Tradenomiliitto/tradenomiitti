@@ -522,7 +522,7 @@ userDomains model user =
 userPositions : Model -> User -> H.Html Msg
 userPositions model user =
   H.div
-    [ A.class "col-xs-12 col-sm-6"
+    [ A.class "col-xs-12 col-sm-6 last-row"
     ]
     ([ H.h3 [ A.class "user-page__competences-header" ] [ H.text "Tehtäväluokka" ]
       ] ++

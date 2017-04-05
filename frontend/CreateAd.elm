@@ -7,7 +7,6 @@ import Http
 import Json.Decode as Json
 import Json.Encode as JS
 import Nav
-import Navigation
 import State.CreateAd exposing (..)
 import State.Util exposing (SendingStatus(..))
 import Util exposing (UpdateMessage(..))
@@ -60,7 +59,7 @@ view model =
   case model.sending of
     NotSending ->
       H.div
-        [ A.class "container"]
+        [ A.class "container last-row"]
         [ H.div
           [ A.class "row create-ad" ]
           [ H.div

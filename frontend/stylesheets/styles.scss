@@ -180,6 +180,14 @@ $navbar-element-height: 35px;
   }
 }
 
+.last-row {
+  padding-bottom: $padding-before-footer;
+  @media (max-width: $screen-xs-max) {
+    padding-bottom: $padding-before-footer-mobile;
+  }
+}
+
+
 div#not-implemented {
   padding: 100px;
   font-size: large;
