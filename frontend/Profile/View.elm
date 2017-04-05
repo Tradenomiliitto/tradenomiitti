@@ -499,7 +499,7 @@ optionPreselected default value =
 userDomains : Model -> User -> H.Html Msg
 userDomains model user =
   H.div
-    [ A.class "col-xs-12 col-sm-6"
+    [ A.class "col-xs-12 col-sm-6 last-row"
     ]
     ([ H.h3 [ A.class "user-page__competences-header" ] [ H.text "Toimiala" ]
     ] ++
