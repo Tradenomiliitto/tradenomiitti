@@ -471,8 +471,9 @@ viewLink route =
 viewProfileLink : Model -> H.Html Msg
 viewProfileLink model =
   let
+    loggedIn = Maybe.isJust model.profile.user
     action =
-      if Maybe.isJust model.profile.user
+      if loggedIn
       then
         [ E.onWithOptions
             "click"
@@ -484,7 +485,7 @@ viewProfileLink model =
       else
         []
 
-    endpoint = if Maybe.isJust model.profile.user
+    endpoint = if loggedIn
                then routeToPath Profile
                else ssoUrl model.rootUrl (routeToPath Profile |> Just)
     linkText =
@@ -513,7 +514,7 @@ viewProfileLink model =
           [ A.href endpoint
           ])
           [ H.span
-            [ A.class "navbar__login-link"]
+            [ A.classList [ ("navbar__login-link", not loggedIn) ]]
             [ H.text linkText
             ]
           , linkGraphic
