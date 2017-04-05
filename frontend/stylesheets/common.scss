@@ -28,6 +28,10 @@ $fullpage-height: calc(100vh - #{ $navbar-height });
 
 $input-padding: 8px;
 
+$padding-before-footer: 50px;
+$padding-before-footer-mobile: 35px;
+
+
 #navbar-height-to-js { height: $navbar-height; }
 #pink-to-js { color: $pink; }
 #green-to-js { color: $green; }

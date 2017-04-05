@@ -89,7 +89,7 @@ view editing model =
     H.div
       [ A.class "row" ] <|
         [ H.div
-            [ A.class "col-xs-6" ]
+            [ A.class "col-xs-10 col-sm-6" ]
             [ H.p
                 []
                 [ H.span [ A.class "skill__heading" ] [ H.text model.heading ]
@@ -112,12 +112,12 @@ view editing model =
       (if editing
        then
          [ H.div
-             [ A.class "col-xs-4 skill__delete" ]
-             [ H.button
-                 [ A.class "btn btn-danger"
+             [ A.class "col-xs-1 col-sm-2 skill__delete" ]
+             [ H.i
+                 [ A.class "skill__delete-icon fa fa-remove"
                  , E.onClick Delete
                  ]
-                 [ H.text "Poista" ]
+                 []
              ]
          ]
        else

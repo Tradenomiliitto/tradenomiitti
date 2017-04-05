@@ -91,9 +91,12 @@ publicInfoEditing model user =
   H.div
     [ A.class "container-fluid" ]
     [ H.div
-        [ A.class "profile__editing--public-info row" ]
-        [ publicInfo model user
-        , businessCard user ]
+      [ A.class "container" ]
+      [ H.div
+          [ A.class "profile__editing--public-info row" ]
+          [ publicInfo model user
+          , businessCard user ]
+      ]
     ]
 
 publicInfo : Model -> User -> H.Html Msg
@@ -209,26 +212,30 @@ showProfileView model rootState =
 competences : Model -> User -> H.Html Msg
 competences model user =
   H.div
-    [ A.class "container profile__editing--competences" ]
-    [ H.div [ A.class "profile__editing--competences--row row" ]
-        [
-          H.div
-            [ A.class "profile__editing--competences--heading col-md-7" ]
-            [ H.h3
-            [ A.class "profile__editing--competences--heading--title" ]
-            [ H.text "Muokkaa osaamistasi" ]
-        , H.p
-            [ A.class "profile__editing--competences--heading--text" ]
-            [ H.text "Osaamisesi on esitäytetty jäsentietojemme perusteella. Muokkaa ja täydennä tehtäviä ja toimialoja, jotta Tradenomiitti voi palvella sinua paremmin ja jotta muut tradenomit löytäisivät sinut helpommin. "
-            , H.span [A.class "profile__editing--bold"] [ H.text "Osaaminen näkyy kaikille käyttäjille." ]
-            ]
-        ]
-    ]
-    , H.div
-        [ A.class "profile__editing--competences--row row" ]
-        [ userDomains model user
-        , userPositions model user
-        ]
+    [ A.class "container-fluid profile__editing--competences" ]
+    [ H.div
+      [ A.class "container"
+      ]
+      [ H.div [ A.class "profile__editing--competences--row row" ]
+          [
+            H.div
+              [ A.class "profile__editing--competences--heading col-md-7" ]
+              [ H.h3
+              [ A.class "profile__editing--competences--heading--title" ]
+              [ H.text "Muokkaa osaamistasi" ]
+          , H.p
+              [ A.class "profile__editing--competences--heading--text" ]
+              [ H.text "Osaamisesi on esitäytetty jäsentietojemme perusteella. Muokkaa ja täydennä tehtäviä ja toimialoja, jotta Tradenomiitti voi palvella sinua paremmin ja jotta muut tradenomit löytäisivät sinut helpommin. "
+              , H.span [A.class "profile__editing--bold"] [ H.text "Osaaminen näkyy kaikille käyttäjille." ]
+              ]
+          ]
+      ]
+      , H.div
+          [ A.class "profile__editing--competences--row row" ]
+          [ userDomains model user
+          , userPositions model user
+          ]
+      ]
     ]
 
 
@@ -270,8 +277,7 @@ profileTopRow model rootState =
   in
     H.div
       [ A.classList
-          [ ("row", True)
-          , ("profile__top-row", True)
+          [ ("profile__top-row", True)
           , ("profile__top-row--editing", model.editing)
           ]
       ]
@@ -495,7 +501,7 @@ optionPreselected default value =
 userDomains : Model -> User -> H.Html Msg
 userDomains model user =
   H.div
-    [ A.class "col-xs-12 col-sm-6"
+    [ A.class "col-xs-12 col-sm-6 last-row"
     ]
     ([ H.h3 [ A.class "user-page__competences-header" ] [ H.text "Toimiala" ]
     ] ++
@@ -518,7 +524,7 @@ userDomains model user =
 userPositions : Model -> User -> H.Html Msg
 userPositions model user =
   H.div
-    [ A.class "col-xs-12 col-sm-6"
+    [ A.class "col-xs-12 col-sm-6 last-row"
     ]
     ([ H.h3 [ A.class "user-page__competences-header" ] [ H.text "Tehtäväluokka" ]
       ] ++
@@ -564,27 +570,6 @@ select options toEvent defaultOption heading =
           H.option [] [ H.text defaultOption ] :: List.map (\o -> H.option [] [ H.text o ]) options
       ]
     ]
-
-membershipDataBox : User -> H.Html msg
-membershipDataBox user =
-  case user.extra of
-    Just extra ->
-      H.div
-        [ A.class "col-md-6 user-page__membership-info" ]
-        [ H.h3 [ A.class "user-page__membership-info-heading" ] [ H.text "Jäsentiedot:" ]
-        , H.span [] [ H.text "(eivät näy muille)"]
-        , tralInfo extra
-        , H.p [] [ H.text "Ovathan jäsentietosi ajan tasalla?" ]
-        , H.p [] [ H.a
-                     [ A.href "https://asiointi.tral.fi/" ]
-                     [ H.text "Päivitä tiedot" ]
-                 ]
-        ]
-    Nothing ->
-      H.div
-        [ A.class "col-md-6 user-page__membership-info" ]
-        [ H.h3 [ A.class "user-page__membership-info-heading" ] [ H.text "Jäsentiedot puuttuvat" ]
-        ]
 
 tralInfo : Models.User.Extra -> H.Html msg
 tralInfo extra =

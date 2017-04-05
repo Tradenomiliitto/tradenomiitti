@@ -68,7 +68,7 @@ view model =
     , H.div
       [ A.class "list-ads__list-background"]
       [ H.div
-        [ A.class "container" ]
+        [ A.class "container last-row" ]
         (viewAds model.ads)
       ]
     ]

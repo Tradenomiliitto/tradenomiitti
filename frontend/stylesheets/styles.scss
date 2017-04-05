@@ -174,11 +174,19 @@ $navbar-element-height: 35px;
 
 .app-content {
   padding-top: $navbar-height;
-  padding-bottom: #{$footer-height + 50px};
+  padding-bottom: $footer-height;
   @media (max-width: $screen-xs-max) {
-    padding-bottom: #{$footer-height-mobile + 35px };
+    padding-bottom: $footer-height-mobile;
   }
 }
+
+.last-row {
+  padding-bottom: $padding-before-footer;
+  @media (max-width: $screen-xs-max) {
+    padding-bottom: $padding-before-footer-mobile;
+  }
+}
+
 
 div#not-implemented {
   padding: 100px;
@@ -188,8 +196,7 @@ div#not-implemented {
 }
 
 .full-width-ruler {
-  width: 210vw;
-  margin-left: -100vw;
+  width: 100vw;
   border-color: rgba(0, 0, 0, 0.35);
   margin-top: 70px;
 }
@@ -326,7 +333,10 @@ div#not-implemented {
       position: relative;
 		  display: inline-block;
 		  vertical-align: middle;
-      width: 27em;
+      width: 80%;
+      @media (max-width: $screen-xs-max) {
+        width: 100%;
+      }
 
       &::before,
       &::after {
@@ -473,6 +483,11 @@ div#not-implemented {
   &__delete {
     position: relative;
     top: 1em;
+    text-align: center;
+    &-icon {
+      color: $pink;
+      cursor: pointer;
+    }
   }
 }
 
@@ -483,7 +498,7 @@ div#not-implemented {
   box-shadow: 0 2px 2px 1px #CCC;
 
   &__inputs {
-    background-color: #fbfbfb;
+    background-color: $light-grey-background;
     margin-left: -$box-padding;
     padding-left: $box-padding;
     margin-top: -$box-padding;
