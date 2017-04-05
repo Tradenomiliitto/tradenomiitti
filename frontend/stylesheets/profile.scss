@@ -64,8 +64,6 @@
     &--public-info {
       padding-top: 50px;
       padding-bottom: 100px;
-      margin-left: 8%;
-      margin-right: 8%;
 
       &--header {
         color: $pink;
@@ -81,14 +79,7 @@
     }
     &--competences {
       background-color: $light-grey;
-      width: 100vw;
       margin-left: -15px;
-
-      &--row {
-        margin-left: 8%;
-        margin-right: 8%;
-        padding-left: 15px;
-      }
 
       &--heading {
         margin-top: 50px;

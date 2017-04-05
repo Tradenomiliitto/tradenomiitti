@@ -450,6 +450,11 @@ div#not-implemented {
   &__delete {
     position: relative;
     top: 1em;
+    text-align: center;
+    &-icon {
+      color: $pink;
+      cursor: pointer;
+    }
   }
 }
 
@@ -460,7 +465,7 @@ div#not-implemented {
   box-shadow: 0 2px 2px 1px #CCC;
 
   &__inputs {
-    background-color: #fbfbfb;
+    background-color: $light-grey-background;
     margin-left: -$box-padding;
     padding-left: $box-padding;
     margin-top: -$box-padding;

@@ -91,9 +91,12 @@ publicInfoEditing model user =
   H.div
     [ A.class "container-fluid" ]
     [ H.div
-        [ A.class "profile__editing--public-info row" ]
-        [ publicInfo model user
-        , businessCard user ]
+      [ A.class "container" ]
+      [ H.div
+          [ A.class "profile__editing--public-info row" ]
+          [ publicInfo model user
+          , businessCard user ]
+      ]
     ]
 
 publicInfo : Model -> User -> H.Html Msg
@@ -209,26 +212,30 @@ showProfileView model rootState =
 competences : Model -> User -> H.Html Msg
 competences model user =
   H.div
-    [ A.class "container profile__editing--competences" ]
-    [ H.div [ A.class "profile__editing--competences--row row" ]
-        [
-          H.div
-            [ A.class "profile__editing--competences--heading col-md-7" ]
-            [ H.h3
-            [ A.class "profile__editing--competences--heading--title" ]
-            [ H.text "Muokkaa osaamistasi" ]
-        , H.p
-            [ A.class "profile__editing--competences--heading--text" ]
-            [ H.text "Osaamisesi on esitäytetty jäsentietojemme perusteella. Muokkaa ja täydennä tehtäviä ja toimialoja, jotta Tradenomiitti voi palvella sinua paremmin ja jotta muut tradenomit löytäisivät sinut helpommin. "
-            , H.span [A.class "profile__editing--bold"] [ H.text "Osaaminen näkyy kaikille käyttäjille." ]
-            ]
-        ]
-    ]
-    , H.div
-        [ A.class "profile__editing--competences--row row" ]
-        [ userDomains model user
-        , userPositions model user
-        ]
+    [ A.class "container-fluid profile__editing--competences" ]
+    [ H.div
+      [ A.class "container"
+      ]
+      [ H.div [ A.class "profile__editing--competences--row row" ]
+          [
+            H.div
+              [ A.class "profile__editing--competences--heading col-md-7" ]
+              [ H.h3
+              [ A.class "profile__editing--competences--heading--title" ]
+              [ H.text "Muokkaa osaamistasi" ]
+          , H.p
+              [ A.class "profile__editing--competences--heading--text" ]
+              [ H.text "Osaamisesi on esitäytetty jäsentietojemme perusteella. Muokkaa ja täydennä tehtäviä ja toimialoja, jotta Tradenomiitti voi palvella sinua paremmin ja jotta muut tradenomit löytäisivät sinut helpommin. "
+              , H.span [A.class "profile__editing--bold"] [ H.text "Osaaminen näkyy kaikille käyttäjille." ]
+              ]
+          ]
+      ]
+      , H.div
+          [ A.class "profile__editing--competences--row row" ]
+          [ userDomains model user
+          , userPositions model user
+          ]
+      ]
     ]
 
 
