@@ -88,3 +88,19 @@ showLocation location =
     [ H.img [ A.class "profile__location--marker", A.src "/static/lokaatio.svg" ] []
     , H.span [ A.class "profile__location--text" ] [ H.text (location) ]
     ]
+
+lengthHint : String -> String -> Int -> Int -> H.Html msg
+lengthHint class text minLength maxLength =
+  H.span
+    [ A.class class ]
+    [ H.text <|
+      if String.length text < minLength
+      then
+        "Vielä vähintään " ++ toString (minLength - String.length text) ++ " merkkiä"
+      else
+        if String.length text <= maxLength
+        then
+          "Enää korkeintaan " ++ toString (maxLength - String.length text) ++ " merkkiä"
+        else
+          toString (String.length text - maxLength) ++ " merkkiä liian pitkä"
+    ]

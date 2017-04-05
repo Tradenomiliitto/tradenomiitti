@@ -106,7 +106,7 @@ viewAd adId model userMaybe rootUrl ad =
           ]
         , leaveAnswer <|
           if model.addingAnswer
-          then leaveAnswerBox (model.sending == Sending) adId
+          then leaveAnswerBox (model.sending == Sending) model.answerText adId
           else leaveAnswerPrompt canAnswer isAsker hasAnswered
         ]
       , H.hr [ A.class "full-width-ruler" ] []
@@ -202,8 +202,8 @@ viewAnswerCount num adId rootUrl =
       ]
 
 
-leaveAnswerBox : Bool -> Int -> List (H.Html Msg)
-leaveAnswerBox sending adId =
+leaveAnswerBox : Bool -> String -> Int -> List (H.Html Msg)
+leaveAnswerBox sending text adId =
   [ H.div
     [ A.class "ad-page__leave-answer-input-container" ]
     [ H.textarea
@@ -211,13 +211,16 @@ leaveAnswerBox sending adId =
         , A.placeholder "Kirjoita napakka vastaus"
         , E.onInput ChangeAnswerText
         , A.disabled sending
+        , A.value text
         ]
         []
+    , Common.lengthHint "ad-page__leave-answer-hint" text 10 1000
     , if not sending
       then
         H.button
           [ A.class "btn btn-primary ad-page__leave-answer-button"
           , E.onClick (SendAnswer adId)
+          , A.disabled (String.length text < 10 || String.length text > 1000)
           ]
           [ H.text "Jätä vastaus" ]
       else
