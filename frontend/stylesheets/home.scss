@@ -46,6 +46,8 @@
       left: 50%;
       transform: translateX(-50%) translateY(-100%);
       top: 100vh;
+      z-index: 10;
+      cursor: pointer;
     }
   }
 

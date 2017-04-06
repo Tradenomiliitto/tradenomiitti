@@ -1,6 +1,8 @@
 import { polyfill } from 'smoothscroll-polyfill';
 import 'scroll-restoration-polyfill';
 
+import getStyleValues from './style-values';
+
 polyfill();
 
 const previousScrolls = {};
@@ -11,8 +13,8 @@ window.addEventListener('scroll', (e) => {
   previousScrolls[path] = window.scrollY;
 });
 
-export default function initScrolling(port) {
-  port.subscribe(shouldScroll => {
+export function initScrollingToTop(elm2js) {
+  elm2js.subscribe(shouldScroll => {
     const path = document.location.pathname
     const previousScrollInPath = previousScrolls[path];
     if (shouldScroll) {
@@ -28,5 +30,15 @@ export default function initScrolling(port) {
         });
       }, 50)
     }
+  });
+}
+
+export function initHomeScrolling(elm2js) {
+  elm2js.subscribe(() => {
+    const { navbarHeight } = getStyleValues();
+    window.scroll({
+      top: window.innerHeight - navbarHeight,
+      behavior: 'smooth'
+    });
   });
 }
