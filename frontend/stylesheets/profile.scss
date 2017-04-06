@@ -222,11 +222,14 @@
     }
 
     &--data {
+      display: flex;
+      margin-bottom: 10px;
       &--name-work {
         margin-left: 20px;
         display: inline-block;
         position:relative;
-        top: -25px;
+        top: -4px;
+        flex-grow: 1;
 
         h4 {
           color: $green;
@@ -238,7 +241,6 @@
         }
       }
       &--contact {
-        width: 80%;
         p {
           margin-top: 0px;
           margin-bottom: 0px;
