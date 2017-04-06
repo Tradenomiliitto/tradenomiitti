@@ -25,10 +25,11 @@ module.exports = function initialize(params) {
           sebacon.getUserEmail(user.remote_id),
           sebacon.getUserPhoneNumber(user.remote_id),
           sebacon.getUserGeoArea(user.remote_id),
+          service.profileSkills(user.id),
           user
         ])
       })
-      .then(([ firstname, nickname, lastname, { positions, domains }, email, phone, geoArea, databaseUser ]) => {
+      .then(([ firstname, nickname, lastname, { positions, domains }, email, phone, geoArea, skills, databaseUser ]) => {
 
         const user = util.formatUser(databaseUser, true);
 
@@ -51,6 +52,14 @@ module.exports = function initialize(params) {
         if (databaseUser.data.picture_editing)
           user.picture_editing = databaseUser.data.picture_editing;
 
+        user.domains = skills
+          .filter(s => s.type === 'domain')
+          .map(s => ({ heading: s.heading, skill_level: s.level }));
+
+        user.positions = skills
+          .filter(s => s.type === 'position')
+          .map(s => ({ heading: s.heading, skill_level: s.level }));
+
         return res.json(user);
       })
       .catch((err) => {
@@ -72,7 +81,31 @@ module.exports = function initialize(params) {
       .then(user => {
         const newData = Object.assign({}, user.data, req.body);
 
-        return knex('users').where({ id: user.id }).update('data', newData);
+        return knex.transaction(trx => {
+          return trx('users')
+            .where({ id: user.id })
+            .update('data', newData)
+            .then(() => trx('skills').where({ user_id: user.id }).del())
+            .then(() => {
+              const domainPromises = newData.domains.map(domain => {
+                return trx('skills').insert({
+                  user_id: user.id,
+                  heading: domain.heading,
+                  level: domain.skill_level,
+                  type: 'domain'
+                })
+              });
+              const positionPromises = newData.positions.map(position => {
+                return trx('skills').insert({
+                  user_id: user.id,
+                  heading: position.heading,
+                  level: position.skill_level,
+                  type: 'position'
+                });
+              });
+              return Promise.all(domainPromises.concat(positionPromises));
+            });
+        })
       }).then(resp => {
         res.sendStatus(200);
       }).catch(next)
@@ -195,6 +228,18 @@ module.exports = function initialize(params) {
         }
 
         return util.formatUser(user, loggedIn);
+      }).then(user => {
+        return service.profileSkills(user.id).then(skills => {
+          user.domains = skills
+            .filter(s => s.type === 'domain')
+            .map(s => ({ heading: s.heading, skill_level: s.level }));
+
+          user.positions = skills
+            .filter(s => s.type === 'position')
+            .map(s => ({ heading: s.heading, skill_level: s.level }));
+
+          return user
+        });
       }).then(user => res.json(user))
       .catch(err => {
         next({ status: 404, msg: err})

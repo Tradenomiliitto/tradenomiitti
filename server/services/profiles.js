@@ -11,7 +11,13 @@ module.exports = function initialize(params) {
         return resp.map(user => util.formatUser(user, loggedIn));
       })
   }
+
+  function profileSkills(user_id) {
+    return knex('skills').where({ user_id });
+  }
+
   return {
-    listProfiles
+    listProfiles,
+    profileSkills
   }
 };
