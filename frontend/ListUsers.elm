@@ -77,7 +77,7 @@ view model =
             ]
           ]
         , H.div
-          [ A.class "row" ]
+          [ A.class "row list-users__filters" ]
           [ H.div
             [ A.class "col-xs-12 col-sm-6" ]
             [ select ["eka", "toka"]]
