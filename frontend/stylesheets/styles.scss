@@ -9,6 +9,7 @@
 @import '../../node_modules/font-awesome/scss/font-awesome';
 @import '../../node_modules/cropperjs/dist/cropper';
 @import 'svg-styles';
+@import 'navbar';
 
 body {
   overflow-x: hidden;
@@ -74,92 +75,6 @@ body {
   text-transform: uppercase;
 }
 
-#logo > img {
-  margin-top: -5px;
-}
-
-.navbar-right {
-  padding-right: 40px;
-}
-
-.navbar-nav > li {
-  vertical-align: middle;
-}
-
-.nav-center {
-  @media (min-width: $grid-float-breakpoint) {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-  }
-}
-
-.navbar__vertical-bar {
-    position: relative;
-    height: $navbar-height;
-    @media (max-width: #{ $grid-float-breakpoint - 1 }) {
-      display: none !important;
-    }
-
-    & > div {
-      width: 1px;
-      height: 26px;
-      background-color: white;
-      position: absolute;
-      top: 50%;
-      margin-top: -13px;
-    }
-}
-
-$navbar-element-height: 35px;
-
-.navbar__inverse-button {
-  height: $navbar-height;
-  $inverse-button-height: $navbar-element-height;
-  font-size: 15px;
-
-  @include gotham-bold;
-
-  & > a {
-    text-transform: uppercase;
-    height: $inverse-button-height;
-
-    @include inverse-button-colors;
-
-    padding-bottom: 7px !important;
-    padding-top: 7px !important;
-    top: 50%;
-    margin-top: #{-$inverse-button-height / 2};
-  }
-}
-
-.navbar__profile-lock,
-.navbar__profile-pic {
-  margin-left: 10px;
-}
-
-.navbar {
-  font-size: 18px;
-
-  @media (max-width: $screen-sm-max) {
-    font-size: 16px;
-  }
-
-  &-fixed-top,
-  &-collapse {
-    z-index: 8300;
-  }
-  &__login-link {
-    position: relative;
-    top: -2px;
-  }
-}
-
-.navbar__profile-pic {
-  @include round-profile-pic($navbar-element-height, $white);
-  margin-top: #{-$navbar-element-height / 4};
-  float: right;
-}
 
 .splash-screen {
   position: fixed;
