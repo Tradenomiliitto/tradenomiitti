@@ -551,7 +551,7 @@ viewPage model =
         Home ->
           unpackViewMessage HomeMessage <| Home.view model.home model.profile.user
         ListUsers ->
-          unpackViewMessage ListUsersMessage <| ListUsers.view model.listUsers
+          unpackViewMessage ListUsersMessage <| ListUsers.view model.listUsers model.config
         Terms ->
           PreformattedText.view Static.termsHeading Static.termsTexts
         RegisterDescription ->
