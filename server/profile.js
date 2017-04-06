@@ -201,7 +201,7 @@ module.exports = function initialize(params) {
 
   function listProfiles(req, res, next) {
     util.loggedIn(req)
-      .then(loggedIn => service.listProfiles(loggedIn, req.query.limit, req.query.offset))
+      .then(loggedIn => service.listProfiles(loggedIn, req.query.limit, req.query.offset, req.query.domain, req.query.position))
       .then(users => res.json(users))
       .catch(next)
   }
