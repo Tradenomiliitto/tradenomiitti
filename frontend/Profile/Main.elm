@@ -20,8 +20,6 @@ type Msg
   | ChangeDomainSelect String
   | ChangePositionSelect String
   | ChangeLocation String
-  | GetDomainOptions (List String)
-  | GetPositionOptions (List String)
   | ChangeTitle String
   | ChangeNickname String
   | ChangeDescription String
@@ -61,17 +59,7 @@ getAds u =
 
 initTasks : Cmd (UpdateMessage Msg)
 initTasks =
-  Cmd.batch [ getMe, getPositionOptions, getDomainOptions ]
-
-getDomainOptions : Cmd (UpdateMessage Msg)
-getDomainOptions =
-  Http.get "/api/toimialat" (Json.list Json.string)
-    |> Util.errorHandlingSend GetDomainOptions
-
-getPositionOptions : Cmd (UpdateMessage Msg)
-getPositionOptions =
-  Http.get "/api/tehtavaluokat" (Json.list Json.string)
-    |> Util.errorHandlingSend GetPositionOptions
+  Cmd.batch [ getMe ]
 
 updateMe : User -> Cmd (UpdateMessage Msg)
 updateMe user =
@@ -185,11 +173,6 @@ update msg model =
     ChangeDescription str ->
       updateUser (\u -> { u | description = String.slice 0 300 str }) model ! []
 
-    GetPositionOptions list ->
-      { model | positionOptions = list } ! []
-
-    GetDomainOptions list ->
-      { model | domainOptions = list } ! []
 
     UpdateUser _ ->
       { model | editing = False } !

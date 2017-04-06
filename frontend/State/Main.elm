@@ -3,6 +3,7 @@ module State.Main exposing (..)
 import Nav exposing (..)
 import Navigation
 import State.Ad
+import State.Config
 import State.CreateAd
 import State.Home
 import State.ListAds
@@ -27,6 +28,7 @@ type alias Model =
   , ad : State.Ad.Model
   , home : State.Home.Model
   , settings : State.Settings.Model
+  , config : State.Config.Model
   }
 
 
@@ -46,4 +48,5 @@ initState location =
   , ad = State.Ad.init
   , home = State.Home.init
   , settings = State.Settings.init
+  , config = State.Config.init
   }
