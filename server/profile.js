@@ -73,7 +73,13 @@ module.exports = function initialize(params) {
 
     return util.userForSession(req)
       .then(user => {
+        const domains = req.body.domains;
+        const positions = req.body.positions;
+
         const newData = Object.assign({}, user.data, req.body);
+        // Don't save domains and positions to data
+        delete newData.domains;
+        delete newData.positions;
 
         return knex.transaction(trx => {
           return trx('users')
@@ -81,7 +87,7 @@ module.exports = function initialize(params) {
             .update('data', newData)
             .then(() => trx('skills').where({ user_id: user.id }).del())
             .then(() => {
-              const domainPromises = newData.domains.map(domain => {
+              const domainPromises = domains.map(domain => {
                 return trx('skills').insert({
                   user_id: user.id,
                   heading: domain.heading,
@@ -89,7 +95,7 @@ module.exports = function initialize(params) {
                   type: 'domain'
                 })
               });
-              const positionPromises = newData.positions.map(position => {
+              const positionPromises = positions.map(position => {
                 return trx('skills').insert({
                   user_id: user.id,
                   heading: position.heading,
