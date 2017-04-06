@@ -473,84 +473,9 @@ div#not-implemented {
   }
 }
 
-
-/* https://github.com/lukehaas/css-loaders */
-
-@mixin loader($color, $background, $size) {
-  &,
-  &:before,
-  &:after {
-    border-radius: 50%;
-  }
-  & {
-    color: $color;
-    font-size: 11px;
-    text-indent: -99999em;
-    margin: 55px auto;
-    position: relative;
-    width: $size;
-    height: $size;
-    box-shadow: inset 0 0 0 1em;
-    -webkit-transform: translateZ(0);
-    -ms-transform: translateZ(0);
-    transform: translateZ(0);
-  }
-  &:before,
-  &:after {
-    position: absolute;
-    content: '';
-  }
-  &:before {
-    width: #{ $size * 0.02 + $size * 0.5 };
-    height: #{ $size * 1.02 };
-    background: $background;
-    border-radius: #{ $size * 1.02 } 0 0 #{ $size * 1.02 };
-    top: -#{ $size * 0.01 };
-    left: -#{ $size * 0.01 };
-    -webkit-transform-origin: #{$size * 0.52 } #{ $size * 0.51};
-    transform-origin: #{$size * 0.52 } #{ $size * 0.51};
-    -webkit-animation: load2 2s infinite ease 1.5s;
-    animation: load2 2s infinite ease 1.5s;
-  }
-  &:after {
-    width: #{$size * 0.52 };
-    height: #{ $size * 1.02 };
-    background: $background;
-    border-radius: 0 #{ $size * 1.02 } #{ $size * 1.02 } 0;
-    top: -#{ $size * 0.01 };
-    left: #{ $size * 0.51};
-    -webkit-transform-origin: 0px #{ $size * 0.51};
-    transform-origin: 0px #{ $size * 0.51};
-    -webkit-animation: load2 2s infinite ease;
-    animation: load2 2s infinite ease;
-  }
-  @-webkit-keyframes load2 {
-    0% {
-      -webkit-transform: rotate(0deg);
-      transform: rotate(0deg);
-    }
-    100% {
-      -webkit-transform: rotate(360deg);
-      transform: rotate(360deg);
-    }
-  }
-  @keyframes load2 {
-    0% {
-      -webkit-transform: rotate(0deg);
-      transform: rotate(0deg);
-    }
-    100% {
-      -webkit-transform: rotate(360deg);
-      transform: rotate(360deg);
-    }
-  }
-}
-
-
 .loader {
   @include loader($white, $pink, 10em);
 }
-
 
 .ad-page {
   margin-top: $content-top-margin;
