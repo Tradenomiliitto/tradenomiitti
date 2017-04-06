@@ -33,7 +33,7 @@ module.exports = function initialize(params) {
         const user = util.formatUser(databaseUser, true);
 
         if (!databaseUser.data.business_card) {
-          user.business_card = emptyBusinessCard;
+          user.business_card = util.formatBusinessCard({});
         } else {
           user.business_card = util.formatBusinessCard(databaseUser.data.business_card);
         }
@@ -62,15 +62,6 @@ module.exports = function initialize(params) {
         return next(err);
       });
   }
-
-  const emptyBusinessCard =
-    {
-      name: '',
-      title: '',
-      location: '',
-      phone: '',
-      email: ''
-    }
 
   function putMe(req, res, next) {
     if (!req.session || !req.session.id) {
