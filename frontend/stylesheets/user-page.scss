@@ -1,20 +1,20 @@
 .user-page {
   &__section {
     margin-top: #{ $navbar-height + $content-top-margin };
+    display: flex;
   }
   &__first-block {
     box-shadow: 0 2px 2px 1px #CCC;
-    background-color: $light-grey;
   }
   &__user-info-box {
     padding: 50px;
     background-color: $white;
-    min-height: 300px;
   }
   &__edit-or-contact-user {
     text-align:center;
     padding-top: 80px;
     padding-bottom:80px;
+    background-color: $light-grey;
     & button {
       @include button-colors;
       @include button-paddings;
