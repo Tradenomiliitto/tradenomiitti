@@ -10,13 +10,12 @@
 @import '../../node_modules/cropperjs/dist/cropper';
 @import 'svg-styles';
 @import 'navbar';
+@import 'ad-page';
 
 body {
   overflow-x: hidden;
   width: 100vw;
 }
-
-
 
 .consent-needed {
   text-align: center;
@@ -475,100 +474,6 @@ div#not-implemented {
 
 .loader {
   @include loader($white, $pink, 10em);
-}
-
-.ad-page {
-  margin-top: $content-top-margin;
-  $padding: 30px;
-  &__ad {
-    &-container {
-      box-shadow: 0 2px 2px 1px #CCC;
-      background-color: $light-grey-background;
-    }
-    background-color: $white;
-    padding: $padding;
-  }
-  &__leave-answer {
-    margin-top: 0;
-    text-align: center;
-    &-button {
-      @include button-colors;
-      margin-top: 30px;
-      margin-bottom: 30px;
-    }
-    &-text {
-      font-size: 20px;
-      font-weight: bold;
-      margin-top: 70px;
-      padding: 0 30px;
-    }
-    &-hint {
-      display: block;
-    }
-
-    &-box {
-      width: 100%;
-      padding: 15px;
-      margin-top: 30px;
-      font-size: 16px;
-      height: 120px;
-    }
-    &-input-container {
-      padding: $padding;
-      text-align: right;
-    }
-  }
-  &__sending {
-    @include loader($pink, $light-grey-background, 4em);
-  }
-  &__answers {
-    margin-top: 70px;
-    &-separator {
-      width: 1px;
-      height: 50px;
-      background-color: $pink;
-      &-container {
-        display: flex;
-        justify-content: center;
-      }
-    }
-    &-icon {
-      color: $pink;
-      background-color: $white;
-      padding-bottom: 20px;
-      position: absolute;
-      &--left {
-        right: -15px;
-        transform: translateX(-50%);
-      }
-      &--right {
-        left: -15px;
-        transform: translateX(50%);
-      }
-      top: -5px;
-    }
-    &-content {
-      padding-bottom: 15px;
-      &--left {
-        padding-right: 20px;
-      }
-      &--right {
-        padding-left: 20px;
-      }
-    }
-    &-row {
-      margin-top: 30px;
-      &--left {
-        border-right: 2px solid $pink;
-      }
-      &--right {
-        border-left: 2px solid $pink;
-      }
-    }
-  }
-  &__date {
-    font-weight: bold;
-  }
 }
 
 .user-card {
