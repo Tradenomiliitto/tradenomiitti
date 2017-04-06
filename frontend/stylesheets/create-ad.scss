@@ -1,0 +1,59 @@
+.create-ad {
+  $box-padding: 30px;
+  margin-top: 50px;
+  padding: $box-padding;
+  box-shadow: 0 2px 2px 1px #CCC;
+
+  &__inputs {
+    background-color: $light-grey-background;
+    margin-left: -$box-padding;
+    padding-left: $box-padding;
+    margin-top: -$box-padding;
+    padding-top: $box-padding;
+    margin-bottom: -$box-padding;
+    padding-bottom: $box-padding;
+  }
+
+  &__heading {
+    &-input {
+      color: $pink;
+      @include gotham-bold;
+      margin-bottom: 0;
+      & textarea {
+        padding: $input-padding;
+        width: 100%;
+      }
+    }
+    &-length-hint {
+      margin-bottom: 10px;
+    }
+  }
+
+  &__textcontent {
+    margin-top: 10px;
+    padding: $input-padding;
+    width: 100%;
+    min-height: 80px;
+  }
+
+  &__filters-heading {
+    @include gotham-bold;
+  }
+
+  &__submit-button {
+    text-align: right;
+    margin-top: 40px;
+    & button {
+      @include button-colors;
+    }
+  }
+
+  &__fail,
+  &__success {
+    text-align: center;
+    color: $white;
+    & h1 {
+      @include gotham-bold;
+    }
+  }
+}
