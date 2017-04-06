@@ -142,14 +142,14 @@ view model config =
 viewUser : User -> H.Html (ViewMessage msg)
 viewUser user =
   H.a
-    [ A.class "col-xs-12 col-sm-6 col-md-4 card-link"
+    [ A.class "col-xs-12 col-sm-6 col-md-4 card-link list-users__item-container"
     , A.href (Nav.routeToPath (Nav.User user.id))
     , Link.action (Nav.User user.id)
     ]
     [ H.div
-      [ A.class "user-card" ]
+      [ A.class "user-card list-users__item" ]
       [ Common.authorInfoWithLocation user
-      , H.hr [] []
+      , H.hr [ A.class "list-users__item-ruler"] []
       , H.p [] [ H.text (Util.truncateContent user.description 200) ]
       ]
     ]
@@ -157,7 +157,7 @@ viewUser user =
 row : List (H.Html msg) -> H.Html msg
 row users =
   H.div
-    [ A.class "row list-users__user-row" ]
+    [ A.class "row list-users__user-row list-users__row" ]
     users
 
 -- transforms a list to a list of lists of three elements: [1, 2, 3, 4, 5] => [[4, 5], [1, 2, 3]]
