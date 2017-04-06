@@ -84,7 +84,13 @@ view model config =
     usersHtml = List.map viewUser model.users
     rows = List.reverse (List.foldl rowFolder [] usersHtml)
     rowsHtml = List.map row rows
-    select toMsg options =
+    isSelected option prompt =
+      if prompt == chooseDomainPrompt
+      then
+        Just option == model.selectedDomain
+      else
+        Just option == model.selectedPosition
+    select toMsg prompt options =
       H.span
         [ A.class "list-users__select-container" ]
         [ H.select
@@ -93,19 +99,19 @@ view model config =
             (E.targetValue
                |> Json.map
                  (\str ->
-                    if List.member str [ chooseDomainPrompt, choosePositionPrompt]
+                    if str == prompt
                     then Nothing
                     else Just str
                  )
                 |> Json.map (LocalViewMessage << toMsg)
             )
-          ]
-          (List.map
+          ] <|
+          List.map
              (\o ->
                 H.option
-                  [ A.selected (List.member (Just o) [ model.selectedDomain, model.selectedPosition ])]
+                  [ A.selected (isSelected o prompt)]
                   [ H.text o])
-             options)
+             (prompt :: options)
         ]
   in
     H.div
@@ -125,10 +131,10 @@ view model config =
           [ A.class "row list-users__filters" ]
           [ H.div
             [ A.class "col-xs-12 col-sm-6" ]
-            [ select ChangeDomainFilter <| chooseDomainPrompt :: config.domainOptions ]
+            [ select ChangeDomainFilter chooseDomainPrompt config.domainOptions ]
           , H.div
             [ A.class "col-xs-12 col-sm-6" ]
-            [ select ChangePositionFilter <| choosePositionPrompt :: config.positionOptions ]
+            [ select ChangePositionFilter choosePositionPrompt config.positionOptions ]
           ]
         ]
       , H.div
