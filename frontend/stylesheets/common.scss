@@ -175,7 +175,7 @@ $padding-before-footer-mobile: 35px;
 }
 
 /* http://red-team-design.com/making-html-dropdowns-not-suck/ */
-@mixin select {
+@mixin select($desktop-width) {
   padding: .5em;
 	margin: 0;
 	padding-right: 2.5em;
@@ -192,7 +192,7 @@ $padding-before-footer-mobile: 35px;
     position: relative;
 		display: inline-block;
 		vertical-align: middle;
-    width: 80%;
+    width: $desktop-width;
     @media (max-width: $screen-xs-max) {
       width: 100%;
     }

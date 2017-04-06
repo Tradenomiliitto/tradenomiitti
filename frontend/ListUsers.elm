@@ -55,6 +55,13 @@ view model =
     usersHtml = List.map viewUser model.users
     rows = List.reverse (List.foldl rowFolder [] usersHtml)
     rowsHtml = List.map row rows
+    select options =
+      H.span
+        [ A.class "list-users__select-container" ]
+        [ H.select
+          [ A.class "list-users__select" ]
+          (List.map (\o -> H.option [] [ H.text o]) options)
+        ]
   in
     H.div
       []
@@ -68,6 +75,15 @@ view model =
               [ A.class "list-users__header" ]
               [ H.text "Selaa tradenomeja" ]
             ]
+          ]
+        , H.div
+          [ A.class "row" ]
+          [ H.div
+            [ A.class "col-xs-12 col-sm-6" ]
+            [ select ["eka", "toka"]]
+          , H.div
+            [ A.class "col-xs-12 col-sm-6" ]
+            [ select ["eka", "toka"]]
           ]
         ]
       , H.div

@@ -15,6 +15,9 @@
 .list-users {
   &__user-row {
   }
+  &__select {
+    @include select(90%);
+  }
 }
 
 .list-ads {

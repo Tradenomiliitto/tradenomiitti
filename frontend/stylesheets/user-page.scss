@@ -113,7 +113,7 @@
 
   &__location-select,
   &__competence-select {
-    @include select;
+    @include select(80%);
 
     &-label {
       display: block;
