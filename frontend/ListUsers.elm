@@ -11,6 +11,7 @@ import List.Extra as List
 import Models.User exposing (User)
 import Nav
 import QueryString
+import QueryString.Extra as QueryString
 import State.Config as Config
 import State.ListUsers exposing (..)
 import Util exposing (ViewMessage(..), UpdateMessage(..))
@@ -23,6 +24,8 @@ getUsers model =
       QueryString.empty
         |> QueryString.add "limit" (toString limit)
         |> QueryString.add "offset" (toString model.cursor)
+        |> QueryString.optional "domain" model.selectedDomain
+        |> QueryString.optional "position" model.selectedPosition
         |> QueryString.render
 
     url = "/api/profiilit/" ++ queryString
@@ -39,6 +42,13 @@ type Msg
 initTasks : Model -> Cmd (UpdateMessage Msg)
 initTasks = getUsers
 
+
+reInitItems : Model -> (Model, Cmd (UpdateMessage Msg))
+reInitItems model =
+  let
+    newModel = { model | users = [], cursor = 0 }
+  in
+    newModel ! [ getUsers newModel ]
 
 update : Msg -> Model -> (Model, Cmd (UpdateMessage Msg))
 update msg model =
@@ -58,10 +68,10 @@ update msg model =
         model ! [ getUsers model ]
 
     ChangeDomainFilter value ->
-      { model | selectedDomain = value } ! []
+      reInitItems { model | selectedDomain = value }
 
     ChangePositionFilter value ->
-      { model | selectedPosition = value } ! []
+      reInitItems { model | selectedPosition = value }
 
 
 
