@@ -17,6 +17,9 @@
   }
   &__select {
     @include select(90%);
+    &-container {
+      margin-bottom: 25px;
+    }
   }
 }
 
