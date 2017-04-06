@@ -9,6 +9,7 @@ import Link
 import List.Extra as List
 import Models.Ad
 import Nav
+import QueryString
 import State.ListAds exposing (..)
 import SvgIcons
 import Util exposing (ViewMessage(..), UpdateMessage(..))
@@ -41,10 +42,13 @@ initTasks = getAds
 getAds : Model -> Cmd (UpdateMessage Msg)
 getAds model =
   let
-    url = "/api/ilmoitukset/?limit="
-      ++ toString limit
-      ++ "&offset="
-      ++ toString model.cursor
+    queryString =
+      QueryString.empty
+        |> QueryString.add "limit" (toString limit)
+        |> QueryString.add "offset" (toString model.cursor)
+        |> QueryString.render
+
+    url = "/api/ilmoitukset/" ++ queryString
     request = Http.get url (Json.list Models.Ad.adDecoder)
   in
     Util.errorHandlingSend (UpdateAds model.cursor) request

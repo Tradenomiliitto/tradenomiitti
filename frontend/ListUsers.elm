@@ -9,6 +9,7 @@ import Link
 import List.Extra as List
 import Models.User exposing (User)
 import Nav
+import QueryString
 import State.Config as Config
 import State.ListUsers exposing (..)
 import Util exposing (ViewMessage(..), UpdateMessage(..))
@@ -17,10 +18,13 @@ import Util exposing (ViewMessage(..), UpdateMessage(..))
 getUsers : Model -> Cmd (UpdateMessage Msg)
 getUsers model =
   let
-    url = "/api/profiilit/?limit="
-      ++ toString limit
-      ++ "&offset="
-      ++ toString model.cursor
+    queryString =
+      QueryString.empty
+        |> QueryString.add "limit" (toString limit)
+        |> QueryString.add "offset" (toString model.cursor)
+        |> QueryString.render
+
+    url = "/api/profiilit/" ++ queryString
   in
     Http.get url (Json.list Models.User.userDecoder)
       |> Util.errorHandlingSend UpdateUsers
