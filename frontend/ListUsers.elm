@@ -100,7 +100,12 @@ view model config =
                 |> Json.map (LocalViewMessage << toMsg)
             )
           ]
-          (List.map (\o -> H.option [] [ H.text o]) options)
+          (List.map
+             (\o ->
+                H.option
+                  [ A.selected (List.member (Just o) [ model.selectedDomain, model.selectedPosition ])]
+                  [ H.text o])
+             options)
         ]
   in
     H.div
