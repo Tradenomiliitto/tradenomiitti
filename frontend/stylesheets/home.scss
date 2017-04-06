@@ -44,8 +44,8 @@
       color: $medium-grey;
       position: absolute;
       left: 50%;
-      transform: translateX(-50%);
-      top: 96vh;
+      transform: translateX(-50%) translateY(-100%);
+      top: 100vh;
     }
   }
 
