@@ -1,4 +1,5 @@
 import { timer } from 'd3-timer';
+import getStyleValues from './style-values';
 
 // particle animation used under GPL license from https://bl.ocks.org/mbostock/280d83080497c8c13152 and http://mustafasaifee.com/
 
@@ -23,13 +24,9 @@ export default function initAnimation(port) {
     function init(canvas) {
       var context = canvas.getContext("2d");
 
-      const styleValueInPx = getStyleRuleValue('height', '#navbar-height-to-js');
-      const offset = isSplashScreen ? 0 : Number(styleValueInPx.replace(/[^\d]+/, ''))
+      const { navbarHeight, pink, green, white } = getStyleValues();
 
-      const pink = getStyleRuleValue('color', '#pink-to-js');
-      const green = getStyleRuleValue('color', '#green-to-js');
-      const white = getStyleRuleValue('color', '#white-to-js');
-
+      const offset = isSplashScreen ? 0 : navbarHeight
       const color = isSplashScreen ? [ white, white ] : [pink, green];
       const stk = color;
 
@@ -137,16 +134,3 @@ export default function initAnimation(port) {
   })
 }
 
-function getStyleRuleValue(style, selector) {
-  for (var i = 0; i < document.styleSheets.length; i++) {
-    try {
-      var mysheet = document.styleSheets[i];
-      var myrules = mysheet.cssRules ? mysheet.cssRules : mysheet.rules;
-      for (var j = 0; j < myrules.length; j++) {
-        if (myrules[j].selectorText && myrules[j].selectorText.toLowerCase() === selector) {
-          return myrules[j].style[style];
-        }
-      }
-    } catch (e) {}
-  }
-}

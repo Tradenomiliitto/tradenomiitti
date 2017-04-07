@@ -1,7 +1,8 @@
-module Home exposing (..)
+port module Home exposing (..)
 
 import Html as H
 import Html.Attributes as A
+import Html.Events as E
 import Link
 import ListAds
 import ListUsers
@@ -14,7 +15,10 @@ type Msg
   = ListAdsMessage ListAds.Msg
   | ListUsersMessage ListUsers.Msg
   | ClickCreateProfile
+  | ScrollBelowFold
 
+
+port scrollHomeBelowFold : Bool -> Cmd msg -- param is ignored
 
 update : Msg -> Model -> (Model, Cmd (UpdateMessage Msg))
 update msg model =
@@ -32,6 +36,9 @@ update msg model =
 
     ClickCreateProfile ->
       { model | createProfileClicked = True } ! []
+
+    ScrollBelowFold ->
+      model ! [ scrollHomeBelowFold True ]
 
 initTasks : Model -> Cmd (UpdateMessage Msg)
 initTasks model =
@@ -93,6 +100,12 @@ introBoxes userMaybe =
           [ H.text "Tradenomiitti on tradenomien oma kohtaamispaikka, jossa jäsenet löytävät toisensa yhteisten aiheiden ympäriltä ja hyötyvät toistensa kokemuksista." ]
       ]
     ] ++ createProfile
+      ++ [ H.i
+        [ A.class "fa fa-angle-double-down fa-3x home__introbox-check-more"
+        , E.onClick (LocalViewMessage ScrollBelowFold)
+        ]
+        []
+      ]
 
 -- LIST LATEST ADS --
 
