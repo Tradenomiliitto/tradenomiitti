@@ -12,6 +12,9 @@
 
   &__row {
     display: flex;
+    @media (max-width: $screen-xs-max) {
+      display: block;
+    }
   }
 
   &__item {
