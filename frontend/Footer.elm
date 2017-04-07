@@ -27,7 +27,7 @@ view routeToMsg =
           , H.p [] [ H.a [ A.href "http://liity.tral.fi/#liity" ] [ H.text "Liity jäseneksi" ]]
           ]
         , H.div
-          [ A.class "col-xs-12 col-sm-4 footer__social-icons" ]
+          [ A.class "col-xs-12 col-sm-6 footer__social-icons" ]
           [ H.a [ A.href "https://www.facebook.com/tradenomiliitto" ] [ H.i [ A.class "fa fa-facebook"] [] ]
           , H.a [ A.href "https://twitter.com/Tradenomiliitto" ] [ H.i [ A.class "fa fa-twitter"] [] ]
           , H.a [ A.href "https://www.instagram.com/tradenomiliitto/" ] [ H.i [ A.class "fa fa-instagram"] [] ]
