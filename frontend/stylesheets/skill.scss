@@ -1,0 +1,78 @@
+.skill {
+  &__heading {
+    &:after {
+      content: ':';
+    }
+    font-weight: bold;
+    padding-right: 1em;
+  }
+
+  &__level-text {
+    color: $pink;
+    font-weight: bold;
+  }
+
+  &__input {
+    display: none;
+  }
+
+  &__circle {
+    @mixin circle($diameter) {
+      width: $diameter;
+      height: $diameter;
+      border-radius: #{$diameter / 2};
+      position: relative;
+      top: -9px; // By trial and error
+
+    }
+    display: inline-block;
+    vertical-align: middle;
+
+    &--clickable {
+      cursor: pointer;
+    }
+
+    &-container {
+      width: 50px;
+      display: inline-block;
+      height: 1px;
+      margin: 20px 0;
+      &:last-child {
+        width: 0;
+      }
+
+      &--filled {
+        background-color: $pink;
+      }
+      &--unfilled {
+        background-color: #CCC;
+      }
+      &--active {
+        background-color: #CCC;
+      }
+    }
+
+    &--filled {
+      background-color: $pink;
+      @include circle(16px);
+    }
+    &--unfilled {
+      background-color: #CCC;
+      @include circle(16px);
+    }
+    &--active {
+      background-color: $dark-grey;
+      @include circle(22px);
+    }
+  }
+
+  &__delete {
+    position: relative;
+    top: 1em;
+    text-align: center;
+    &-icon {
+      color: $pink;
+      cursor: pointer;
+    }
+  }
+}

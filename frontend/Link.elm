@@ -28,7 +28,7 @@ action : Route -> H.Attribute (ViewMessage msg)
 action route =
   E.onWithOptions
     "click"
-    { stopPropagation = False
+    { stopPropagation = True -- Don't navigate twice in case of stacked links
     , preventDefault = True
     }
     (Json.succeed <| Link route)
