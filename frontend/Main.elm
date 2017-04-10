@@ -2,6 +2,7 @@ port module Main exposing (..)
 
 import Ad
 import Common
+import Config
 import CreateAd
 import Footer
 import Home
@@ -57,8 +58,9 @@ init location =
 
     -- after the profile is loaded, an urlchange event is triggered
     profileCmd = unpackUpdateMessage ProfileMessage Profile.getMe
+    configCmd = unpackUpdateMessage ConfigMessage Config.initTasks
   in
-    model ! [ profileCmd ]
+    model ! [ profileCmd, configCmd ]
 
 
 -- UPDATE
@@ -76,6 +78,7 @@ type Msg
   | AdMessage Ad.Msg
   | HomeMessage Home.Msg
   | SettingsMessage Settings.Msg
+  | ConfigMessage Config.Msg
   | Error Http.Error
   | SendErrorResponse (Result Http.Error String)
   | NoOp
@@ -266,6 +269,12 @@ update msg model =
         (settingsModel, cmd) = Settings.update msg model.settings
       in
         { model | settings = settingsModel } ! [ unpackUpdateMessage SettingsMessage cmd ]
+
+    ConfigMessage msg ->
+      let
+        (configModel, cmd) = Config.update msg model.config
+      in
+        { model | config = configModel } ! [ cmd ]
 
     Error err ->
       let
@@ -528,7 +537,7 @@ viewPage model =
     content =
       case model.route of
         User userId ->
-          unpackViewMessage UserMessage <| User.view model.user model.profile.user
+          unpackViewMessage UserMessage <| User.view model.user model.profile.user model.config
         Profile ->
           unpackViewMessage ProfileMessage <| Profile.View.view model.profile model
         LoginNeeded route ->
@@ -542,7 +551,7 @@ viewPage model =
         Home ->
           unpackViewMessage HomeMessage <| Home.view model.home model.profile.user
         ListUsers ->
-          unpackViewMessage ListUsersMessage <| ListUsers.view model.listUsers
+          unpackViewMessage ListUsersMessage <| ListUsers.view model.listUsers model.config
         Terms ->
           PreformattedText.view Static.termsHeading Static.termsTexts
         RegisterDescription ->

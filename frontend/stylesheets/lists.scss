@@ -15,6 +15,15 @@
 .list-users {
   &__user-row {
   }
+  &__select {
+    @include select(90%);
+    &-container {
+      margin-bottom: 25px;
+    }
+  }
+  &__filters {
+    margin-bottom: 25px;
+  }
 }
 
 .list-ads {

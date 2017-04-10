@@ -10,6 +10,7 @@ import Models.Ad exposing (Ad)
 import Models.User exposing (User)
 import Profile.Main as Profile
 import Profile.View
+import State.Config as Config
 import State.Profile
 import State.User exposing (..)
 import Util exposing (ViewMessage, UpdateMessage(..))
@@ -89,15 +90,15 @@ addContact user str =
 
 -- VIEW
 
-view : Model -> Maybe User -> H.Html (ViewMessage Msg)
-view model loggedInUser =
+view : Model -> Maybe User -> Config.Model -> H.Html (ViewMessage Msg)
+view model loggedInUser config =
   let
     profileInit = State.Profile.init
     profile = { profileInit | ads = model.ads }
     views = model.user
       |> Maybe.map
         (\u ->
-           List.map (Util.localViewMap ProfileMessage) <| Profile.View.viewUser profile False (contactUser model u loggedInUser) u)
+           List.map (Util.localViewMap ProfileMessage) <| Profile.View.viewUser profile False (contactUser model u loggedInUser) config u)
       |> Maybe.withDefault []
 
   in

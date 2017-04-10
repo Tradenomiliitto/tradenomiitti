@@ -6,11 +6,12 @@ import Html.Attributes as A
 import Http
 import Json.Decode as Json
 import Link
+import List.Extra as List
 import Models.User exposing (User)
 import Nav
+import State.Config as Config
 import State.ListUsers exposing (..)
 import Util exposing (ViewMessage(..), UpdateMessage(..))
-import List.Extra as List
 
 
 getUsers : Model -> Cmd (UpdateMessage Msg)
@@ -49,12 +50,19 @@ update msg model =
       else
         model ! [ getUsers model ]
 
-view : Model -> H.Html (ViewMessage msg)
-view model =
+view : Model -> Config.Model -> H.Html (ViewMessage msg)
+view model config =
   let
     usersHtml = List.map viewUser model.users
     rows = List.reverse (List.foldl rowFolder [] usersHtml)
     rowsHtml = List.map row rows
+    select options =
+      H.span
+        [ A.class "list-users__select-container" ]
+        [ H.select
+          [ A.class "list-users__select" ]
+          (List.map (\o -> H.option [] [ H.text o]) options)
+        ]
   in
     H.div
       []
@@ -68,6 +76,15 @@ view model =
               [ A.class "list-users__header" ]
               [ H.text "Selaa tradenomeja" ]
             ]
+          ]
+        , H.div
+          [ A.class "row list-users__filters" ]
+          [ H.div
+            [ A.class "col-xs-12 col-sm-6" ]
+            [ select <| "Valitse toimiala" :: config.domainOptions ]
+          , H.div
+            [ A.class "col-xs-12 col-sm-6" ]
+            [ select <| "Valitse tehtäväluokka" :: config.positionOptions ]
           ]
         ]
       , H.div

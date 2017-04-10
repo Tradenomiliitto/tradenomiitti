@@ -7,8 +7,6 @@ type alias Model =
   { user : Maybe User
   , ads : List Models.Ad.Ad
   , editing : Bool
-  , positionOptions : List String
-  , domainOptions : List String
   , mouseOverUserImage : Bool
   }
 
@@ -17,7 +15,5 @@ init =
   { user = Nothing
   , ads = []
   , editing = False
-  , positionOptions = []
-  , domainOptions = []
   , mouseOverUserImage = False
   }
