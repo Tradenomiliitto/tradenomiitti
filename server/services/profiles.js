@@ -2,7 +2,7 @@ module.exports = function initialize(params) {
   const knex = params.knex;
   const util = params.util;
 
-  function listProfiles(loggedIn, limit, offset, domain, position) {
+  function listProfiles(loggedIn, limit, offset, domain, position, location) {
     let query = knex('users').where({});
     if (limit !== undefined) query = query.limit(limit);
     if (offset !== undefined) query = query.offset(offset);
@@ -21,6 +21,9 @@ module.exports = function initialize(params) {
           .whereRaw('users.id = skills.user_id and heading = ? and type = ?',
                     [position, 'position'])
       });
+    }
+    if (location !== undefined) {
+      query = query.whereRaw("data->>'location' = ?", [ location ])
     }
     return query
       .then(resp => {

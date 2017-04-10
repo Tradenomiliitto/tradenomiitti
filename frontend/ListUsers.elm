@@ -26,6 +26,7 @@ getUsers model =
         |> QueryString.add "offset" (toString model.cursor)
         |> QueryString.optional "domain" model.selectedDomain
         |> QueryString.optional "position" model.selectedPosition
+        |> QueryString.optional "location" model.selectedLocation
         |> QueryString.render
 
     url = "/api/profiilit/" ++ queryString
@@ -38,6 +39,7 @@ type Msg
   | FooterAppeared
   | ChangeDomainFilter (Maybe String)
   | ChangePositionFilter (Maybe String)
+  | ChangeLocationFilter (Maybe String)
 
 initTasks : Model -> Cmd (UpdateMessage Msg)
 initTasks = getUsers
@@ -73,24 +75,34 @@ update msg model =
     ChangePositionFilter value ->
       reInitItems { model | selectedPosition = value }
 
+    ChangeLocationFilter value ->
+      reInitItems { model | selectedLocation = value }
 
+
+type Filter = Domain | Position | Location
+prompt : Filter -> String
+prompt filter =
+  case filter of
+    Domain -> "Valitse toimiala"
+    Position -> "Valitse tehtäväluokka"
+    Location -> "Valitse maakunta"
 
 view : Model -> Config.Model -> H.Html (ViewMessage Msg)
 view model config =
   let
-    chooseDomainPrompt = "Valitse toimiala"
-    choosePositionPrompt = "Valitse tehtäväluokka"
-
     usersHtml = List.map viewUser model.users
     rows = List.reverse (List.foldl rowFolder [] usersHtml)
     rowsHtml = List.map row rows
-    isSelected option prompt =
-      if prompt == chooseDomainPrompt
-      then
-        Just option == model.selectedDomain
-      else
-        Just option == model.selectedPosition
-    select toMsg prompt options =
+    isSelected option filter =
+      case filter of
+        Domain ->
+          Just option == model.selectedDomain
+        Position ->
+          Just option == model.selectedPosition
+        Location ->
+          Just option == model.selectedLocation
+
+    select toMsg filter options =
       H.span
         [ A.class "list-users__select-container" ]
         [ H.select
@@ -99,7 +111,7 @@ view model config =
             (E.targetValue
                |> Json.map
                  (\str ->
-                    if str == prompt
+                    if str == prompt filter
                     then Nothing
                     else Just str
                  )
@@ -109,9 +121,9 @@ view model config =
           List.map
              (\o ->
                 H.option
-                  [ A.selected (isSelected o prompt)]
+                  [ A.selected (isSelected o filter)]
                   [ H.text o])
-             (prompt :: options)
+             (prompt filter :: options)
         ]
   in
     H.div
@@ -130,11 +142,14 @@ view model config =
         , H.div
           [ A.class "row list-users__filters" ]
           [ H.div
-            [ A.class "col-xs-12 col-sm-6" ]
-            [ select ChangeDomainFilter chooseDomainPrompt config.domainOptions ]
+            [ A.class "col-xs-12 col-sm-4" ]
+            [ select ChangeDomainFilter Domain config.domainOptions ]
           , H.div
-            [ A.class "col-xs-12 col-sm-6" ]
-            [ select ChangePositionFilter choosePositionPrompt config.positionOptions ]
+            [ A.class "col-xs-12 col-sm-4" ]
+            [ select ChangePositionFilter Position config.positionOptions ]
+          , H.div
+            [ A.class "col-xs-12 col-sm-4" ]
+            [ select ChangeLocationFilter Location Config.finnishRegions ]
           ]
         ]
       , H.div
@@ -148,7 +163,7 @@ view model config =
 viewUser : User -> H.Html (ViewMessage msg)
 viewUser user =
   H.a
-    [ A.class "col-xs-12 col-sm-6 col-md-4 card-link list-users__item-container"
+    [ A.class "col-xs-12 col-sm-4 card-link list-users__item-container"
     , A.href (Nav.routeToPath (Nav.User user.id))
     , Link.action (Nav.User user.id)
     ]

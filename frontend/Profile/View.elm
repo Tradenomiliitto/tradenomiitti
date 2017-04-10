@@ -552,7 +552,7 @@ locationSelect user =
       [ E.on "change" (Json.map ChangeLocation E.targetValue)
       , A.class "user-page__location-select"
       ]
-      (List.map (optionPreselected user.location) finnishRegions)
+      (List.map (optionPreselected user.location) ("" :: Config.finnishRegions))
     ]
 
 select : List String -> (String -> msg) -> String -> String -> H.Html msg
@@ -609,26 +609,3 @@ membershipDataBoxEditing user =
         [ H.h3 [ A.class "user-page__membership-info-heading" ] [ H.text "Jäsentiedot puuttuvat" ]
         ]
 
-finnishRegions : List String
-finnishRegions =
-  [ ""
-  , "Lappi"
-  , "Pohjois-Pohjanmaa"
-  , "Kainuu"
-  , "Pohjois-Karjala"
-  , "Pohjois-Savo"
-  , "Etelä-Savo"
-  , "Etelä-Karjala"
-  , "Keski-Suomi"
-  , "Etelä-Pohjanmaa"
-  , "Pohjanmaa"
-  , "Keski-Pohjanmaa"
-  , "Pirkanmaa"
-  , "Satakunta"
-  , "Päijät-Häme"
-  , "Kanta-Häme"
-  , "Kymenlaakso"
-  , "Uusimaa"
-  , "Varsinais-Suomi"
-  , "Ahvenanmaa"
-  ]
