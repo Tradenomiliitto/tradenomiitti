@@ -1,6 +1,6 @@
 module ListUsers exposing (..)
 
-import Common
+import Common exposing (Filter(..))
 import Html as H
 import Html.Attributes as A
 import Html.Events as E
@@ -79,13 +79,6 @@ update msg model =
       reInitItems { model | selectedLocation = value }
 
 
-type Filter = Domain | Position | Location
-prompt : Filter -> String
-prompt filter =
-  case filter of
-    Domain -> "Valitse toimiala"
-    Position -> "Valitse tehtäväluokka"
-    Location -> "Valitse maakunta"
 
 view : Model -> Config.Model -> H.Html (ViewMessage Msg)
 view model config =
@@ -93,38 +86,7 @@ view model config =
     usersHtml = List.map viewUser model.users
     rows = List.reverse (List.foldl rowFolder [] usersHtml)
     rowsHtml = List.map row rows
-    isSelected option filter =
-      case filter of
-        Domain ->
-          Just option == model.selectedDomain
-        Position ->
-          Just option == model.selectedPosition
-        Location ->
-          Just option == model.selectedLocation
 
-    select toMsg filter options =
-      H.span
-        [ A.class "list-users__select-container" ]
-        [ H.select
-          [ A.class "list-users__select"
-          , E.on "change"
-            (E.targetValue
-               |> Json.map
-                 (\str ->
-                    if str == prompt filter
-                    then Nothing
-                    else Just str
-                 )
-                |> Json.map (LocalViewMessage << toMsg)
-            )
-          ] <|
-          List.map
-             (\o ->
-                H.option
-                  [ A.selected (isSelected o filter)]
-                  [ H.text o])
-             (prompt filter :: options)
-        ]
   in
     H.div
       []
@@ -143,13 +105,13 @@ view model config =
           [ A.class "row list-users__filters" ]
           [ H.div
             [ A.class "col-xs-12 col-sm-4" ]
-            [ select ChangeDomainFilter Domain config.domainOptions ]
+            [ Common.select "list-users" (LocalViewMessage << ChangeDomainFilter) Domain config.domainOptions model ]
           , H.div
             [ A.class "col-xs-12 col-sm-4" ]
-            [ select ChangePositionFilter Position config.positionOptions ]
+            [ Common.select "list-users" (LocalViewMessage << ChangePositionFilter) Position config.positionOptions model ]
           , H.div
             [ A.class "col-xs-12 col-sm-4" ]
-            [ select ChangeLocationFilter Location Config.finnishRegions ]
+            [ Common.select "list-users" (LocalViewMessage << ChangeLocationFilter) Location Config.finnishRegions model ]
           ]
         ]
       , H.div

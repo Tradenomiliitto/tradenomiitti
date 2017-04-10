@@ -1,6 +1,6 @@
 module CreateAd exposing (..)
 
-import Common
+import Common exposing (Filter(..))
 import Html as H
 import Html.Attributes as A
 import Html.Events as E
@@ -8,6 +8,7 @@ import Http
 import Json.Decode as Json
 import Json.Encode as JS
 import Nav
+import State.Config as Config
 import State.CreateAd exposing (..)
 import State.Util exposing (SendingStatus(..))
 import Util exposing (UpdateMessage(..))
@@ -16,6 +17,9 @@ type Msg
   = NoOp
   | ChangeHeading String
   | ChangeContent String
+  | ChangeDomain (Maybe String)
+  | ChangePosition (Maybe String)
+  | ChangeLocation (Maybe String)
   | Send
   | SendResponse (Result Http.Error Int)
 
@@ -39,6 +43,12 @@ update msg model =
       { model | heading = String.filter ((/=) '\n') str } ! []
     ChangeContent str ->
       { model | content = str } ! []
+    ChangeDomain value ->
+      { model | selectedDomain = value } ! []
+    ChangePosition value ->
+      { model | selectedPosition = value } ! []
+    ChangeLocation value ->
+      { model | selectedLocation = value } ! []
     Send ->
       { model | sending = Sending } ! [ Cmd.map LocalUpdateMessage <| sendAd model ]
     SendResponse (Err _) ->
@@ -55,8 +65,8 @@ minHeading = 4
 maxHeading : Int
 maxHeading = 90
 
-view : Model -> H.Html Msg
-view model =
+view : Config.Model -> Model -> H.Html Msg
+view config model =
   case model.sending of
     NotSending ->
       H.div
@@ -90,7 +100,10 @@ view model =
             [ H.h3
                 [ A.class "create-ad__filters-heading"]
                 [ H.text "Kenen toivot vastaavan?" ]
-            , H.p [] [ H.text "Vastaajatarjokkaiden haku on tulossa pian" ]
+            , H.p [] [ H.text "Valitsemalla toimialan tai tehtävän varmistat, että kysymyksesi löytää vastaajansa. Valittu kohderyhmä saa myös ilmoituksesi sähköpostina." ]
+            , Common.select "create-ad" ChangeDomain Domain config.domainOptions model
+            , Common.select "create-ad" ChangePosition Position config.positionOptions model
+            , Common.select "create-ad" ChangeLocation Location Config.finnishRegions model
             , H.p
               [ A.class "create-ad__submit-button" ]
               [ H.button

@@ -543,7 +543,7 @@ viewPage model =
         LoginNeeded route ->
           LoginNeeded.view <| ssoUrl model.rootUrl route
         CreateAd ->
-          H.map CreateAdMessage <| CreateAd.view model.createAd
+          H.map CreateAdMessage <| CreateAd.view model.config model.createAd
         ListAds ->
           unpackViewMessage ListAdsMessage <| ListAds.view model.listAds
         ShowAd adId ->

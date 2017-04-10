@@ -2,6 +2,7 @@
   $box-padding: 30px;
   margin-top: 50px;
   padding: $box-padding;
+  display: flex;
   box-shadow: 0 2px 2px 1px #CCC;
 
   &__inputs {
@@ -38,6 +39,13 @@
 
   &__filters-heading {
     @include gotham-bold;
+  }
+
+  &__select {
+    @include select(100%);
+    &-container {
+      margin-bottom: 25px;
+    }
   }
 
   &__submit-button {
