@@ -3,6 +3,7 @@ module ListUsers exposing (..)
 import Common
 import Html as H
 import Html.Attributes as A
+import Html.Events as E
 import Http
 import Json.Decode as Json
 import Link
@@ -10,6 +11,7 @@ import List.Extra as List
 import Models.User exposing (User)
 import Nav
 import QueryString
+import QueryString.Extra as QueryString
 import State.Config as Config
 import State.ListUsers exposing (..)
 import Util exposing (ViewMessage(..), UpdateMessage(..))
@@ -22,6 +24,8 @@ getUsers model =
       QueryString.empty
         |> QueryString.add "limit" (toString limit)
         |> QueryString.add "offset" (toString model.cursor)
+        |> QueryString.optional "domain" model.selectedDomain
+        |> QueryString.optional "position" model.selectedPosition
         |> QueryString.render
 
     url = "/api/profiilit/" ++ queryString
@@ -32,10 +36,19 @@ getUsers model =
 type Msg
   = UpdateUsers (List User)
   | FooterAppeared
+  | ChangeDomainFilter (Maybe String)
+  | ChangePositionFilter (Maybe String)
 
 initTasks : Model -> Cmd (UpdateMessage Msg)
 initTasks = getUsers
 
+
+reInitItems : Model -> (Model, Cmd (UpdateMessage Msg))
+reInitItems model =
+  let
+    newModel = { model | users = [], cursor = 0 }
+  in
+    newModel ! [ getUsers newModel ]
 
 update : Msg -> Model -> (Model, Cmd (UpdateMessage Msg))
 update msg model =
@@ -54,18 +67,51 @@ update msg model =
       else
         model ! [ getUsers model ]
 
-view : Model -> Config.Model -> H.Html (ViewMessage msg)
+    ChangeDomainFilter value ->
+      reInitItems { model | selectedDomain = value }
+
+    ChangePositionFilter value ->
+      reInitItems { model | selectedPosition = value }
+
+
+
+view : Model -> Config.Model -> H.Html (ViewMessage Msg)
 view model config =
   let
+    chooseDomainPrompt = "Valitse toimiala"
+    choosePositionPrompt = "Valitse tehtäväluokka"
+
     usersHtml = List.map viewUser model.users
     rows = List.reverse (List.foldl rowFolder [] usersHtml)
     rowsHtml = List.map row rows
-    select options =
+    isSelected option prompt =
+      if prompt == chooseDomainPrompt
+      then
+        Just option == model.selectedDomain
+      else
+        Just option == model.selectedPosition
+    select toMsg prompt options =
       H.span
         [ A.class "list-users__select-container" ]
         [ H.select
-          [ A.class "list-users__select" ]
-          (List.map (\o -> H.option [] [ H.text o]) options)
+          [ A.class "list-users__select"
+          , E.on "change"
+            (E.targetValue
+               |> Json.map
+                 (\str ->
+                    if str == prompt
+                    then Nothing
+                    else Just str
+                 )
+                |> Json.map (LocalViewMessage << toMsg)
+            )
+          ] <|
+          List.map
+             (\o ->
+                H.option
+                  [ A.selected (isSelected o prompt)]
+                  [ H.text o])
+             (prompt :: options)
         ]
   in
     H.div
@@ -85,10 +131,10 @@ view model config =
           [ A.class "row list-users__filters" ]
           [ H.div
             [ A.class "col-xs-12 col-sm-6" ]
-            [ select <| "Valitse toimiala" :: config.domainOptions ]
+            [ select ChangeDomainFilter chooseDomainPrompt config.domainOptions ]
           , H.div
             [ A.class "col-xs-12 col-sm-6" ]
-            [ select <| "Valitse tehtäväluokka" :: config.positionOptions ]
+            [ select ChangePositionFilter choosePositionPrompt config.positionOptions ]
           ]
         ]
       , H.div

@@ -5,6 +5,8 @@ import Models.User exposing (User)
 type alias Model =
   { users : List User
   , cursor : Int
+  , selectedDomain : Maybe String
+  , selectedPosition : Maybe String
   }
 
 limit : Int
@@ -14,4 +16,6 @@ init : Model
 init =
   { users = []
   , cursor = 0
+  , selectedDomain = Nothing
+  , selectedPosition = Nothing
   }

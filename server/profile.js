@@ -25,15 +25,16 @@ module.exports = function initialize(params) {
           sebacon.getUserEmail(user.remote_id),
           sebacon.getUserPhoneNumber(user.remote_id),
           sebacon.getUserGeoArea(user.remote_id),
+          service.profileSkills(user.id),
           user
         ])
       })
-      .then(([ firstname, nickname, lastname, { positions, domains }, email, phone, geoArea, databaseUser ]) => {
+      .then(([ firstname, nickname, lastname, { positions, domains }, email, phone, geoArea, skills, databaseUser ]) => {
 
         const user = util.formatUser(databaseUser, true);
 
         if (!databaseUser.data.business_card) {
-          user.business_card = emptyBusinessCard;
+          user.business_card = util.formatBusinessCard({});
         } else {
           user.business_card = util.formatBusinessCard(databaseUser.data.business_card);
         }
@@ -51,6 +52,8 @@ module.exports = function initialize(params) {
         if (databaseUser.data.picture_editing)
           user.picture_editing = databaseUser.data.picture_editing;
 
+        patchSkillsToUser(user, skills);
+
         return res.json(user);
       })
       .catch((err) => {
@@ -63,15 +66,6 @@ module.exports = function initialize(params) {
       });
   }
 
-  const emptyBusinessCard =
-    {
-      name: '',
-      title: '',
-      location: '',
-      phone: '',
-      email: ''
-    }
-
   function putMe(req, res, next) {
     if (!req.session || !req.session.id) {
       return res.sendStatus(403);
@@ -79,9 +73,39 @@ module.exports = function initialize(params) {
 
     return util.userForSession(req)
       .then(user => {
-        const newData = Object.assign({}, user.data, req.body);
+        const domains = req.body.domains;
+        const positions = req.body.positions;
 
-        return knex('users').where({ id: user.id }).update('data', newData);
+        const newData = Object.assign({}, user.data, req.body);
+        // Don't save domains and positions to data
+        delete newData.domains;
+        delete newData.positions;
+
+        return knex.transaction(trx => {
+          return trx('users')
+            .where({ id: user.id })
+            .update('data', newData)
+            .then(() => trx('skills').where({ user_id: user.id }).del())
+            .then(() => {
+              const domainPromises = domains.map(domain => {
+                return trx('skills').insert({
+                  user_id: user.id,
+                  heading: domain.heading,
+                  level: domain.skill_level,
+                  type: 'domain'
+                })
+              });
+              const positionPromises = positions.map(position => {
+                return trx('skills').insert({
+                  user_id: user.id,
+                  heading: position.heading,
+                  level: position.skill_level,
+                  type: 'position'
+                });
+              });
+              return Promise.all(domainPromises.concat(positionPromises));
+            });
+        })
       }).then(resp => {
         res.sendStatus(200);
       }).catch(next)
@@ -177,7 +201,7 @@ module.exports = function initialize(params) {
 
   function listProfiles(req, res, next) {
     util.loggedIn(req)
-      .then(loggedIn => service.listProfiles(loggedIn, req.query.limit, req.query.offset))
+      .then(loggedIn => service.listProfiles(loggedIn, req.query.limit, req.query.offset, req.query.domain, req.query.position))
       .then(users => res.json(users))
       .catch(next)
   }
@@ -204,6 +228,12 @@ module.exports = function initialize(params) {
         }
 
         return util.formatUser(user, loggedIn);
+      }).then(user => {
+        return service.profileSkills(user.id).then(skills => {
+          patchSkillsToUser(user, skills);
+
+          return user
+        });
       }).then(user => res.json(user))
       .catch(err => {
         next({ status: 404, msg: err})
@@ -261,4 +291,14 @@ module.exports = function initialize(params) {
     getProfile,
     addContact
   };
+}
+
+function patchSkillsToUser(user, skills) {
+  user.domains = skills
+    .filter(s => s.type === 'domain')
+    .map(s => ({ heading: s.heading, skill_level: s.level }));
+
+  user.positions = skills
+    .filter(s => s.type === 'position')
+    .map(s => ({ heading: s.heading, skill_level: s.level }));
 }
