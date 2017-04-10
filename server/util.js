@@ -48,25 +48,33 @@ module.exports = function initialize(params) {
     return formatted;
   }
 
-  function formatAd(ad, loggedIn){
+  function formatAd(databaseAd, loggedIn){
     return Promise.all([
-      knex('answers').where({ad_id: ad.id})
-        .then(answers => Promise.all(answers.map(answer => formatAnswer(answer, loggedIn)))),
-      knex('users').where({id: ad.user_id}).then(rows => rows[0])
+      knex('answers').where({ad_id: databaseAd.id})
+        .then(answers => Promise.all(answers.map(databaseAnswer => formatAnswer(databaseAnswer, loggedIn)))),
+      knex('users').where({id: databaseAd.user_id}).then(rows => rows[0])
     ]).then(function ([answers, askingUser]) {
+      const ad = {};
+      ad.id = databaseAd.id;
+      ad.heading = databaseAd.data.heading || '';
+      ad.content = databaseAd.data.content || '';
       ad.created_by = formatUser(askingUser, loggedIn);
+      ad.created_at = databaseAd.created_at;
       ad.answers = loggedIn ? answers : answers.length;
       return ad;
     })
   }
 
 
-  function formatAnswer(answer, loggedIn) {
-    return knex('users').where({ id: answer.user_id })
+  function formatAnswer(databaseAnswer, loggedIn) {
+    return knex('users').where({ id: databaseAnswer.user_id })
       .then(rows => rows[0])
       .then(function(user) {
+        const answer = {};
         answer.created_by = formatUser(user, loggedIn);
-        answer.data.content = answer.data.content || '';
+        answer.content = databaseAnswer.data.content || '';
+        answer.id = databaseAnswer.id;
+        answer.created_at = databaseAnswer.created_at;
         return answer;
       })
   }
