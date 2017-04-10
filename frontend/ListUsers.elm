@@ -38,6 +38,7 @@ type Msg
   | FooterAppeared
   | ChangeDomainFilter (Maybe String)
   | ChangePositionFilter (Maybe String)
+  | ChangeLocationFilter (Maybe String)
 
 initTasks : Model -> Cmd (UpdateMessage Msg)
 initTasks = getUsers
@@ -73,24 +74,34 @@ update msg model =
     ChangePositionFilter value ->
       reInitItems { model | selectedPosition = value }
 
+    ChangeLocationFilter value ->
+      reInitItems { model | selectedLocation = value }
 
+
+type Filter = Domain | Position | Location
+prompt : Filter -> String
+prompt filter =
+  case filter of
+    Domain -> "Valitse toimiala"
+    Position -> "Valitse tehtäväluokka"
+    Location -> "Valitse maakunta"
 
 view : Model -> Config.Model -> H.Html (ViewMessage Msg)
 view model config =
   let
-    chooseDomainPrompt = "Valitse toimiala"
-    choosePositionPrompt = "Valitse tehtäväluokka"
-
     usersHtml = List.map viewUser model.users
     rows = List.reverse (List.foldl rowFolder [] usersHtml)
     rowsHtml = List.map row rows
-    isSelected option prompt =
-      if prompt == chooseDomainPrompt
-      then
-        Just option == model.selectedDomain
-      else
-        Just option == model.selectedPosition
-    select toMsg prompt options =
+    isSelected option filter =
+      case filter of
+        Domain ->
+          Just option == model.selectedDomain
+        Position ->
+          Just option == model.selectedPosition
+        Location ->
+          Just option == model.selectedLocation
+
+    select toMsg filter options =
       H.span
         [ A.class "list-users__select-container" ]
         [ H.select
@@ -99,7 +110,7 @@ view model config =
             (E.targetValue
                |> Json.map
                  (\str ->
-                    if str == prompt
+                    if str == prompt filter
                     then Nothing
                     else Just str
                  )
@@ -109,9 +120,9 @@ view model config =
           List.map
              (\o ->
                 H.option
-                  [ A.selected (isSelected o prompt)]
+                  [ A.selected (isSelected o filter)]
                   [ H.text o])
-             (prompt :: options)
+             (prompt filter :: options)
         ]
   in
     H.div
@@ -131,10 +142,10 @@ view model config =
           [ A.class "row list-users__filters" ]
           [ H.div
             [ A.class "col-xs-12 col-sm-6" ]
-            [ select ChangeDomainFilter chooseDomainPrompt config.domainOptions ]
+            [ select ChangeDomainFilter Domain config.domainOptions ]
           , H.div
             [ A.class "col-xs-12 col-sm-6" ]
-            [ select ChangePositionFilter choosePositionPrompt config.positionOptions ]
+            [ select ChangePositionFilter Position config.positionOptions ]
           ]
         ]
       , H.div

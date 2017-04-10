@@ -7,6 +7,7 @@ type alias Model =
   , cursor : Int
   , selectedDomain : Maybe String
   , selectedPosition : Maybe String
+  , selectedLocation : Maybe String
   }
 
 limit : Int
@@ -18,4 +19,5 @@ init =
   , cursor = 0
   , selectedDomain = Nothing
   , selectedPosition = Nothing
+  , selectedLocation = Nothing
   }
