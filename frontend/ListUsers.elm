@@ -141,11 +141,14 @@ view model config =
         , H.div
           [ A.class "row list-users__filters" ]
           [ H.div
-            [ A.class "col-xs-12 col-sm-6" ]
+            [ A.class "col-xs-12 col-sm-4" ]
             [ select ChangeDomainFilter Domain config.domainOptions ]
           , H.div
-            [ A.class "col-xs-12 col-sm-6" ]
+            [ A.class "col-xs-12 col-sm-4" ]
             [ select ChangePositionFilter Position config.positionOptions ]
+          , H.div
+            [ A.class "col-xs-12 col-sm-4" ]
+            [ select ChangeLocationFilter Location Config.finnishRegions ]
           ]
         ]
       , H.div
@@ -159,7 +162,7 @@ view model config =
 viewUser : User -> H.Html (ViewMessage msg)
 viewUser user =
   H.a
-    [ A.class "col-xs-12 col-sm-6 col-md-4 card-link list-users__item-container"
+    [ A.class "col-xs-12 col-sm-4 card-link list-users__item-container"
     , A.href (Nav.routeToPath (Nav.User user.id))
     , Link.action (Nav.User user.id)
     ]
