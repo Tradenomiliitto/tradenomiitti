@@ -44,6 +44,7 @@ module.exports = function initialize(params) {
     formatted.location = dbCard.location || '';
     formatted.phone = dbCard.phone || '';
     formatted.email = dbCard.email || '';
+    formatted.linkedin = dbCard.linkedin || '';
 
     return formatted;
   }

@@ -93,6 +93,7 @@ type BusinessCardField
   | Location
   | Phone
   | Email
+  | LinkedIn
 
 updateBusinessCard : Maybe BusinessCard -> BusinessCardField -> String -> Maybe BusinessCard
 updateBusinessCard businessCard field value =
@@ -104,6 +105,7 @@ updateBusinessCard businessCard field value =
         Location -> Just { businessCard | location = value }
         Phone -> Just { businessCard | phone = value }
         Email -> Just { businessCard | email = value }
+        LinkedIn -> Just { businessCard | linkedin = value }
     Nothing -> Nothing
 
 update : Msg -> Model -> (Model, Cmd (UpdateMessage Msg))

@@ -52,6 +52,7 @@ type alias BusinessCard =
   , location : String
   , phone : String
   , email : String
+  , linkedin : String
   }
 
 userDecoder : Json.Decoder User
@@ -108,6 +109,7 @@ businessCardEncode businessCard =
     , ("location", JS.string businessCard.location)
     , ("phone", JS.string businessCard.phone)
     , ("email", JS.string businessCard.email)
+    , ("linkedin", JS.string businessCard.linkedin)
     ]
 
 pictureEditingEncode : PictureEditing -> JS.Value
@@ -156,3 +158,4 @@ businessCardDecoder =
     |> P.required "location" Json.string
     |> P.required "phone" Json.string
     |> P.required "email" Json.string
+    |> P.required "linkedin" Json.string
