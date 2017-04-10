@@ -5,15 +5,16 @@ import Html as H
 import Html.Attributes as A
 import Html.Events as E
 import Json.Decode as Json
-import Util exposing (ViewMessage(..))
 import ListAds
 import Models.User exposing (User)
 import Nav
 import Profile.Main exposing (Msg(..), BusinessCardField(..))
 import Skill
+import State.Config as Config
 import State.Main as RootState
 import State.Profile exposing (Model)
 import SvgIcons
+import Util exposing (ViewMessage(..))
 
 view : Model -> RootState.Model -> H.Html (ViewMessage Msg)
 view model rootState =
@@ -32,7 +33,7 @@ editProfileView model rootState =
         , editProfileHeading
         , membershipInfoEditing user
         , H.map LocalViewMessage (publicInfoEditing model user)
-        , H.map LocalViewMessage (competences model user)
+        , H.map LocalViewMessage (competences model rootState.config user)
         ]
     Nothing -> H.div [] []
 
@@ -206,11 +207,11 @@ showProfileView : Model -> RootState.Model ->  H.Html (ViewMessage Msg)
 showProfileView model rootState =
   H.div [ A.class "user-page" ] <|
     [ profileTopRow model rootState
-    ] ++ (viewUserMaybe model True)
+    ] ++ (viewUserMaybe model True rootState.config)
 
 
-competences : Model -> User -> H.Html Msg
-competences model user =
+competences : Model -> Config.Model -> User -> H.Html Msg
+competences model config user =
   H.div
     [ A.class "container-fluid profile__editing--competences" ]
     [ H.div
@@ -232,8 +233,8 @@ competences model user =
       ]
       , H.div
           [ A.class "profile__editing--competences--row row" ]
-          [ userDomains model user
-          , userPositions model user
+          [ userDomains model user config
+          , userPositions model user config
           ]
       ]
     ]
@@ -300,10 +301,10 @@ profileTopRow model rootState =
         ]
       ]
 
-viewUserMaybe : Model -> Bool -> List (H.Html (ViewMessage Msg))
-viewUserMaybe model ownProfile =
+viewUserMaybe : Model -> Bool -> Config.Model -> List (H.Html (ViewMessage Msg))
+viewUserMaybe model ownProfile config =
   model.user
-    |> Maybe.map (viewUser model ownProfile (H.div [] []))
+    |> Maybe.map (viewUser model ownProfile (H.div [] []) config)
     |> Maybe.withDefault
       [ H.div
         [ A.class "container"]
@@ -313,8 +314,8 @@ viewUserMaybe model ownProfile =
       ]
 
 
-viewUser : Model -> Bool -> H.Html Msg -> User -> List (H.Html (ViewMessage Msg))
-viewUser model ownProfile contactUser user =
+viewUser : Model -> Bool -> H.Html Msg -> Config.Model -> User -> List (H.Html (ViewMessage Msg))
+viewUser model ownProfile contactUser config user =
   [ H.div
     [ A.class "container" ]
     [ H.div
@@ -342,8 +343,8 @@ viewUser model ownProfile contactUser user =
     [ A.class "container" ]
     [ H.div
       [ A.class "row" ]
-      [ H.map LocalViewMessage (userDomains model user)
-      , H.map LocalViewMessage (userPositions model user)
+      [ H.map LocalViewMessage (userDomains model user config )
+      , H.map LocalViewMessage (userPositions model user config)
       ]
     ]
   ]
@@ -498,8 +499,8 @@ optionPreselected default value =
     else H.option [] [ H.text value ]
 
 
-userDomains : Model -> User -> H.Html Msg
-userDomains model user =
+userDomains : Model -> User -> Config.Model ->  H.Html Msg
+userDomains model user config =
   H.div
     [ A.class "col-xs-12 col-sm-6 last-row"
     ]
@@ -516,13 +517,13 @@ userDomains model user =
     ) ++
     (if model.editing
       then
-        [ select model.domainOptions ChangeDomainSelect "Valitse toimiala" "Lisää toimiala, josta olet kiinnostunut tai sinulla on osaamista"
+        [ select config.domainOptions ChangeDomainSelect "Valitse toimiala" "Lisää toimiala, josta olet kiinnostunut tai sinulla on osaamista"
         ]
      else [])
     )
 
-userPositions : Model -> User -> H.Html Msg
-userPositions model user =
+userPositions : Model -> User -> Config.Model -> H.Html Msg
+userPositions model user config =
   H.div
     [ A.class "col-xs-12 col-sm-6 last-row"
     ]
@@ -538,7 +539,7 @@ userPositions model user =
         ) ++
         (if model.editing
           then
-            [ select model.positionOptions ChangePositionSelect "Valitse tehtäväluokka" "Lisää tehtäväluokka, josta olet kiinnostunut tai sinulla on osaamista"
+            [ select config.positionOptions ChangePositionSelect "Valitse tehtäväluokka" "Lisää tehtäväluokka, josta olet kiinnostunut tai sinulla on osaamista"
             ]
           else [])
     )
