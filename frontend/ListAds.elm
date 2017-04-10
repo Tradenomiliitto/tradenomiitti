@@ -89,35 +89,38 @@ viewAds ads =
 row : List (H.Html msg) -> H.Html msg
 row ads =
   H.div
-    [ A.class "row" ]
+    [ A.class "row list-ads__row" ]
     ads
 
 adListView : Models.Ad.Ad -> H.Html (ViewMessage msg)
 adListView ad =
   H.div
-    [ A.class "col-xs-12 col-sm-6"
+    [ A.class "col-xs-12 col-sm-6 list-ads__item-container"
     ]
     [ H.div
-      [ A.class "list-ads__ad-preview" ]
+      [ A.class "list-ads__ad-preview list-ads__item" ]
       [ H.a
         [ A.href (Nav.routeToPath (Nav.ShowAd ad.id))
         , Link.action (Nav.ShowAd ad.id)
-        , A.class "card-link"
+        , A.class "card-link list-ads__item-expanding-part"
         ]
         [ H.h3
           [ A.class "list-ads__ad-preview-heading"]
           [ H.text ad.heading ]
         , H.p [ A.class "list-ads__ad-preview-content" ] [ H.text (Util.truncateContent ad.content 200) ]
         ]
-      , H.hr [] []
+      , H.hr [ A.class "list-ads__item-ruler" ] []
       , H.div
-        [ A.class "list-ads__ad-preview-answer-count" ]
-        [ H.span
-            [ A.class "list-ads__ad-preview-answer-count-number" ]
-            [ H.text << toString <| Models.Ad.adCount ad.answers]
-        , SvgIcons.answers
+        []
+        [ H.div
+          [ A.class "list-ads__ad-preview-answer-count" ]
+          [ H.span
+              [ A.class "list-ads__ad-preview-answer-count-number" ]
+              [ H.text << toString <| Models.Ad.adCount ad.answers]
+          , SvgIcons.answers
+          ]
+        , Common.authorInfo ad.createdBy
         ]
-      , Common.authorInfo ad.createdBy
       ]
     ]
 

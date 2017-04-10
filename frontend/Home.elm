@@ -191,8 +191,7 @@ listUsersButtons =
 
 listThreeUsers : Model -> H.Html (ViewMessage msg)
 listThreeUsers model =
-  H.div
-    [ A.class "row" ]
+  ListUsers.row
     (List.map ListUsers.viewUser (List.take 3 model.listUsers.users))
 
   -- TRADENOMIITTI AD --
