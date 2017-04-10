@@ -28,10 +28,16 @@ sendAd : Model -> Cmd Msg
 sendAd model =
   let
     encoded =
-      JS.object
+      JS.object <|
         [ ("heading", JS.string model.heading)
         , ("content", JS.string model.content)
-        ]
+        ] ++
+        (List.filterMap identity
+          [ Maybe.map (\value -> ("domain", JS.string value)) model.selectedDomain
+          , Maybe.map (\value -> ("position", JS.string value)) model.selectedPosition
+          , Maybe.map (\value -> ("location", JS.string value)) model.selectedLocation
+          ]
+        )
   in
     Http.post "/api/ilmoitukset" (Http.jsonBody encoded) Json.int
       |> Http.send SendResponse
