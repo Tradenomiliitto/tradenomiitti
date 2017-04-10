@@ -26,6 +26,7 @@ getUsers model =
         |> QueryString.add "offset" (toString model.cursor)
         |> QueryString.optional "domain" model.selectedDomain
         |> QueryString.optional "position" model.selectedPosition
+        |> QueryString.optional "location" model.selectedLocation
         |> QueryString.render
 
     url = "/api/profiilit/" ++ queryString
