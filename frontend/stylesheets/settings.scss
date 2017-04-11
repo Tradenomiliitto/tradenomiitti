@@ -1,0 +1,15 @@
+.settings {
+  &__heading {
+    @include basic-header;
+  }
+
+  &__subsection-heading {
+    @include gotham-bold;
+    text-transform: capitalize;
+    color: $pink;
+  }
+
+  &__save {
+    margin-top: 25px;
+  }
+}

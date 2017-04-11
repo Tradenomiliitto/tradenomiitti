@@ -28,6 +28,8 @@ type alias PictureEditing =
 type alias Settings =
   { emails_for_answers : Bool
   , email_address : String
+  , emails_for_businesscards : Bool
+  , emails_for_new_ads : Bool
   }
 
 type alias User =
@@ -99,8 +101,10 @@ settingsEncode settings =
   JS.object
     [ ("emails_for_answers", JS.bool settings.emails_for_answers)
     , ("email_address", JS.string settings.email_address)
+    , ("emails_for_businesscards", JS.bool settings.emails_for_businesscards)
+    , ("emails_for_new_ads", JS.bool settings.emails_for_new_ads)
     ]
-  
+
 businessCardEncode : BusinessCard -> JS.Value
 businessCardEncode businessCard =
   JS.object
@@ -149,6 +153,8 @@ settingsDecoder =
   P.decode Settings
     |> P.required "emails_for_answers" Json.bool
     |> P.required "email_address" Json.string
+    |> P.required "emails_for_businesscards" Json.bool
+    |> P.required "emails_for_new_ads" Json.bool
 
 businessCardDecoder : Json.Decoder BusinessCard
 businessCardDecoder =
