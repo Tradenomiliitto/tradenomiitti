@@ -129,8 +129,11 @@ div#not-implemented {
   @include loader($white, $pink, 10em);
 }
 
-.user-card {
+.home__list-users .user-card {
   background-color: $light-grey;
+}
+.user-card {
+  background-color: $white;
   @include shadow;
   padding: 30px;
   margin-top: 25px;
