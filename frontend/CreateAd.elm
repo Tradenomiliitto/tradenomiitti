@@ -102,7 +102,7 @@ view config model =
               []
             ]
           , H.div
-            [ A.class "col-xs-12 col-sm-5" ]
+            [ A.class "col-xs-12 col-sm-5 create-ad__filters-submit" ]
             [ H.h3
                 [ A.class "create-ad__filters-heading"]
                 [ H.text "Kenen toivot vastaavan?" ]
