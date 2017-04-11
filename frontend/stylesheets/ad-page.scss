@@ -3,7 +3,7 @@
   $padding: 30px;
   &__ad {
     &-container {
-      box-shadow: 0 2px 2px 1px #CCC;
+      @include shadow;
       background-color: $light-grey-background;
     }
     background-color: $white;
