@@ -1,17 +1,17 @@
 .create-ad {
   $box-padding: 30px;
   margin-top: 50px;
-  padding: $box-padding;
   box-shadow: 0 2px 2px 1px #CCC;
+  @include equal-height-columns;
 
   &__inputs {
     background-color: $light-grey-background;
-    margin-left: -$box-padding;
-    padding-left: $box-padding;
-    margin-top: -$box-padding;
-    padding-top: $box-padding;
-    margin-bottom: -$box-padding;
-    padding-bottom: $box-padding;
+    padding: $box-padding;
+  }
+
+  &__filters-submit {
+    background-color: $white;
+    padding: $box-padding;
   }
 
   &__heading {
@@ -38,6 +38,13 @@
 
   &__filters-heading {
     @include gotham-bold;
+  }
+
+  &__select {
+    @include select(100%);
+    &-container {
+      margin-bottom: 25px;
+    }
   }
 
   &__submit-button {

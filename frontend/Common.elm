@@ -104,3 +104,57 @@ lengthHint class text minLength maxLength =
         else
           toString (String.length text - maxLength) ++ " merkkiä liian pitkä"
     ]
+
+type Filter = Domain | Position | Location
+prompt : Filter -> String
+prompt filter =
+  case filter of
+    Domain -> "Valitse toimiala"
+    Position -> "Valitse tehtäväluokka"
+    Location -> "Valitse maakunta"
+
+
+select
+     : String
+     -> (Maybe String -> msg)
+     -> Filter
+     -> List String
+     -> { a
+         | selectedDomain : Maybe String
+         , selectedLocation : Maybe String
+         , selectedPosition : Maybe String
+       }
+     -> H.Html msg
+select class toMsg filter options model =
+  let
+    isSelected option filter =
+      case filter of
+        Domain ->
+          Just option == model.selectedDomain
+        Position ->
+          Just option == model.selectedPosition
+        Location ->
+          Just option == model.selectedLocation
+  in
+    H.span
+      [ A.class <| class ++ "__select-container" ]
+      [ H.select
+        [ A.class <| class ++ "__select"
+        , E.on "change"
+          (E.targetValue
+              |> Json.map
+                (\str ->
+                  if str == prompt filter
+                  then Nothing
+                  else Just str
+                )
+              |> Json.map toMsg
+          )
+        ] <|
+        List.map
+            (\o ->
+              H.option
+                [ A.selected (isSelected o filter)]
+                [ H.text o])
+            (prompt filter :: options)
+      ]

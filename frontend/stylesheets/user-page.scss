@@ -1,7 +1,7 @@
 .user-page {
   &__section {
     margin-top: #{ $navbar-height + $content-top-margin };
-    display: flex;
+    @include equal-height-columns;
   }
   &__first-block {
     box-shadow: 0 2px 2px 1px #CCC;

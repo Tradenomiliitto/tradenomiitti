@@ -27,8 +27,8 @@ type alias Answer =
 adDecoder : Json.Decoder Ad
 adDecoder =
   P.decode Ad
-    |> P.requiredAt [ "data", "heading" ] Json.string
-    |> P.requiredAt [ "data", "content" ] Json.string
+    |> P.required "heading" Json.string
+    |> P.required "content" Json.string
     |> P.required "answers" answersDecoder
     |> P.required "created_by" Models.User.userDecoder
     |> P.required "created_at" date
@@ -45,7 +45,7 @@ answersDecoder =
 answerDecoder : Json.Decoder Answer
 answerDecoder =
   P.decode Answer
-    |> P.requiredAt [ "data", "content" ] Json.string
+    |> P.required "content" Json.string
     |> P.required "created_by" Models.User.userDecoder
     |> P.required "created_at" date
 
