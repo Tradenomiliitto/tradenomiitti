@@ -3,11 +3,13 @@
 const chai = require('chai');
 const should = chai.should();
 
+const MockDate = require('mockdate');
+
 const knex_config = require('../../knexfile');
 const knex = require('knex')(knex_config['test']);
 
 const util = require('../util')({ knex });
-const service = require('./ads')({ knex, util });
+const service = require('./adNotifications')({ knex });
 
 describe('Send notifications for ads', function() {
 
@@ -18,6 +20,7 @@ describe('Send notifications for ads', function() {
           .then(function() {
             return knex.seed.run()
               .then(function() {
+                MockDate.reset();
                 done();
               });
           });
@@ -31,9 +34,37 @@ describe('Send notifications for ads', function() {
       });
   });
 
+  const aDate = new Date('2017-01-13T11:00:00.000Z');
+  const aDayLater = new Date('2017-01-14T11:00:00.000Z');
+  const twoWeeksLater = new Date('2017-01-27T11:00:00.000Z');
+
 
   it('should not send ads to people who have just received a notification', (done) => {
-    done();
+    MockDate.set(aDate);
+    knex('user_ad_notifications').insert({
+      user_id: 1,
+      ad_id: 1
+    }).then(() => {
+      MockDate.set(aDayLater);
+      return service.usersThatCanReceiveNow();
+    }).then(users => {
+      users.should.include(1);
+      done();
+    })
+  });
+
+  it('should send ads to people who have not recently received a notification', (done) => {
+    MockDate.set(aDate);
+    knex('user_ad_notifications').insert({
+      user_id: 1,
+      ad_id: 1
+    }).then(() => {
+      MockDate.set(twoWeeksLater);
+      return service.usersThatCanReceiveNow();
+    }).then(users => {
+      users.should.not.include(1);
+      done();
+    })
   });
 
   it('should not send ads a person has received a notification about', (done) => {
