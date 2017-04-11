@@ -186,14 +186,19 @@
 
     &--input {
       @include gotham-bold;
+      &-icon {
+        width: 20px;
+        font-size: 18px;
+        margin-right: 10px;
+        display: inline-block;
+        text-align: center;
+      }
 
       input {
         width: calc(100% - 30px);
         font-size: 12px;
       }
       svg {
-        width: 20px;
-        margin-right: 10px;
         position: relative;
         top: 5px;
       }

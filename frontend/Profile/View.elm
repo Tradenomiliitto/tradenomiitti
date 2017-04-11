@@ -153,6 +153,7 @@ businessCardData user businessCard =
         [ businessCardDataInput businessCard Location
         , businessCardDataInput businessCard Phone
         , businessCardDataInput businessCard Email
+        , businessCardDataInput businessCard LinkedIn
         ]
       ]
     ]
@@ -168,11 +169,13 @@ businessCardDataInput card field =
         Location -> card.location
         Phone -> card.phone
         Email -> card.email
+        LinkedIn -> card.linkedin
     icon =
       case field of
         Location -> [ SvgIcons.location ]
         Phone -> [ SvgIcons.phone ]
         Email -> [ SvgIcons.email ]
+        LinkedIn -> [ H.i [ A.class "fa fa-linkedin" ] [] ]
         _ -> []
     class =
       A.classList
@@ -183,7 +186,7 @@ businessCardDataInput card field =
   in
     H.p
       [ class ]
-      [ H.span [ class ] icon
+      [ H.span [ class , A.class "profile__business-card--input-icon" ] icon
       , H.input
           [ A.placeholder <| fieldToString field
           , A.value value
@@ -201,6 +204,7 @@ fieldToString field =
     Location -> "Paikkakunta"
     Phone -> "Puhelinnumero"
     Email -> "Sähköposti"
+    LinkedIn -> "LinkedIn-linkki"
 
 
 showProfileView : Model -> RootState.Model ->  H.Html (ViewMessage Msg)
