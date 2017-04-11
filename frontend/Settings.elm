@@ -13,6 +13,8 @@ type Msg
   = GetSettings Settings
   | UpdateSettings (Result Http.Error ())
   | ToggleEmailsForAnswers Settings
+  | ToggleEmailsForBusinessCards Settings
+  | ToggleEmailsForNewAds Settings
   | ChangeEmailAddress Settings String
   | Save Settings
 
@@ -48,6 +50,20 @@ update msg model =
           { settings
             | emails_for_answers = not settings.emails_for_answers }} ! []
 
+    ToggleEmailsForBusinessCards settings ->
+      { model
+        | sending = NotSending
+        , settings = Just
+          { settings
+            | emails_for_businesscards = not settings.emails_for_businesscards }} ! []
+
+    ToggleEmailsForNewAds settings ->
+      { model
+        | sending = NotSending
+        , settings = Just
+          { settings
+            | emails_for_new_ads = not settings.emails_for_new_ads }} ! []
+
     ChangeEmailAddress settings str ->
       { model
         | sending = NotSending
@@ -69,48 +85,91 @@ view model =
 viewSettings : Model -> Settings -> H.Html Msg
 viewSettings model settings =
   H.div
-    []
-    [ H.h1 [] [ H.text "Asetukset" ]
-    , H.form
-      [ ]
-      [ H.div
-        [ A.class "form-group"
-        ]
-        [ H.label
-          [ A.for "email-address"
+    [ A.class "container" ]
+    [ H.div
+      [ A.class "row" ]
+      [ H.h1 [ A.class "settings__heading" ] [ H.text "Asetukset" ]
+      , H.form
+        []
+        [ H.div
+          [ A.class "col-xs-12 col-sm-6" ]
+          [ H.h2 [ A.class "settings__subsection-heading" ] [ H.text "Sähköpostit" ]
+          , H.p [] [ H.text "Voit itse valita missä tilanteissa Tradenomiitti lähettää sinulle viestin sähköpostitse. Sähköposti varmistaa sen, että saat tiedon uusista kontakteista, sinua koskevista ilmoituksista ja saamistasi vastauksista." ]
           ]
-          [ H.text "Sähköpostiosoite" ]
-        , H.input
-          [ A.type_ "text"
-          , A.class "form-control"
-          , A.id "email-address"
-          , A.value settings.email_address
-          , E.onInput (ChangeEmailAddress settings)
-          ]
-          []
-        ]
-      ]
-      , H.div
-        [ A.class "checkbox" ]
-        [ H.label
-          []
-          [ H.input
-            [ A.type_ "checkbox"
-            , E.onClick <| ToggleEmailsForAnswers settings
-            , A.checked settings.emails_for_answers
+        , H.div
+          [ A.class "col-xs-12 col-sm-6" ]
+          [ H.div
+            [ A.class "form-group"
             ]
-            []
-          , H.text "Lähetä ilmoitus sähköpostiin saapuneista vastauksista"
+            [ H.label
+              [ A.for "email-address"
+              ]
+              [ H.text "Sähköpostiosoite" ]
+            , H.input
+              [ A.type_ "text"
+              , A.class "form-control"
+              , A.id "email-address"
+              , A.value settings.email_address
+              , E.onInput (ChangeEmailAddress settings)
+              ]
+              []
+            ]
+          , H.div
+            [ A.class "checkbox" ]
+            [ H.label
+              []
+              [ H.input
+                [ A.type_ "checkbox"
+                , E.onClick <| ToggleEmailsForBusinessCards settings
+                , A.checked settings.emails_for_businesscards
+                ]
+                []
+              , H.text "Ilmoitus uudesta kontaktista/käyntikortista"
+              ]
+            ]
+          , H.div
+            [ A.class "checkbox" ]
+            [ H.label
+              []
+              [ H.input
+                [ A.type_ "checkbox"
+                , E.onClick <| ToggleEmailsForAnswers settings
+                , A.checked settings.emails_for_answers
+                ]
+                []
+              , H.text "Ilmoitus uudesta vastauksesta jättämääsi kysymykseen"
+              ]
+            ]
+          , H.div
+            [ A.class "checkbox" ]
+            [ H.label
+              []
+              [ H.input
+                [ A.type_ "checkbox"
+                , E.onClick <| ToggleEmailsForNewAds settings
+                , A.checked settings.emails_for_new_ads
+                ]
+                []
+              , H.text "Kootut sinulle suunnatut ilmoitukset (viikottainen)"
+              ]
+            ]
           ]
         ]
-    , H.button
-      [ E.onClick (Save settings)
-      , A.class "btn btn-default"
       ]
-      [ H.text "Tallenna" ]
-    , H.p
-      []
-      [ H.text <| sendingToText model.sending ]
+    , H.div
+      [ A.class "row last-row settings__save" ]
+      [ H.div
+        [ A.class "col-xs-12" ]
+        [ H.button
+          [ E.onClick (Save settings)
+          , A.class "btn btn-default"
+          ]
+          [ H.text "Tallenna" ]
+        , H.p
+          []
+          [ H.text <| sendingToText model.sending ]
+        ]
+      ]
     ]
 
 

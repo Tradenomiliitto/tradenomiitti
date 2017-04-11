@@ -110,7 +110,10 @@ app.get('/api/asetukset', (req, res) => {
   util.userForSession(req).then(dbUser => {
     const settings = {};
     const dbSettings = dbUser.settings || {};
-    settings.emails_for_answers = dbSettings.emails_for_answers || true;
+    const trueFallback = value => value === undefined ? true : value;
+    settings.emails_for_answers = trueFallback(dbSettings.emails_for_answers);
+    settings.emails_for_businesscards = trueFallback(dbSettings.emails_for_businesscards);
+    settings.emails_for_new_ads = trueFallback(dbSettings.emails_for_new_ads);
     settings.email_address = dbSettings.email_address || '';
     res.json(settings);
   });
