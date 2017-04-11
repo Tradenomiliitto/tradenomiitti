@@ -88,7 +88,9 @@ viewSettings model settings =
     [ A.class "container" ]
     [ H.div
       [ A.class "row" ]
-      [ H.h1 [ A.class "settings__heading" ] [ H.text "Asetukset" ]
+      [ H.div
+        [ A.class "col-xs-12" ]
+        [ H.h1 [ A.class "settings__heading" ] [ H.text "Asetukset" ] ]
       , H.form
         []
         [ H.div
