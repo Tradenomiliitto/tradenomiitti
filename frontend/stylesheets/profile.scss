@@ -46,7 +46,7 @@
       }
       //margin-left: 4%;
       //margin-right: 4%;
-      box-shadow: 0 2px 2px 1px #CCC;
+      @include shadow;
       &--info {
         padding: 40px;
         &--text {
@@ -176,7 +176,7 @@
   }
   &__business-card {
     background-color: $light-grey;
-    box-shadow: 0 2px 2px 1px #CCC;
+    @include shadow;
     padding: 30px;
 
     &--name-work--input {

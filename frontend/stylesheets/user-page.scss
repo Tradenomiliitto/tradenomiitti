@@ -4,7 +4,7 @@
     @include equal-height-columns;
   }
   &__first-block {
-    box-shadow: 0 2px 2px 1px #CCC;
+    @include shadow;
   }
   &__user-info-box {
     padding: 50px;
@@ -136,7 +136,7 @@
   &__activity-item {
     margin-top: 25px;
     padding: 15px;
-    box-shadow: 0 2px 2px 1px #CCC;
+    @include shadow;
     &-heading {
       color: $pink;
       @include gotham-bold;

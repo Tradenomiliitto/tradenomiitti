@@ -207,7 +207,7 @@ tradenomiittiSection =
 tradenomiittiRow : H.Html (ViewMessage msg)
 tradenomiittiRow =
   H.div
-    [ A.class "row"]
+    [ A.class "row home__tradenomiitti-info-row" ]
     [ H.div [ A.class "home__tradenomiitti--info-container  col-md-6" ] [ tradenomiittiInfo ]
     , tradenomiImage
     ]

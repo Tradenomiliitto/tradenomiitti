@@ -95,8 +95,6 @@
   }
   &__list-users,
   &__latest-ads {
-    margin-left: -15px;
-    width: 100vw;
   }
 
   &__latest-ads {
@@ -108,29 +106,32 @@
   }
 
   &__tradenomiitti {
+    &-info-row {
+      @include shadow;
+      background-color: $white;
+      @include equal-height-columns;
+    }
     &--background {
       background-color: $light-grey;
-      margin-left: -15px;
-      width: 100vw;
       padding-top: 120px;
       padding-bottom: 120px;
     }
     &--container {
       margin-left: 5%;
       margin-right: 5%;
-      background-color: $white;
     }
     &--info-container {
-      padding-left: 60px !important;
-      padding-right: 60px !important;
-
+      padding: 30px;
     }
     &--image {
-      width: 100%;
+      width: calc(100% + 15px);
+      height: 100%;
+      @media (max-width: $screen-xs-max) {
+        width: calc(100% + 30px);
+        margin-left: -15px;
+      }
     }
     &--info {
-      margin-top: 60px;
-
       &--header {
         color: $pink;
         @include gotham-bold;

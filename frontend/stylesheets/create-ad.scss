@@ -1,7 +1,7 @@
 .create-ad {
   $box-padding: 30px;
   margin-top: 50px;
-  box-shadow: 0 2px 2px 1px #CCC;
+  @include shadow;
   @include equal-height-columns;
 
   &__inputs {
