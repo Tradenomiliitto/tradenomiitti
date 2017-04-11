@@ -126,6 +126,10 @@
     &--image {
       width: calc(100% + 15px);
       height: 100%;
+      @media (max-width: $screen-xs-max) {
+        width: calc(100% + 30px);
+        margin-left: -15px;
+      }
     }
     &--info {
       &--header {
