@@ -232,7 +232,28 @@ describe('Send notifications for ads', function() {
   });
 
   it('should rather send an ad with a fitting category than any old ad', (done) => {
-    done();
+    MockDate.set(aDate);
+    const forcedAdId = 42;
+    const anAd = {
+      id: forcedAdId,
+      data: {heading: "foo", content: "bar", location: 'foobar'},
+      user_id: otherUserId,
+      created_at: moment()
+    };
+    seedrandom('whatever', { global: true });
+    Promise.all([
+      knex('users').where('id', userId).update('data', { location: 'foobar' }),
+      knex('ads').insert(anAd)
+    ]).then(() => service.notificationObjects())
+      .then(notifications => {
+        const adIds = notifications
+              .find(notif => notif.userId === userId)
+              .ads
+              .map(ad => ad.id)
+
+        adIds[0].should.equal(forcedAdId);
+        done();
+      })
   });
 
   it('should send any old ad if categories in questions are wrong', (done) => {
