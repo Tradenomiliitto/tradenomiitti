@@ -26,8 +26,7 @@ module.exports = function init(params) {
   const util = params.util;
   const profileService = require('./profiles')({ knex, util });
 
-  function score(user, skills) {
-    util.patchSkillsToUser(user, skills)
+  function score(user) {
     return function(ad) {
       let score = 0;
       const adDomain = ad.data.domain
@@ -53,8 +52,8 @@ module.exports = function init(params) {
     }
   }
 
-  function order(user, skills, ads) {
-    const grouped = groupBy(ads, score(user, skills));
+  function order(user, ads) {
+    const grouped = groupBy(ads, score(user));
     const reverseNumericSort = (a, b) => b - a;
     const arrayOfArrays = Object.keys(grouped)
           .sort(reverseNumericSort)
@@ -84,8 +83,12 @@ module.exports = function init(params) {
           const userPromise = util.userById(userId).then(user => util.formatUser(user, true));
           const skillsPromise = profileService.profileSkills(userId);
           return Promise.all([adsPromisee, userPromise, skillsPromise])
-            .then(([ ads, user, skills ]) =>
-                  ({ userId: user.id, ads: order(user, skills, ads).slice(0, 5) }))
+            .then(([ ads, user, skills ]) => {
+              util.patchSkillsToUser(user, skills);
+              return {
+                userId: user.id, ads: order(user, ads).slice(0, 5)
+              }
+            })
         })
         return Promise.all(promises);
       })
