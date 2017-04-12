@@ -184,7 +184,28 @@ describe('Send notifications for ads', function() {
   });
 
   it('should not send an ad that already has at least 3 answers', (done) => {
-    done();
+    MockDate.set(aDate);
+    const anAnswer = {
+      user_id: otherUserId,
+      ad_id: 1,
+      data: { content: 'foo' }
+    };
+    Promise.all([
+      knex('answers').insert(anAnswer),
+      knex('answers').insert(anAnswer),
+      knex('answers').insert(anAnswer)
+    ]).then(() => {
+      MockDate.set(aDayLater);
+      return service.notificationObjects();
+    }).then(notifications => {
+      const adIds = notifications
+            .find(notif => notif.userId === userId)
+            .ads
+            .map(ad => ad.id)
+      adIds.should.not.include(1);
+      adIds.should.have.length(2);
+      done();
+    })
   });
 
   it('should not send an ad that is more than a month old', (done) => {
