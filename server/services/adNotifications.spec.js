@@ -92,7 +92,7 @@ describe('Send notifications for ads', function() {
       return service.notificationObjects();
     }).then(notifications => {
       notifications
-        .find(notif => notif.userId === userId)
+        .find(notif => notif.user.id === userId)
         .ads
         .map(ad => ad.id)
         .should.not.include(1);
@@ -120,7 +120,7 @@ describe('Send notifications for ads', function() {
       return service.notificationObjects();
     }).then(notifications => {
       notifications
-        .find(notif => notif.userId === userId)
+        .find(notif => notif.user.id === userId)
         .ads
         .should.have.length(5);
       done();
@@ -173,7 +173,7 @@ describe('Send notifications for ads', function() {
       .then(() => service.notificationObjects())
       .then(notifications => {
         const adIds = notifications
-          .find(notif => notif.userId === userId)
+          .find(notif => notif.user.id === userId)
           .ads
           .map(ad => ad.id)
 
@@ -199,7 +199,7 @@ describe('Send notifications for ads', function() {
       return service.notificationObjects();
     }).then(notifications => {
       const adIds = notifications
-            .find(notif => notif.userId === userId)
+            .find(notif => notif.user.id === userId)
             .ads
             .map(ad => ad.id)
       adIds.should.not.include(1);
@@ -221,7 +221,7 @@ describe('Send notifications for ads', function() {
       .then(() => service.notificationObjects())
       .then(notifications => {
         const adIds = notifications
-              .find(notif => notif.userId === userId)
+              .find(notif => notif.user.id === userId)
               .ads
           .map(ad => ad.id)
 
@@ -247,7 +247,7 @@ describe('Send notifications for ads', function() {
     ]).then(() => service.notificationObjects())
       .then(notifications => {
         const adIds = notifications
-              .find(notif => notif.userId === userId)
+              .find(notif => notif.user.id === userId)
               .ads
               .map(ad => ad.id)
 
@@ -272,7 +272,7 @@ describe('Send notifications for ads', function() {
     ]).then(() => service.notificationObjects())
       .then(notifications => {
         const adIds = notifications
-              .find(notif => notif.userId === userId)
+              .find(notif => notif.user.id === userId)
               .ads
               .map(ad => ad.id)
 

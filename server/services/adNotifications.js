@@ -86,7 +86,7 @@ module.exports = function init(params) {
             .then(([ ads, user, skills ]) => {
               util.patchSkillsToUser(user, skills);
               return {
-                userId: user.id, ads: order(user, ads).slice(0, 5)
+                user, ads: order(user, ads).slice(0, 5)
               }
             })
         })
