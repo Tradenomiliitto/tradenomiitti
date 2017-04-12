@@ -74,6 +74,7 @@ const logon = require('./logonHandling')({ communicationsKey, knex, sebacon });
 const util = require('./util')({ knex });
 const profile = require('./profile')({ knex, sebacon, util, userImagesPath, emails});
 const ads = require('./ads')({ util, knex, emails });
+const adNotifications = require('./adNotifications')({ emails, knex, util })
 
 const urlEncoded = bodyParser.urlencoded();
 const jsonParser = bodyParser.json();
@@ -134,6 +135,10 @@ app.post('/api/virhe', textParser, (req, res) => {
   const errorHash = logError(req, req.body);
   res.json(errorHash);
 });
+
+if (!process.env.NON_LOCAL) {
+  app.get('/api/kokeile/muistutusviestit', adNotifications.testSending)
+}
 
 app.get('*', (req, res) => {
   res.sendFile('./index.html', {root: staticDir})
