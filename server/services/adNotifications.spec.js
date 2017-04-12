@@ -4,6 +4,7 @@ const chai = require('chai');
 const should = chai.should();
 
 const MockDate = require('mockdate');
+const seedrandom = require('seedrandom');
 
 const knex_config = require('../../knexfile');
 const knex = require('knex')(knex_config['test']);
@@ -122,6 +123,39 @@ describe('Send notifications for ads', function() {
       done();
     })
   });
+
+  it('should send randomly from the available ads', (done) => {
+    MockDate.set(aDate);
+    const anAd = {
+      data: {heading: "foo", content: "bar"},
+      user_id: 1,
+      created_at: new Date()
+    }
+    Promise.all([
+      knex('ads').insert(anAd),
+      knex('ads').insert(anAd),
+      knex('ads').insert(anAd),
+      knex('ads').insert(anAd),
+      knex('ads').insert(anAd),
+      knex('ads').insert(anAd),
+      knex('ads').insert(anAd)
+    ]).then(() => {
+      MockDate.set(aDayLater);
+      // these two seeds produce different orderings
+      seedrandom('first', { global: true });
+      return service.notificationObjects();
+    }).then(notifications => {
+      seedrandom('second', { global: true });
+      return Promise.all([
+        notifications,
+        service.notificationObjects()
+      ]);
+    }).then(([ notifications1, notifications2 ]) => {
+      notifications1.should.not.eql(notifications2);
+      done();
+    })
+
+  })
 
   it('should not send ads of the user in question', (done) => {
     MockDate.set(aDate);
