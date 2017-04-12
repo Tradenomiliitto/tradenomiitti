@@ -127,6 +127,22 @@ describe('Send notifications for ads', function() {
     })
   });
 
+  it('should send at least 3 ads per notification', (done) => {
+    MockDate.set(aDate);
+    service.notificationObjects()
+      .then(notifications => {
+        notifications
+          .find(notif => notif.user.id === userId)
+          .ads
+          .should.have.length(3);
+
+        notifications
+          .find(notif => notif.user.id === otherUserId)
+          .should.not.exist();
+        done();
+      })
+  });
+
   it('should send randomly from the available ads', (done) => {
     MockDate.set(aDate);
     const anAd = {
