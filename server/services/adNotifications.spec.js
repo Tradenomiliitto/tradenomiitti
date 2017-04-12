@@ -13,6 +13,7 @@ const util = require('../util')({ knex });
 const service = require('./adNotifications')({ knex });
 
 const userId = 2;
+const otherUserId = 1;
 
 describe('Send notifications for ads', function() {
 
@@ -103,7 +104,7 @@ describe('Send notifications for ads', function() {
     MockDate.set(aDate);
     const anAd = {
       data: {heading: "foo", content: "bar"},
-      user_id: userId,
+      user_id: otherUserId,
       created_at: new Date()
     }
     Promise.all([
@@ -130,7 +131,7 @@ describe('Send notifications for ads', function() {
     MockDate.set(aDate);
     const anAd = {
       data: {heading: "foo", content: "bar"},
-      user_id: userId,
+      user_id: otherUserId,
       created_at: new Date()
     }
     Promise.all([
