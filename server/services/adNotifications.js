@@ -3,6 +3,14 @@ const moment = require('moment');
 module.exports = function init(params) {
   const knex = params.knex;
 
+  function notificationObjects() {
+    return usersThatCanReceiveNow()
+      .then(userIds => {
+        return knex('ads').where({})
+          .then(ads => userIds.map(userId => ({ userId, ads })))
+      })
+  }
+
   function usersThatCanReceiveNow() {
     return knex('users').whereNotExists(function () {
       this.select('user_id')
@@ -15,6 +23,7 @@ module.exports = function init(params) {
   }
 
   return {
-    usersThatCanReceiveNow
+    usersThatCanReceiveNow,
+    notificationObjects
   }
 }

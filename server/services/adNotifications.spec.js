@@ -78,7 +78,22 @@ describe('Send notifications for ads', function() {
   });
 
   it('should not send ads a person has received a notification about', (done) => {
-    done();
+    MockDate.set(aDate);
+    knex('user_ad_notifications').insert({
+      user_id: 1,
+      ad_id: 1,
+      created_at: new Date()
+    }).then(() => {
+      MockDate.set(twoWeeksLater);
+      return service.notificationObjects();
+    }).then(notifications => {
+      notifications
+        .find(notif => notif.userId === 1)
+        .ads
+        .map(ad => ad.id)
+        .should.not.include(1);
+      done();
+    })
   });
 
   it('should send between 3 and 5 ads per notification', (done) => {
