@@ -34,7 +34,7 @@ describe('Handle users', function() {
 
   it('should list users', (done) => {
     service.listProfiles(false).then((users) => {
-      users.map(user => user.id).should.eql([1]);
+      users.map(user => user.id).should.include(1);
       done();
     })
   });

@@ -10,6 +10,13 @@ exports.seed = function(knex, Promise) {
         data: {}
       });
     }).then(() => {
+      return knex('users').insert({
+        id: 2,
+        remote_id: -2,
+        settings: {},
+        data: {}
+      });
+    }).then(() => {
       return knex('ads').insert({
         data: {heading: "foo", content: "bar"},
         user_id: 1,
