@@ -43,12 +43,13 @@ describe('Send notifications for ads', function() {
     MockDate.set(aDate);
     knex('user_ad_notifications').insert({
       user_id: 1,
-      ad_id: 1
+      ad_id: 1,
+      created_at: new Date()
     }).then(() => {
       MockDate.set(aDayLater);
       return service.usersThatCanReceiveNow();
     }).then(users => {
-      users.should.include(1);
+      users.should.not.include(1);
       done();
     })
   });
@@ -57,14 +58,23 @@ describe('Send notifications for ads', function() {
     MockDate.set(aDate);
     knex('user_ad_notifications').insert({
       user_id: 1,
-      ad_id: 1
+      ad_id: 1,
+      created_at: new Date()
     }).then(() => {
       MockDate.set(twoWeeksLater);
       return service.usersThatCanReceiveNow();
     }).then(users => {
-      users.should.not.include(1);
+      users.should.include(1);
       done();
     })
+  });
+
+  it('should send ads to people who have never received a notification', (done) => {
+    service.usersThatCanReceiveNow()
+      .then(users => {
+        users.should.include(1);
+        done();
+      })
   });
 
   it('should not send ads a person has received a notification about', (done) => {
