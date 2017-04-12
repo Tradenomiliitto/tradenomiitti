@@ -96,7 +96,35 @@ describe('Send notifications for ads', function() {
     })
   });
 
-  it('should send between 3 and 5 ads per notification', (done) => {
+  it('should send at most 5 ads per notification', (done) => {
+    MockDate.set(aDate);
+    const anAd = {
+      data: {heading: "foo", content: "bar"},
+      user_id: 1,
+      created_at: new Date()
+    }
+    Promise.all([
+      knex('ads').insert(anAd),
+      knex('ads').insert(anAd),
+      knex('ads').insert(anAd),
+      knex('ads').insert(anAd),
+      knex('ads').insert(anAd),
+      knex('ads').insert(anAd),
+      knex('ads').insert(anAd)
+    ]).then(() => {
+      MockDate.set(aDayLater);
+      return service.notificationObjects();
+    }).then(notifications => {
+      notifications
+        .find(notif => notif.userId === 1)
+        .ads
+        .should.have.length(5);
+      done();
+    })
+  });
+
+  it('should not send ads of the user in question', (done) => {
+    MockDate.set(aDate);
     done();
   });
 
