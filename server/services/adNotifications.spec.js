@@ -1,8 +1,8 @@
 /* global describe, beforeEach, afterEach, it */
-
 const chai = require('chai');
 const should = chai.should();
 
+const moment = require('moment');
 const MockDate = require('mockdate');
 const seedrandom = require('seedrandom');
 
@@ -179,8 +179,8 @@ describe('Send notifications for ads', function() {
 
         adIds.should.not.include(forcedAdId);
         adIds.should.have.length(3);
+        done();
       })
-    done();
   });
 
   it('should not send an ad that already has at least 3 answers', (done) => {
@@ -209,7 +209,26 @@ describe('Send notifications for ads', function() {
   });
 
   it('should not send an ad that is more than a month old', (done) => {
-    done();
+    MockDate.set(aDate);
+    const forcedAdId = 42;
+    const anAd = {
+      id: forcedAdId,
+      data: {heading: "foo", content: "bar"},
+      user_id: otherUserId,
+      created_at: moment().subtract(1, 'months').subtract(2, 'days')
+    };
+    knex('ads').insert(anAd)
+      .then(() => service.notificationObjects())
+      .then(notifications => {
+        const adIds = notifications
+              .find(notif => notif.userId === userId)
+              .ads
+          .map(ad => ad.id)
+
+        adIds.should.not.include(forcedAdId);
+        adIds.should.have.length(3);
+        done();
+      })
   });
 
   it('should rather send an ad with a fitting category than any old ad', (done) => {
