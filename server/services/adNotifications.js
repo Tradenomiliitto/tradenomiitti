@@ -26,11 +26,13 @@ module.exports = function init(params) {
     return usersThatCanReceiveNow()
       .then(userIds => {
         const promises = userIds.map(userId => {
-          return knex('ads').whereNotIn('id', function () {
-            this.select('ad_id')
-              .from('user_ad_notifications')
-              .whereRaw('user_ad_notifications.user_id = ?', [ userId ])
-          }).then(ads => ({ userId, ads: shuffle(ads).slice(0, 5) }))
+          return knex('ads')
+            .whereNot('user_id', userId)
+            .whereNotIn('id', function () {
+              this.select('ad_id')
+                .from('user_ad_notifications')
+                .whereRaw('user_ad_notifications.user_id = ?', [ userId ])
+            }).then(ads => ({ userId, ads: shuffle(ads).slice(0, 5) }))
         })
         return Promise.all(promises);
       })
