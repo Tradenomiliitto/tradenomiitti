@@ -28,6 +28,12 @@ module.exports = function init(params) {
         const promises = userIds.map(userId => {
           return knex('ads')
             .whereNot('user_id', userId)
+            .whereNotExists(function () {
+              this.count('answers.id')
+                .from('answers')
+                .whereRaw('answers.ad_id = ads.id')
+                .havingRaw('count(answers.id) >= 3')
+            })
             .whereNotIn('id', function () {
               this.select('ad_id')
                 .from('user_ad_notifications')
