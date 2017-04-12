@@ -12,6 +12,8 @@ const knex = require('knex')(knex_config['test']);
 const util = require('../util')({ knex });
 const service = require('./adNotifications')({ knex });
 
+const userId = 2;
+
 describe('Send notifications for ads', function() {
 
   beforeEach(function(done) {
@@ -43,14 +45,14 @@ describe('Send notifications for ads', function() {
   it('should not send ads to people who have just received a notification', (done) => {
     MockDate.set(aDate);
     knex('user_ad_notifications').insert({
-      user_id: 1,
+      user_id: userId,
       ad_id: 1,
       created_at: new Date()
     }).then(() => {
       MockDate.set(aDayLater);
       return service.usersThatCanReceiveNow();
     }).then(users => {
-      users.should.not.include(1);
+      users.should.not.include(userId);
       done();
     })
   });
@@ -58,14 +60,14 @@ describe('Send notifications for ads', function() {
   it('should send ads to people who have not recently received a notification', (done) => {
     MockDate.set(aDate);
     knex('user_ad_notifications').insert({
-      user_id: 1,
+      user_id: userId,
       ad_id: 1,
       created_at: new Date()
     }).then(() => {
       MockDate.set(twoWeeksLater);
       return service.usersThatCanReceiveNow();
     }).then(users => {
-      users.should.include(1);
+      users.should.include(userId);
       done();
     })
   });
@@ -73,7 +75,7 @@ describe('Send notifications for ads', function() {
   it('should send ads to people who have never received a notification', (done) => {
     service.usersThatCanReceiveNow()
       .then(users => {
-        users.should.include(1);
+        users.should.include(userId);
         done();
       })
   });
@@ -81,7 +83,7 @@ describe('Send notifications for ads', function() {
   it('should not send ads a person has received a notification about', (done) => {
     MockDate.set(aDate);
     knex('user_ad_notifications').insert({
-      user_id: 1,
+      user_id: userId,
       ad_id: 1,
       created_at: new Date()
     }).then(() => {
@@ -89,7 +91,7 @@ describe('Send notifications for ads', function() {
       return service.notificationObjects();
     }).then(notifications => {
       notifications
-        .find(notif => notif.userId === 1)
+        .find(notif => notif.userId === userId)
         .ads
         .map(ad => ad.id)
         .should.not.include(1);
@@ -101,7 +103,7 @@ describe('Send notifications for ads', function() {
     MockDate.set(aDate);
     const anAd = {
       data: {heading: "foo", content: "bar"},
-      user_id: 1,
+      user_id: userId,
       created_at: new Date()
     }
     Promise.all([
@@ -117,7 +119,7 @@ describe('Send notifications for ads', function() {
       return service.notificationObjects();
     }).then(notifications => {
       notifications
-        .find(notif => notif.userId === 1)
+        .find(notif => notif.userId === userId)
         .ads
         .should.have.length(5);
       done();
@@ -128,7 +130,7 @@ describe('Send notifications for ads', function() {
     MockDate.set(aDate);
     const anAd = {
       data: {heading: "foo", content: "bar"},
-      user_id: 1,
+      user_id: userId,
       created_at: new Date()
     }
     Promise.all([
