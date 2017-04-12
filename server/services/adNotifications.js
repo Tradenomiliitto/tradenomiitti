@@ -28,6 +28,7 @@ module.exports = function init(params) {
         const promises = userIds.map(userId => {
           return knex('ads')
             .whereNot('user_id', userId)
+            .whereRaw('created_at >= ?', [ moment().subtract(1, 'months') ])
             .whereNotExists(function () {
               this.count('answers.id')
                 .from('answers')
