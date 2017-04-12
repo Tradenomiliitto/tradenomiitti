@@ -30,29 +30,34 @@ module.exports = function init(params) {
     util.patchSkillsToUser(user, skills)
     return function(ad) {
       let score = 0;
+      const adDomain = ad.data.domain
+      const adPosition = ad.data.position
+      const adLocation = ad.data.location;
 
-      if (user.domains.map(skill => skill.heading).includes(ad.domain))
+      if (user.domains.map(skill => skill.heading).includes(adDomain))
         ++score;
-      if (ad.domain && !user.domains.map(skill => skill.heading).includes(ad.domain))
+      if (adDomain && !user.domains.map(skill => skill.heading).includes(adDomain))
         --score;
 
-      if (user.positions.map(skill => skill.heading).includes(ad.position))
+      if (user.positions.map(skill => skill.heading).includes(adPosition))
         ++score;
-      if (ad.position && !user.positions.map(skill => skill.heading).includes(ad.position))
+      if (adPosition && !user.positions.map(skill => skill.heading).includes(adPosition))
         --score;
 
-      if (user.location === ad.location)
+      if (user.location === adLocation)
         ++score;
-      if (ad.location && user.location !== ad.location)
+      if (adLocation && user.location !== adLocation)
         --score;
+
+      return score;
     }
   }
 
   function order(user, skills, ads) {
     const grouped = groupBy(ads, score(user, skills));
-    const numericSort = (a, b) => a - b;
+    const reverseNumericSort = (a, b) => b - a;
     const arrayOfArrays = Object.keys(grouped)
-          .sort(numericSort)
+          .sort(reverseNumericSort)
           .map(key => shuffle(grouped[key]));
 
     return [].concat.apply([], arrayOfArrays);
@@ -76,7 +81,7 @@ module.exports = function init(params) {
                 .from('user_ad_notifications')
                 .whereRaw('user_ad_notifications.user_id = ?', [ userId ])
             });
-          const userPromise = util.userById(userId);
+          const userPromise = util.userById(userId).then(user => util.formatUser(user, true));
           const skillsPromise = profileService.profileSkills(userId);
           return Promise.all([adsPromisee, userPromise, skillsPromise])
             .then(([ ads, user, skills ]) =>
