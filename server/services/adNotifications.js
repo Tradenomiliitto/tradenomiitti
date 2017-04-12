@@ -11,7 +11,7 @@ module.exports = function init(params) {
             this.select('ad_id')
               .from('user_ad_notifications')
               .whereRaw('user_ad_notifications.user_id = ?', [ userId ])
-          }).then(ads => ({ userId, ads }))
+          }).then(ads => ({ userId, ads: ads.slice(0, 5) }))
         })
         return Promise.all(promises);
       })
