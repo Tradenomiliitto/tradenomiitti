@@ -52,7 +52,7 @@ module.exports = function initialize(params) {
         if (databaseUser.data.picture_editing)
           user.picture_editing = databaseUser.data.picture_editing;
 
-        patchSkillsToUser(user, skills);
+        util.patchSkillsToUser(user, skills);
 
         return res.json(user);
       })
@@ -237,7 +237,7 @@ module.exports = function initialize(params) {
         return util.formatUser(user, loggedIn);
       }).then(user => {
         return service.profileSkills(user.id).then(skills => {
-          patchSkillsToUser(user, skills);
+          util.patchSkillsToUser(user, skills);
 
           return user
         });
@@ -300,12 +300,3 @@ module.exports = function initialize(params) {
   };
 }
 
-function patchSkillsToUser(user, skills) {
-  user.domains = skills
-    .filter(s => s.type === 'domain')
-    .map(s => ({ heading: s.heading, skill_level: s.level }));
-
-  user.positions = skills
-    .filter(s => s.type === 'position')
-    .map(s => ({ heading: s.heading, skill_level: s.level }));
-}

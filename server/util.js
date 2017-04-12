@@ -80,6 +80,24 @@ module.exports = function initialize(params) {
       })
   }
 
+  function logValue(tag, value) {
+    if (arguments.length === 1) {
+      value = tag;
+      tag = 'LOG VALUE';
+    }
+    return console.log(tag, value) || value;
+  }
+
+  function patchSkillsToUser(user, skills) {
+    user.domains = skills
+      .filter(s => s.type === 'domain')
+      .map(s => ({ heading: s.heading, skill_level: s.level }));
+
+    user.positions = skills
+      .filter(s => s.type === 'position')
+      .map(s => ({ heading: s.heading, skill_level: s.level }));
+  }
+
   return  {
     userForSession,
     userById,
@@ -87,6 +105,8 @@ module.exports = function initialize(params) {
     formatBusinessCard,
     formatAd,
     formatAnswer,
-    loggedIn
+    loggedIn,
+    logValue,
+    patchSkillsToUser
   };
 }

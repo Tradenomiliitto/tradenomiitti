@@ -1,4 +1,5 @@
 const moment = require('moment');
+const groupBy = require('lodash.groupby');
 
 // we implement a shuffle here, because e.g. lodash saves a reference to Math.radom
 // at require time, and we want to monkey patch it for reliable tests
@@ -19,14 +20,49 @@ const shuffle = (array) => {
   return array;
 }
 
+
 module.exports = function init(params) {
   const knex = params.knex;
+  const util = params.util;
+  const profileService = require('./profiles')({ knex, util });
+
+  function score(user, skills) {
+    util.patchSkillsToUser(user, skills)
+    return function(ad) {
+      let score = 0;
+
+      if (user.domains.map(skill => skill.heading).includes(ad.domain))
+        ++score;
+      if (ad.domain && !user.domains.map(skill => skill.heading).includes(ad.domain))
+        --score;
+
+      if (user.positions.map(skill => skill.heading).includes(ad.position))
+        ++score;
+      if (ad.position && !user.positions.map(skill => skill.heading).includes(ad.position))
+        --score;
+
+      if (user.location === ad.location)
+        ++score;
+      if (ad.location && user.location !== ad.location)
+        --score;
+    }
+  }
+
+  function order(user, skills, ads) {
+    const grouped = groupBy(ads, score(user, skills));
+    const numericSort = (a, b) => a - b;
+    const arrayOfArrays = Object.keys(grouped)
+          .sort(numericSort)
+          .map(key => shuffle(grouped[key]));
+
+    return [].concat.apply([], arrayOfArrays);
+  }
 
   function notificationObjects() {
     return usersThatCanReceiveNow()
       .then(userIds => {
         const promises = userIds.map(userId => {
-          return knex('ads')
+          const adsPromisee = knex('ads')
             .whereNot('user_id', userId)
             .whereRaw('created_at >= ?', [ moment().subtract(1, 'months') ])
             .whereNotExists(function () {
@@ -39,7 +75,12 @@ module.exports = function init(params) {
               this.select('ad_id')
                 .from('user_ad_notifications')
                 .whereRaw('user_ad_notifications.user_id = ?', [ userId ])
-            }).then(ads => ({ userId, ads: shuffle(ads).slice(0, 5) }))
+            });
+          const userPromise = util.userById(userId);
+          const skillsPromise = profileService.profileSkills(userId);
+          return Promise.all([adsPromisee, userPromise, skillsPromise])
+            .then(([ ads, user, skills ]) =>
+                  ({ userId: user.id, ads: order(user, skills, ads).slice(0, 5) }))
         })
         return Promise.all(promises);
       })

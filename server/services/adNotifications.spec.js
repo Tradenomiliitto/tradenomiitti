@@ -10,7 +10,7 @@ const knex_config = require('../../knexfile');
 const knex = require('knex')(knex_config['test']);
 
 const util = require('../util')({ knex });
-const service = require('./adNotifications')({ knex });
+const service = require('./adNotifications')({ knex, util });
 
 const userId = 2;
 const otherUserId = 1;
@@ -235,7 +235,7 @@ describe('Send notifications for ads', function() {
     done();
   });
 
-  it('should send any old ad if no categories fit', (done) => {
+  it('should send any old ad if categories in questions are wrong', (done) => {
     done();
   });
 });
