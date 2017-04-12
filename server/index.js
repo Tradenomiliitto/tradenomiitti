@@ -59,8 +59,9 @@ const smtpUser = process.env.SMTP_USER;
 const smtpPassword = process.env.SMTP_PASSWORD;
 const smtpTls = process.env.SMTP_TLS;
 const mailFrom = process.env.MAIL_FROM;
-if (!smtpHost || !smtpUser || !smtpPassword || !smtpTls || !mailFrom) {
-  console.warn("You should have SMTP_* parameters and MAIL_FROM in ENV");
+const serviceDomain = process.env.SERVICE_DOMAIN;
+if (!smtpHost || !smtpUser || !smtpPassword || !smtpTls || !mailFrom || !serviceDomain) {
+  console.warn("You should have SMTP_* parameters, MAIL_FROM and SERVICE_DOMAIN in ENV");
 }
 const smtp =
       { host: smtpHost,
@@ -68,7 +69,7 @@ const smtp =
         password: smtpPassword,
         tls: smtpTls === 'true'
       }
-const emails = require('./emails')({ smtp, mailFrom, staticDir });
+const emails = require('./emails')({ smtp, mailFrom, staticDir, serviceDomain });
 
 const logon = require('./logonHandling')({ communicationsKey, knex, sebacon });
 const util = require('./util')({ knex });

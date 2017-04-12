@@ -9,6 +9,7 @@ module.exports = function init(params) {
   const staticDir = params.staticDir;
   const smtp = params.smtp;
   const mailFrom = params.mailFrom;
+  const serviceDomain = params.serviceDomain;
 
   const logo = {
     path: `${__dirname}/../frontend/assets/tradenomiitti-tunnus-email.png`, type: 'image/png',
@@ -70,7 +71,7 @@ module.exports = function init(params) {
       }
     });
   }
-  
+
 
   function answerNotificationHtml(ad) {
     return (
@@ -82,14 +83,14 @@ module.exports = function init(params) {
     <h1 style="margin-bottom: 50px; color: ${scssVars.$pink}">Tradenomi on vastannut ilmoitukseesi</h1>
     <p>Ilmoitus voi tuoda mukanaan uusia arvokkaita kontakteja. Muista lähettää kiinnostaville tradenomeille yksityisviesti ja/tai käyntikortti.</p>
     <p style="margin-top: 80px;">
-      <a style="text-transform: uppercase; background-color: ${scssVars.$pink}; padding-left: 45px; padding-right: 45px; padding-top: 25px; padding-bottom: 25px; color: ${scssVars.$white}; text-decoration: none;" href="https://tradenomiitti.fi/ilmoitukset/${ad.id}">Katso vastaus</a>
+      <a style="text-transform: uppercase; background-color: ${scssVars.$pink}; padding-left: 45px; padding-right: 45px; padding-top: 25px; padding-bottom: 25px; color: ${scssVars.$white}; text-decoration: none;" href="https://${serviceDomain}/ilmoitukset/${ad.id}">Katso vastaus</a>
     </p>
     <h4 style="font-weight: bold; text-transform: uppercase; margin-top: 100px;">Ilmoituksesi</h4>
     <div style="width: 80%; background-color: ${scssVars['$light-grey-background']}; border-color: ${scssVars['$medium-grey']}; border-style: solid; border-width: 1px; padding: 30px; margin-left: auto; margin-right: auto;">
       <h2 style="color: ${scssVars.$pink};">${ad.data.heading}</h2>
       <p>${ad.data.content}</p>
     </div>
-    <p style="margin-top: 50px;">Etkö halua enää sähköposteja? Voit muokata sähköpostiasetuksiasi <a href="https://tradenomiitti.fi/asetukset" style="text-decoration: none; color: inherit; font-weight: bold;">Käyttäjätilin asetuksista</a>.</p>
+    <p style="margin-top: 50px;">Etkö halua enää sähköposteja? Voit muokata sähköpostiasetuksiasi <a href="https://${serviceDomain}/asetukset" style="text-decoration: none; color: inherit; font-weight: bold;">Käyttäjätilin asetuksista</a>.</p>
   </body>
 </html>
 `
@@ -107,7 +108,7 @@ module.exports = function init(params) {
     <p>Toinen tradenomi on antanut sinulle käyntikorttinsa Tradenomiitti-palvelussa. Voitte nyt olla yhteydessä ja jakaa osaamistanne vaikka kasvotusten.</p>
     <p>Profiili-sivun kautta voit lähettää oman käyntikorttisi</p>
     <p style="margin-top: 80px;">
-      <a style="text-transform: uppercase; background-color: ${scssVars.$pink}; padding-left: 45px; padding-right: 45px; padding-top: 25px; padding-bottom: 25px; color: ${scssVars.$white}; text-decoration: none;" href="https://tradenomiitti.fi/tradenomit/${user.id}">Katso profiili</a>
+      <a style="text-transform: uppercase; background-color: ${scssVars.$pink}; padding-left: 45px; padding-right: 45px; padding-top: 25px; padding-bottom: 25px; color: ${scssVars.$white}; text-decoration: none;" href="https://${serviceDomain}/tradenomit/${user.id}">Katso profiili</a>
     </p>
     <p style="margin-top: 75px;margin-bottom: 50px;font-weight: bold;">“${message}”</p>
     <div style="padding: 30px; background-color: ${scssVars['$light-grey-background']}; text-align: left;">
@@ -125,7 +126,7 @@ module.exports = function init(params) {
         ${makeBusinessCardLine('Sähköpostiosoite', user.data.business_card.email)}
       </div>
     </div>
-    <p style="margin-top: 50px;">Etkö halua enää sähköposteja? Voit muokata sähköpostiasetuksiasi <a href="https://tradenomiitti.fi/asetukset" style="text-decoration: none; color: inherit; font-weight: bold;">Käyttäjätilin asetuksista</a>.</p>
+    <p style="margin-top: 50px;">Etkö halua enää sähköposteja? Voit muokata sähköpostiasetuksiasi <a href="https://${serviceDomain}/asetukset" style="text-decoration: none; color: inherit; font-weight: bold;">Käyttäjätilin asetuksista</a>.</p>
   </body>
 </html>
 `

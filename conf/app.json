@@ -16,6 +16,7 @@
         "SMTP_USER": "{{ smtp_user }}",
         "SMTP_PASSWORD": "{{ smtp_password }}",
         "SMTP_TLS": "{{ smtp_tls }}",
-        "MAIL_FROM": "{{ mail_from }}"
+        "MAIL_FROM": "{{ mail_from }}",
+        "SERVICE_DOMAIN": "{{ server_name }}"
       }
 }
