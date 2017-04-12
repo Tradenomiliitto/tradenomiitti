@@ -6,8 +6,14 @@ module.exports = function init(params) {
   function notificationObjects() {
     return usersThatCanReceiveNow()
       .then(userIds => {
-        return knex('ads').where({})
-          .then(ads => userIds.map(userId => ({ userId, ads })))
+        const promises = userIds.map(userId => {
+          return knex('ads').whereNotIn('id', function () {
+            this.select('ad_id')
+              .from('user_ad_notifications')
+              .whereRaw('user_ad_notifications.user_id = ?', [ userId ])
+          }).then(ads => ({ userId, ads }))
+        })
+        return Promise.all(promises);
       })
   }
 
