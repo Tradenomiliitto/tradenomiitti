@@ -86,11 +86,14 @@ module.exports = function init(params) {
             .then(([ ads, user, skills ]) => {
               util.patchSkillsToUser(user, skills);
               return {
-                user, ads: order(user, ads).slice(0, 5)
+                user,
+                ads: order(user, ads).slice(0, 5)
               }
             })
         })
-        return Promise.all(promises);
+        return Promise.all(promises)
+          .then(notifications => notifications
+                .filter(notification => notification.ads.length >= 3));
       })
   }
 

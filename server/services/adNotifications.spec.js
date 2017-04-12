@@ -83,10 +83,17 @@ describe('Send notifications for ads', function() {
 
   it('should not send ads a person has received a notification about', (done) => {
     MockDate.set(aDate);
-    knex('user_ad_notifications').insert({
-      user_id: userId,
-      ad_id: 1,
-      created_at: new Date()
+    const anAd = {
+      data: {heading: "foo", content: "bar"},
+      user_id: otherUserId,
+      created_at: moment()
+    }
+    knex('ads').insert(anAd).then(() => {
+      return knex('user_ad_notifications').insert({
+        user_id: userId,
+        ad_id: 1,
+        created_at: new Date()
+      })
     }).then(() => {
       MockDate.set(twoWeeksLater);
       return service.notificationObjects();
@@ -136,9 +143,8 @@ describe('Send notifications for ads', function() {
           .ads
           .should.have.length(3);
 
-        notifications
-          .find(notif => notif.user.id === otherUserId)
-          .should.not.exist();
+        should.not.exist(
+          notifications.find(notif => notif.user.id === otherUserId));
         done();
       })
   });
@@ -206,7 +212,13 @@ describe('Send notifications for ads', function() {
       ad_id: 1,
       data: { content: 'foo' }
     };
+    const anAd = {
+      data: {heading: "foo", content: "bar"},
+      user_id: otherUserId,
+      created_at: moment()
+    }
     Promise.all([
+      knex('ads').insert(anAd),
       knex('answers').insert(anAnswer),
       knex('answers').insert(anAnswer),
       knex('answers').insert(anAnswer)
@@ -219,7 +231,7 @@ describe('Send notifications for ads', function() {
             .ads
             .map(ad => ad.id)
       adIds.should.not.include(1);
-      adIds.should.have.length(2);
+      adIds.should.have.length(3);
       done();
     })
   });
