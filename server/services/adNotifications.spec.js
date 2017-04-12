@@ -162,6 +162,24 @@ describe('Send notifications for ads', function() {
 
   it('should not send ads of the user in question', (done) => {
     MockDate.set(aDate);
+    const forcedAdId = 42;
+    const anAd = {
+      id: forcedAdId,
+      data: {heading: "foo", content: "bar"},
+      user_id: userId,
+      created_at: new Date()
+    }
+    knex('ads').insert(anAd)
+      .then(() => service.notificationObjects())
+      .then(notifications => {
+        const adIds = notifications
+          .find(notif => notif.userId === userId)
+          .ads
+          .map(ad => ad.id)
+
+        adIds.should.not.include(forcedAdId);
+        adIds.should.have.length(3);
+      })
     done();
   });
 
