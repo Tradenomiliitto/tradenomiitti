@@ -6,6 +6,10 @@ const scssVars = scssToJson(colorsFilepath);
 
 module.exports = function init(params) {
 
+  const staticDir = params.staticDir;
+  const smtp = params.smtp;
+  const mailFrom = params.mailFrom;
+
   const logo = {
     path: `${__dirname}/../frontend/assets/tradenomiitti-tunnus-email.png`, type: 'image/png',
     headers: {"Content-ID":"<logo.png>"},
@@ -35,7 +39,7 @@ module.exports = function init(params) {
       { data: contactNotificationHtml(contactUser, introductionText), alternative: true,
           related: [
             logo,
-            { path: `${params.staticDir}/images/${pic}`, type: imageType,
+            { path: `${staticDir}/images/${pic}`, type: imageType,
               headers: {"Content-ID":"<picture>"},
               name: pic
             }
@@ -53,9 +57,9 @@ module.exports = function init(params) {
     if (! (emails_for_answers && email_address && email_address.includes('@'))) {
       return;
     }
-    const server = emailjs.server.connect(params.smtp);
+    const server = emailjs.server.connect(smtp);
     server.send({
-      from: params.mailFrom,
+      from: mailFrom,
       to: email_address,
       text: text,
       subject: subject,
