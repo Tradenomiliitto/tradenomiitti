@@ -13,12 +13,15 @@ module.exports = function init(params) {
             ad_id: ad.id,
             user_id: user.id
           }))
+          // everybody is logged in when reading email
+          const formattedAdsPromise = Promise.all(notification.ads.map(ad => util.formatAd(ad, true)));
           return knex('user_ad_notifications').insert(notificationRows)
-            .then(() => notifications)
+            .then(() => formattedAdsPromise)
+            .then(ads => emails.adNotificationHtml(ads))
         });
         return Promise.all(promises);
       })
-      .then(objects => res.json(objects))
+      .then(htmls => res.send(htmls[0]))
   }
 
   return {
