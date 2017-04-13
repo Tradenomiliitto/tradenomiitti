@@ -32,25 +32,58 @@ module.exports = function init(params) {
   }
 
   function sendNotificationForContact(receiver, contactUser, introductionText) {
-
-    const pic = contactUser.data.cropped_picture;
-    const imageType = pic.endsWith('.jpg') ? 'image/jpg' : 'image/png';
-
     const attachment = [
-      { data: contactNotificationHtml(contactUser, introductionText), alternative: true,
-          related: [
-            logo,
-            { path: `${staticDir}/images/${pic}`, type: imageType,
-              headers: {"Content-ID":"<picture>"},
-              name: pic
-            }
-          ]
-        },
-      ]
+      { data: contactNotificationHtml(contactUser, introductionText),
+        alternative: true,
+        related: [
+          logo,
+          imageAttachment(contactUser.data.cropped_picture, '<picture>')
+        ]
+      },
+    ];
     const text = 'Kirjaudu Tradenomiittiin nähdäksesi kontaktin profiilin'
     const subject = 'Olet saanut uuden kontaktin'
 
     sendEmail(receiver, text, subject, attachment);
+  }
+
+  function isUserPic(userPic) {
+    return userPic && userPic.length > 0;
+  }
+
+  function imageAttachment(userPic, cid) {
+    const pic = isUserPic(userPic) ? `images/${userPic}` : 'user.png';
+    const imageType = pic.endsWith('.jpg') ? 'image/jpg' : 'image/png';
+
+    return {
+      path: `${staticDir}/${pic}`,
+      type: imageType,
+      headers: {'Content-ID': cid },
+      name: pic
+    }
+  }
+
+  function userPicStyle(userPic) {
+    const width = isUserPic(userPic) ? '100%' : '50%';
+    const marginTop = isUserPic(userPic) ? '' : 'margin-top: 25%;';
+    return `width: ${width}; ${marginTop}`;
+  }
+
+  function sendNotificationForAds(user, ads) {
+    function makeImage(ad, index) {
+      return imageAttachment(ad.created_by.cropped_picture, `<picture${index}>`);
+    }
+    const adImages = ads.map(makeImage);
+    const attachment = [
+      { data: adNotificationHtml(ads),
+        alternative: true,
+        related: [logo].concat(adImages)
+      }
+    ];
+    const text = "Kirjaudu Tradenomiittiin nähdäksesi uusimman sisällön";
+    const subject = 'Uusia ilmoituksia Tradenomiitissa';
+
+    sendEmail(user, text, subject, attachment);
   }
 
   function sendEmail(receiver, text, subject, attachment) {
@@ -113,7 +146,7 @@ module.exports = function init(params) {
     <p style="margin-top: 75px;margin-bottom: 50px;font-weight: bold;">“${message}”</p>
     <div style="padding: 30px; background-color: ${scssVars['$light-grey-background']}; text-align: left;">
       <span style="width: 80px; height: 80px; border-radius: 40px; display: inline-block; overflow: hidden; background-color: ${scssVars.$pink}; float: left; margin-bottom: 25px; margin-right: 10px;">
-        <img src="cid:picture" style="width: 100%;">
+        <img src="cid:picture" style="${userPicStyle(user.data.cropped_picture)}">
         </img>
       </span>
       <span style="float: left;">
@@ -153,7 +186,7 @@ module.exports = function init(params) {
 <p style="text-transform: uppercase; margin-top: 45px; margin-bottom: 45px; font-weight: bold;">${categoriesText}</p>
 <div style="padding: 30px; background-color: ${scssVars['$light-grey-background']}; text-align: center;">
   <span style="width: 80px; height: 80px; border-radius: 40px; display: inline-block; overflow: hidden; background-color: ${scssVars.$pink};">
-    <img src="cid:picture${index}" style="width: 100%;">
+    <img src="cid:picture${index}" style="${userPicStyle(ad.created_by.cropped_picture)}">
     </img>
   </span>
   <h3 style="margin-bottom: 5px;">${ad.created_by.name}</h2>
@@ -177,7 +210,7 @@ module.exports = function init(params) {
     <img style="width: 45px;" src="cid:logo.png" alt="logo" />
     <h1 style="margin-bottom: 50px; color: ${scssVars.$pink}; text-transform: uppercase; font-weight: bold;">Sinulta odotetaan vastausta</h1>
     <p style="margin-bottom: 25px;">Toinen tradenomi on jättänyt ilmoituksen ja toivoo vastausta sinun kaltaiseltasi osaajalta. Auta vertaistasi jakamalla näkemyksesi.</p>
-    ${ads.map(singleAdHtml)}
+    ${ads.map(singleAdHtml).join('')}
     <p style="margin-top: 50px;">Etkö halua enää sähköposteja? Voit muokata sähköpostiasetuksiasi <a href="https://${serviceDomain}/asetukset" style="text-decoration: none; color: inherit; font-weight: bold;">Käyttäjätilin asetuksista</a>.</p>
   </body>
 </html>
@@ -189,6 +222,6 @@ module.exports = function init(params) {
   return {
     sendNotificationForAnswer,
     sendNotificationForContact,
-    adNotificationHtml
+    sendNotificationForAds
   };
 }
