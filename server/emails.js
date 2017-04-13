@@ -183,7 +183,7 @@ module.exports = function init(params) {
     const categoriesText = categories.length > 0 ? categories.join(', ') : 'Kaikki tradenomit';
     return (
 `
-<p style="text-transform: uppercase; margin-top: 45px; margin-bottom: 45px; font-weight: bold;">${categoriesText}</p>
+<p style="margin-top: 45px; margin-bottom: 45px; font-weight: bold;">${categoriesText}</p>
 <div style="padding: 30px; background-color: ${scssVars['$light-grey-background']}; text-align: center;">
   <span style="width: 80px; height: 80px; border-radius: 40px; display: inline-block; overflow: hidden; background-color: ${scssVars.$pink};">
     <img src="cid:picture${index}" style="${userPicStyle(ad.created_by.cropped_picture)}">
