@@ -31,7 +31,14 @@ module.exports = function initialize(params) {
 
   function listAds(req, res, next) {
     util.loggedIn(req)
-      .then(loggedIn => service.listAds(loggedIn, req.query.limit, req.query.offset))
+      .then(loggedIn => service.listAds(
+        loggedIn,
+        req.query.limit,
+        req.query.offset,
+        req.query.domain,
+        req.query.position,
+        req.query.location
+      ))
       .then(ads => res.send(ads))
       .catch(next)
   }

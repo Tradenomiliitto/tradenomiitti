@@ -545,7 +545,7 @@ viewPage model =
         CreateAd ->
           H.map CreateAdMessage <| CreateAd.view model.config model.createAd
         ListAds ->
-          unpackViewMessage ListAdsMessage <| ListAds.view model.listAds
+          unpackViewMessage ListAdsMessage <| ListAds.view model.listAds model.config
         ShowAd adId ->
           unpackViewMessage AdMessage <| Ad.view model.ad adId model.profile.user model.rootUrl
         Home ->
