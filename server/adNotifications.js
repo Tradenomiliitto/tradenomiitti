@@ -4,7 +4,7 @@ module.exports = function init(params) {
   const util = params.util;
   const service = require('./services/adNotifications')({ knex, util });
 
-  function testSending(req, res, next) {
+  function sendNotifications() {
     service.notificationObjects()
       .then(notifications => {
         const promises = notifications.map(notification => {
@@ -21,10 +21,10 @@ module.exports = function init(params) {
         });
         return Promise.all(promises);
       })
-      .then(htmls => res.send(htmls[0]))
+      .then(() => console.log('Notifications sent'))
   }
 
   return {
-    testSending
+    sendNotifications
   };
 }
