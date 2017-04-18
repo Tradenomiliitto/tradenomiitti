@@ -9,6 +9,8 @@ import Html.Events as E
 import Http
 import Json.Decode as Json
 import Json.Encode as JS
+import Link
+import Maybe.Extra as Maybe
 import Models.Ad exposing (Ad, Answers(..), Answer)
 import Models.User exposing (User)
 import Nav
@@ -74,6 +76,7 @@ view model adId user rootUrl =
 viewAd : Int -> Model -> Maybe User -> String -> Ad -> H.Html (ViewMessage Msg)
 viewAd adId model userMaybe rootUrl ad =
   let
+    loggedIn = Maybe.isJust userMaybe
     (canAnswer, isAsker, hasAnswered) =
       case userMaybe of
         Just user ->
@@ -106,8 +109,8 @@ viewAd adId model userMaybe rootUrl ad =
           ]
         , leaveAnswer <|
           if model.addingAnswer
-          then leaveAnswerBox (model.sending == Sending) model.answerText adId
-          else leaveAnswerPrompt canAnswer isAsker hasAnswered
+          then List.map (H.map LocalViewMessage) <| leaveAnswerBox (model.sending == Sending) model.answerText adId
+          else leaveAnswerPrompt canAnswer isAsker hasAnswered loggedIn adId
         ]
       , H.hr [ A.class "full-width-ruler" ] []
       , viewAnswers ad.answers adId rootUrl
@@ -228,8 +231,8 @@ leaveAnswerBox sending text adId =
     ]
   ]
 
-leaveAnswerPrompt : Bool -> Bool -> Bool -> List (H.Html Msg)
-leaveAnswerPrompt canAnswer isAsker hasAnswered =
+leaveAnswerPrompt : Bool -> Bool -> Bool -> Bool -> Int -> List (H.Html (ViewMessage Msg))
+leaveAnswerPrompt canAnswer isAsker hasAnswered loggedIn adId =
   if isAsker then
     [ H.p
       [ A.class "ad-page__leave-answer-text" ]
@@ -247,21 +250,23 @@ leaveAnswerPrompt canAnswer isAsker hasAnswered =
           [ H.text "Kokemuksellasi on aina arvoa. Jaa näkemyksesi vastaamalla ilmoitukseen." ]
       , H.button
         [ A.class "btn btn-primary btn-lg ad-page__leave-answer-button"
-        , E.onClick StartAddAnswer
-        , A.disabled (not canAnswer)
-        , A.title (if canAnswer
+        , if loggedIn then
+            E.onClick (LocalViewMessage StartAddAnswer)
+          else
+            Link.action (Nav.LoginNeeded (Nav.ShowAd adId |> Nav.routeToPath |> Just))
+        , A.disabled (not canAnswer && loggedIn)
+        , A.title (if canAnswer || not loggedIn
                   then "Voit vastata muiden esittämiin kysymyksiin kerran"
                   else "Et voi vastata tähän kysymykseen")
         ]
         [ H.text "Vastaa ilmoitukseen" ]
       ]
 
-leaveAnswer : List (H.Html Msg) -> H.Html (ViewMessage Msg)
+leaveAnswer : List (H.Html (ViewMessage Msg)) -> H.Html (ViewMessage Msg)
 leaveAnswer contents =
-  H.map LocalViewMessage <|
-    H.div
-      [ A.class "col-xs-12 col-sm-6 ad-page__leave-answer" ]
-      contents
+  H.div
+    [ A.class "col-xs-12 col-sm-6 ad-page__leave-answer" ]
+    contents
 
 viewDate : Date.Date -> H.Html msg
 viewDate date =
