@@ -5,6 +5,7 @@ const uuid = require('uuid');
 const crypto = require('crypto');
 const request = require('request');
 const cookieSession = require('cookie-session');
+const schedule = require('node-schedule');
 
 const rootDir = './frontend';
 const staticDir = process.env.NON_LOCAL ? '/srv/static' : `${rootDir}/static`;
@@ -82,6 +83,13 @@ const jsonParser = bodyParser.json();
 const textParser = bodyParser.text();
 const fileParser = fileUpload();
 
+
+if (process.env.NON_LOCAL) {
+  // schedule every week day at 12 UTC, i.e. 14 or 15 EET
+  schedule.scheduleJob({ hour: 12, minute: 0, dayOfWeek: new schedule.Range(1, 5) },
+                       adNotifications.sendNotifications);
+}
+
 app.post('/kirjaudu', urlEncoded, logon.login );
 app.get('/uloskirjautuminen', logon.logout);
 
@@ -136,10 +144,6 @@ app.post('/api/virhe', textParser, (req, res) => {
   const errorHash = logError(req, req.body);
   res.json(errorHash);
 });
-
-if (!process.env.NON_LOCAL) {
-  app.get('/api/kokeile/muistutusviestit', adNotifications.testSending)
-}
 
 app.get('*', (req, res) => {
   res.sendFile('./index.html', {root: staticDir})
