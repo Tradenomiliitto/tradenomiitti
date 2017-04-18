@@ -330,19 +330,22 @@ viewUser model ownProfile contactUser config user =
           else H.map LocalViewMessage contactUser
       ]
     ]
-  , H.hr [ A.class "full-width-ruler" ] []
+  , H.hr [ A.class "full-width-ruler user-page__activity-before" ] []
   , H.div
-    [ A.class "container" ] <|
+    [ A.class "user-page__activity" ]
     [ H.div
-      [ A.class "row" ]
+      [ A.class "container" ] <|
       [ H.div
-        [ A.class "col-sm-12" ]
-        [ H.h3 [ A.class "user-page__activity-header" ] [ H.text "Aktiivisuus" ]
+        [ A.class "row" ]
+        [ H.div
+          [ A.class "col-sm-12" ]
+          [ H.h3 [ A.class "user-page__activity-header" ] [ H.text "Aktiivisuus" ]
+          ]
         ]
       ]
+      ++ ListAds.viewAds model.ads
     ]
-    ++ ListAds.viewAds model.ads
-  , H.hr [ A.class "full-width-ruler" ] []
+  , H.hr [ A.class "full-width-ruler user-page__activity-after" ] []
   , H.div
     [ A.class "container" ]
     [ H.div
