@@ -59,6 +59,9 @@ module.exports = function initialize(params) {
       ad.id = databaseAd.id;
       ad.heading = databaseAd.data.heading || '';
       ad.content = databaseAd.data.content || '';
+      ad.domain = databaseAd.data.domain;
+      ad.position= databaseAd.data.position;
+      ad.location= databaseAd.data.location;
       ad.created_by = formatUser(askingUser, loggedIn);
       ad.created_at = databaseAd.created_at;
       ad.answers = loggedIn ? answers : answers.length;
@@ -80,6 +83,24 @@ module.exports = function initialize(params) {
       })
   }
 
+  function logValue(tag, value) {
+    if (arguments.length === 1) {
+      value = tag;
+      tag = 'LOG VALUE';
+    }
+    return console.log(tag, value) || value;
+  }
+
+  function patchSkillsToUser(user, skills) {
+    user.domains = skills
+      .filter(s => s.type === 'domain')
+      .map(s => ({ heading: s.heading, skill_level: s.level }));
+
+    user.positions = skills
+      .filter(s => s.type === 'position')
+      .map(s => ({ heading: s.heading, skill_level: s.level }));
+  }
+
   return  {
     userForSession,
     userById,
@@ -87,6 +108,8 @@ module.exports = function initialize(params) {
     formatBusinessCard,
     formatAd,
     formatAnswer,
-    loggedIn
+    loggedIn,
+    logValue,
+    patchSkillsToUser
   };
 }

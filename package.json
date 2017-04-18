@@ -42,7 +42,10 @@
     "font-awesome": "^4.7.0",
     "gm": "^1.23.0",
     "knex": "^0.12.6",
+    "lodash.groupby": "^4.6.0",
+    "moment": "^2.18.1",
     "node-sass": "^4.5.0",
+    "node-schedule": "^1.2.1",
     "pg": "^6.1.2",
     "postcss-cli": "^3.0.0",
     "request": "^2.79.0",
@@ -55,6 +58,8 @@
   "devDependencies": {
     "chai": "^3.5.0",
     "mocha": "^3.2.0",
+    "mockdate": "^2.0.1",
+    "seedrandom": "^2.4.2",
     "xml2js": "^0.4.17"
   }
 }
