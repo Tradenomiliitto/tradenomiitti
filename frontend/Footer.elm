@@ -25,6 +25,7 @@ view routeToMsg =
           , H.p [] [ Common.link Nav.RegisterDescription routeToMsg ]
           , H.p [] [ H.a [ A.href "http://tral.fi" ] [ H.text "tral.fi" ]]
           , H.p [] [ H.a [ A.href "http://liity.tral.fi/#liity" ] [ H.text "Liity jäseneksi" ]]
+          , H.p [] [ H.a [ A.href "mailto:tradenomiitti@tral.fi" ] [ H.text "Anna palautetta" ]]
           ]
         , H.div
           [ A.class "col-xs-12 col-sm-6 footer__social-icons" ]
