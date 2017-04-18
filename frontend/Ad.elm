@@ -93,24 +93,29 @@ viewAd adId model userMaybe rootUrl ad =
           (False, False, False)
   in
     H.div
-      [ A.class "container ad-page" ]
+      []
       [ H.div
-        [ A.class "row ad-page__ad-container" ]
+        [ A.class "container ad-page" ]
         [ H.div
-          [ A.class "col-xs-12 col-sm-6 ad-page__ad" ]
-          [ viewDate ad.createdAt
-          , H.h1 [ A.class "user-page__activity-item-heading" ] [ H.text ad.heading ]
-          , H.p [ A.class "user-page__activity-item-content" ]  [ H.text ad.content ]
-          , H.hr [] []
-          , Common.authorInfo ad.createdBy
+          [ A.class "row ad-page__ad-container" ]
+          [ H.div
+            [ A.class "col-xs-12 col-sm-6 ad-page__ad" ]
+            [ viewDate ad.createdAt
+            , H.h1 [ A.class "user-page__activity-item-heading" ] [ H.text ad.heading ]
+            , H.p [ A.class "user-page__activity-item-content" ]  [ H.text ad.content ]
+            , H.hr [] []
+            , Common.authorInfo ad.createdBy
+            ]
+          , leaveAnswer <|
+            if model.addingAnswer
+            then leaveAnswerBox (model.sending == Sending) model.answerText adId
+            else leaveAnswerPrompt canAnswer isAsker hasAnswered
           ]
-        , leaveAnswer <|
-          if model.addingAnswer
-          then leaveAnswerBox (model.sending == Sending) model.answerText adId
-          else leaveAnswerPrompt canAnswer isAsker hasAnswered
         ]
       , H.hr [ A.class "full-width-ruler" ] []
-      , viewAnswers ad.answers adId rootUrl
+      , H.div
+        [ A.class "container last-row"]
+        [ viewAnswers ad.answers adId rootUrl ]
       ]
 
 
