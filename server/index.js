@@ -173,7 +173,7 @@ app.get('/api/tehtavaluokat', (req, res) => {
       "Sosiaaliturvaetuuksien käsittely",
       "Yrittäjyys"
     ];
-  return res.json(positions);
+  return res.json(positions.sort());
   // return sebacon.getPositionTitles().then(positions => res.json(Object.values(positions).sort()));
 });
 
@@ -187,7 +187,7 @@ app.get('/api/toimialat', (req, res) => {
       "Lehtien toimitukset",
       "Radio-, elokuva- ja televisiotoiminta & muu media-ala",
       "Graafinen ala",
-      "kääntäminen ja tulkkaus",
+      "Kääntäminen ja tulkkaus",
       "Kustannustoiminta",
       "ICT-ala (esim. televiestintä, verkon hallinta)",
       "Tietojenkäsittelypalvelut (esim. ohjelmistosuunnittelu, tietopalvelutoiminta)",
@@ -243,7 +243,7 @@ app.get('/api/toimialat', (req, res) => {
       "Koneiden ja laitteiden korjaus, huolto ja asennus",
       "Liikenneala (esim. Ilma-, tie-, rautatie- ja vesiliikenne)"
     ];
-  return res.json(domains);
+  return res.json(domains.sort());
   // return sebacon.getDomainTitles().then(domains => res.json(Object.values(domains).sort()));
 });
 
