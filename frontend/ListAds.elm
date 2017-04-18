@@ -2,6 +2,7 @@ module ListAds exposing (..)
 
 import Ad
 import Common
+import Common exposing (Filter(..))
 import Html as H
 import Html.Attributes as A
 import Http
@@ -11,6 +12,8 @@ import List.Extra as List
 import Models.Ad
 import Nav
 import QueryString
+import QueryString.Extra as QueryString
+import State.Config as Config
 import State.ListAds exposing (..)
 import SvgIcons
 import Util exposing (ViewMessage(..), UpdateMessage(..))
@@ -18,6 +21,9 @@ import Util exposing (ViewMessage(..), UpdateMessage(..))
 type Msg
   = UpdateAds Int (List Models.Ad.Ad)
   | FooterAppeared
+  | ChangeDomainFilter (Maybe String)
+  | ChangePositionFilter (Maybe String)
+  | ChangeLocationFilter (Maybe String)
 
 
 update : Msg -> Model -> (Model, Cmd (UpdateMessage Msg))
@@ -37,8 +43,24 @@ update msg model =
       else
         model ! [ getAds model ]
 
+    ChangeDomainFilter value ->
+      reInitItems { model | selectedDomain = value }
+
+    ChangePositionFilter value ->
+      reInitItems { model | selectedPosition = value }
+
+    ChangeLocationFilter value ->
+      reInitItems { model | selectedLocation = value }
+
 initTasks : Model -> Cmd (UpdateMessage Msg)
 initTasks = getAds
+
+reInitItems : Model -> (Model, Cmd (UpdateMessage Msg))
+reInitItems model =
+  let
+    newModel = { model | ads = [], cursor = 0 }
+  in
+    newModel ! [ getAds newModel ]
 
 getAds : Model -> Cmd (UpdateMessage Msg)
 getAds model =
@@ -47,6 +69,9 @@ getAds model =
       QueryString.empty
         |> QueryString.add "limit" (toString limit)
         |> QueryString.add "offset" (toString model.cursor)
+        |> QueryString.optional "domain" model.selectedDomain
+        |> QueryString.optional "position" model.selectedPosition
+        |> QueryString.optional "location" model.selectedLocation
         |> QueryString.render
 
     url = "/api/ilmoitukset/" ++ queryString
@@ -55,8 +80,8 @@ getAds model =
     Util.errorHandlingSend (UpdateAds model.cursor) request
 
 
-view : Model -> H.Html (ViewMessage Msg)
-view model =
+view : Model -> Config.Model -> H.Html (ViewMessage Msg)
+view model config =
   H.div []
     [ H.div
       [ A.class "container" ]
@@ -68,6 +93,18 @@ view model =
             [ A.class "list-ads__header" ]
             [ H.text "Selaa ilmoituksia" ]
           ]
+        ]
+      , H.div
+        [ A.class "row list-users__filters" ]
+        [ H.div
+          [ A.class "col-xs-12 col-sm-4" ]
+          [ Common.select "list-users" (LocalViewMessage << ChangeDomainFilter) Domain config.domainOptions model ]
+        , H.div
+          [ A.class "col-xs-12 col-sm-4" ]
+          [ Common.select "list-users" (LocalViewMessage << ChangePositionFilter) Position config.positionOptions model ]
+        , H.div
+          [ A.class "col-xs-12 col-sm-4" ]
+          [ Common.select "list-users" (LocalViewMessage << ChangeLocationFilter) Location Config.finnishRegions model ]
         ]
       ]
     , H.div
