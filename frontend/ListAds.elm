@@ -66,7 +66,7 @@ view model =
           [ A.class "col-sm-12" ]
           [ H.h1
             [ A.class "list-ads__header" ]
-            [ H.text "Selaa hakuilmoituksia" ]
+            [ H.text "Selaa ilmoituksia" ]
           ]
         ]
       ]
