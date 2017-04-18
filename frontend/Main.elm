@@ -599,6 +599,4 @@ sendError msg =
 
 errorCodeToUserVisibleErrorMessage : String -> String
 errorCodeToUserVisibleErrorMessage body =
-  "Jotain meni pieleen. Virheen tunnus on "
-                                      ++ body
-                                      ++ "."
+  "Jotain meni pieleen. Virheen tunnus on " ++ body ++ ". Meille olisi suuri apu, jos otat kuvakaappauksen koko sivusta ja lähetät sen osoitteeseen tradenomiitti@tral.fi."
