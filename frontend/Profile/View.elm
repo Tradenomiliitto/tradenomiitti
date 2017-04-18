@@ -318,7 +318,7 @@ viewUserMaybe model ownProfile config =
       ]
 
 
-viewUser : Model -> Bool -> H.Html Msg -> Config.Model -> User -> List (H.Html (ViewMessage Msg))
+viewUser : Model -> Bool -> H.Html (ViewMessage Msg) -> Config.Model -> User -> List (H.Html (ViewMessage Msg))
 viewUser model ownProfile contactUser config user =
   [ H.div
     [ A.class "container" ]
@@ -327,7 +327,7 @@ viewUser model ownProfile contactUser config user =
       [ H.map LocalViewMessage (userInfoBox model user)
       , if ownProfile
           then H.map LocalViewMessage (editProfileBox user)
-          else H.map LocalViewMessage contactUser
+          else contactUser
       ]
     ]
   , H.hr [ A.class "full-width-ruler user-page__activity-before" ] []
