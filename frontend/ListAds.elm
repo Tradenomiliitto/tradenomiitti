@@ -112,14 +112,17 @@ adListView ad =
       , H.hr [ A.class "list-ads__item-ruler" ] []
       , H.div
         []
-        [ H.div
-          [ A.class "list-ads__ad-preview-answer-count" ]
+        [ H.a
+          [ A.class "list-ads__ad-preview-answer-count card-link"
+          , A.href (Nav.routeToPath (Nav.ShowAd ad.id))
+          , Link.action (Nav.ShowAd ad.id)
+          ]
           [ H.span
               [ A.class "list-ads__ad-preview-answer-count-number" ]
               [ H.text << toString <| Models.Ad.adCount ad.answers]
           , SvgIcons.answers
           ]
-        , Common.authorInfo ad.createdBy
+        , H.div [ A.class "list-ads__ad-preview-author-info" ] [ Common.authorInfo ad.createdBy ]
         ]
       ]
     ]

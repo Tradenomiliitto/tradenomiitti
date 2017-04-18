@@ -65,6 +65,7 @@
     }
     &-answer-count {
       float: right;
+      cursor: pointer;
       &-number {
         font-weight: bold;
         margin-right: 4px;
@@ -73,6 +74,9 @@
         fill: $pink;
         width: 37px;
       }
+    }
+    &-author-info {
+      width: calc(100% - 52px);
     }
   }
 }
