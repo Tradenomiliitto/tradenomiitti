@@ -119,30 +119,34 @@ contactUser model userToContact loggedInUser =
   else
     if model.addingContact
     then
-      H.map LocalViewMessage <|
-      H.div
-        [ A.class "col-md-6 user-page__edit-or-contact-user"]
-        [ H.p [] [ H.text "Kirjoita napakka esittelyteksti"
-                 ]
-        , H.textarea
-          [ A.placeholder "Vähintään 10 merkkiä"
-          , A.class "user-page__add-contact-textcontent"
-          , E.onInput Profile.ChangeContactAddingText
-          , A.value model.addContactText
-          ] []
-        , H.button
-          ([ E.onClick (Profile.AddContact userToContact)
-           , A.class "btn btn-primary"
-           , A.disabled
-             (String.length model.addContactText < 10
-                || not (maybeUserCanSendBusinessCard loggedInUser)
-             )
-           ] ++
-             if maybeUserCanSendBusinessCard loggedInUser
-             then []
-             else [ A.title "Käyntikortissasi täytyy olla vähintään puhelinnumero tai sähköpostiosoite, jotta voisit lähettää sen" ])
-          [ H.text "Lähetä" ]
-        ]
+      let
+        button =
+          H.button
+              ([ E.onClick (Profile.AddContact userToContact)
+              , A.class "btn btn-primary"
+              , A.disabled
+                (String.length model.addContactText < 10
+                    || not (maybeUserCanSendBusinessCard loggedInUser)
+                )
+              ] ++
+                if maybeUserCanSendBusinessCard loggedInUser
+                then []
+                else [ A.title "Käyntikortissasi täytyy olla vähintään puhelinnumero tai sähköpostiosoite, jotta voisit lähettää sen" ])
+              [ H.text "Lähetä" ]
+      in
+        H.map LocalViewMessage <|
+          H.div
+            [ A.class "col-md-6 user-page__edit-or-contact-user"]
+            [ H.p [] [ H.text "Kirjoita napakka esittelyteksti"
+                    ]
+            , H.textarea
+              [ A.placeholder "Vähintään 10 merkkiä"
+              , A.class "user-page__add-contact-textcontent"
+              , E.onInput Profile.ChangeContactAddingText
+              , A.value model.addContactText
+              ] []
+            , button
+            ]
     else
       H.div
         [ A.class "col-md-6 user-page__edit-or-contact-user"]
