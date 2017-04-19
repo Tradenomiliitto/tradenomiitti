@@ -66,11 +66,14 @@ module.exports = function initialize(params) {
                     email_address: email,
                     emails_for_answers: true
                   }
-                }, 'id') // postgres does not automatically return the id, ask for it explicitly
-            }).then(insertResp => ({ id: insertResp[0] }))
-              //insert will fail if user with the remote_id is already created
-              .catch(e => knex('users').where({remote_id: remoteId})
-                .then(rows => rows[0]))
+                  // postgres does not automatically return the id, ask for it explicitly
+                }, 'id').then(insertResp => ({
+                  id: insertResp[0]
+                }))
+              // insert will fail if user with the remote_id is already created
+              // catch here so we don't catch sebacon errors that we want to go through to global error handling
+                .catch(e => knex('users').where({remote_id: remoteId}).then(rows => rows[0]))
+            })
           } else {
             return resp[0];
           }
