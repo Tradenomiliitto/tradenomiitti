@@ -1,0 +1,26 @@
+.popover {
+  &__container {
+    position: relative;
+  }
+  &__container:hover .popover__content {
+    z-index: 10;
+    opacity: 1;
+    visibility: visible;
+    transform: translate(0,-20px);
+    transition: all 0.5s cubic-bezier(0.75, -0.02, 0.2, 0.97);
+  }
+  &__content {
+    opacity: 0;
+    visibility: hidden;
+    position: absolute;
+    left: -90px;
+    @media (max-width: $screen-xs-max) {
+      left: 0;
+    }
+    transform: translate(0,10px);
+    background-color: $white;
+    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
+    width: auto;
+
+  }
+}

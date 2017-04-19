@@ -19,7 +19,7 @@
       @include button-colors;
       @include button-paddings;
     }
-    & p {
+    &-prompt {
       @include gotham-bold;
       font-size: 16px;
       margin-bottom: 40px;
@@ -40,6 +40,9 @@
   &__pic {
     $size: 90px;
     @include round-profile-pic($size, $pink);
+  }
+  &__businesscard-view-pic {
+    @include round-profile-pic(60px, $pink);
   }
   &__editing-name-details {
     flex-grow: 1;
@@ -170,5 +173,27 @@
         }
       }
     }
+  }
+
+  &__businesscard {
+    width: 80%;
+    text-align: left;
+    margin-left: auto;
+    margin-right: auto;
+    &-icon {
+      width: 40px;
+      fill: $pink;
+      display: inline-block;
+      vertical-align: middle;
+    }
+    &-text {
+      @include gotham-bold;
+      vertical-align: middle;
+      margin-left: 15px;
+    }
+  }
+
+  &__contact-send {
+    margin-top: 15px;
   }
 }

@@ -16,6 +16,7 @@ import Profile.View
 import State.Config as Config
 import State.Profile
 import State.User exposing (..)
+import SvgIcons
 import Util exposing (ViewMessage(..), UpdateMessage(..))
 
 
@@ -123,7 +124,7 @@ contactUser model userToContact loggedInUser =
         button =
           H.button
               ([ E.onClick (Profile.AddContact userToContact)
-              , A.class "btn btn-primary"
+              , A.class "btn btn-primary user-page__contact-send"
               , A.disabled
                 (String.length model.addContactText < 10
                     || not (maybeUserCanSendBusinessCard loggedInUser)
@@ -133,19 +134,40 @@ contactUser model userToContact loggedInUser =
                 then []
                 else [ A.title "Käyntikortissasi täytyy olla vähintään puhelinnumero tai sähköpostiosoite, jotta voisit lähettää sen" ])
               [ H.text "Lähetä" ]
+        popover =
+          case (loggedInUser, Maybe.andThen .businessCard loggedInUser) of
+            (Just user, Just businessCard) ->
+              H.div
+                [ A.class "popover__container" ]
+                [ H.div
+                  [ A.class "popover__trigger user-page__businesscard" ]
+                  [ H.span [ A.class "user-page__businesscard-icon" ]
+                    [ SvgIcons.businessCard ]
+                  , H.span [ A.class "user-page__businesscard-text" ]
+                    [ H.text "Viestin mukana lähetät käyntikortin" ]
+                  , H.div
+                    [ A.class "popover__content" ]
+                    [ Profile.View.businessCardView user businessCard ]
+                  ]
+                ]
+            _ ->
+              H.div [] []
       in
         H.map LocalViewMessage <|
           H.div
             [ A.class "col-md-6 user-page__edit-or-contact-user"]
-            [ H.p [] [ H.text "Kirjoita napakka esittelyteksti"
-                    ]
+            [ H.p [ A.class "user-apge__edit-or-contact-user-prompt"] [ H.text "Kirjoita napakka esittelyteksti"]
             , H.textarea
               [ A.placeholder "Vähintään 10 merkkiä"
               , A.class "user-page__add-contact-textcontent"
               , E.onInput Profile.ChangeContactAddingText
               , A.value model.addContactText
               ] []
-            , button
+            , H.div
+              []
+              [ popover
+              , button
+              ]
             ]
     else
       H.div

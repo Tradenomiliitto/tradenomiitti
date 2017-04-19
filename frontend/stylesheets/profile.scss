@@ -176,8 +176,12 @@
   }
   &__business-card {
     background-color: $light-grey;
+    &-view {
+      background-color: $white;
+    }
     @include shadow;
     padding: 30px;
+    text-align: left;
 
     &--name-work--input {
       padding: 5px;
