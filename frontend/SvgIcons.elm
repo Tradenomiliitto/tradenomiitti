@@ -43,8 +43,8 @@ userPicPlaceHolder =
       ]
     ]
 
-callingCard : H.Html msg
-callingCard =
+businessCard : H.Html msg
+businessCard =
   Svg.svg
     [ SvgA.viewBox "0 0 64 80"
     ]
