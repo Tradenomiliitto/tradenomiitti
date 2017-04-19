@@ -181,11 +181,11 @@ listUsersButtons userMaybe =
   H.div
     [ A.class "home__section--heading--buttons col-sm-7" ]
     [ Link.button
-        "katso kaikki tradenomit"
+        "Katso kaikki tradenomit"
         "home__section--heading--buttons--inverse btn btn-primary"
         Nav.ListUsers
     , Link.button
-        "muokkaa omaa profiilia"
+        (if Maybe.isJust userMaybe then "Muokkaa omaa profiilia" else "Luo oma profiili")
         "home__section--heading--buttons--normal btn btn-primary"
         (if Maybe.isJust userMaybe
          then Nav.Profile
