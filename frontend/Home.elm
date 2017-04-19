@@ -6,6 +6,7 @@ import Html.Events as E
 import Link
 import ListAds
 import ListUsers
+import Maybe.Extra as Maybe
 import Models.User exposing (User)
 import Nav
 import State.Home exposing (..)
@@ -54,7 +55,7 @@ view model userMaybe =
     []
     [ introScreen userMaybe
     , listLatestAds model
-    , listUsers model
+    , listUsers model userMaybe
     , tradenomiittiSection
     ]
 
@@ -156,27 +157,27 @@ listFourAds model =
 
 -- LIST USERS --
 
-listUsers : Model -> H.Html (ViewMessage msg)
-listUsers model =
+listUsers : Model -> Maybe User -> H.Html (ViewMessage msg)
+listUsers model userMaybe =
   H.div
     [ A.class "home__list-users" ]
     [ H.div
       [ A.class "home__section--container" ]
-      [ listUsersHeading
+      [ listUsersHeading userMaybe
       , listThreeUsers model
       ]
      ]
 
-listUsersHeading : H.Html (ViewMessage msg)
-listUsersHeading =
+listUsersHeading : Maybe User -> H.Html (ViewMessage msg)
+listUsersHeading userMaybe =
   H.div
     [ A.class "home__section--heading row" ]
     [ sectionHeader "Löydä tradenomi"
-    , listUsersButtons
+    , listUsersButtons userMaybe
     ]
 
-listUsersButtons : H.Html (ViewMessage msg)
-listUsersButtons =
+listUsersButtons : Maybe User -> H.Html (ViewMessage msg)
+listUsersButtons userMaybe =
   H.div
     [ A.class "home__section--heading--buttons col-sm-7" ]
     [ Link.button
@@ -186,7 +187,9 @@ listUsersButtons =
     , Link.button
         "muokkaa omaa profiilia"
         "home__section--heading--buttons--normal btn btn-primary"
-        Nav.Profile
+        (if Maybe.isJust userMaybe
+         then Nav.Profile
+         else Nav.LoginNeeded << Just << Nav.routeToPath <| Nav.Profile)
     ]
 
 listThreeUsers : Model -> H.Html (ViewMessage msg)
