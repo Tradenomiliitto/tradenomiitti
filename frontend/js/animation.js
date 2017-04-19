@@ -133,7 +133,8 @@ export default function initAnimation(port) {
 
       // from MDN
       (function() {
-        window.addEventListener("resize", resizeThrottler, false);
+        // don't addEventListener, we want just the one
+        window.onresize = resizeThrottler;
 
         var resizeTimeout;
         function resizeThrottler() {
