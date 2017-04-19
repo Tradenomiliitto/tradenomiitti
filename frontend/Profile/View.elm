@@ -320,41 +320,56 @@ viewUserMaybe model ownProfile config =
 
 viewUser : Model -> Bool -> H.Html (ViewMessage Msg) -> Config.Model -> User -> List (H.Html (ViewMessage Msg))
 viewUser model ownProfile contactUser config user =
-  [ H.div
-    [ A.class "container" ]
-    [ H.div
-      [ A.class "row user-page__section user-page__first-block" ]
-      [ H.map LocalViewMessage (userInfoBox model user)
-      , if ownProfile
-          then H.map LocalViewMessage (editProfileBox user)
-          else contactUser
-      ]
-    ]
-  , H.hr [ A.class "full-width-ruler user-page__activity-before" ] []
-  , H.div
-    [ A.class "user-page__activity" ]
-    [ H.div
-      [ A.class "container" ] <|
-      [ H.div
-        [ A.class "row" ]
-        [ H.div
-          [ A.class "col-sm-12" ]
-          [ H.h3 [ A.class "user-page__activity-header" ] [ H.text "Aktiivisuus" ]
+  let
+    viewAds = ListAds.viewAds <| if model.viewAllAds then model.ads else List.take 2 model.ads
+    showMoreAds =
+      if model.viewAllAds
+      then []
+      else
+        [ H.button
+          [ A.class "btn user-page__activity-show-more"
+          , E.onClick <| LocalViewMessage ShowAll
+          ]
+          [ H.span [] [ H.text "Näytä kaikki aktiivisuus" ]
+          , H.i [ A.class "fa fa-chevron-down" ] []
           ]
         ]
-      ]
-      ++ ListAds.viewAds model.ads
-    ]
-  , H.hr [ A.class "full-width-ruler user-page__activity-after" ] []
-  , H.div
-    [ A.class "container" ]
+  in
     [ H.div
-      [ A.class "row" ]
-      [ H.map LocalViewMessage (userDomains model user config )
-      , H.map LocalViewMessage (userPositions model user config)
+      [ A.class "container" ]
+      [ H.div
+        [ A.class "row user-page__section user-page__first-block" ]
+        [ H.map LocalViewMessage (userInfoBox model user)
+        , if ownProfile
+            then H.map LocalViewMessage (editProfileBox user)
+            else contactUser
+        ]
+      ]
+    , H.hr [ A.class "full-width-ruler user-page__activity-before" ] []
+    , H.div
+      [ A.class "user-page__activity" ]
+      [ H.div
+        [ A.class "container" ] <|
+        [ H.div
+          [ A.class "row" ]
+          [ H.div
+            [ A.class "col-sm-12" ]
+            [ H.h3 [ A.class "user-page__activity-header" ] [ H.text "Aktiivisuus" ]
+            ]
+          ]
+        ] ++ viewAds
+          ++ showMoreAds
+      ]
+    , H.hr [ A.class "full-width-ruler user-page__activity-after" ] []
+    , H.div
+      [ A.class "container" ]
+      [ H.div
+        [ A.class "row" ]
+        [ H.map LocalViewMessage (userDomains model user config )
+        , H.map LocalViewMessage (userPositions model user config)
+        ]
       ]
     ]
-  ]
 
 editProfileBox : User -> H.Html Msg
 editProfileBox user =

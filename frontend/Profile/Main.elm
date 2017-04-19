@@ -33,6 +33,7 @@ type Msg
   | StartAddContact
   | ChangeContactAddingText String
   | AddContact User
+  | ShowAll
   | NoOp
 
 
@@ -217,6 +218,9 @@ update msg model =
       model ! []
     AddContact user ->
       model ! []
+
+    ShowAll ->
+      { model | viewAllAds = True } ! []
 
     NoOp ->
       model ! []
