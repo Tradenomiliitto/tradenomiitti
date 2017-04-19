@@ -113,6 +113,42 @@ export default function initAnimation(port) {
         }
       });
 
+      function onResize() {
+        const { navbarHeight } = getStyleValues();
+        const offset = isSplashScreen ? 0 : navbarHeight
+
+        canvas.width  = window.innerWidth;
+        const widthRatio = width / canvas.width;
+        width = canvas.width;
+
+        canvas.height  = window.innerHeight - offset;
+        const heightRatio = height / canvas.height;
+        height = canvas.height;
+
+        particles.forEach(particle => {
+          particle.x /= widthRatio;
+          particle.y /= heightRatio;
+        })
+      }
+
+      // from MDN
+      (function() {
+        window.addEventListener("resize", resizeThrottler, false);
+
+        var resizeTimeout;
+        function resizeThrottler() {
+          // ignore resize events as long as an actualResizeHandler execution is in the queue
+          if ( !resizeTimeout ) {
+            resizeTimeout = setTimeout(function() {
+              resizeTimeout = null;
+              onResize();
+
+              // The actualResizeHandler will execute at a rate of 15fps
+            }, 66);
+          }
+        }
+      }());
+
       function create(event){
         var x1 = event.clientX;
         var y1 = event.clientY - offset + window.pageYOffset;
@@ -133,4 +169,3 @@ export default function initAnimation(port) {
     }
   })
 }
-
