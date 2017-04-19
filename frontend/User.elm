@@ -49,6 +49,9 @@ update msg model =
     ProfileMessage (Profile.AddContact user) ->
       model ! [ addContact user model.addContactText ]
 
+    ProfileMessage Profile.ShowAll ->
+      { model | viewAllAds = True } ! []
+
     ProfileMessage _ ->
       model ! [] -- only handle profile messages that we care about
 
@@ -97,7 +100,11 @@ view : Model -> Maybe User -> Config.Model -> H.Html (ViewMessage Msg)
 view model loggedInUser config =
   let
     profileInit = State.Profile.init
-    profile = { profileInit | ads = model.ads }
+    profile =
+      { profileInit
+        | ads = model.ads
+        , viewAllAds = model.viewAllAds
+      }
     views = model.user
       |> Maybe.map
         (\u ->
