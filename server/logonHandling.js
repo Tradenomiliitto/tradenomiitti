@@ -53,8 +53,8 @@ module.exports = function initialize(params) {
                   remote_id: body.result.local_id,
                   data: {
                     name: nickname || firstname,
-                    domains: [],//domains.filter(unique).map(d => ({ heading: d, skill_level: 1 })),
-                    positions: [],//positions.filter(unique).map(d => ({ heading: d, skill_level: 1 })),
+                    domains: [],
+                    positions: [],
                     profile_creation_consented: false,
                     business_card: {
                       name: `${firstname} ${lastname}`, // This works for most Finnish names

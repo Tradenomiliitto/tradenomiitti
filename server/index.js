@@ -174,7 +174,6 @@ app.get('/api/tehtavaluokat', (req, res) => {
       "Yrittäjyys"
     ];
   return res.json(positions.sort());
-  // return sebacon.getPositionTitles().then(positions => res.json(Object.values(positions).sort()));
 });
 
 app.get('/api/toimialat', (req, res) => {
@@ -244,7 +243,6 @@ app.get('/api/toimialat', (req, res) => {
       "Liikenneala (esim. Ilma-, tie-, rautatie- ja vesiliikenne)"
     ];
   return res.json(domains.sort());
-  // return sebacon.getDomainTitles().then(domains => res.json(Object.values(domains).sort()));
 });
 
 app.post('/api/ilmoitukset', jsonParser, ads.createAd);
