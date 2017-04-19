@@ -123,7 +123,8 @@ div#not-implemented {
 .full-width-ruler {
   width: 100vw;
   border-color: rgba(0, 0, 0, 0.35);
-  margin-top: 70px;
+  margin-top: $full-width-ruler-margin-top;
+  margin-bottom: $full-width-ruler-margin-bottom;
 }
 
 .loader {

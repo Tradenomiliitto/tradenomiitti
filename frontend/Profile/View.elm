@@ -318,7 +318,7 @@ viewUserMaybe model ownProfile config =
       ]
 
 
-viewUser : Model -> Bool -> H.Html Msg -> Config.Model -> User -> List (H.Html (ViewMessage Msg))
+viewUser : Model -> Bool -> H.Html (ViewMessage Msg) -> Config.Model -> User -> List (H.Html (ViewMessage Msg))
 viewUser model ownProfile contactUser config user =
   [ H.div
     [ A.class "container" ]
@@ -327,22 +327,25 @@ viewUser model ownProfile contactUser config user =
       [ H.map LocalViewMessage (userInfoBox model user)
       , if ownProfile
           then H.map LocalViewMessage (editProfileBox user)
-          else H.map LocalViewMessage contactUser
+          else contactUser
       ]
     ]
-  , H.hr [ A.class "full-width-ruler" ] []
+  , H.hr [ A.class "full-width-ruler user-page__activity-before" ] []
   , H.div
-    [ A.class "container" ] <|
+    [ A.class "user-page__activity" ]
     [ H.div
-      [ A.class "row" ]
+      [ A.class "container" ] <|
       [ H.div
-        [ A.class "col-sm-12" ]
-        [ H.h3 [ A.class "user-page__activity-header" ] [ H.text "Aktiivisuus" ]
+        [ A.class "row" ]
+        [ H.div
+          [ A.class "col-sm-12" ]
+          [ H.h3 [ A.class "user-page__activity-header" ] [ H.text "Aktiivisuus" ]
+          ]
         ]
       ]
+      ++ ListAds.viewAds model.ads
     ]
-    ++ ListAds.viewAds model.ads
-  , H.hr [ A.class "full-width-ruler" ] []
+  , H.hr [ A.class "full-width-ruler user-page__activity-after" ] []
   , H.div
     [ A.class "container" ]
     [ H.div

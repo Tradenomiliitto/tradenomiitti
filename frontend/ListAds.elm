@@ -1,5 +1,7 @@
 module ListAds exposing (..)
 
+import Ad
+import Common
 import Common exposing (Filter(..))
 import Html as H
 import Html.Attributes as A
@@ -89,7 +91,7 @@ view model config =
           [ A.class "col-sm-12" ]
           [ H.h1
             [ A.class "list-ads__header" ]
-            [ H.text "Selaa hakuilmoituksia" ]
+            [ H.text "Selaa ilmoituksia" ]
           ]
         ]
       , H.div
@@ -140,7 +142,8 @@ adListView ad =
         , Link.action (Nav.ShowAd ad.id)
         , A.class "card-link list-ads__item-expanding-part"
         ]
-        [ H.h3
+        [ Ad.viewDate ad.createdAt
+        , H.h3
           [ A.class "list-ads__ad-preview-heading"]
           [ H.text ad.heading ]
         , H.p [ A.class "list-ads__ad-preview-content" ] [ H.text (Util.truncateContent ad.content 200) ]
@@ -148,14 +151,17 @@ adListView ad =
       , H.hr [ A.class "list-ads__item-ruler" ] []
       , H.div
         []
-        [ H.div
-          [ A.class "list-ads__ad-preview-answer-count" ]
+        [ H.a
+          [ A.class "list-ads__ad-preview-answer-count card-link"
+          , A.href (Nav.routeToPath (Nav.ShowAd ad.id))
+          , Link.action (Nav.ShowAd ad.id)
+          ]
           [ H.span
               [ A.class "list-ads__ad-preview-answer-count-number" ]
               [ H.text << toString <| Models.Ad.adCount ad.answers]
           , SvgIcons.answers
           ]
-        , Common.authorInfo ad.createdBy
+        , H.div [ A.class "list-ads__ad-preview-author-info" ] [ Common.authorInfo ad.createdBy ]
         ]
       ]
     ]

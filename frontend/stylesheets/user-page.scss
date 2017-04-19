@@ -127,40 +127,47 @@
     flex-grow: 1;
   }
 
-  &__activity-header {
-    @include gotham-bold;
-    text-transform: uppercase;
-    margin-bottom: 25px;
-  }
-
-  &__activity-item {
-    margin-top: 25px;
-    padding: 15px;
-    @include shadow;
-    &-heading {
-      color: $pink;
+  &__activity {
+    padding-bottom: $full-width-ruler-margin-top;
+    padding-top: $full-width-ruler-margin-bottom;
+    background-color: $light-grey;
+    &-before.full-width-ruler {margin-bottom: 0;}
+    &-after.full-width-ruler {margin-top: 0;}
+    &-header {
       @include gotham-bold;
+      text-transform: uppercase;
+      margin-bottom: 25px;
     }
-    &-content {}
-    > hr {
-      border-color: rgba(0, 0, 0, 0.35);
-    }
-    &-profile {
-      &-pic {
-        @include round-profile-pic(40px, $pink);
-      }
-      &-info {
-        display: inline-block;
-        margin-left: 15px;
-        position: relative;
-        top: -5px;
-      }
-      &-name {
-        font-weight: bold;
-      }
-      &-title {
-        font-weight: bold;
+
+    &-item {
+      margin-top: 25px;
+      padding: 15px;
+      @include shadow;
+      &-heading {
         color: $pink;
+        @include gotham-bold;
+      }
+      &-content {}
+      > hr {
+        border-color: rgba(0, 0, 0, 0.35);
+      }
+      &-profile {
+        &-pic {
+          @include round-profile-pic(40px, $pink);
+        }
+        &-info {
+          display: inline-block;
+          margin-left: 15px;
+          position: relative;
+          top: -5px;
+        }
+        &-name {
+          font-weight: bold;
+        }
+        &-title {
+          font-weight: bold;
+          color: $pink;
+        }
       }
     }
   }

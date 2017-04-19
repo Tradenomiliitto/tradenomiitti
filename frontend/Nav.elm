@@ -65,7 +65,7 @@ routeToString route =
     ListUsers ->
       "Tradenomit"
     ListAds ->
-      "Hakuilmoitukset"
+      "Ilmoitukset"
     CreateAd ->
       "Jätä ilmoitus"
     ShowAd adId ->

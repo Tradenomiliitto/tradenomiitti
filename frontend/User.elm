@@ -6,14 +6,17 @@ import Html.Events as E
 import Http
 import Json.Decode as Json
 import Json.Encode as JS
+import Link
+import Maybe.Extra as Maybe
 import Models.Ad exposing (Ad)
 import Models.User exposing (User)
+import Nav
 import Profile.Main as Profile
 import Profile.View
 import State.Config as Config
 import State.Profile
 import State.User exposing (..)
-import Util exposing (ViewMessage, UpdateMessage(..))
+import Util exposing (ViewMessage(..), UpdateMessage(..))
 
 
 -- UPDATE
@@ -105,7 +108,7 @@ view model loggedInUser config =
    H.div [] views
 
 
-contactUser : Model -> User -> Maybe User -> H.Html Profile.Msg
+contactUser : Model -> User -> Maybe User -> H.Html (ViewMessage Profile.Msg)
 contactUser model userToContact loggedInUser =
   if userToContact.contacted
   then
@@ -116,6 +119,7 @@ contactUser model userToContact loggedInUser =
   else
     if model.addingContact
     then
+      H.map LocalViewMessage <|
       H.div
         [ A.class "col-md-6 user-page__edit-or-contact-user"]
         [ H.p [] [ H.text "Kirjoita napakka esittelyteksti"
@@ -143,9 +147,13 @@ contactUser model userToContact loggedInUser =
       H.div
         [ A.class "col-md-6 user-page__edit-or-contact-user"]
         [ H.p [] [ H.text ("Voisiko " ++ userToContact.name ++ " auttaa sinua? Jaa käyntikorttisi tästä. ") ]
-        , H.button [ E.onClick Profile.StartAddContact
-                   , A.class "btn btn-primary"
-                   ] [ H.text "Ota yhteyttä" ]
+        , H.button
+          [ if Maybe.isJust loggedInUser then
+              E.onClick <| LocalViewMessage Profile.StartAddContact
+            else
+              Link.action (Nav.LoginNeeded (Nav.User userToContact.id |> Nav.routeToPath |> Just))
+          , A.class "btn btn-primary"
+          ] [ H.text "Ota yhteyttä" ]
         ]
 
 maybeUserCanSendBusinessCard : Maybe User -> Bool
