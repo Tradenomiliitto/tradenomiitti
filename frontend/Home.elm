@@ -241,7 +241,7 @@ tradenomiittiInfoText =
 
 readMoreButton : H.Html (ViewMessage msg)
 readMoreButton =
-  Link.button
+  Link.link
     "lue lisää"
     "home__tradenomiitti-info--read-more-button btn btn-primary"
     Nav.Info
