@@ -208,14 +208,14 @@ tradenomiittiRow : H.Html (ViewMessage msg)
 tradenomiittiRow =
   H.div
     [ A.class "row home__tradenomiitti-info-row" ]
-    [ H.div [ A.class "home__tradenomiitti--info-container  col-md-6" ] [ tradenomiittiInfo ]
+    [ H.div [ A.class "home__tradenomiitti-info-container  col-md-6" ] [ tradenomiittiInfo ]
     , tradenomiImage
     ]
 
 tradenomiittiInfo : H.Html (ViewMessage msg)
 tradenomiittiInfo =
   H.div
-    [ A.class "home__tradenomiitti--info" ]
+    [ A.class "home__tradenomiitti-info" ]
     [ tradenomiittiHeader
     , tradenomiittiInfoText
     , readMoreButton
@@ -224,20 +224,26 @@ tradenomiittiInfo =
 tradenomiittiHeader : H.Html msg
 tradenomiittiHeader =
   H.h2
-    [ A.class "home__tradenomiitti--info--header" ]
-    [ H.text "Lorem ipsum dolorem salet" ]
+    [ A.class "home__tradenomiitti-info--header" ]
+    [ H.text "Kokemuksellasi on aina arvoa" ]
 
 tradenomiittiInfoText : H.Html msg
 tradenomiittiInfoText =
-  H.p
-    [ A.class "home__tradenomiitti--info--text" ]
-    [ H.text "Tähän kuvaava teksti Tradenomiitistä. Hyötynäkökuma, eli mitä täällä voi tehdä ja miksi pitäisi liittyä. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua." ]
+  H.div
+    [ A.class "home__tradenomiitti-info-content"]
+    [ H.p
+      [ A.class "home__tradenomiitti-info-text" ]
+      [ H.text "Tradenomiitti on tradenomien oma kohtaamispaikka, jossa yhdistyvät inspiroivat kohtaamiset ja itsensä kehittäminen. Tradenomiitti tuo tradenomien osaamisen esille - olit sitten opiskelija tai kokenut konkari. Juuri sinulla voi olla vastaus toisen tradenomin kysymykseen, tai ehkä uusi työnantajasi etsii sinua jo?" ]
+    , H.p
+      [ A.class "home__tradenomiitti-info-text" ]
+      [ H.text "Luomalla profiilin pääset alkuun, loput on itsestäsi kiinni." ]
+    ]
 
 readMoreButton : H.Html (ViewMessage msg)
 readMoreButton =
   Link.button
     "lue lisää"
-    "home__tradenomiitti--info--read-more-button btn btn-primary"
+    "home__tradenomiitti-info--read-more-button btn btn-primary"
     Nav.Info
 
 tradenomiImage : H.Html msg
