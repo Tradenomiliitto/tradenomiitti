@@ -32,9 +32,17 @@
   }
 
   &__sorter-button {
+    &--active {
+      background-color: $green !important;
+      opacity: 1.0 !important;
+    }
+
     &,
-    &:hover {
-      background-color: $green;
+    &:hover,
+    &:focus,
+    &:active {
+      opacity: 0.8;
+      background-color: $light-green;
       color: $white;
       @include gotham-bold;
       text-transform: uppercase;

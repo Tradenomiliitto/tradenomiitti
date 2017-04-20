@@ -2,12 +2,15 @@ module State.ListUsers exposing (..)
 
 import Models.User exposing (User)
 
+type Sort = Recent | AlphaAsc | AlphaDesc
+
 type alias Model =
   { users : List User
   , cursor : Int
   , selectedDomain : Maybe String
   , selectedPosition : Maybe String
   , selectedLocation : Maybe String
+  , sort : Sort
   }
 
 limit : Int
@@ -20,4 +23,5 @@ init =
   , selectedDomain = Nothing
   , selectedPosition = Nothing
   , selectedLocation = Nothing
+  , sort = Recent
   }
