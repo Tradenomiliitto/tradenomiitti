@@ -155,5 +155,6 @@ rowFolder x acc =
     row :: rows ->
       case row of
         el1 :: el2 :: el3 :: els -> [x] :: row :: rows
-        el1 :: el2 :: els -> [el2, el1, x] :: rows
-        els -> (x :: els) :: rows
+        el1 :: el2 :: els -> [el1, el2, x] :: rows
+        el1 :: els -> [el1, x] :: rows
+        els -> ([x]) :: rows
