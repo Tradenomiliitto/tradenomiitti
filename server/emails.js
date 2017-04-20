@@ -28,7 +28,8 @@ module.exports = function init(params) {
       ]
     const text = 'Kirjaudu Tradenomiittiin nähdäksesi vastauksen';
     const subject = 'Ilmoitukseesi on vastattu'
-    sendEmail(dbUser, text, subject, attachment);
+    const { email_address, emails_for_answers } = dbUser.settings || {};
+    sendEmail(email_address, emails_for_answers, text, subject, attachment);
   }
 
   function sendNotificationForContact(receiver, contactUser, introductionText) {
@@ -44,7 +45,8 @@ module.exports = function init(params) {
     const text = 'Kirjaudu Tradenomiittiin nähdäksesi kontaktin profiilin'
     const subject = 'Olet saanut uuden kontaktin'
 
-    sendEmail(receiver, text, subject, attachment);
+    const { email_address, emails_for_businesscards } = receiver.settings || {};
+    sendEmail(email_address, emails_for_businesscards, text, subject, attachment);
   }
 
   function isUserPic(userPic) {
@@ -83,12 +85,12 @@ module.exports = function init(params) {
     const text = "Kirjaudu Tradenomiittiin nähdäksesi uusimman sisällön";
     const subject = 'Uusia ilmoituksia Tradenomiitissa';
 
-    sendEmail(user, text, subject, attachment);
+    const { email_address, emails_for_new_ads } = user.settings || {};
+    sendEmail(email_address, emails_for_new_ads, text, subject, attachment);
   }
 
-  function sendEmail(receiver, text, subject, attachment) {
-    const { email_address, emails_for_answers } = receiver.settings || {};
-    if (! (emails_for_answers && email_address && email_address.includes('@'))) {
+  function sendEmail(email_address, allow_sending, text, subject, attachment) {
+    if (! (allow_sending && email_address && email_address.includes('@'))) {
       return;
     }
     const server = emailjs.server.connect(smtp);
