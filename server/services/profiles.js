@@ -31,7 +31,7 @@ module.exports = function initialize(params) {
         .leftOuterJoin('ads', 'users.id', 'ads.user_id')
         .leftOuterJoin('answers', 'users.id', 'answers.user_id')
         .groupBy('users.id')
-        .orderByRaw('greatest(max(ads.created_at), max(answers.created_at), users.modified_at) desc')
+        .orderByRaw('greatest(max(ads.created_at), max(answers.created_at), users.modified_at) desc nulls last')
     }
 
     return query
