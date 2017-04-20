@@ -54,13 +54,17 @@ describe('Handle users', function() {
     })
   })
 
-  it('should sort by activity by default', (done) => {
-    knex('users').insert({id: 3, remote_id: -3, data: {}, settings: {}, modified_at: moment()}).then(() => {
-      service.listProfiles(false, undefined, undefined, undefined, undefined, undefined, undefined).then((users) => {
-        users.should.have.length(3);
-        users[0].id.should.equal(3);
-        done();
-      })
+  function insertAndList(sort) {
+    return knex('users').insert({id: 3, remote_id: -3, data: {}, settings: {}, modified_at: moment()}).then(() => {
+      return service.listProfiles(false, undefined, undefined, undefined, undefined, undefined, sort)
     })
-  })
+  }
+
+  it('should sort by activity by default', (done) => {
+    insertAndList(undefined).then(users => {
+      users.should.have.length(3);
+      users[0].id.should.equal(3);
+      done();
+    })
+  });
 });
