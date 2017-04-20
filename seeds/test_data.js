@@ -7,14 +7,14 @@ exports.seed = function(knex, Promise) {
         id: 1,
         remote_id: -1,
         settings: {},
-        data: {}
+        data: { name: 'Tradenomi1' }
       });
     }).then(() => {
       return knex('users').insert({
         id: 2,
         remote_id: -2,
         settings: {},
-        data: {}
+        data: { name: 'Tradenomi2' }
       });
     }).then(() => {
       return knex('ads').insert({

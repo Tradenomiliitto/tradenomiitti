@@ -34,6 +34,14 @@ module.exports = function initialize(params) {
         .orderByRaw('greatest(max(ads.created_at), max(answers.created_at), users.modified_at) desc nulls last')
     }
 
+    if (order === "alphaDesc") {
+      query = query.orderByRaw("lower(data->>'name') desc")
+    }
+
+    if (order === "alphaAsc") {
+      query = query.orderByRaw("lower(data->>'name') asc")
+    }
+
     return query
       .then(resp => {
         return resp.map(user => util.formatUser(user, loggedIn));
