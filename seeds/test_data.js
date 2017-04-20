@@ -26,13 +26,13 @@ exports.seed = function(knex, Promise) {
       return knex('ads').insert({
         data: {heading: "foo", content: "bar"},
         user_id: 1,
-        created_at: new Date(2017, 6, 1)
+        created_at: new Date(2017, 4, 3)
       });
     }).then(() => {
       return knex('ads').insert({
         data: {heading: "foo", content: "bar"},
         user_id: 1,
-        created_at: new Date(2017, 5, 1)
+        created_at: new Date(2017, 4, 2)
       });
     })
   ;
