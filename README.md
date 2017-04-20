@@ -77,4 +77,5 @@ Run tests:
 
 ```
 npm test
+npm testFrontend
 ```
