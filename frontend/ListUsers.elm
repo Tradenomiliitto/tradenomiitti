@@ -3,7 +3,6 @@ module ListUsers exposing (..)
 import Common exposing (Filter(..))
 import Html as H
 import Html.Attributes as A
-import Html.Events as E
 import Http
 import Json.Decode as Json
 import Link
