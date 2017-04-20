@@ -1,14 +1,18 @@
 {
     "version": "1.0.0",
-    "summary": "Löydä elämäsi tradenomi",
+    "summary": "Sample Elm Test",
     "repository": "https://github.com/futurice/tradenomiitti.git",
-    "license": "",
+    "license": "BSD-3-Clause",
     "source-directories": [
-        "."
+      ".",
+      ".."
     ],
     "exposed-modules": [],
     "native-modules": true,
     "dependencies": {
+        "mgold/elm-random-pcg": "4.0.2 <= v < 5.0.0",
+        "elm-community/elm-test": "3.0.0 <= v < 4.0.0",
+        "rtfeldman/node-test-runner": "3.0.0 <= v < 4.0.0",
         "Bogdanp/elm-querystring": "1.0.0 <= v < 2.0.0",
         "NoRedInk/elm-decode-pipeline": "3.0.0 <= v < 4.0.0",
         "elm-community/elm-test": "3.1.0 <= v < 4.0.0",
