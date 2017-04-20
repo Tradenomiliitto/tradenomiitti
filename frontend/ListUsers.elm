@@ -86,6 +86,28 @@ view model config =
     rows = chunk3 usersHtml
     rowsHtml = List.map row rows
 
+    sorterRow =
+      H.div
+        [ A.class "row" ]
+        [ H.div
+          [ A.class "col-xs-12" ]
+          [ H.button
+              [ A.class "btn list-users__sorter-button" ]
+              [ H.text "Aktiivisuus"]
+          , H.button
+              [ A.class "btn list-users__sorter-button" ]
+              [ H.text "Nimi"
+              , H.i
+                [ A.classList
+                  [ ("fa", True)
+                  , ("fa-chevron-down", True)
+                  , ("fa-chevron-up", False)
+                  ]
+                ] []
+              ]
+          ]
+        ]
+
   in
     H.div
       []
@@ -117,7 +139,7 @@ view model config =
         [ A.class "list-users__list-background last-row"]
         [ H.div
           [ A.class "container" ]
-          rowsHtml
+          (sorterRow :: rowsHtml)
         ]
       ]
 

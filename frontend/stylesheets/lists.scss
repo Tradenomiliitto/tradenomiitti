@@ -31,6 +31,24 @@
     }
   }
 
+  &__sorter-button {
+    &,
+    &:hover {
+      background-color: $green;
+      color: $white;
+      @include gotham-bold;
+      text-transform: uppercase;
+      margin-right: 15px;
+      padding: 14px 20px;
+      font-size: 12px;
+    }
+
+    & i {
+      margin-left: 5px;
+      vertical-align: middle;
+      height: 100%;
+    }
+  }
 }
 
 .list-users {
