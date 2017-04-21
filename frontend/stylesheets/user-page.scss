@@ -170,5 +170,26 @@
         }
       }
     }
+    &-show-more {
+      &,
+      &:hover,
+      &:active,
+      &:focus {
+        color: $pink;
+        height: 1.4em;
+        background-color: transparent;
+        float: right;
+        margin-top: 30px;
+        border: 0;
+        padding: 0;
+        @include gotham-bold;
+        text-transform: uppercase;
+        & i {
+          height: 100%;
+          margin-left: 5px;
+          vertical-align: middle;
+        }
+      }
+    }
   }
 }
