@@ -17,6 +17,13 @@ import State.ListUsers exposing (..)
 import Util exposing (ViewMessage(..), UpdateMessage(..))
 
 
+sortToString : Sort -> String
+sortToString sort =
+  case sort of
+    Recent -> "recent"
+    AlphaAsc -> "alphaAsc"
+    AlphaDesc -> "alphaDesc"
+
 getUsers : Model -> Cmd (UpdateMessage Msg)
 getUsers model =
   let
@@ -27,6 +34,7 @@ getUsers model =
         |> QueryString.optional "domain" model.selectedDomain
         |> QueryString.optional "position" model.selectedPosition
         |> QueryString.optional "location" model.selectedLocation
+        |> QueryString.add "order" (sortToString model.sort)
         |> QueryString.render
 
     url = "/api/profiilit/" ++ queryString
@@ -40,6 +48,7 @@ type Msg
   | ChangeDomainFilter (Maybe String)
   | ChangePositionFilter (Maybe String)
   | ChangeLocationFilter (Maybe String)
+  | ChangeSort Sort
 
 initTasks : Model -> Cmd (UpdateMessage Msg)
 initTasks = getUsers
@@ -78,14 +87,52 @@ update msg model =
     ChangeLocationFilter value ->
       reInitItems { model | selectedLocation = value }
 
+    ChangeSort value ->
+      reInitItems { model | sort = value }
+
 
 
 view : Model -> Config.Model -> H.Html (ViewMessage Msg)
 view model config =
   let
     usersHtml = List.map viewUser model.users
-    rows = List.reverse (List.foldl rowFolder [] usersHtml)
+    rows = chunk3 usersHtml
     rowsHtml = List.map row rows
+
+    sorterRow = H.map LocalViewMessage <|
+      H.div
+        [ A.class "row" ]
+        [ H.div
+          [ A.class "col-xs-12" ]
+          [ H.button
+              [ A.classList
+                  [ ("btn", True)
+                  , ("list-users__sorter-button", True)
+                  , ("list-users__sorter-button--active", model.sort == Recent)
+                  ]
+              , E.onClick (ChangeSort Recent)
+              ]
+              [ H.text "Aktiivisuus"]
+          , H.button
+              [ A.classList
+                  [ ("btn", True)
+                  , ("list-users__sorter-button", True)
+                  , ("list-users__sorter-button--active"
+                    , List.member model.sort [AlphaDesc, AlphaAsc])
+                  ]
+              , E.onClick (ChangeSort <| if model.sort == AlphaAsc then AlphaDesc else AlphaAsc)
+              ]
+              [ H.text "Nimi"
+              , H.i
+                [ A.classList
+                  [ ("fa", True)
+                  , ("fa-chevron-down", model.sort == AlphaDesc)
+                  , ("fa-chevron-up", model.sort /= AlphaDesc)
+                  ]
+                ] []
+              ]
+          ]
+        ]
 
   in
     H.div
@@ -118,7 +165,7 @@ view model config =
         [ A.class "list-users__list-background last-row"]
         [ H.div
           [ A.class "container" ]
-          rowsHtml
+          (sorterRow :: rowsHtml)
         ]
       ]
 
@@ -143,6 +190,9 @@ row users =
     [ A.class "row list-users__user-row list-users__row" ]
     users
 
+chunk3 : List a -> List (List a)
+chunk3 = List.reverse << List.foldl rowFolder []
+
 -- transforms a list to a list of lists of three elements: [1, 2, 3, 4, 5] => [[4, 5], [1, 2, 3]]
 -- note: reverse the results if you need the elements to be in original order
 rowFolder : a -> List (List a) -> List (List a)
@@ -152,5 +202,6 @@ rowFolder x acc =
     row :: rows ->
       case row of
         el1 :: el2 :: el3 :: els -> [x] :: row :: rows
-        el1 :: el2 :: els -> [el2, el1, x] :: rows
-        els -> (x :: els) :: rows
+        el1 :: el2 :: els -> [el1, el2, x] :: rows
+        el1 :: els -> [el1, x] :: rows
+        els -> ([x]) :: rows

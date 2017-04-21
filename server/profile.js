@@ -84,7 +84,10 @@ module.exports = function initialize(params) {
         return knex.transaction(trx => {
           return trx('users')
             .where({ id: user.id })
-            .update('data', newData)
+            .update({
+              data: newData,
+              modified_at: new Date()
+            })
             .then(() => trx('skills').where({ user_id: user.id }).del())
             .then(() => {
               const domainPromises = domains.map(domain => {
@@ -207,7 +210,8 @@ module.exports = function initialize(params) {
         req.query.offset,
         req.query.domain,
         req.query.position,
-        req.query.location
+        req.query.location,
+        req.query.order
       ))
       .then(users => res.json(users))
       .catch(next)

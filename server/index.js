@@ -31,6 +31,12 @@ app.use(cookieSession({
   maxAge: 365 * 24 * 60 * 60 * 1000
 }));
 
+app.use((req, res, next) => {
+  res.set('Cache-Control', 'no-cache')
+  next();
+});
+app.set('etag', false);
+
 if (process.env.NON_LOCAL) {
   app.set('trust proxy', 'loopback');
 }
