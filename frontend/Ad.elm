@@ -94,6 +94,31 @@ viewAd adId model userMaybe rootUrl ad =
 
         Nothing ->
           (False, False, False)
+    domainColumn =
+      let
+       items = List.filterMap identity [ ad.domain, ad.position ]
+      in
+        if List.length items > 0
+        then
+          [ H.div
+            [ A.class "col-xs-12 col-sm-8" ]
+            [ H.p [ A.class "ad-page__domains" ]
+              [ H.text << String.join "; " <| items ]]
+          ]
+        else
+          []
+
+    locationColumn =
+      ad.location
+        |> Maybe.map
+          (\location ->
+             [ H.div
+               [ A.class "col-xs-12 col-sm-4" ]
+               [ Common.showLocation location
+               ]
+             ]
+          )
+        |> Maybe.withDefault []
   in
     H.div
       []
@@ -106,6 +131,10 @@ viewAd adId model userMaybe rootUrl ad =
             [ viewDate ad.createdAt
             , H.h1 [ A.class "user-page__activity-item-heading" ] [ H.text ad.heading ]
             , H.p [ A.class "user-page__activity-item-content" ]  [ H.text ad.content ]
+            , H.hr [] []
+            , H.div
+              [ A.class "row" ]
+              (domainColumn ++ locationColumn)
             , H.hr [] []
             , Common.authorInfo ad.createdBy
             ]

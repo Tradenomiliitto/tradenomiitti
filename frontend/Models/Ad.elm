@@ -10,6 +10,9 @@ type alias Ad =
   { heading: String
   , content: String
   , answers: Answers
+  , domain : Maybe String
+  , position : Maybe String
+  , location : Maybe String
   , createdBy: User
   , createdAt: Date.Date
   , id: Int
@@ -30,6 +33,9 @@ adDecoder =
     |> P.required "heading" Json.string
     |> P.required "content" Json.string
     |> P.required "answers" answersDecoder
+    |> P.optional "domain" (Json.map Just Json.string) Nothing
+    |> P.optional "position" (Json.map Just Json.string) Nothing
+    |> P.optional "location" (Json.map Just Json.string) Nothing
     |> P.required "created_by" Models.User.userDecoder
     |> P.required "created_at" date
     |> P.required "id" Json.int
