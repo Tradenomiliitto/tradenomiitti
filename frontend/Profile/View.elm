@@ -327,6 +327,8 @@ profileTopRow model rootState =
           H.button
             [ A.class "btn btn-primary profile__top-row-edit-button"
             , E.onClick <| if model.editing then LocalViewMessage (Save user) else LocalViewMessage Edit
+            , A.disabled <| user.name == ""
+            , A.title <| if user.name == "" then "Kutsumanimi on pakollinen" else ""
             ]
             [ H.text (if model.editing then "Tallenna profiili" else "Muokkaa profiilia") ]
         Nothing ->
