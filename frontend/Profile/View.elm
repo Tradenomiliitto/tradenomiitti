@@ -158,6 +158,30 @@ businessCardData user businessCard =
       ]
     ]
 
+businessCardView : User -> Models.User.BusinessCard -> H.Html msg
+businessCardView user businessCard =
+  H.div
+    [ A.class "profile__business-card profile__business-card-view" ]
+    [ H.div [ A.class "profile__business-card--container" ] [ H.div
+      [ A.class "profile__business-card--data"]
+      [ H.span [ A.class "user-page__businesscard-view-pic" ] [ Common.picElementForUser user ]
+      , H.div
+          [ A.class "inline profile__business-card--data--name-work" ]
+          [ H.h4  []
+            [ H.text businessCard.name ]
+          , H.h5 []
+            [ H.text businessCard.title]
+          ]
+      ]
+    , H.div [ A.class "profile__business-card--data--contact"]
+        [ businessCardDataView businessCard Location
+        , businessCardDataView businessCard Phone
+        , businessCardDataView businessCard Email
+        , businessCardDataView businessCard LinkedIn
+        ]
+      ]
+    ]
+
 
 businessCardDataInput : Models.User.BusinessCard -> BusinessCardField -> H.Html Msg
 businessCardDataInput card field =
@@ -194,6 +218,41 @@ businessCardDataInput card field =
           ] []
       , H.hr [ A.class "profile__business-card--input-line", class ] []
       ]
+
+businessCardDataView : Models.User.BusinessCard -> BusinessCardField -> H.Html msg
+businessCardDataView card field =
+  let
+    value =
+      case field of
+        Name -> card.name
+        Title -> card.title
+        Location -> card.location
+        Phone -> card.phone
+        Email -> card.email
+        LinkedIn -> card.linkedin
+    icon =
+      case field of
+        Location -> [ SvgIcons.location ]
+        Phone -> [ SvgIcons.phone ]
+        Email -> [ SvgIcons.email ]
+        LinkedIn -> [ H.i [ A.class "fa fa-linkedin" ] [] ]
+        _ -> []
+    class =
+      A.classList
+        [ ("profile__business-card--input", True)
+        , ("profile__business-card--input--filled", value /= "")
+        ]
+  in
+    if String.length value > 0
+    then
+      H.p
+        [ class ]
+        [ H.span [ class , A.class "profile__business-card--input-icon" ] icon
+        , H.span [] [H.text value]
+        , H.hr [ A.class "profile__business-card--input-line", class ] []
+        ]
+    else
+      H.span [] []
 
 
 fieldToString : BusinessCardField -> String
