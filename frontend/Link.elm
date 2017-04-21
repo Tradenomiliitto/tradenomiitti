@@ -8,11 +8,12 @@ import Nav exposing (Route, routeToPath, routeToString)
 import Util exposing (ViewMessage(..))
 
 
-link : Route -> String -> H.Html (ViewMessage msg)
-link route title =
+link : String -> String -> Route -> H.Html (ViewMessage msg)
+link title class route =
   H.a
     [ action route
     , A.href (routeToPath route)
+    , A.class class
     ]
     [ H.text title ]
 

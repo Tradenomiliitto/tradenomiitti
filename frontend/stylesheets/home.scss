@@ -120,7 +120,7 @@
       margin-left: 5%;
       margin-right: 5%;
     }
-    &--info-container {
+    &-info-container {
       padding: 30px;
     }
     &--image {
@@ -131,17 +131,19 @@
         margin-left: -15px;
       }
     }
-    &--info {
+    &-info {
       &--header {
         color: $pink;
         @include gotham-bold;
         text-transform: uppercase;
         font-size: 42px;
       }
-      &--text {
-        font-size: 20px;
+      &-content {
         margin-top: 40px;
         margin-bottom: 40px;
+      }
+      &-text {
+        font-size: 20px;
       }
       &--read-more-button {
         border-width: 2px !important;

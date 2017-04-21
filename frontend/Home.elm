@@ -6,6 +6,7 @@ import Html.Events as E
 import Link
 import ListAds
 import ListUsers
+import Maybe.Extra as Maybe
 import Models.User exposing (User)
 import Nav
 import State.Home exposing (..)
@@ -54,7 +55,7 @@ view model userMaybe =
     []
     [ introScreen userMaybe
     , listLatestAds model
-    , listUsers model
+    , listUsers model userMaybe
     , tradenomiittiSection
     ]
 
@@ -156,37 +157,39 @@ listFourAds model =
 
 -- LIST USERS --
 
-listUsers : Model -> H.Html (ViewMessage msg)
-listUsers model =
+listUsers : Model -> Maybe User -> H.Html (ViewMessage msg)
+listUsers model userMaybe =
   H.div
     [ A.class "home__list-users" ]
     [ H.div
       [ A.class "home__section--container" ]
-      [ listUsersHeading
+      [ listUsersHeading userMaybe
       , listThreeUsers model
       ]
      ]
 
-listUsersHeading : H.Html (ViewMessage msg)
-listUsersHeading =
+listUsersHeading : Maybe User -> H.Html (ViewMessage msg)
+listUsersHeading userMaybe =
   H.div
     [ A.class "home__section--heading row" ]
     [ sectionHeader "Löydä tradenomi"
-    , listUsersButtons
+    , listUsersButtons userMaybe
     ]
 
-listUsersButtons : H.Html (ViewMessage msg)
-listUsersButtons =
+listUsersButtons : Maybe User -> H.Html (ViewMessage msg)
+listUsersButtons userMaybe =
   H.div
     [ A.class "home__section--heading--buttons col-sm-7" ]
     [ Link.button
-        "katso kaikki tradenomit"
+        "Katso kaikki tradenomit"
         "home__section--heading--buttons--inverse btn btn-primary"
         Nav.ListUsers
     , Link.button
-        "muokkaa omaa profiilia"
+        (if Maybe.isJust userMaybe then "Muokkaa omaa profiilia" else "Luo oma profiili")
         "home__section--heading--buttons--normal btn btn-primary"
-        Nav.Profile
+        (if Maybe.isJust userMaybe
+         then Nav.Profile
+         else Nav.LoginNeeded << Just << Nav.routeToPath <| Nav.Profile)
     ]
 
 listThreeUsers : Model -> H.Html (ViewMessage msg)
@@ -208,14 +211,14 @@ tradenomiittiRow : H.Html (ViewMessage msg)
 tradenomiittiRow =
   H.div
     [ A.class "row home__tradenomiitti-info-row" ]
-    [ H.div [ A.class "home__tradenomiitti--info-container  col-md-6" ] [ tradenomiittiInfo ]
+    [ H.div [ A.class "home__tradenomiitti-info-container  col-md-6" ] [ tradenomiittiInfo ]
     , tradenomiImage
     ]
 
 tradenomiittiInfo : H.Html (ViewMessage msg)
 tradenomiittiInfo =
   H.div
-    [ A.class "home__tradenomiitti--info" ]
+    [ A.class "home__tradenomiitti-info" ]
     [ tradenomiittiHeader
     , tradenomiittiInfoText
     , readMoreButton
@@ -224,20 +227,26 @@ tradenomiittiInfo =
 tradenomiittiHeader : H.Html msg
 tradenomiittiHeader =
   H.h2
-    [ A.class "home__tradenomiitti--info--header" ]
-    [ H.text "Lorem ipsum dolorem salet" ]
+    [ A.class "home__tradenomiitti-info--header" ]
+    [ H.text "Kokemuksellasi on aina arvoa" ]
 
 tradenomiittiInfoText : H.Html msg
 tradenomiittiInfoText =
-  H.p
-    [ A.class "home__tradenomiitti--info--text" ]
-    [ H.text "Tähän kuvaava teksti Tradenomiitistä. Hyötynäkökuma, eli mitä täällä voi tehdä ja miksi pitäisi liittyä. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua." ]
+  H.div
+    [ A.class "home__tradenomiitti-info-content"]
+    [ H.p
+      [ A.class "home__tradenomiitti-info-text" ]
+      [ H.text "Tradenomiitti on tradenomien oma kohtaamispaikka, jossa yhdistyvät inspiroivat kohtaamiset ja itsensä kehittäminen. Tradenomiitti tuo tradenomien osaamisen esille - olit sitten opiskelija tai kokenut konkari. Juuri sinulla voi olla vastaus toisen tradenomin kysymykseen, tai ehkä uusi työnantajasi etsii sinua jo?" ]
+    , H.p
+      [ A.class "home__tradenomiitti-info-text" ]
+      [ H.text "Luomalla profiilin pääset alkuun, loput on itsestäsi kiinni." ]
+    ]
 
 readMoreButton : H.Html (ViewMessage msg)
 readMoreButton =
-  Link.button
+  Link.link
     "lue lisää"
-    "home__tradenomiitti--info--read-more-button btn btn-primary"
+    "home__tradenomiitti-info--read-more-button btn btn-primary"
     Nav.Info
 
 tradenomiImage : H.Html msg
