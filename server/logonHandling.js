@@ -91,11 +91,14 @@ module.exports = function initialize(params) {
   }
 
   function logout(req, res, next) {
-    const sessionId = req.session.id || 'nosession';
+    const sessionId = req.session.id;
     req.session = null;
-    return knex('sessions').where({id: sessionId}).del()
-      .then(() => res.redirect('https://tunnistus.avoine.fi/sso-logout/'))
-      .catch(next);
+    if (sessionId) {
+      return knex('sessions').where({id: sessionId}).del()
+        .then(() => res.redirect('https://tunnistus.avoine.fi/sso-logout/'))
+        .catch(next);
+    } else
+      res.redirect('https://tunnistus.avoine.fi/sso-logout/');
   }
 
   return {
