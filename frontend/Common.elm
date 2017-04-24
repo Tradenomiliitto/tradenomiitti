@@ -158,3 +158,13 @@ select class toMsg filter options model =
                 [ H.text o])
             (prompt filter :: options)
       ]
+
+{--
+   don't ask for more when
+     * we are not getting any more
+     * footer is visible only because we are doing initial render and possibly scrolling up
+        -> wait atleast until we have gotten the first reply before asking for more
+-}
+shouldNotGetMoreOnFooter : List a -> Int -> Bool
+shouldNotGetMoreOnFooter list cursor =
+  cursor > List.length list || cursor == 0

@@ -37,7 +37,7 @@ update msg model =
       } ! []
 
     FooterAppeared ->
-      if model.cursor > List.length model.ads
+      if Common.shouldNotGetMoreOnFooter model.ads model.cursor
       then
         model ! []
       else

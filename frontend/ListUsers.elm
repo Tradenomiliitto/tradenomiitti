@@ -72,11 +72,7 @@ update msg model =
       } ! []
 
     FooterAppeared ->
-      -- don't ask for more when
-      --   * we are not getting any more
-      --   * footer is visible only because we are doing initial render and possibly scrolling up
-      --      -> wait atleast until we have gotten the first reply before asking for more
-      if model.cursor > List.length model.users || model.cursor == 0
+      if Common.shouldNotGetMoreOnFooter model.users model.cursor
       then
         model ! []
       else
