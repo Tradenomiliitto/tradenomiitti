@@ -39,6 +39,7 @@ type alias User =
   , primaryPosition : String
   , domains : List Skill.Model
   , positions : List Skill.Model
+  , skills : List String
   , profileCreated : Bool
   , location : String
   , croppedPictureFileName : Maybe String -- this is for every logged in user
@@ -66,6 +67,7 @@ userDecoder =
     |> P.required "title" Json.string
     |> P.required "domains" (Json.list Skill.decoder)
     |> P.required "positions" (Json.list Skill.decoder)
+    |> P.hardcoded []
     |> P.required "profile_creation_consented" Json.bool
     |> P.required "location" Json.string
     |> P.required "cropped_picture" (Json.string |> Json.map

@@ -5,6 +5,7 @@ import Json.Decode as Json
 import Models.Ad
 import Models.User exposing (User, BusinessCard, PictureEditing)
 import Skill
+import State.Config as Config
 import State.Profile exposing (Model)
 import Util exposing (UpdateMessage(..))
 
@@ -34,6 +35,7 @@ type Msg
   | ChangeContactAddingText String
   | AddContact User
   | ShowAll
+  | SkillSelected String
   | NoOp
 
 
@@ -42,9 +44,18 @@ port imageUpload : Maybe PictureEditing -> Cmd msg
 -- cropped picture file name and full picture details
 port imageSave : ((String, PictureEditing) -> msg) -> Sub msg
 
-subscriptions : Sub Msg
-subscriptions =
-  imageSave ImageDetailsUpdate
+port typeahead : (String, String) -> Cmd msg
+port typeaheadResult : (String -> msg) -> Sub msg
+
+skillTypeahead : Config.Model -> Cmd msg
+skillTypeahead config = typeahead ("skills-input", config.specialSkillOptionsJson)
+
+subscriptions : Model -> Sub Msg
+subscriptions model =
+  Sub.batch
+    [ imageSave ImageDetailsUpdate
+    , if model.editing then typeaheadResult SkillSelected else Sub.none
+    ]
 
 getMe : Cmd (UpdateMessage Msg)
 getMe =
@@ -109,8 +120,8 @@ updateBusinessCard businessCard field value =
         LinkedIn -> Just { businessCard | linkedin = value }
     Nothing -> Nothing
 
-update : Msg -> Model -> (Model, Cmd (UpdateMessage Msg))
-update msg model =
+update : Msg -> Model -> Config.Model -> (Model, Cmd (UpdateMessage Msg))
+update msg model config =
   case msg of
     GetMe (Err err) ->
       let
@@ -141,10 +152,13 @@ update msg model =
       let
         newModel = { model | editing = True }
       in
-        newModel ! [ updateConsent ]
+        newModel !
+          [ updateConsent
+          , skillTypeahead config
+          ]
 
     Edit ->
-      { model | editing = True } ! []
+      { model | editing = True } ! [ skillTypeahead config ]
 
     DomainSkillMessage index (Skill.LevelChange skillLevel) ->
       updateUser (\u -> { u | domains = updateSkillList index skillLevel u.domains }) model ! []
@@ -175,6 +189,11 @@ update msg model =
 
     ChangeDescription str ->
       updateUser (\u -> { u | description = String.slice 0 300 str }) model ! []
+
+    SkillSelected str ->
+      updateUser (\u -> { u | skills = u.skills ++ [ str ] }) model !
+        [ skillTypeahead config
+        ]
 
 
     UpdateUser _ ->

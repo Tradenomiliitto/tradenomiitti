@@ -296,12 +296,16 @@ competences model config user =
       ]
       , H.div
           [ A.class "profile__editing--competences--row row" ]
-          [ userDomains model user config
-          , userPositions model user config
-          ]
+          (userExpertise model user config)
       ]
     ]
 
+userExpertise : Model -> User -> Config.Model -> List (H.Html Msg)
+userExpertise model user config =
+  [ userDomains model user config
+  , userPositions model user config
+  , userSkills model user config
+  ]
 
 profileTopRow : Model -> RootState.Model -> H.Html (ViewMessage Msg)
 profileTopRow model rootState =
@@ -425,10 +429,8 @@ viewUser model ownProfile contactUser config user =
     , H.div
       [ A.class "container" ]
       [ H.div
-        [ A.class "row" ]
-        [ H.map LocalViewMessage (userDomains model user config )
-        , H.map LocalViewMessage (userPositions model user config)
-        ]
+        [ A.class "row" ] <|
+          List.map (H.map LocalViewMessage) (userExpertise model user config)
       ]
     ]
 
@@ -585,7 +587,7 @@ optionPreselected default value =
 userDomains : Model -> User -> Config.Model ->  H.Html Msg
 userDomains model user config =
   H.div
-    [ A.class "col-xs-12 col-sm-6 last-row"
+    [ A.class "col-xs-12 col-sm-4 last-row"
     ]
     ([ H.h3 [ A.class "user-page__competences-header" ] [ H.text "Toimiala" ]
     ] ++
@@ -605,10 +607,29 @@ userDomains model user config =
      else [])
     )
 
+userSkills : Model -> User -> Config.Model -> H.Html Msg
+userSkills model user config =
+  H.div
+    [ A.class "col-xs-12 col-sm-4 last-row"
+    ]
+    ([ H.h3 [ A.class "user-page__competences-header" ] [ H.text "Osaaminen" ]
+     ] ++ (List.map (\skill -> H.p [] [ H.text skill ]) user.skills) ++
+     [ H.input
+       [ A.type_ "text"
+       , A.id "skills-input"
+       , A.classList
+         [ ("skills-input", True)
+         , ("skills-input--active", model.editing)
+         ]
+       ]
+       []
+     ])
+
+
 userPositions : Model -> User -> Config.Model -> H.Html Msg
 userPositions model user config =
   H.div
-    [ A.class "col-xs-12 col-sm-6 last-row"
+    [ A.class "col-xs-12 col-sm-4 last-row"
     ]
     ([ H.h3 [ A.class "user-page__competences-header" ] [ H.text "Tehtäväluokka" ]
       ] ++

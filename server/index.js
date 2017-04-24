@@ -251,6 +251,14 @@ app.get('/api/toimialat', (req, res) => {
   return res.json(domains.sort());
 });
 
+app.get('/api/osaaminen', (req, res) => {
+  const lists = {
+    'Kivaa': [ 'Kamaa', 'Pataa', 'Rataa'],
+    'Hauskaa': ['Sitä', 'Tätä', 'Tuota']
+  };
+  return res.json(JSON.stringify(lists));
+})
+
 app.post('/api/ilmoitukset', jsonParser, ads.createAd);
 app.get('/api/ilmoitukset/:id', ads.getAd);
 app.get('/api/ilmoitukset', ads.listAds);
