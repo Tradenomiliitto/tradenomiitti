@@ -72,7 +72,7 @@ update msg model =
       } ! []
 
     FooterAppeared ->
-      if model.cursor > List.length model.users
+      if Common.shouldNotGetMoreOnFooter model.users model.cursor
       then
         model ! []
       else
@@ -92,8 +92,8 @@ update msg model =
 
 
 
-view : Model -> Config.Model -> H.Html (ViewMessage Msg)
-view model config =
+view : Model -> Config.Model -> Bool -> H.Html (ViewMessage Msg)
+view model config isLoggedIn =
   let
     usersHtml = List.map viewUser model.users
     rows = chunk3 usersHtml
@@ -164,8 +164,8 @@ view model config =
       , H.div
         [ A.class "list-users__list-background last-row"]
         [ H.div
-          [ A.class "container" ]
-          (sorterRow :: rowsHtml)
+          [ A.class "container" ] <|
+          if isLoggedIn then sorterRow :: rowsHtml else rowsHtml
         ]
       ]
 
