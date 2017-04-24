@@ -83,6 +83,17 @@ module.exports = function initialize(params) {
       })
   }
 
+  function formatSettings(settingsIn) {
+    const settings = {};
+    const dbSettings = settingsIn || {};
+    const trueFallback = value => value === undefined ? true : value;
+    settings.emails_for_answers = trueFallback(dbSettings.emails_for_answers);
+    settings.emails_for_businesscards = trueFallback(dbSettings.emails_for_businesscards);
+    settings.emails_for_new_ads = trueFallback(dbSettings.emails_for_new_ads);
+    settings.email_address = dbSettings.email_address || '';
+    return settings;
+  }
+
   function logValue(tag, value) {
     if (arguments.length === 1) {
       value = tag;
@@ -108,6 +119,7 @@ module.exports = function initialize(params) {
     formatBusinessCard,
     formatAd,
     formatAnswer,
+    formatSettings,
     loggedIn,
     logValue,
     patchSkillsToUser

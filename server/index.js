@@ -76,10 +76,10 @@ const smtp =
         password: smtpPassword,
         tls: smtpTls === 'true'
       }
-const emails = require('./emails')({ smtp, mailFrom, staticDir, serviceDomain });
+const util = require('./util')({ knex });
+const emails = require('./emails')({ smtp, mailFrom, staticDir, serviceDomain, util });
 
 const logon = require('./logonHandling')({ communicationsKey, knex, sebacon });
-const util = require('./util')({ knex });
 const profile = require('./profile')({ knex, sebacon, util, userImagesPath, emails});
 const ads = require('./ads')({ util, knex, emails });
 const adNotifications = require('./adNotifications')({ emails, knex, util })
@@ -260,14 +260,7 @@ app.post('/api/ilmoitukset/:id/vastaus', jsonParser, ads.createAnswer);
 
 app.get('/api/asetukset', (req, res) => {
   util.userForSession(req).then(dbUser => {
-    const settings = {};
-    const dbSettings = dbUser.settings || {};
-    const trueFallback = value => value === undefined ? true : value;
-    settings.emails_for_answers = trueFallback(dbSettings.emails_for_answers);
-    settings.emails_for_businesscards = trueFallback(dbSettings.emails_for_businesscards);
-    settings.emails_for_new_ads = trueFallback(dbSettings.emails_for_new_ads);
-    settings.email_address = dbSettings.email_address || '';
-    res.json(settings);
+    res.json(util.formatSettings(dbUser.settings));
   });
 });
 
