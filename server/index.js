@@ -260,14 +260,7 @@ app.post('/api/ilmoitukset/:id/vastaus', jsonParser, ads.createAnswer);
 
 app.get('/api/asetukset', (req, res) => {
   util.userForSession(req).then(dbUser => {
-    const settings = {};
-    const dbSettings = dbUser.settings || {};
-    const trueFallback = value => value === undefined ? true : value;
-    settings.emails_for_answers = trueFallback(dbSettings.emails_for_answers);
-    settings.emails_for_businesscards = trueFallback(dbSettings.emails_for_businesscards);
-    settings.emails_for_new_ads = trueFallback(dbSettings.emails_for_new_ads);
-    settings.email_address = dbSettings.email_address || '';
-    res.json(settings);
+    res.json(util.formatSettings(dbUser.settings));
   });
 });
 
