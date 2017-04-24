@@ -76,10 +76,10 @@ const smtp =
         password: smtpPassword,
         tls: smtpTls === 'true'
       }
-const emails = require('./emails')({ smtp, mailFrom, staticDir, serviceDomain });
+const util = require('./util')({ knex });
+const emails = require('./emails')({ smtp, mailFrom, staticDir, serviceDomain, util });
 
 const logon = require('./logonHandling')({ communicationsKey, knex, sebacon });
-const util = require('./util')({ knex });
 const profile = require('./profile')({ knex, sebacon, util, userImagesPath, emails});
 const ads = require('./ads')({ util, knex, emails });
 const adNotifications = require('./adNotifications')({ emails, knex, util })
