@@ -168,3 +168,19 @@ select class toMsg filter options model =
 shouldNotGetMoreOnFooter : List a -> Int -> Bool
 shouldNotGetMoreOnFooter list cursor =
   cursor > List.length list || cursor == 0
+
+
+chunk2 : List a -> List (List a)
+chunk2 = List.reverse << List.foldl rowFolder []
+
+-- transforms a list to a list of lists of two elements: [1, 2, 3, 4, 5] => [[5], [3, 4], [1, 2]]
+-- note: reverse the results if you need the elements to be in original order
+rowFolder : a -> List (List a) -> List (List a)
+rowFolder x acc =
+  case acc of
+    [] -> [[x]]
+    row :: rows ->
+      case row of
+        el1 :: el2 :: els -> [x] :: row :: rows
+        el :: els -> [el, x] :: rows
+        els -> (x :: els) :: rows
