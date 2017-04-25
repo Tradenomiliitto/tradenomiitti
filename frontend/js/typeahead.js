@@ -1,8 +1,7 @@
 import autocomplete from 'autocomplete.js';
 
 export default function initTypeahead(elm2js, js2elm) {
-  elm2js.subscribe(([ id, listsJson ]) => {
-    const lists = JSON.parse(listsJson);
+  elm2js.subscribe(([ id, lists ]) => {
 
     //wait until element is rendered
     let counter = 0;

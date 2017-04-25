@@ -261,7 +261,7 @@ app.get('/api/osaaminen', (req, res, next) => {
         lists[o.category] = [ o.title ];
       }
     });
-    return res.json(JSON.stringify(lists));
+    return res.json(lists);
   }).catch(next);
 })
 

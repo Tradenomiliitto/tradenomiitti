@@ -1,7 +1,9 @@
 port module Profile.Main exposing (..)
 
+import Dict
 import Http
 import Json.Decode as Json
+import Json.Encode as JS
 import Models.Ad
 import Models.User exposing (User, BusinessCard, PictureEditing)
 import Skill
@@ -45,11 +47,21 @@ port imageUpload : Maybe PictureEditing -> Cmd msg
 -- cropped picture file name and full picture details
 port imageSave : ((String, PictureEditing) -> msg) -> Sub msg
 
-port typeahead : (String, String) -> Cmd msg
+port typeahead : (String, JS.Value) -> Cmd msg
 port typeaheadResult : (String -> msg) -> Sub msg
 
 skillTypeahead : Config.Model -> Cmd msg
-skillTypeahead config = typeahead ("skills-input", config.specialSkillOptionsJson)
+skillTypeahead config =
+  let
+    asList =
+      Dict.toList config.specialSkillOptions
+        |> List.map
+          (\ (key, values) ->
+             (key, JS.list <| List.map
+                (\value -> JS.string value) values))
+    jsValue = JS.object asList
+  in
+    typeahead ("skills-input", jsValue)
 
 subscriptions : Model -> Sub Msg
 subscriptions model =

@@ -1,5 +1,6 @@
 module Config exposing (..)
 
+import Dict exposing (Dict)
 import Http
 import Json.Decode as Json
 import State.Config exposing (..)
@@ -8,7 +9,7 @@ import Util exposing (UpdateMessage(..))
 type Msg
   = GetDomainOptions (List String)
   | GetPositionOptions (List String)
-  | GetSpecialSkillOptions String
+  | GetSpecialSkillOptions (Dict String (List String))
 
 getDomainOptions : Cmd (UpdateMessage Msg)
 getDomainOptions =
@@ -22,7 +23,7 @@ getPositionOptions =
 
 getSpecialSkillOptions : Cmd (UpdateMessage Msg)
 getSpecialSkillOptions =
-  Http.get "/api/osaaminen" Json.string
+  Http.get "/api/osaaminen" (Json.dict (Json.list Json.string))
     |> Util.errorHandlingSend GetSpecialSkillOptions
 
 
@@ -40,5 +41,5 @@ update msg model =
     GetDomainOptions list ->
       { model | domainOptions = list } ! []
 
-    GetSpecialSkillOptions jsonString ->
-      { model | specialSkillOptionsJson = jsonString } ! []
+    GetSpecialSkillOptions dict ->
+      { model | specialSkillOptions = dict } ! []
