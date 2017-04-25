@@ -10,6 +10,73 @@ import Nav exposing (Route, routeToPath, routeToString)
 import SvgIcons
 import Util exposing (ViewMessage(..))
 
+type ProfileTab = SettingsTab | ProfileTab
+
+profileTopRow : User -> Bool -> ProfileTab -> H.Html (ViewMessage msg) -> H.Html (ViewMessage msg)
+profileTopRow user editing profileTab saveOrEdit =
+  let
+    logoutLink =
+      H.a
+        [ A.href "/uloskirjautuminen"
+        , A.classList
+          [ ("btn", True)
+          , ("profile__top-row-tab-button--hidden"
+            , editing )
+          ]
+        ]
+        [ H.text "Kirjaudu ulos" ]
+    tabToNav tab =
+      case tab of
+        ProfileTab -> Nav.Profile
+        SettingsTab -> Nav.Settings
+
+    tabToText tab =
+      case tab of
+        ProfileTab -> "Oma profiili"
+        SettingsTab -> "Asetukset"
+
+    button tab =
+      H.h5
+        ([ A.classList
+            [ ("profile__top-row-tab-button", True)
+            , ("profile__top-row-tab-button--active", tab == profileTab)
+            , ("profile__top-row-tab-button--white"
+              , profileTab == ProfileTab && editing)
+            , ("profile__top-row-tab-button--hidden"
+              , tab /= ProfileTab && editing)
+            ]
+        ] ++ if tab /= profileTab then [ E.onClick << Link << tabToNav <| tab] else [])
+        [ H.text << tabToText <| tab ]
+    profileButton =
+      button ProfileTab
+    settingsButton =
+      button SettingsTab
+  in
+    H.div
+      [ A.classList
+          [ ("profile__top-row", True)
+          , ("profile__top-row--editing", editing)
+          ]
+      ]
+      [ H.div
+        [ A.class "container" ]
+        [ H.div
+          [ A.class "row profile__top-row-content-row" ]
+          [ H.div
+            [ A.class "col-xs-4" ]
+            [ profileButton
+            , settingsButton
+            ]
+
+          , H.div
+            [ A.class "col-xs-8 profile__buttons" ]
+            [ saveOrEdit
+            , logoutLink
+            ]
+          ]
+        ]
+      ]
+
 
 authorInfo : User -> H.Html (ViewMessage msg)
 authorInfo user =

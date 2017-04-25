@@ -115,6 +115,7 @@
   &__top-row {
     position: fixed;
     width: 100%;
+    height: $profilebar-height;
     top: $navbar-height;
     padding-top: 8px;
     padding-bottom: 8px;
@@ -132,13 +133,28 @@
       min-width: 16em;
       @include button-colors;
     }
-    &-settings-button {
-      min-width: 16em;
-      margin-right: 15px;
+    &-tab-button {
+      margin-right: 35px;
+      font-weight: bold;
+      cursor: pointer;
+      color: $pink;
+      display: inline;
+      vertical-align: middle;
+      &--active {
+        color: $green;
+        cursor: default;
+      }
+      &--white {
+        color: $white;
+      }
+      &--hidden {
+        display: none;
+      }
     }
-  }
-  &__heading {
-    @include gotham-bold;
+    &-content-row {
+      display: flex;
+      align-items: center;
+    }
   }
 
   &__consent-needed {

@@ -163,6 +163,8 @@ update msg model =
         needsLogin =
           case (route, Maybe.isJust model.profile.user, model.initialLoading) of
             (CreateAd, False, False) -> True
+            (Profile, False, False) -> True
+            (Settings, False, False) -> True
             _ -> False
 
         newRoute =
@@ -557,7 +559,7 @@ viewPage model =
         RegisterDescription ->
           PreformattedText.view Static.registerDescriptionHeading Static.registerDescriptionTexts
         Settings ->
-          H.map SettingsMessage <| Settings.view model.settings
+          unpackViewMessage SettingsMessage <| Settings.view model.settings model.profile.user
         Info ->
           Info.view
         NotFound ->
