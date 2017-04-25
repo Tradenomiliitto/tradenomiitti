@@ -88,6 +88,15 @@ module.exports = function initialize(params) {
               data: newData,
               modified_at: new Date()
             })
+            .then(() => {
+              const insertObjects = newData.special_skills.map(title => ({
+                category: 'Käyttäjien lisäämät',
+                title
+              }));
+              const insertPart = knex('special_skills').insert(insertObjects).toString();
+              const query = `${insertPart} ON CONFLICT (title) DO NOTHING`;
+              return knex.raw(query);
+            })
             .then(() => trx('skills').where({ user_id: user.id }).del())
             .then(() => {
               const domainPromises = domains.map(domain => {

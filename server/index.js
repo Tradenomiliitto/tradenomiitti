@@ -251,12 +251,18 @@ app.get('/api/toimialat', (req, res) => {
   return res.json(domains.sort());
 });
 
-app.get('/api/osaaminen', (req, res) => {
-  const lists = {
-    'Kivaa': [ 'Kamaa', 'Pataa', 'Rataa'],
-    'Hauskaa': ['Sitä', 'Tätä', 'Tuota']
-  };
-  return res.json(JSON.stringify(lists));
+app.get('/api/osaaminen', (req, res, next) => {
+  knex('special_skills').where({}).orderBy('title').then(rows => {
+    const lists = {};
+    rows.forEach(o => {
+      if (lists[o.category]) {
+        lists[o.category].push(o.title);
+      } else {
+        lists[o.category] = [ o.title ];
+      }
+    });
+    return res.json(JSON.stringify(lists));
+  }).catch(next);
 })
 
 app.post('/api/ilmoitukset', jsonParser, ads.createAd);

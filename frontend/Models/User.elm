@@ -67,7 +67,7 @@ userDecoder =
     |> P.required "title" Json.string
     |> P.required "domains" (Json.list Skill.decoder)
     |> P.required "positions" (Json.list Skill.decoder)
-    |> P.hardcoded []
+    |> P.required "special_skills" (Json.list Json.string)
     |> P.required "profile_creation_consented" Json.bool
     |> P.required "location" Json.string
     |> P.required "cropped_picture" (Json.string |> Json.map
@@ -87,6 +87,7 @@ encode user =
     , ("positions", JS.list (List.map Skill.encode user.positions) )
     , ("location", JS.string user.location)
     , ("cropped_picture", JS.string (user.croppedPictureFileName |> Maybe.withDefault ""))
+    , ("special_skills", JS.list (List.map JS.string user.skills))
     ] ++ (
          user.pictureEditingDetails
            |> Maybe.map (\details ->
