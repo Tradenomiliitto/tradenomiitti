@@ -4,6 +4,7 @@ import Dict
 import Http
 import Json.Decode as Json
 import Json.Encode as JS
+import List.Extra as List
 import Models.Ad
 import Models.User exposing (User, BusinessCard, PictureEditing)
 import Skill
@@ -186,10 +187,10 @@ update msg model config =
       updateUser (\u -> { u | positions = deleteFromSkillList index u.positions }) model ! []
 
     ChangeDomainSelect str ->
-      updateUser (\u -> { u | domains = u.domains ++ [ Skill.Model str Skill.Interested ] }) model ! []
+      updateUser (\u -> { u | domains = List.uniqueBy .heading <| u.domains ++ [ Skill.Model str Skill.Interested ] }) model ! []
 
     ChangePositionSelect str ->
-      updateUser (\u -> { u | positions = u.positions ++ [ Skill.Model str Skill.Interested ] }) model ! []
+      updateUser (\u -> { u | positions = List.uniqueBy .heading <| u.positions ++ [ Skill.Model str Skill.Interested ] }) model ! []
 
     ChangeLocation str ->
       updateUser (\u -> { u | location = str }) model ! []
@@ -204,7 +205,7 @@ update msg model config =
       updateUser (\u -> { u | description = String.slice 0 300 str }) model ! []
 
     SkillSelected str ->
-      updateUser (\u -> { u | skills = u.skills ++ [ str ] }) model !
+      updateUser (\u -> { u | skills = List.unique <| u.skills ++ [ str ] }) model !
         [ skillTypeahead config ]
 
     DeleteSkill str ->
