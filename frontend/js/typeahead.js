@@ -20,7 +20,10 @@ export default function initTypeahead(elm2js, js2elm) {
     }, 20);
 
     function init(element) {
-      autocomplete(`#${id}`, {
+      if (element.classList.contains('aa-input'))
+        return;
+
+      const autocompleter = autocomplete(`#${id}`, {
         hint: false,
         openOnFocus: true,
         minLength: 0
@@ -50,8 +53,10 @@ export default function initTypeahead(elm2js, js2elm) {
               return autocomplete.escapeHighlightedString(val);
             }
           }
-        })
-      ).on('autocomplete:selected', (ev, suggestion, dataset) => {
+        }));
+      autocompleter.on('autocomplete:selected', (ev, suggestion, dataset) => {
+        autocompleter.autocomplete.setVal('');
+        $(element).blur();
         js2elm.send(suggestion.original || suggestion.value);
       })
     }

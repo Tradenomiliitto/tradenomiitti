@@ -36,6 +36,7 @@ type Msg
   | AddContact User
   | ShowAll
   | SkillSelected String
+  | DeleteSkill String
   | NoOp
 
 
@@ -192,9 +193,11 @@ update msg model config =
 
     SkillSelected str ->
       updateUser (\u -> { u | skills = u.skills ++ [ str ] }) model !
-        [ skillTypeahead config
-        ]
+        [ skillTypeahead config ]
 
+    DeleteSkill str ->
+      updateUser (\u -> { u | skills = List.filter (\skill -> skill /= str) u.skills}) model !
+        [ skillTypeahead config ]
 
     UpdateUser _ ->
       { model | editing = False } !

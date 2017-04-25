@@ -613,7 +613,29 @@ userSkills model user config =
     [ A.class "col-xs-12 col-sm-4 last-row"
     ]
     ([ H.h3 [ A.class "user-page__competences-header" ] [ H.text "Osaaminen" ]
-     ] ++ (List.map (\skill -> H.p [] [ H.text skill ]) user.skills) ++
+     ] ++
+        (if model.editing
+          then [ H.p [ A.class "profile__editing--competences--text"] [H.text "Missä tehtävissä olet toiminut tai haluaisit toimia?" ] ]
+          else [ H.p [ A.class "profile__editing--competences--text"] [] ])
+       ++ (List.map
+            (\rowItems ->
+               H.div
+               [ A.class "row user-page__competences-special-skills-row" ]
+               (List.map
+                  (\skill ->
+                     H.div
+                     [ A.class "user-page__competences-special-skills col-xs-6" ] <|
+                     [ H.span
+                       [ A.class "user-page__competences-special-skills-text"]
+                       [ H.text skill ]
+                     ] ++ if model.editing then [ H.i
+                       [ A.class "fa fa-remove user-page__competences-special-skills-delete"
+                       , E.onClick (DeleteSkill skill)
+                       ] []
+                     ] else []
+                  ) rowItems)
+            ) (Common.chunk2 user.skills)
+         ) ++
      [ H.input
        [ A.type_ "text"
        , A.id "skills-input"
@@ -621,6 +643,7 @@ userSkills model user config =
          [ ("skills-input", True)
          , ("skills-input--active", model.editing)
          ]
+       , A.placeholder "Valitse taito"
        ]
        []
      ])
