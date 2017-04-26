@@ -278,8 +278,11 @@ module.exports = function initialize(params) {
             Promise.resolve(user) ]))
       .then(([resp, user]) => {
         if (resp.length == 0) {
-          knex('contacts').insert({ from_user: user.id, to_user: req.params.user_id })
-            .then(_ => util.userById(req.params.user_id))
+          return knex('contacts').insert({
+            from_user: user.id,
+            to_user: req.params.user_id,
+            intro_text: introductionText
+          }).then(_ => util.userById(req.params.user_id))
             .then(receiver => {
               emails.sendNotificationForContact(receiver, user, introductionText);
               return res.json("Ok");
