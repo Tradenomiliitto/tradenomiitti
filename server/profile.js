@@ -228,7 +228,8 @@ module.exports = function initialize(params) {
                 rows.map(row => util.userById(row.to_user).then(toUser => ({
                   user: util.formatUser(toUser, true),
                   business_card: util.formatBusinessCard(toUser.data.business_card || {}),
-                  intro_text: row.intro_text || ''
+                  intro_text: row.intro_text || '',
+                  created_at: row.created_at
                 })))
           return Promise.all(promises);
         }).then(objects => res.json(objects))

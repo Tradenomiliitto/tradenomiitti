@@ -1,0 +1,26 @@
+.contacts {
+
+  &__intro-text {
+    quotes: "“" "”" "‘" "’";
+
+    &:before {
+      content: open-quote;
+    }
+    &:after {
+      content: close-quote;
+    }
+  }
+  &__item-container {
+    margin-top: 90px;
+  }
+
+  &__heading {
+    @include basic-header;
+    margin-top: #{ $basic-header-margin-top + $profilebar-height };
+  }
+  &__row {
+  }
+  & .profile__business-card {
+    background-color: $light-grey;
+  }
+}

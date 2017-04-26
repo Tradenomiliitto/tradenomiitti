@@ -1,6 +1,8 @@
 module Models.User exposing (..)
 
+import Date
 import Json.Decode as Json
+import Json.Decode.Extra exposing (date)
 import Json.Decode.Pipeline as P
 import Json.Encode as JS
 import Skill
@@ -36,6 +38,7 @@ type alias Contact =
   { user : User
   , businessCard : BusinessCard
   , introText : String
+  , createdAt : Date.Date
   }
 
 type alias User =
@@ -168,6 +171,7 @@ contactDecoder =
     |> P.required "user" userDecoder
     |> P.required "business_card" businessCardDecoder
     |> P.required "intro_text" Json.string
+    |> P.required "created_at" date
 
 businessCardDecoder : Json.Decoder BusinessCard
 businessCardDecoder =
