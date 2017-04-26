@@ -32,6 +32,12 @@ type alias Settings =
   , emails_for_new_ads : Bool
   }
 
+type alias Contact =
+  { user : User
+  , businessCard : BusinessCard
+  , introText : String
+  }
+
 type alias User =
   { id : Int
   , name : String
@@ -155,6 +161,13 @@ settingsDecoder =
     |> P.required "email_address" Json.string
     |> P.required "emails_for_businesscards" Json.bool
     |> P.required "emails_for_new_ads" Json.bool
+
+contactDecoder : Json.Decoder Contact
+contactDecoder =
+  P.decode Contact
+    |> P.required "user" userDecoder
+    |> P.required "business_card" businessCardDecoder
+    |> P.required "intro_text" Json.string
 
 businessCardDecoder : Json.Decoder BusinessCard
 businessCardDecoder =

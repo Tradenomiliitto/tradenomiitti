@@ -24,6 +24,7 @@ import Profile.Main as Profile
 import Profile.View
 import Settings
 import State.Ad
+import State.BusinessCards
 import State.Home
 import State.ListAds
 import State.ListUsers
@@ -80,6 +81,7 @@ type Msg
   | HomeMessage Home.Msg
   | SettingsMessage Settings.Msg
   | ConfigMessage Config.Msg
+  | BusinessCardsMessage BusinessCards.Msg
   | Error Http.Error
   | SendErrorResponse (Result Http.Error String)
   | NoOp
@@ -157,6 +159,9 @@ update msg model =
 
             Settings ->
               initWithUpdateMessage { modelWithRoute | settings = State.Settings.init } SettingsMessage Settings.initTasks
+
+            BusinessCards ->
+              initWithUpdateMessage { modelWithRoute | businessCards = State.BusinessCards.init } BusinessCardsMessage BusinessCards.initTasks
 
             newRoute ->
               (modelWithRoute, Cmd.none)
@@ -278,6 +283,12 @@ update msg model =
         (configModel, cmd) = Config.update msg model.config
       in
         { model | config = configModel } ! [ cmd ]
+
+    BusinessCardsMessage msg ->
+      let
+        (businessCardsModel, cmd) = BusinessCards.update msg model.businessCards
+      in
+        { model | businessCards = businessCardsModel } ! [ cmd ]
 
     Error err ->
       let
@@ -564,7 +575,7 @@ viewPage model =
         Info ->
           Info.view
         BusinessCards ->
-          unpackViewMessage identity <| BusinessCards.view model.profile.user
+          unpackViewMessage identity <| BusinessCards.view model.businessCards model.profile.user
         NotFound ->
           notImplementedYet
   in
