@@ -23,7 +23,7 @@ module.exports = function initialize(params) {
       });
     }
     if (location !== undefined) {
-      query = query.whereRaw("data->>'location' = ?", [ location ])
+      query = query.whereRaw("users.data->>'location' = ?", [ location ])
     }
 
     if (order === undefined || order === 'recent') {
@@ -35,11 +35,11 @@ module.exports = function initialize(params) {
     }
 
     if (order === "alphaDesc") {
-      query = query.orderByRaw("lower(data->>'name') desc")
+      query = query.orderByRaw("lower(users.data->>'name') desc")
     }
 
     if (order === "alphaAsc") {
-      query = query.orderByRaw("lower(data->>'name') asc")
+      query = query.orderByRaw("lower(users.data->>'name') asc")
     }
 
     return query

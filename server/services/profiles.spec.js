@@ -93,5 +93,17 @@ describe('Handle users', function() {
       done();
     })
   });
+  it('should filter by location', (done) => {
+    MockDate.set(aDate);
+    knex('users').insert({id: 3, remote_id: -3, data: {
+      location: 'siellätäällä'
+    }, settings: {}, modified_at: moment()}).then(() => {
+      return service.listProfiles(false, undefined, undefined, undefined, undefined, 'siellätäällä', 'recent')
+    }).then(users => {
+      users.should.have.length(1);
+      users[0].id.should.equal(3);
+      done();
+    })
+  });
 
 });
