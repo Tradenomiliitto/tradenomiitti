@@ -273,7 +273,8 @@ app.put('/api/asetukset', jsonParser, (req, res) => {
   });
 })
 
-app.post('/api/kontaktit/:user_id', jsonParser, profile.addContact)
+app.post('/api/kontaktit/:user_id', jsonParser, profile.addContact);
+app.get('/api/kontaktit', profile.listContacts);
 
 app.post('/api/virhe', textParser, (req, res) => {
   const errorHash = logError(req, req.body);

@@ -49,7 +49,7 @@ module.exports = function initialize(params) {
     return formatted;
   }
 
-  function formatAd(databaseAd, loggedIn){
+  function formatAd(databaseAd, loggedIn) {
     return Promise.all([
       knex('answers').where({ad_id: databaseAd.id})
         .then(answers => Promise.all(answers.map(databaseAnswer => formatAnswer(databaseAnswer, loggedIn)))),

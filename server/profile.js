@@ -217,6 +217,24 @@ module.exports = function initialize(params) {
       .catch(next)
   }
 
+  function listContacts(req, res, next) {
+    if (!req.session || !req.session.id) {
+      return res.sendStatus(401);
+    }
+    return util.userForSession(req)
+      .then(user => {
+        knex('contacts').where('from_user', user.id).then(rows => {
+          const promises =
+                rows.map(row => util.userById(row.to_user).then(toUser => ({
+                  user: util.formatUser(toUser, true),
+                  business_card: util.formatBusinessCard(toUser.data.business_card || {}),
+                  intro_text: row.intro_text || ''
+                })))
+          return Promise.all(promises);
+        }).then(objects => res.json(objects))
+      }).catch(next);
+  }
+
   function getProfile(req, res, next) {
     return Promise.all([ util.userById(req.params.id),
                          util.loggedIn(req)
@@ -303,7 +321,8 @@ module.exports = function initialize(params) {
     consentToProfileCreation,
     listProfiles,
     getProfile,
-    addContact
+    addContact,
+    listContacts
   };
 }
 
