@@ -10,7 +10,7 @@ import Nav exposing (Route, routeToPath, routeToString)
 import SvgIcons
 import Util exposing (ViewMessage(..))
 
-type ProfileTab = SettingsTab | ProfileTab
+type ProfileTab = SettingsTab | ProfileTab | BusinessCardsTab
 
 profileTopRow : User -> Bool -> ProfileTab -> H.Html (ViewMessage msg) -> H.Html (ViewMessage msg)
 profileTopRow user editing profileTab saveOrEdit =
@@ -29,11 +29,13 @@ profileTopRow user editing profileTab saveOrEdit =
       case tab of
         ProfileTab -> Nav.Profile
         SettingsTab -> Nav.Settings
+        BusinessCardsTab -> Nav.BusinessCards
 
     tabToText tab =
       case tab of
         ProfileTab -> "Oma profiili"
         SettingsTab -> "Asetukset"
+        BusinessCardsTab -> "Käyntikortit"
 
     button tab =
       H.h5
@@ -51,6 +53,8 @@ profileTopRow user editing profileTab saveOrEdit =
       button ProfileTab
     settingsButton =
       button SettingsTab
+    businessCardsButton =
+      button BusinessCardsTab
   in
     H.div
       [ A.classList
@@ -65,6 +69,7 @@ profileTopRow user editing profileTab saveOrEdit =
           [ H.div
             [ A.class "col-xs-4" ]
             [ profileButton
+            , businessCardsButton
             , settingsButton
             ]
 

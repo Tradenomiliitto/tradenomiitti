@@ -83,6 +83,10 @@ view model userMaybe =
   case (model.settings, userMaybe) of
     (Just settings, Just user) ->
       viewSettingsPage model settings user
+    (Nothing, Just user) ->
+      H.div
+        []
+        [ Common.profileTopRow user False Common.SettingsTab (H.div [] []) ]
     _ ->
       H.div [] []
 

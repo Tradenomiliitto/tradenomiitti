@@ -1,6 +1,7 @@
 port module Main exposing (..)
 
 import Ad
+import BusinessCards
 import Common
 import Config
 import CreateAd
@@ -562,6 +563,8 @@ viewPage model =
           unpackViewMessage SettingsMessage <| Settings.view model.settings model.profile.user
         Info ->
           Info.view
+        BusinessCards ->
+          unpackViewMessage identity <| BusinessCards.view model.profile.user
         NotFound ->
           notImplementedYet
   in
