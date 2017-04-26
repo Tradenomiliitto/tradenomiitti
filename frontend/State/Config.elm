@@ -1,8 +1,11 @@
 module State.Config exposing (..)
 
+import Dict exposing (Dict)
+
 type alias Model =
   { positionOptions : List String
   , domainOptions : List String
+  , specialSkillOptions : Dict String (List String)
   }
 
 
@@ -10,6 +13,7 @@ init : Model
 init =
   { positionOptions = []
   , domainOptions = []
+  , specialSkillOptions = Dict.empty
   }
 
 

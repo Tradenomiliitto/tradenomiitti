@@ -6,6 +6,9 @@ import initImageUpload from './image-upload';
 import initFooterVisibleListener from './footer-visible';
 import initCloseMobileMenu from './mobile-menu';
 import initShowAlerts from './show-alerts';
+import initTypeahead from './typeahead';
+
+import 'babel-polyfill';
 
 const app = Elm.Main.embed(document.getElementById('app'));
 
@@ -17,3 +20,5 @@ initImageUpload(app.ports.imageUpload, app.ports.imageSave);
 initFooterVisibleListener(app.ports.footerAppeared);
 initCloseMobileMenu(app.ports.closeMenu);
 initShowAlerts(app.ports.showAlert);
+initTypeahead(app.ports.typeahead, app.ports.typeaheadResult);
+

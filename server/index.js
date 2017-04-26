@@ -251,6 +251,20 @@ app.get('/api/toimialat', (req, res) => {
   return res.json(domains.sort());
 });
 
+app.get('/api/osaaminen', (req, res, next) => {
+  knex('special_skills').where({}).orderBy('title').then(rows => {
+    const lists = {};
+    rows.forEach(o => {
+      if (lists[o.category]) {
+        lists[o.category].push(o.title);
+      } else {
+        lists[o.category] = [ o.title ];
+      }
+    });
+    return res.json(lists);
+  }).catch(next);
+})
+
 app.post('/api/ilmoitukset', jsonParser, ads.createAd);
 app.get('/api/ilmoitukset/:id', ads.getAd);
 app.get('/api/ilmoitukset', ads.listAds);

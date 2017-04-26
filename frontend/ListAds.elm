@@ -1,7 +1,6 @@
 module ListAds exposing (..)
 
 import Ad
-import Common
 import Common exposing (Filter(..))
 import Html as H
 import Html.Attributes as A
@@ -119,7 +118,7 @@ viewAds : List Models.Ad.Ad -> List (H.Html (ViewMessage msg))
 viewAds ads =
   let
     adsHtml = List.map adListView ads
-    rows = List.reverse (List.foldl rowFolder [] adsHtml)
+    rows = Common.chunk2 adsHtml
     rowsHtml = List.map row rows
   in
     rowsHtml
@@ -165,16 +164,3 @@ adListView ad =
         ]
       ]
     ]
-
-
--- transforms a list to a list of lists of two elements: [1, 2, 3, 4, 5] => [[5], [3, 4], [1, 2]]
--- note: reverse the results if you need the elements to be in original order
-rowFolder : a -> List (List a) -> List (List a)
-rowFolder x acc =
-  case acc of
-    [] -> [[x]]
-    row :: rows ->
-      case row of
-        el1 :: el2 :: els -> [x] :: row :: rows
-        el :: els -> [el, x] :: rows
-        els -> (x :: els) :: rows

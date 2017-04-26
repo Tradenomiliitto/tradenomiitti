@@ -196,7 +196,7 @@ update msg model =
 
     AllowProfileCreation ->
       let
-        (profileModel, cmd) = Profile.update Profile.AllowProfileCreation model.profile
+        (profileModel, cmd) = Profile.update Profile.AllowProfileCreation model.profile model.config
         newModel = { model | profile = profileModel }
       in
         newModel ! [ unpackUpdateMessage ProfileMessage cmd ]
@@ -206,7 +206,7 @@ update msg model =
 
     ProfileMessage msg ->
       let
-        (profileModel, cmd) = Profile.update msg model.profile
+        (profileModel, cmd) = Profile.update msg model.profile model.config
         (initialLoading, needsConsent) =
           case msg of
             Profile.GetMe (Ok user) ->
@@ -315,7 +315,7 @@ subscriptions model =
           Sub.none
   in
     Sub.batch
-      [ Sub.map ProfileMessage Profile.subscriptions
+      [ Sub.map ProfileMessage (Profile.subscriptions model.profile)
       , footerListener
       ]
 
