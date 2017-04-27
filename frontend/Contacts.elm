@@ -1,4 +1,4 @@
-module BusinessCards exposing (..)
+module Contacts exposing (..)
 
 import Ad
 import Common
@@ -8,7 +8,7 @@ import Http
 import Json.Decode as Json
 import Models.User exposing (User, Contact)
 import Profile.View
-import State.BusinessCards exposing (..)
+import State.Contacts exposing (..)
 import Util exposing (ViewMessage(..), UpdateMessage)
 
 getContacts : Cmd (UpdateMessage Msg)
@@ -34,7 +34,7 @@ view model userMaybe =
     Just user ->
       H.div
         []
-        [ Common.profileTopRow user False Common.BusinessCardsTab (H.div [] [])
+        [ Common.profileTopRow user False Common.ContactsTab (H.div [] [])
         , H.div
           [ A.class "container contacts"]
           [ H.div

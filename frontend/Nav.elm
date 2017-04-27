@@ -18,7 +18,7 @@ type Route
   | Terms
   | RegisterDescription
   | Settings
-  | BusinessCards
+  | Contacts
 
 routeToPath : Route -> String
 routeToPath route =
@@ -49,7 +49,7 @@ routeToPath route =
       "/rekisteriseloste"
     Settings ->
       "/asetukset"
-    BusinessCards ->
+    Contacts ->
       "/kayntikortit"
 
 routeToString : Route -> String
@@ -81,7 +81,7 @@ routeToString route =
       "Rekisteriseloste"
     Settings ->
       "Asetukset"
-    BusinessCards ->
+    Contacts ->
       "Käyntikortit"
 
 parseLocation : Navigation.Location -> Route
@@ -107,7 +107,7 @@ routeParser =
     , U.map Terms (U.s "kayttoehdot")
     , U.map RegisterDescription (U.s "rekisteriseloste")
     , U.map Settings (U.s "asetukset")
-    , U.map BusinessCards (U.s "kayntikortit")
+    , U.map Contacts (U.s "kayntikortit")
     ]
 
 ssoUrl : String -> Maybe String -> String

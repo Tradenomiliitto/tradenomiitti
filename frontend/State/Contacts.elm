@@ -1,4 +1,4 @@
-module State.BusinessCards exposing (..)
+module State.Contacts exposing (..)
 
 import Models.User exposing (Contact)
 
