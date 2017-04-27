@@ -61,7 +61,7 @@
       @include circle(16px);
     }
     &--active {
-      background-color: $dark-grey;
+      background-color: $pink;
       @include circle(22px);
     }
   }
