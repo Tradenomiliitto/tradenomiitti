@@ -33,20 +33,30 @@ view model userMaybe =
   case userMaybe of
     Just user ->
       H.div
-        []
+        [ A.class "contacts" ]
         [ Common.profileTopRow user False Common.ContactsTab (H.div [] [])
         , H.div
-          [ A.class "container contacts"]
+          [ A.class "container"]
           [ H.div
-            [A.class "row" ]
+            [ A.class "row" ]
             [ H.div
               [ A.class "col-xs-12" ]
               [ H.h1 [ A.class "contacts__heading" ] [ H.text "Käyntikortit" ] ]
             ]
-          , H.div
-              [ A.class "row contacts__row last-row" ]
-              (List.map renderContact model.contacts)
           ]
+        , H.div
+          [ A.class "container last-row"]
+          (List.indexedMap
+             (\i row ->
+                H.div
+                  [ A.classList
+                    [ ("row", True)
+                    , ("contacts__row", True)
+                    , ("contacts__row--first", i == 0)
+                    ]
+                  ]
+                  row
+             ) (Common.chunk2 (List.map renderContact model.contacts)))
         ]
     _ ->
       H.div [] []

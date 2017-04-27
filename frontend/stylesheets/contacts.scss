@@ -9,9 +9,13 @@
     &:after {
       content: close-quote;
     }
+
+    margin-bottom: 34px;
+    margin-top: 24px;
+    font-size: 18px;
   }
   &__item-container {
-    margin-top: 90px;
+    padding-right: 90px;
   }
 
   &__heading {
@@ -19,6 +23,10 @@
     margin-top: #{ $basic-header-margin-top + $profilebar-height };
   }
   &__row {
+    margin-top: 90px;
+    &--first {
+      margin-top: 0;
+    }
   }
   & .profile__business-card {
     background-color: $light-grey;
