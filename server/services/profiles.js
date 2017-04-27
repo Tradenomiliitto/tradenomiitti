@@ -1,6 +1,7 @@
 module.exports = function initialize(params) {
   const knex = params.knex;
   const util = params.util;
+  const emails = params.emails;
 
   function listProfiles(loggedIn, limit, offset, domain, position, location, order) {
     let query = knex('users').where({}).select('users.*');
@@ -52,8 +53,57 @@ module.exports = function initialize(params) {
     return knex('skills').where({ user_id });
   }
 
+  function addContact(loggedInUser, toUserId, introductionText) {
+    if (typeof introductionText !== 'string' || introductionText.length < 10) {
+      return Promise.reject({ status: 400, msg: 'Introduction text is mandatory'});
+    }
+
+    if (loggedInUser.id == toUserId) {
+      return Promise.reject({ status: 400, msg: 'User cannot add contact to himself' });
+    }
+
+    const businessCard = util.formatBusinessCard(loggedInUser.data.business_card);
+    if(!businessCard) {
+      return Promise.reject('User has no business card');
+    }
+    if(businessCard.phone.length === 0 && businessCard.email.length === 0) {
+      return Promise.reject('User is missing details from business card');
+    }
+    return knex('contacts').where({ from_user: loggedInUser.id, to_user: toUserId })
+      .then(resp => {
+        if (resp.length == 0) {
+          return knex('contacts').insert({
+            from_user: loggedInUser.id,
+            to_user: toUserId,
+            intro_text: introductionText
+          }).then(_ => util.userById(toUserId))
+            .then(receiver => {
+              emails.sendNotificationForContact(receiver, loggedInUser, introductionText);
+            })
+        }
+        else {
+          return Promise.reject("User has already given their business card to this user");
+        }
+      })
+  }
+
+  function listContacts(loggedInUser) {
+    return knex('contacts').where('to_user', loggedInUser.id).then(rows => {
+      const promises =
+            rows.map(row => util.userById(row.from_user).then(fromUser => ({
+              user: util.formatUser(fromUser, true),
+              business_card: util.formatBusinessCard(fromUser.data.business_card || {}),
+              intro_text: row.intro_text || '',
+              created_at: row.created_at
+            })))
+      return Promise.all(promises);
+    });
+  }
+
   return {
     listProfiles,
-    profileSkills
+    profileSkills,
+    addContact,
+    listContacts
   }
 };

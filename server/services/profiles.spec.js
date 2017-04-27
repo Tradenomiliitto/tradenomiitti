@@ -10,7 +10,11 @@ const knex_config = require('../../knexfile');
 const knex = require('knex')(knex_config['test']);
 
 const util = require('../util')({ knex });
-const service = require('./profiles')({ knex, util });
+
+const rootDir = './frontend';
+const staticDir = process.env.NON_LOCAL ? '/srv/static' : `${rootDir}/static`;
+const emails = require('../emails')({ enableEmailGlobally: false, util, staticDir });
+const service = require('./profiles')({ knex, util, emails });
 
 const aDate = new Date('2018-01-13T11:00:00.000Z');
 
@@ -107,3 +111,43 @@ describe('Handle users', function() {
   });
 
 });
+
+describe('Handle contacts', function () {
+  beforeEach(function(done) {
+    knex.migrate.rollback()
+      .then(function() {
+        knex.migrate.latest()
+          .then(function() {
+            return knex.seed.run()
+              .then(function() {
+                done();
+              });
+          });
+      });
+  });
+
+  afterEach(function(done) {
+    knex.migrate.rollback()
+      .then(function() {
+        done();
+      });
+  });
+
+  it('should list contacts sent by others to logged in user', (done) => {
+    Promise.all([ util.userById(1), util.userById(2) ])
+      .then(([ loggedInUser, otherUser]) => {
+        service.addContact(loggedInUser, otherUser.id, 'intro text longer than 10 chars')
+          .then(() => {
+            return Promise.all([
+              service.listContacts(loggedInUser),
+              service.listContacts(otherUser)
+            ])
+          }).then(([contactsOfLoggedIn, contactsOfOther]) => {
+            contactsOfLoggedIn.should.have.length(0);
+            contactsOfOther.should.have.length(1);
+            contactsOfOther[0].user.id.should.equal(loggedInUser.id);
+            done();
+          })
+      })
+  });
+})
