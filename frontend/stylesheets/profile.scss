@@ -112,6 +112,16 @@
     margin-top: 5px;
   }
 
+  &__edit-button {
+    margin-top: 15px;
+  }
+
+  &__top-row-edit-button,
+  &__edit-button {
+    min-width: 16em;
+    @include button-colors;
+  }
+
   &__top-row {
     position: fixed;
     width: 100%;
@@ -128,10 +138,6 @@
       & a {
         color: $white;
       }
-    }
-    &-edit-button {
-      min-width: 16em;
-      @include button-colors;
     }
     &-tab-button {
       margin-right: 35px;

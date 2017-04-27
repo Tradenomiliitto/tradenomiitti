@@ -384,7 +384,7 @@ editProfileBox user =
     [ A.class "col-md-6 user-page__edit-or-contact-user"]
     [ H.p [] [ H.text ("Onhan profiilisi ajan tasalla? Mielenkiintoinen ja aktiivinen profiili auttaa luomaan kontakteja") ]
     , H.button
-            [ A.class "btn btn-primary profile__top-row-edit-button"
+            [ A.class "btn btn-primary profile__edit-button"
             , E.onClick Edit
             ]
             [ H.text  "Muokkaa profiilia" ]
