@@ -8,7 +8,7 @@
   z-index: 9342;
   display: none;
   &--active {
-    display: initial;
+    display: block;
   }
 
   $area-min-height: 50vh;

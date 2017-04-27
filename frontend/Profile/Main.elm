@@ -1,10 +1,14 @@
 port module Profile.Main exposing (..)
 
+import Dict
 import Http
 import Json.Decode as Json
+import Json.Encode as JS
+import List.Extra as List
 import Models.Ad
 import Models.User exposing (User, BusinessCard, PictureEditing)
 import Skill
+import State.Config as Config
 import State.Profile exposing (Model)
 import Util exposing (UpdateMessage(..))
 
@@ -34,6 +38,8 @@ type Msg
   | ChangeContactAddingText String
   | AddContact User
   | ShowAll
+  | SkillSelected String
+  | DeleteSkill String
   | NoOp
 
 
@@ -42,9 +48,28 @@ port imageUpload : Maybe PictureEditing -> Cmd msg
 -- cropped picture file name and full picture details
 port imageSave : ((String, PictureEditing) -> msg) -> Sub msg
 
-subscriptions : Sub Msg
-subscriptions =
-  imageSave ImageDetailsUpdate
+port typeahead : (String, JS.Value) -> Cmd msg
+port typeaheadResult : (String -> msg) -> Sub msg
+
+skillTypeahead : Config.Model -> Cmd msg
+skillTypeahead config =
+  let
+    asList =
+      Dict.toList config.specialSkillOptions
+        |> List.map
+          (\ (key, values) ->
+             (key, JS.list <| List.map
+                (\value -> JS.string value) values))
+    jsValue = JS.object asList
+  in
+    typeahead ("skills-input", jsValue)
+
+subscriptions : Model -> Sub Msg
+subscriptions model =
+  Sub.batch
+    [ imageSave ImageDetailsUpdate
+    , if model.editing then typeaheadResult SkillSelected else Sub.none
+    ]
 
 getMe : Cmd (UpdateMessage Msg)
 getMe =
@@ -109,8 +134,8 @@ updateBusinessCard businessCard field value =
         LinkedIn -> Just { businessCard | linkedin = value }
     Nothing -> Nothing
 
-update : Msg -> Model -> (Model, Cmd (UpdateMessage Msg))
-update msg model =
+update : Msg -> Model -> Config.Model -> (Model, Cmd (UpdateMessage Msg))
+update msg model config =
   case msg of
     GetMe (Err err) ->
       let
@@ -141,10 +166,13 @@ update msg model =
       let
         newModel = { model | editing = True }
       in
-        newModel ! [ updateConsent ]
+        newModel !
+          [ updateConsent
+          , skillTypeahead config
+          ]
 
     Edit ->
-      { model | editing = True } ! []
+      { model | editing = True } ! [ skillTypeahead config ]
 
     DomainSkillMessage index (Skill.LevelChange skillLevel) ->
       updateUser (\u -> { u | domains = updateSkillList index skillLevel u.domains }) model ! []
@@ -159,10 +187,10 @@ update msg model =
       updateUser (\u -> { u | positions = deleteFromSkillList index u.positions }) model ! []
 
     ChangeDomainSelect str ->
-      updateUser (\u -> { u | domains = u.domains ++ [ Skill.Model str Skill.Interested ] }) model ! []
+      updateUser (\u -> { u | domains = List.uniqueBy .heading <| u.domains ++ [ Skill.Model str Skill.Interested ] }) model ! []
 
     ChangePositionSelect str ->
-      updateUser (\u -> { u | positions = u.positions ++ [ Skill.Model str Skill.Interested ] }) model ! []
+      updateUser (\u -> { u | positions = List.uniqueBy .heading <| u.positions ++ [ Skill.Model str Skill.Interested ] }) model ! []
 
     ChangeLocation str ->
       updateUser (\u -> { u | location = str }) model ! []
@@ -176,6 +204,13 @@ update msg model =
     ChangeDescription str ->
       updateUser (\u -> { u | description = String.slice 0 300 str }) model ! []
 
+    SkillSelected str ->
+      updateUser (\u -> { u | skills = List.unique <| u.skills ++ [ str ] }) model !
+        [ skillTypeahead config ]
+
+    DeleteSkill str ->
+      updateUser (\u -> { u | skills = List.filter (\skill -> skill /= str) u.skills}) model !
+        [ skillTypeahead config ]
 
     UpdateUser _ ->
       { model | editing = False } !

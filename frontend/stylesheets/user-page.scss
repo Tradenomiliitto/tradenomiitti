@@ -109,9 +109,26 @@
     }
   }
 
-  &__competences-header {
-    @include gotham-bold;
-    text-transform: uppercase;
+  &__competences {
+    &-header {
+      @include gotham-bold;
+      text-transform: uppercase;
+    }
+    &-special-skills {
+      display: flex;
+      &-row {
+        @include equal-height-columns;
+        padding-bottom: 20px;
+      }
+      &-text {
+        flex-grow: 1;
+        padding-right: 10px;
+      }
+      &-delete {
+        color: $pink;
+        cursor: pointer;
+      }
+    }
   }
 
   &__location-select,
