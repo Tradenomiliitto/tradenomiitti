@@ -7,7 +7,6 @@ import Html.Events as E
 import Json.Decode as Json
 import ListAds
 import Models.User exposing (User)
-import Nav
 import Profile.Main exposing (Msg(..), BusinessCardField(..))
 import Skill
 import State.Config as Config
@@ -18,26 +17,36 @@ import Util exposing (ViewMessage(..))
 
 view : Model -> RootState.Model -> H.Html (ViewMessage Msg)
 view model rootState =
-  if model.editing
-    then editProfileView model rootState
-    else showProfileView model rootState
-
-
-editProfileView : Model -> RootState.Model -> H.Html (ViewMessage Msg)
-editProfileView model rootState =
   case model.user of
     Just user ->
-      H.div
-        []
-        [ profileTopRow model rootState
-        , editProfileHeading
-        , membershipInfoEditing user
-        , H.map LocalViewMessage (publicInfoEditing model user)
-        , H.map LocalViewMessage (competences model rootState.config user)
-        ]
-    Nothing -> H.div [] []
+      if model.editing
+        then editProfileView model user rootState
+        else showProfileView model user rootState
+    Nothing ->
+      H.div [] []
 
 
+editProfileView : Model -> User -> RootState.Model -> H.Html (ViewMessage Msg)
+editProfileView model user rootState =
+  H.div
+    []
+    [ Common.profileTopRow user model.editing Common.ProfileTab (saveOrEdit user model.editing)
+    , editProfileHeading
+    , membershipInfoEditing user
+    , H.map LocalViewMessage (publicInfoEditing model user)
+    , H.map LocalViewMessage (competences model rootState.config user)
+    ]
+
+
+saveOrEdit : User -> Bool -> H.Html (ViewMessage Msg)
+saveOrEdit user editing =
+  H.button
+    [ A.class "btn btn-primary profile__top-row-edit-button"
+    , E.onClick <| if editing then LocalViewMessage (Save user) else LocalViewMessage Edit
+    , A.disabled <| user.name == ""
+    , A.title <| if user.name == "" then "Kutsumanimi on pakollinen" else ""
+    ]
+    [ H.text (if editing then "Tallenna profiili" else "Muokkaa profiilia") ]
 
 editProfileHeading : H.Html msg
 editProfileHeading =
@@ -266,10 +275,10 @@ fieldToString field =
     LinkedIn -> "LinkedIn-linkki"
 
 
-showProfileView : Model -> RootState.Model ->  H.Html (ViewMessage Msg)
-showProfileView model rootState =
+showProfileView : Model -> User -> RootState.Model ->  H.Html (ViewMessage Msg)
+showProfileView model user rootState =
   H.div [ A.class "user-page" ] <|
-    [ profileTopRow model rootState
+    [ Common.profileTopRow user model.editing Common.ProfileTab (saveOrEdit user model.editing)
     ] ++ (viewUserMaybe model True rootState.config)
 
 
@@ -306,69 +315,6 @@ userExpertise model user config =
   , userPositions model user config
   , userSkills model user config
   ]
-
-profileTopRow : Model -> RootState.Model -> H.Html (ViewMessage Msg)
-profileTopRow model rootState =
-  let
-    logonLink =
-      case model.user of
-        Just _ ->
-          H.a
-            [ A.href "/uloskirjautuminen"
-            , A.class "btn"
-            ]
-            [ H.text "Kirjaudu ulos" ]
-        Nothing ->
-          H.a
-            [ A.href <| Nav.ssoUrl rootState.rootUrl (Nav.routeToPath Nav.Profile |> Just)
-            , A.class "btn"
-            ]
-            [ H.text "Kirjaudu sisään" ]
-
-    saveOrEdit =
-      case model.user of
-        Just user ->
-          H.button
-            [ A.class "btn btn-primary profile__top-row-edit-button"
-            , E.onClick <| if model.editing then LocalViewMessage (Save user) else LocalViewMessage Edit
-            , A.disabled <| user.name == ""
-            , A.title <| if user.name == "" then "Kutsumanimi on pakollinen" else ""
-            ]
-            [ H.text (if model.editing then "Tallenna profiili" else "Muokkaa profiilia") ]
-        Nothing ->
-          H.div [] []
-
-    settingsButton =
-      H.button
-        [ A.class "btn btn-default profile__top-row-settings-button"
-        , E.onClick (Link Nav.Settings)
-        ]
-        [ H.text "Asetukset" ]
-  in
-    H.div
-      [ A.classList
-          [ ("profile__top-row", True)
-          , ("profile__top-row--editing", model.editing)
-          ]
-      ]
-      [ H.div
-        [ A.class "container" ]
-        [ H.div
-          [ A.class "row" ]
-          [ H.div
-            [ A.class "col-xs-4" ]
-            [ H.h4
-                [ A.class "profile__heading" ]
-                [ H.text "Oma profiili" ] ]
-          , H.div
-            [ A.class "col-xs-8 profile__buttons" ]
-            [ settingsButton
-            , saveOrEdit
-            , logonLink
-            ]
-          ]
-        ]
-      ]
 
 viewUserMaybe : Model -> Bool -> Config.Model -> List (H.Html (ViewMessage Msg))
 viewUserMaybe model ownProfile config =

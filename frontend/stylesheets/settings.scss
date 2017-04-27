@@ -1,6 +1,7 @@
 .settings {
   &__heading {
     @include basic-header;
+    margin-top: #{ $basic-header-margin-top + $profilebar-height };
   }
 
   &__subsection-heading {

@@ -1,6 +1,7 @@
 port module Main exposing (..)
 
 import Ad
+import Contacts
 import Common
 import Config
 import CreateAd
@@ -23,6 +24,7 @@ import Profile.Main as Profile
 import Profile.View
 import Settings
 import State.Ad
+import State.Contacts
 import State.Home
 import State.ListAds
 import State.ListUsers
@@ -79,6 +81,7 @@ type Msg
   | HomeMessage Home.Msg
   | SettingsMessage Settings.Msg
   | ConfigMessage Config.Msg
+  | ContactsMessage Contacts.Msg
   | Error Http.Error
   | SendErrorResponse (Result Http.Error String)
   | NoOp
@@ -157,12 +160,17 @@ update msg model =
             Settings ->
               initWithUpdateMessage { modelWithRoute | settings = State.Settings.init } SettingsMessage Settings.initTasks
 
+            Contacts ->
+              initWithUpdateMessage { modelWithRoute | contacts = State.Contacts.init } ContactsMessage Contacts.initTasks
+
             newRoute ->
               (modelWithRoute, Cmd.none)
 
         needsLogin =
           case (route, Maybe.isJust model.profile.user, model.initialLoading) of
             (CreateAd, False, False) -> True
+            (Profile, False, False) -> True
+            (Settings, False, False) -> True
             _ -> False
 
         newRoute =
@@ -275,6 +283,12 @@ update msg model =
         (configModel, cmd) = Config.update msg model.config
       in
         { model | config = configModel } ! [ cmd ]
+
+    ContactsMessage msg ->
+      let
+        (contactsModel, cmd) = Contacts.update msg model.contacts
+      in
+        { model | contacts = contactsModel } ! [ cmd ]
 
     Error err ->
       let
@@ -557,9 +571,11 @@ viewPage model =
         RegisterDescription ->
           PreformattedText.view Static.registerDescriptionHeading Static.registerDescriptionTexts
         Settings ->
-          H.map SettingsMessage <| Settings.view model.settings
+          unpackViewMessage SettingsMessage <| Settings.view model.settings model.profile.user
         Info ->
           Info.view
+        Contacts ->
+          unpackViewMessage identity <| Contacts.view model.contacts model.profile.user
         NotFound ->
           notImplementedYet
   in

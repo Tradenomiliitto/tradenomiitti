@@ -1,13 +1,15 @@
 module Settings exposing (..)
 
+import Common
 import Html as H
 import Html.Attributes as A
 import Html.Events as E
 import Http
 import Models.User exposing (Settings)
+import Models.User exposing (User)
 import State.Settings exposing (..)
 import State.Util exposing (SendingStatus(..))
-import Util exposing (UpdateMessage(..))
+import Util exposing (UpdateMessage(..), ViewMessage(..))
 
 type Msg
   = GetSettings Settings
@@ -76,11 +78,27 @@ update msg model =
 
 
 
-view : Model -> H.Html Msg
-view model =
-  model.settings
-    |> Maybe.map (viewSettings model)
-    |> Maybe.withDefault (H.div [] [])
+view : Model -> Maybe User -> H.Html (ViewMessage Msg)
+view model userMaybe =
+  case (model.settings, userMaybe) of
+    (Just settings, Just user) ->
+      viewSettingsPage model settings user
+    (Nothing, Just user) ->
+      H.div
+        []
+        [ Common.profileTopRow user False Common.SettingsTab (H.div [] []) ]
+    _ ->
+      H.div [] []
+
+
+viewSettingsPage : Model -> Settings -> User -> H.Html (ViewMessage Msg)
+viewSettingsPage model settings user =
+  H.div
+    []
+    [ Common.profileTopRow user False Common.SettingsTab (H.div [] [])
+    , H.map LocalViewMessage <| viewSettings model settings
+    ]
+
 
 viewSettings : Model -> Settings -> H.Html Msg
 viewSettings model settings =
