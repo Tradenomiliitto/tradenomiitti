@@ -6,7 +6,7 @@
         "db_user"     : "{{ db_user }}",
         "db_password" : "{{ db_password }}",
         "COMMUNICATIONS_KEY": "{{ avoine_communications_key }}",
-        "NON_LOCAL": true,
+        "NON_LOCAL": "true",
         "COOKIE_SECRET": "{{ cookie_secret }}",
         "SEBACON_CUSTOMER": "{{ sebacon_customer }}",
         "SEBACON_USER": "{{ sebacon_user }}",
@@ -17,6 +17,7 @@
         "SMTP_PASSWORD": "{{ smtp_password }}",
         "SMTP_TLS": "{{ smtp_tls }}",
         "MAIL_FROM": "{{ mail_from }}",
-        "SERVICE_DOMAIN": "{{ server_name }}"
+        "SERVICE_DOMAIN": "{{ server_name }}",
+        "ENABLE_EMAIL_SENDING": "{{ enable_emails }}"
       }
 }

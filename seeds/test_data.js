@@ -1,3 +1,12 @@
+function dataForName(name) {
+  return {
+    name,
+    business_card: {
+      name,
+      phone: '123456789'
+    }
+  }
+}
 
 exports.seed = function(knex, Promise) {
   // Deletes ALL existing entries
@@ -7,14 +16,15 @@ exports.seed = function(knex, Promise) {
         id: 1,
         remote_id: -1,
         settings: {},
-        data: { name: 'Tradenomi1' }
+        data: dataForName('Tradenomi1')
+
       });
     }).then(() => {
       return knex('users').insert({
         id: 2,
         remote_id: -2,
         settings: {},
-        data: { name: 'Tradenomi2' }
+        data: dataForName('Tradenomi2')
       });
     }).then(() => {
       return knex('ads').insert({

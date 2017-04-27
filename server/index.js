@@ -8,7 +8,8 @@ const cookieSession = require('cookie-session');
 const schedule = require('node-schedule');
 
 const rootDir = './frontend';
-const staticDir = process.env.NON_LOCAL ? '/srv/static' : `${rootDir}/static`;
+const nonLocal = process.env.NON_LOCAL === 'true';
+const staticDir = nonLocal ? '/srv/static' : `${rootDir}/static`;
 
 const app = express();
 
@@ -20,14 +21,13 @@ knex.migrate.latest(knex_config[process.env.environment]);
 //serve static files if developing locally (this route is not reached on servers)
 app.use('/static', express.static(staticDir));
 
-
-const secret = process.env.NON_LOCAL ? process.env.COOKIE_SECRET : 'local';
+const secret = nonLocal ? process.env.COOKIE_SECRET : 'local';
 
 app.use(cookieSession({
   name: 'session',
   secret: secret,
   httpOnly: true,
-  secure: process.env.NON_LOCAL,
+  secure: nonLocal,
   maxAge: 365 * 24 * 60 * 60 * 1000
 }));
 
@@ -37,11 +37,11 @@ app.use((req, res, next) => {
 });
 app.set('etag', false);
 
-if (process.env.NON_LOCAL) {
+if (nonLocal) {
   app.set('trust proxy', 'loopback');
 }
 
-const userImagesPath = process.env.NON_LOCAL ? '/srv/static/images' : `${__dirname}/../frontend/static/images`;
+const userImagesPath = nonLocal ? '/srv/static/images' : `${__dirname}/../frontend/static/images`;
 
 const communicationsKey = process.env.COMMUNICATIONS_KEY;
 if (!communicationsKey) console.warn("You should have COMMUNICATIONS_KEY for avoine in ENV");
@@ -76,8 +76,11 @@ const smtp =
         password: smtpPassword,
         tls: smtpTls === 'true'
       }
+
+const enableEmailGlobally = process.env.ENABLE_EMAIL_SENDING === 'true';
+
 const util = require('./util')({ knex });
-const emails = require('./emails')({ smtp, mailFrom, staticDir, serviceDomain, util });
+const emails = require('./emails')({ smtp, mailFrom, staticDir, serviceDomain, util, enableEmailGlobally });
 
 const logon = require('./logonHandling')({ communicationsKey, knex, sebacon });
 const profile = require('./profile')({ knex, sebacon, util, userImagesPath, emails});
@@ -90,7 +93,7 @@ const textParser = bodyParser.text();
 const fileParser = fileUpload();
 
 
-if (process.env.NON_LOCAL) {
+if (nonLocal) {
   // schedule every week day at 12 UTC, i.e. 14 or 15 EET
   schedule.scheduleJob({ hour: 12, minute: 0, dayOfWeek: new schedule.Range(1, 5) },
                        adNotifications.sendNotifications);
