@@ -148,11 +148,11 @@
   }
 
   &__activity {
+    margin-top: $full-width-ruler-margin-top;
+    margin-bottom: $full-width-ruler-margin-bottom;
     padding-bottom: $full-width-ruler-margin-top;
     padding-top: $full-width-ruler-margin-bottom;
     background-color: $light-grey;
-    &-before.full-width-ruler {margin-bottom: 0;}
-    &-after.full-width-ruler {margin-top: 0;}
     &-header {
       @include gotham-bold;
       text-transform: uppercase;

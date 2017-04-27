@@ -356,7 +356,6 @@ viewUser model ownProfile contactUser config user =
             else contactUser
         ]
       ]
-    , H.hr [ A.class "full-width-ruler user-page__activity-before" ] []
     , H.div
       [ A.class "user-page__activity" ]
       [ H.div
@@ -371,7 +370,6 @@ viewUser model ownProfile contactUser config user =
         ] ++ viewAds
           ++ showMoreAds
       ]
-    , H.hr [ A.class "full-width-ruler user-page__activity-after" ] []
     , H.div
       [ A.class "container" ]
       [ H.div
