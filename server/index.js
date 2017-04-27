@@ -84,7 +84,7 @@ const profile = require('./profile')({ knex, sebacon, util, userImagesPath, emai
 const ads = require('./ads')({ util, knex, emails });
 const adNotifications = require('./adNotifications')({ emails, knex, util })
 
-const urlEncoded = bodyParser.urlencoded();
+const urlEncoded = bodyParser.urlencoded({extended: true});
 const jsonParser = bodyParser.json();
 const textParser = bodyParser.text();
 const fileParser = fileUpload();
