@@ -160,22 +160,21 @@ contactUser model userToContact loggedInUser =
             _ ->
               H.div [] []
       in
-        H.map LocalViewMessage <|
-          H.div
-            [ A.class "col-md-6 user-page__edit-or-contact-user"]
-            [ H.p [ A.class "user-apge__edit-or-contact-user-prompt"] [ H.text "Kirjoita napakka esittelyteksti"]
-            , H.textarea
-              [ A.placeholder "Vähintään 10 merkkiä"
-              , A.class "user-page__add-contact-textcontent"
-              , E.onInput Profile.ChangeContactAddingText
-              , A.value model.addContactText
-              ] []
-            , H.div
-              []
-              [ popover
-              , button
-              ]
+        H.div
+          [ A.class "col-md-6 user-page__edit-or-contact-user"]
+          [ H.p [ A.class "user-apge__edit-or-contact-user-prompt"] [ H.text "Kirjoita napakka esittelyteksti"]
+          , H.map LocalViewMessage <| H.textarea
+            [ A.placeholder "Vähintään 10 merkkiä"
+            , A.class "user-page__add-contact-textcontent"
+            , E.onInput Profile.ChangeContactAddingText
+            , A.value model.addContactText
+            ] []
+          , H.div
+            []
+            [ popover
+            , H.map LocalViewMessage button
             ]
+          ]
     else
       H.div
         [ A.class "col-md-6 user-page__edit-or-contact-user"]

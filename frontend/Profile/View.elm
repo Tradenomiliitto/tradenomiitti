@@ -5,8 +5,10 @@ import Html as H
 import Html.Attributes as A
 import Html.Events as E
 import Json.Decode as Json
+import Link
 import ListAds
 import Models.User exposing (User)
+import Nav
 import Profile.Main exposing (Msg(..), BusinessCardField(..))
 import Skill
 import State.Config as Config
@@ -167,21 +169,25 @@ businessCardData user businessCard =
       ]
     ]
 
-businessCardView : User -> Models.User.BusinessCard -> H.Html msg
+businessCardView : User -> Models.User.BusinessCard -> H.Html (ViewMessage msg)
 businessCardView user businessCard =
   H.div
     [ A.class "profile__business-card profile__business-card-view" ]
-    [ H.div [ A.class "profile__business-card--container" ] [ H.div
-      [ A.class "profile__business-card--data"]
-      [ H.span [ A.class "user-page__businesscard-view-pic" ] [ Common.picElementForUser user ]
-      , H.div
-          [ A.class "inline profile__business-card--data--name-work" ]
-          [ H.h4  []
-            [ H.text businessCard.name ]
-          , H.h5 []
-            [ H.text businessCard.title]
-          ]
-      ]
+    [ H.div
+      [ A.class "profile__business-card--container" ]
+      [ H.a
+        [ A.class "profile__business-card--data card-link"
+        , Link.action (Nav.User user.id)
+        ]
+        [ H.span [ A.class "user-page__businesscard-view-pic" ] [ Common.picElementForUser user ]
+        , H.div
+            [ A.class "inline profile__business-card--data--name-work" ]
+            [ H.h4  []
+              [ H.text businessCard.name ]
+            , H.h5 []
+              [ H.text businessCard.title]
+            ]
+        ]
     , H.div [ A.class "profile__business-card--data--contact"]
         [ businessCardDataView businessCard Location
         , businessCardDataView businessCard Phone
