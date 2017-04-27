@@ -64,7 +64,7 @@ const sebacon = require('./sebaconService')({
 const smtpHost = process.env.SMTP_HOST;
 const smtpUser = process.env.SMTP_USER;
 const smtpPassword = process.env.SMTP_PASSWORD;
-const smtpTls = process.env.SMTP_TLS === 'true';
+const smtpTls = process.env.SMTP_TLS;
 const mailFrom = process.env.MAIL_FROM;
 const serviceDomain = process.env.SERVICE_DOMAIN;
 if (!smtpHost || !smtpUser || !smtpPassword || !smtpTls || !mailFrom || !serviceDomain) {
