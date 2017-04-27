@@ -76,8 +76,11 @@ const smtp =
         password: smtpPassword,
         tls: smtpTls === 'true'
       }
+
+const enableEmailGlobally = process.env.ENABLE_EMAIL_SENDING === 'true';
+
 const util = require('./util')({ knex });
-const emails = require('./emails')({ smtp, mailFrom, staticDir, serviceDomain, util });
+const emails = require('./emails')({ smtp, mailFrom, staticDir, serviceDomain, util, enableEmailGlobally });
 
 const logon = require('./logonHandling')({ communicationsKey, knex, sebacon });
 const profile = require('./profile')({ knex, sebacon, util, userImagesPath, emails});

@@ -11,6 +11,7 @@ module.exports = function init(params) {
   const mailFrom = params.mailFrom;
   const serviceDomain = params.serviceDomain;
   const util = params.util;
+  const enableEmailGlobally = params.enableEmailGlobally;
 
   const logo = {
     path: `${__dirname}/../frontend/assets/tradenomiitti-tunnus-email.png`, type: 'image/png',
@@ -91,9 +92,12 @@ module.exports = function init(params) {
   }
 
   function sendEmail(email_address, allow_sending, text, subject, attachment) {
-    if (! (allow_sending && email_address && email_address.includes('@'))) {
+    if (!enableEmailGlobally)
       return;
-    }
+
+    if (! (allow_sending && email_address && email_address.includes('@')))
+      return;
+
     const server = emailjs.server.connect(smtp);
     server.send({
       from: mailFrom,
