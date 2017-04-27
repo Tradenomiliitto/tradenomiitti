@@ -161,7 +161,7 @@ update msg model =
               initWithUpdateMessage { modelWithRoute | settings = State.Settings.init } SettingsMessage Settings.initTasks
 
             Contacts ->
-              initWithUpdateMessage { modelWithRoute | businessCards = State.Contacts.init } ContactsMessage Contacts.initTasks
+              initWithUpdateMessage { modelWithRoute | contacts = State.Contacts.init } ContactsMessage Contacts.initTasks
 
             newRoute ->
               (modelWithRoute, Cmd.none)
@@ -286,9 +286,9 @@ update msg model =
 
     ContactsMessage msg ->
       let
-        (businessCardsModel, cmd) = Contacts.update msg model.businessCards
+        (contactsModel, cmd) = Contacts.update msg model.contacts
       in
-        { model | businessCards = businessCardsModel } ! [ cmd ]
+        { model | contacts = contactsModel } ! [ cmd ]
 
     Error err ->
       let
@@ -575,7 +575,7 @@ viewPage model =
         Info ->
           Info.view
         Contacts ->
-          unpackViewMessage identity <| Contacts.view model.businessCards model.profile.user
+          unpackViewMessage identity <| Contacts.view model.contacts model.profile.user
         NotFound ->
           notImplementedYet
   in

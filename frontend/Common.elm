@@ -53,7 +53,7 @@ profileTopRow user editing profileTab saveOrEdit =
       button ProfileTab
     settingsButton =
       button SettingsTab
-    businessCardsButton =
+    contactsButton =
       button ContactsTab
   in
     H.div
@@ -69,7 +69,7 @@ profileTopRow user editing profileTab saveOrEdit =
           [ H.div
             [ A.class "col-xs-4" ]
             [ profileButton
-            , businessCardsButton
+            , contactsButton
             , settingsButton
             ]
 

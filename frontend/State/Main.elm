@@ -30,7 +30,7 @@ type alias Model =
   , home : State.Home.Model
   , settings : State.Settings.Model
   , config : State.Config.Model
-  , businessCards : State.Contacts.Model
+  , contacts : State.Contacts.Model
   }
 
 
@@ -51,5 +51,5 @@ initState location =
   , home = State.Home.init
   , settings = State.Settings.init
   , config = State.Config.init
-  , businessCards = State.Contacts.init
+  , contacts = State.Contacts.init
   }
