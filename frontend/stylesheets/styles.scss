@@ -216,6 +216,7 @@ div#not-implemented {
 }
 
 .error-messages {
+  z-index: 9500;
   position: fixed;
   bottom: 20px;
   left: 3vw;
