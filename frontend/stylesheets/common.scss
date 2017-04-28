@@ -11,6 +11,22 @@ $font-family-sans-serif: mundoSansRegular;
 $font-size-base: 14px;
 $navbar-height: 66px;
 $profilebar-height: 55px;
+$profilebar-height-mobile: 77px;
+
+@mixin profile-bar-height {
+  height: $profilebar-height;
+  @media (max-width: $screen-xs-max) {
+    height: $profilebar-height-mobile;
+  }
+}
+
+@mixin margin-top-under-profile-bar {
+  margin-top: #{ $basic-header-margin-top + $profilebar-height };
+  @media (max-width: $screen-xs-max) {
+    margin-top: #{ $basic-header-margin-top + $profilebar-height-mobile };
+  }
+}
+
 $basic-header-margin-top: 50px;
 $footer-height: 250px;
 $footer-height-mobile: 450px;

@@ -20,7 +20,7 @@
 
   &__heading {
     @include basic-header;
-    margin-top: #{ $basic-header-margin-top + $profilebar-height };
+    @include margin-top-under-profile-bar;
   }
   &__row {
     margin-top: 90px;
