@@ -308,7 +308,7 @@ function logError(req, err) {
   const hash = crypto.createHash('sha1');
   hash.update(uuid.v4());
   const errorHash = hash.digest('hex').substr(0, 10);
-  console.error(`${errorHash} ${req.method} ${req.url} ↯`, err);
+  console.error(`${errorHash} ${new Date()} ${req.method} ${req.url} ↯`, err);
   return errorHash;
 }
 
