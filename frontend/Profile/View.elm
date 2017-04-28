@@ -560,7 +560,7 @@ userSkills model user config =
     [ H.h3 [ A.class "user-page__competences-header" ] [ H.text "Osaaminen" ]
     ] ++
         (if model.editing
-          then [ H.p [ A.class "profile__editing--competences--text"] [H.text "Missä tehtävissä olet toiminut tai haluaisit toimia?" ] ]
+          then [ H.p [ A.class "profile__editing--competences--text"] [H.text "Mitä taitoja sinulla on?" ] ]
           else [ H.p [ A.class "profile__editing--competences--text"] [] ])
        ++ (List.map
             (\rowItems ->
@@ -585,7 +585,7 @@ userSkills model user config =
        []
        [ H.label
          [ A.class "user-page__competence-select-label" ]
-         [ H.text "Mitä erityisiä taitoja haluaisit mainita?" ]
+         [ H.text "Lisää taito" ]
        , H.span
          [ A.class "user-page__competence-select-container" ]
          [ H.input
