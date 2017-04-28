@@ -96,7 +96,7 @@ authorInfo user =
         [ A.class "author-info__info" ]
         [ H.span [ A.class "author-info__name"] [ H.text user.name ]
         , H.br [] []
-        , H.span [ A.class "author-info__title"] [ H.text user.primaryPosition ]
+        , H.span [ A.class "author-info__title"] [ H.text user.title ]
         ]
       ]
     ]
@@ -126,7 +126,7 @@ authorInfoWithLocation user =
         [ A.class "author-info__info" ]
         [ H.span [ A.class "author-info__name"] [ H.text user.name ]
         , H.br [] []
-        , H.span [ A.class "author-info__title"] [ H.text user.primaryPosition ]
+        , H.span [ A.class "author-info__title"] [ H.text user.title ]
         , H.br [] []
         , showLocation user.location
         ]

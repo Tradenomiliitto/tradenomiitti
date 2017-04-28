@@ -196,7 +196,7 @@ update msg model config =
       updateUser (\u -> { u | location = str }) model ! []
 
     ChangeTitle str ->
-      updateUser (\u -> { u | primaryPosition = String.slice 0 70 str }) model ! []
+      updateUser (\u -> { u | title = String.slice 0 70 str }) model ! []
 
     ChangeNickname str ->
       updateUser (\u -> { u | name = str }) model ! []

@@ -422,7 +422,7 @@ userInfoBoxEditing2 model user =
       [ A.class "user-page__work-details" ]
       [
           H.input
-          [ A.value user.primaryPosition
+          [ A.value user.title
           , E.onInput ChangeTitle
           , A.placeholder "Titteli"
           ]
@@ -474,11 +474,11 @@ userInfoBox model user =
             [ if model.editing
               then
                 H.input
-                [ A.value user.primaryPosition
+                [ A.value user.title
                 , E.on "change" (Json.map ChangeTitle E.targetValue)
                 ]
                 []
-              else H.text user.primaryPosition
+              else H.text user.title
             ]
           , location model user
           ]

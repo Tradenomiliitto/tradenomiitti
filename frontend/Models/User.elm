@@ -45,7 +45,7 @@ type alias User =
   { id : Int
   , name : String
   , description : String
-  , primaryPosition : String
+  , title : String
   , domains : List Skill.Model
   , positions : List Skill.Model
   , skills : List String
@@ -91,7 +91,7 @@ encode user =
   JS.object <|
     [ ("name", JS.string user.name)
     , ("description", JS.string user.description)
-    , ("title", JS.string user.primaryPosition)
+    , ("title", JS.string user.title)
     , ("domains", JS.list (List.map Skill.encode user.domains) )
     , ("positions", JS.list (List.map Skill.encode user.positions) )
     , ("location", JS.string user.location)
