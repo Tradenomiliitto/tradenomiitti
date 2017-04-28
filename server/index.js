@@ -46,20 +46,23 @@ const userImagesPath = nonLocal ? '/srv/static/images' : `${__dirname}/../fronte
 const communicationsKey = process.env.COMMUNICATIONS_KEY;
 if (!communicationsKey) console.warn("You should have COMMUNICATIONS_KEY for avoine in ENV");
 
+const disableSebacon = process.env.DISABLE_SEBACON === 'true';
 const sebaconAuth = process.env.SEBACON_AUTH;
 const sebaconCustomer = process.env.SEBACON_CUSTOMER;
 const sebaconUser = process.env.SEBACON_USER;
 const sebaconPassword = process.env.SEBACON_PASSWORD;
-if (!sebaconAuth ||
+if ((!sebaconAuth ||
     !sebaconCustomer ||
     !sebaconUser ||
-    !sebaconPassword) {
+    !sebaconPassword) && !disableSebacon) {
   console.warn("You should have SEBACON_* parameters for avoine in ENV");
 }
 
 const sebacon = require('./sebaconService')({
   customer: sebaconCustomer, user: sebaconUser,
-  password: sebaconPassword, auth: sebaconAuth});
+  password: sebaconPassword, auth: sebaconAuth,
+  disable: disableSebacon
+});
 
 const smtpHost = process.env.SMTP_HOST;
 const smtpUser = process.env.SMTP_USER;
@@ -97,6 +100,14 @@ if (nonLocal) {
   // schedule every week day at 12 UTC, i.e. 14 or 15 EET
   schedule.scheduleJob({ hour: 12, minute: 0, dayOfWeek: new schedule.Range(1, 5) },
                        adNotifications.sendNotifications);
+}
+
+// only locally, allow logging in with preseeded session
+if (!nonLocal) {
+  app.get('/kirjaudu/:id', (req, res) => {
+    req.session.id = `00000000-0000-0000-0000-00000000000${req.params.id}`;
+    res.send("Ok");
+  });
 }
 
 app.post('/kirjaudu', urlEncoded, logon.login );

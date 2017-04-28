@@ -53,7 +53,7 @@ Compile elm & scss
 npm run compilelocal
 ```
 
-Run the server:
+Run the server with full integrations:
 
 ```
 export SEBACON_CUSTOMER=
@@ -69,9 +69,26 @@ export SMTP_USER=
 export SMTP_PASSWORD=
 export SMTP_TLS=
 export MAIL_FROM=
+export ENABLE_EMAIL_SENDING=true
 
 npm start
 ```
+
+Run with minimal integrations and seeded mock data.
+
+```
+export DISABLE_SEBACON=true
+export db_user=
+export db_password=
+export environment=development
+export ENABLE_EMAIL_SENDING=false
+
+npm run seed-db
+
+npm start
+```
+
+You can go with your browser to `http://localhost:3000/kirjaudu/1` or `http://localhost:3000/kirjaudu/2` to automatically log in as either of the seeded test users: no SSO or members registry API required. After you receive `Ok`, you can navigate to `http://localhost:3000/` and have a valid session in cookies.
 
 Run tests:
 
