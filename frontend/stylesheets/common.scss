@@ -178,6 +178,21 @@ $padding-before-footer-mobile: 35px;
   }
 }
 
+@mixin placeholder-color-pink {
+  &::-webkit-input-placeholder {
+    color: $pink;
+  }
+
+  &::-moz-placeholder {
+    color: $pink;
+    opacity: 1;
+  }
+
+  &:-ms-input-placeholder {
+    color: $pink;
+  }
+}
+
 /* http://red-team-design.com/making-html-dropdowns-not-suck/ */
 @mixin select($desktop-width) {
   padding: .5em;
@@ -188,6 +203,7 @@ $padding-before-footer-mobile: 35px;
 	appearance: none;
   background-color: $white;
   color: $pink;
+  @include placeholder-color-pink;
   @include gotham-bold;
   width: 100%;
   border: 1px solid $pink;

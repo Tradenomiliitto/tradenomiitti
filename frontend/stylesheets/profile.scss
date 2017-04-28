@@ -206,6 +206,7 @@
     text-align: left;
 
     &--name-work--input {
+      @include placeholder-color-pink;
       padding: 5px;
       width: 100%;
     }
@@ -223,6 +224,7 @@
       input {
         width: calc(100% - 30px);
         font-size: 12px;
+        @include placeholder-color-pink;
       }
       svg {
         position: relative;

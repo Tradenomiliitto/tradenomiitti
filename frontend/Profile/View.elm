@@ -424,6 +424,7 @@ userInfoBoxEditing2 model user =
           H.input
           [ A.value user.primaryPosition
           , E.onInput ChangeTitle
+          , A.placeholder "Titteli"
           ]
           []
       ]

@@ -67,6 +67,9 @@
   }
   &__work-details {
     color: $pink;
+    & input {
+      @include placeholder-color-pink;
+    }
     font-weight: bold;
   }
 
