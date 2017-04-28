@@ -555,9 +555,9 @@ userSkills : Model -> User -> Config.Model -> H.Html Msg
 userSkills model user config =
   H.div
     [ A.class "col-xs-12 col-sm-4 last-row"
-    ]
-    ([ H.h3 [ A.class "user-page__competences-header" ] [ H.text "Osaaminen" ]
-     ] ++
+    ] <|
+    [ H.h3 [ A.class "user-page__competences-header" ] [ H.text "Osaaminen" ]
+    ] ++
         (if model.editing
           then [ H.p [ A.class "profile__editing--competences--text"] [H.text "Missä tehtävissä olet toiminut tai haluaisit toimia?" ] ]
           else [ H.p [ A.class "profile__editing--competences--text"] [] ])
@@ -580,17 +580,22 @@ userSkills model user config =
                   ) rowItems)
             ) (Common.chunk2 user.skills)
          ) ++
-     [ H.input
-       [ A.type_ "text"
-       , A.id "skills-input"
-       , A.classList
-         [ ("skills-input", True)
-         , ("skills-input--active", model.editing)
-         ]
-       , A.placeholder "Valitse taito"
-       ]
+     (if model.editing then [ H.div
        []
-     ])
+       [ H.label
+         [ A.class "user-page__competence-select-label" ]
+         [ H.text "Mitä erityisiä taitoja haluaisit mainita?" ]
+       , H.span
+         [ A.class "user-page__competence-select-container" ]
+         [ H.input
+           [ A.type_ "text"
+           , A.id "skills-input"
+           , A.class "user-page__competence-select"
+           , A.placeholder "Valitse taito"
+           ] []
+         ]
+       ]
+     ] else [])
 
 
 userPositions : Model -> User -> Config.Model -> H.Html Msg
