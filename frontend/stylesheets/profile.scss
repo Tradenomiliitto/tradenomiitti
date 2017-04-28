@@ -109,7 +109,9 @@
   &__buttons {
     text-align: right;
     height: 100%;
-    margin-top: 5px;
+    @media (max-width: $screen-xs-max) {
+      margin-top: 5px;
+    }
   }
 
   &__edit-button {
@@ -158,6 +160,7 @@
       }
     }
     &-content-row {
+      margin-top: 3px;
       @include equal-height-columns;
       align-items: center;
     }

@@ -67,14 +67,14 @@ profileTopRow user editing profileTab saveOrEdit =
         [ H.div
           [ A.class "row profile__top-row-content-row" ]
           [ H.div
-            [ A.class "col-sm-4 col-xs-12" ]
+            [ A.class "col-sm-6 col-xs-12" ]
             [ profileButton
             , contactsButton
             , settingsButton
             ]
 
           , H.div
-            [ A.class "col-sm-8 col-xs-12 profile__buttons" ]
+            [ A.class "col-sm-6 col-xs-12 profile__buttons" ]
             [ saveOrEdit
             , logoutLink
             ]

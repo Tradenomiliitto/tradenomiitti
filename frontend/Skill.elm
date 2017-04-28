@@ -89,7 +89,7 @@ view editing model =
     H.div
       [ A.class "row" ] <|
         [ H.div
-            [ A.class "col-xs-10 col-sm-6" ]
+            [ A.class "col-xs-10 col-sm-8 col-md-8 col-lg-6" ]
             [ H.p
                 []
                 [ H.span [ A.class "skill__heading" ] [ H.text model.heading ]

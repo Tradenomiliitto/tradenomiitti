@@ -532,7 +532,7 @@ optionPreselected default value =
 userDomains : Model -> User -> Config.Model ->  H.Html Msg
 userDomains model user config =
   H.div
-    [ A.class "col-xs-12 col-sm-4 last-row"
+    [ A.class "col-xs-12 col-sm-6 col-md-4 last-row"
     ]
     ([ H.h3 [ A.class "user-page__competences-header" ] [ H.text "Toimiala" ]
     ] ++
@@ -555,7 +555,7 @@ userDomains model user config =
 userSkills : Model -> User -> Config.Model -> H.Html Msg
 userSkills model user config =
   H.div
-    [ A.class "col-xs-12 col-sm-4 last-row"
+    [ A.class "col-xs-12 col-sm-6 col-md-4 last-row"
     ] <|
     [ H.h3 [ A.class "user-page__competences-header" ] [ H.text "Osaaminen" ]
     ] ++
@@ -602,7 +602,7 @@ userSkills model user config =
 userPositions : Model -> User -> Config.Model -> H.Html Msg
 userPositions model user config =
   H.div
-    [ A.class "col-xs-12 col-sm-4 last-row"
+    [ A.class "col-xs-12 col-sm-6 col-md-4 last-row"
     ]
     ([ H.h3 [ A.class "user-page__competences-header" ] [ H.text "Tehtäväluokka" ]
       ] ++
