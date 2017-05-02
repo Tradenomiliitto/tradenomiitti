@@ -67,6 +67,9 @@
   }
   &__work-details {
     color: $pink;
+    & input {
+      @include placeholder-color-pink;
+    }
     font-weight: bold;
   }
 
@@ -75,7 +78,7 @@
     font-size: 17px;
 
     &-input {
-      width: 100%;
+      width: 100% !important;
       height: 90px;
       padding: 8px;
       border: 2px solid $pink;
@@ -148,11 +151,11 @@
   }
 
   &__activity {
+    margin-top: $full-width-ruler-margin-top;
+    margin-bottom: $full-width-ruler-margin-bottom;
     padding-bottom: $full-width-ruler-margin-top;
     padding-top: $full-width-ruler-margin-bottom;
     background-color: $light-grey;
-    &-before.full-width-ruler {margin-bottom: 0;}
-    &-after.full-width-ruler {margin-top: 0;}
     &-header {
       @include gotham-bold;
       text-transform: uppercase;

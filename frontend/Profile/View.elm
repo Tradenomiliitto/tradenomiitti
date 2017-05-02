@@ -362,7 +362,6 @@ viewUser model ownProfile contactUser config user =
             else contactUser
         ]
       ]
-    , H.hr [ A.class "full-width-ruler user-page__activity-before" ] []
     , H.div
       [ A.class "user-page__activity" ]
       [ H.div
@@ -377,7 +376,6 @@ viewUser model ownProfile contactUser config user =
         ] ++ viewAds
           ++ showMoreAds
       ]
-    , H.hr [ A.class "full-width-ruler user-page__activity-after" ] []
     , H.div
       [ A.class "container" ]
       [ H.div
@@ -392,7 +390,7 @@ editProfileBox user =
     [ A.class "col-md-6 user-page__edit-or-contact-user"]
     [ H.p [] [ H.text ("Onhan profiilisi ajan tasalla? Mielenkiintoinen ja aktiivinen profiili auttaa luomaan kontakteja") ]
     , H.button
-            [ A.class "btn btn-primary profile__top-row-edit-button"
+            [ A.class "btn btn-primary profile__edit-button"
             , E.onClick Edit
             ]
             [ H.text  "Muokkaa profiilia" ]
@@ -430,8 +428,9 @@ userInfoBoxEditing2 model user =
       [ A.class "user-page__work-details" ]
       [
           H.input
-          [ A.value user.primaryPosition
+          [ A.value user.title
           , E.onInput ChangeTitle
+          , A.placeholder "Titteli"
           ]
           []
       ]
@@ -481,11 +480,11 @@ userInfoBox model user =
             [ if model.editing
               then
                 H.input
-                [ A.value user.primaryPosition
+                [ A.value user.title
                 , E.on "change" (Json.map ChangeTitle E.targetValue)
                 ]
                 []
-              else H.text user.primaryPosition
+              else H.text user.title
             ]
           , location model user
           ]
@@ -539,7 +538,7 @@ optionPreselected default value =
 userDomains : Model -> User -> Config.Model ->  H.Html Msg
 userDomains model user config =
   H.div
-    [ A.class "col-xs-12 col-sm-4 last-row"
+    [ A.class "col-xs-12 col-sm-6 col-md-4 last-row"
     ]
     ([ H.h3 [ A.class "user-page__competences-header" ] [ H.text "Toimiala" ]
     ] ++
@@ -562,12 +561,12 @@ userDomains model user config =
 userSkills : Model -> User -> Config.Model -> H.Html Msg
 userSkills model user config =
   H.div
-    [ A.class "col-xs-12 col-sm-4 last-row"
-    ]
-    ([ H.h3 [ A.class "user-page__competences-header" ] [ H.text "Osaaminen" ]
-     ] ++
+    [ A.class "col-xs-12 col-sm-6 col-md-4 last-row"
+    ] <|
+    [ H.h3 [ A.class "user-page__competences-header" ] [ H.text "Osaaminen" ]
+    ] ++
         (if model.editing
-          then [ H.p [ A.class "profile__editing--competences--text"] [H.text "Missä tehtävissä olet toiminut tai haluaisit toimia?" ] ]
+          then [ H.p [ A.class "profile__editing--competences--text"] [H.text "Mitä taitoja sinulla on?" ] ]
           else [ H.p [ A.class "profile__editing--competences--text"] [] ])
        ++ (List.map
             (\rowItems ->
@@ -588,23 +587,28 @@ userSkills model user config =
                   ) rowItems)
             ) (Common.chunk2 user.skills)
          ) ++
-     [ H.input
-       [ A.type_ "text"
-       , A.id "skills-input"
-       , A.classList
-         [ ("skills-input", True)
-         , ("skills-input--active", model.editing)
-         ]
-       , A.placeholder "Valitse taito"
-       ]
+     (if model.editing then [ H.div
        []
-     ])
+       [ H.label
+         [ A.class "user-page__competence-select-label" ]
+         [ H.text "Lisää taito" ]
+       , H.span
+         [ A.class "user-page__competence-select-container" ]
+         [ H.input
+           [ A.type_ "text"
+           , A.id "skills-input"
+           , A.class "user-page__competence-select"
+           , A.placeholder "Valitse taito"
+           ] []
+         ]
+       ]
+     ] else [])
 
 
 userPositions : Model -> User -> Config.Model -> H.Html Msg
 userPositions model user config =
   H.div
-    [ A.class "col-xs-12 col-sm-4 last-row"
+    [ A.class "col-xs-12 col-sm-6 col-md-4 last-row"
     ]
     ([ H.h3 [ A.class "user-page__competences-header" ] [ H.text "Tehtäväluokka" ]
       ] ++

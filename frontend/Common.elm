@@ -67,14 +67,14 @@ profileTopRow user editing profileTab saveOrEdit =
         [ H.div
           [ A.class "row profile__top-row-content-row" ]
           [ H.div
-            [ A.class "col-xs-4" ]
+            [ A.class "col-sm-6 col-xs-12" ]
             [ profileButton
             , contactsButton
             , settingsButton
             ]
 
           , H.div
-            [ A.class "col-xs-8 profile__buttons" ]
+            [ A.class "col-sm-6 col-xs-12 profile__buttons" ]
             [ saveOrEdit
             , logoutLink
             ]
@@ -96,7 +96,7 @@ authorInfo user =
         [ A.class "author-info__info" ]
         [ H.span [ A.class "author-info__name"] [ H.text user.name ]
         , H.br [] []
-        , H.span [ A.class "author-info__title"] [ H.text user.primaryPosition ]
+        , H.span [ A.class "author-info__title"] [ H.text user.title ]
         ]
       ]
     ]
@@ -126,7 +126,7 @@ authorInfoWithLocation user =
         [ A.class "author-info__info" ]
         [ H.span [ A.class "author-info__name"] [ H.text user.name ]
         , H.br [] []
-        , H.span [ A.class "author-info__title"] [ H.text user.primaryPosition ]
+        , H.span [ A.class "author-info__title"] [ H.text user.title ]
         , H.br [] []
         , showLocation user.location
         ]

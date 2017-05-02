@@ -217,17 +217,11 @@ div#not-implemented {
 }
 
 .error-messages {
+  z-index: 9500;
   position: fixed;
   bottom: 20px;
   left: 3vw;
   width: 94vw;
-}
-
-.skills-input {
-  display: none;
-  &--active {
-    display: inline;
-  }
 }
 
 .algolia-autocomplete {

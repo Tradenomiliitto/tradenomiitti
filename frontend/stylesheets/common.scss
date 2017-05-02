@@ -11,6 +11,22 @@ $font-family-sans-serif: mundoSansRegular;
 $font-size-base: 14px;
 $navbar-height: 66px;
 $profilebar-height: 55px;
+$profilebar-height-mobile: 77px;
+
+@mixin profile-bar-height {
+  height: $profilebar-height;
+  @media (max-width: $screen-xs-max) {
+    height: $profilebar-height-mobile;
+  }
+}
+
+@mixin margin-top-under-profile-bar {
+  margin-top: #{ $basic-header-margin-top + $profilebar-height };
+  @media (max-width: $screen-xs-max) {
+    margin-top: #{ $basic-header-margin-top + $profilebar-height-mobile };
+  }
+}
+
 $basic-header-margin-top: 50px;
 $footer-height: 250px;
 $footer-height-mobile: 450px;
@@ -178,6 +194,21 @@ $padding-before-footer-mobile: 35px;
   }
 }
 
+@mixin placeholder-color-pink {
+  &::-webkit-input-placeholder {
+    color: $pink;
+  }
+
+  &::-moz-placeholder {
+    color: $pink;
+    opacity: 1;
+  }
+
+  &:-ms-input-placeholder {
+    color: $pink;
+  }
+}
+
 /* http://red-team-design.com/making-html-dropdowns-not-suck/ */
 @mixin select($desktop-width) {
   padding: .5em;
@@ -188,6 +219,7 @@ $padding-before-footer-mobile: 35px;
 	appearance: none;
   background-color: $white;
   color: $pink;
+  @include placeholder-color-pink;
   @include gotham-bold;
   width: 100%;
   border: 1px solid $pink;
