@@ -340,7 +340,9 @@ viewUser model ownProfile contactUser config user =
   let
     viewAds = ListAds.viewAds <| if model.viewAllAds then model.ads else List.take 2 model.ads
     showMoreAds =
-      if model.viewAllAds || List.length model.ads > 2
+      -- if we are seeing all ads, don't show button
+      -- if we don't have anything more to show, don't show button
+      if model.viewAllAds || List.length model.ads <= 2
       then []
       else
         [ H.button
