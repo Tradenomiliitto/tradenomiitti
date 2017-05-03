@@ -1,5 +1,7 @@
 import autocomplete from 'autocomplete.js';
 
+const autocompletersById = {};
+
 export default function initTypeahead(elm2js, js2elm) {
   elm2js.subscribe(([ id, lists, emptyAfter, allowCreation ]) => {
 
@@ -19,8 +21,10 @@ export default function initTypeahead(elm2js, js2elm) {
     }, 20);
 
     function init(element) {
-      if (element.classList.contains('aa-input'))
+      if (element.classList.contains('aa-input')) {
+        autocompletersById[id].autocomplete.setVal('');
         return;
+      }
 
       const autocompleter = autocomplete(`#${id}`, {
         hint: false,
@@ -53,6 +57,7 @@ export default function initTypeahead(elm2js, js2elm) {
             }
           }
       } : []));
+      autocompletersById[id] = autocompleter;
       autocompleter.on('autocomplete:selected', (ev, suggestion, dataset) => {
         const value = suggestion.original || suggestion.value;
         if (emptyAfter)

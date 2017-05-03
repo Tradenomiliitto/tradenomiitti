@@ -40,6 +40,11 @@ type Msg
   | ShowAll
   | SkillSelected String
   | DeleteSkill String
+  | InstituteSelected String
+  | DegreeSelected String
+  | MajorSelected String
+  | SpecializationSelected String
+  | AddEducation String
   | NoOp
 
 
@@ -74,10 +79,10 @@ typeAheadToMsg : (String, String) -> Msg
 typeAheadToMsg (typeAheadResultStr, id) =
   case id of
     "skills-input" -> SkillSelected typeAheadResultStr
-    "education-institute" -> NoOp -- TODO
-    "education-degree" -> NoOp -- TODO
-    "education-major" -> NoOp -- TODO
-    "education-specialization" -> NoOp -- TODO
+    "education-institute" -> InstituteSelected typeAheadResultStr
+    "education-degree" -> DegreeSelected typeAheadResultStr
+    "education-major" -> MajorSelected typeAheadResultStr
+    "education-specialization" -> SpecializationSelected typeAheadResultStr
     _ -> NoOp
 
 subscriptions : Model -> Sub Msg
@@ -227,6 +232,35 @@ update msg model config =
     DeleteSkill str ->
       updateUser (\u -> { u | skills = List.filter (\skill -> skill /= str) u.skills}) model !
         [ typeaheads config ]
+
+    InstituteSelected str ->
+      { model | selectedInstitute = Just str } ! []
+
+    DegreeSelected str ->
+      { model | selectedDegree = Just str } ! []
+
+    MajorSelected str ->
+      { model | selectedMajor = Just str } ! []
+
+    SpecializationSelected str ->
+      { model | selectedSpecialization = Just str } ! []
+
+    AddEducation institute ->
+      let
+        newEducation =
+          { institute = institute
+          , degree = model.selectedDegree
+          , major = model.selectedMajor
+          , specialization = model.selectedSpecialization
+          }
+      in
+        updateUser (\u -> { u | education = newEducation :: u.education })
+          { model
+            | selectedInstitute = Nothing
+            , selectedDegree = Nothing
+            , selectedMajor = Nothing
+            , selectedSpecialization = Nothing
+          } ! [ typeaheads config ]
 
     UpdateUser _ ->
       { model | editing = False } !
