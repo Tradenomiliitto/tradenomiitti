@@ -351,6 +351,39 @@ viewUser model ownProfile contactUser config user =
           , H.i [ A.class "fa fa-chevron-down" ] []
           ]
         ]
+
+    viewEducations =
+      user.education
+        |> List.map
+          (\education ->
+             let
+               rowMaybe title valueMaybe =
+                 valueMaybe
+                   |> Maybe.map
+                     (\value ->
+                        [ H.tr []
+                          [ H.td [] [ H.text title ]
+                          , H.td [] [ H.text value ]
+                          ]
+                        ]
+                     )
+                   |> Maybe.withDefault []
+             in
+              H.div
+                [ A.class "col-xs-12 col-sm-6" ]
+                [ H.table
+                  [ A.class "user-page__education-details" ]
+                  (List.concat
+                   [ rowMaybe "Oppilaitos" <| Just education.institute
+                   , rowMaybe "Tutkintonimike" education.degree
+                   , rowMaybe "Koulutus" education.major
+                   , rowMaybe "Suuntautuminen / pääaine" education.specialization
+                   ]
+                  )
+                ]
+          )
+        |> Common.chunk2
+        |> List.map (\rowContents -> H.div [ A.class "row" ] rowContents)
   in
     [ H.div
       [ A.class "container" ]
@@ -381,6 +414,19 @@ viewUser model ownProfile contactUser config user =
       [ H.div
         [ A.class "row" ] <|
           List.map (H.map LocalViewMessage) (userExpertise model user config)
+      ]
+    , H.div
+      [ A.class "user-page__education" ]
+      [ H.div
+        [ A.class "container" ] <|
+        [ H.div
+          [ A.class "row" ]
+          [ H.div
+            [ A.class "col-xs-12" ]
+            [ H.h3 [ A.class "user-page__education-header" ] [ H.text "Koulutus" ]
+            ]
+          ]
+        ] ++ viewEducations
       ]
     ]
 

@@ -85,6 +85,22 @@
     }
   }
 
+  &__education-details {
+    margin-bottom: 30px;
+    & td {
+      $padding: 8px;
+      padding-top: $padding;
+      padding-bottom: $padding;
+    }
+    & td:first-child {
+      font-weight: bold;
+      padding-right: 2em;
+      &:after {
+        content: ':';
+      }
+    }
+  }
+
   &__membership-info {
     border: 1px solid $medium-grey;
     $padding: 33px;
@@ -150,6 +166,7 @@
     flex-grow: 1;
   }
 
+  &__education,
   &__activity {
     margin-top: $full-width-ruler-margin-top;
     margin-bottom: $full-width-ruler-margin-bottom;

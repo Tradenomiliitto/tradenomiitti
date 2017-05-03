@@ -56,6 +56,14 @@ type alias User =
   , extra : Maybe Extra
   , businessCard : Maybe BusinessCard
   , contacted : Bool
+  , education : List Education
+  }
+
+type alias Education =
+  { institute : String
+  , degree : Maybe String
+  , major : Maybe String
+  , specialization : Maybe String
   }
 
 type alias BusinessCard =
@@ -85,6 +93,7 @@ userDecoder =
     |> P.optional "extra" (Json.map Just userExtraDecoder) Nothing
     |> P.optional "business_card" (Json.map Just businessCardDecoder) Nothing
     |> P.optional "contacted" Json.bool False
+    |> P.hardcoded [ Education "first uni" (Just "Tradenomi") Nothing (Just "awesomeness specialization"), Education "second uni" Nothing (Just "amazing major") Nothing ]
 
 encode : User -> JS.Value
 encode user =
