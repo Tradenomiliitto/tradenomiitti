@@ -53,7 +53,7 @@ Compile elm & scss
 npm run compilelocal
 ```
 
-Run the server:
+Run the server with full integrations:
 
 ```
 export SEBACON_CUSTOMER=
@@ -69,9 +69,26 @@ export SMTP_USER=
 export SMTP_PASSWORD=
 export SMTP_TLS=
 export MAIL_FROM=
+export ENABLE_EMAIL_SENDING=true
 
 npm start
 ```
+
+Run with minimal integrations and seeded mock data.
+
+```
+export DISABLE_SEBACON=true
+export db_user=
+export db_password=
+export environment=development
+export ENABLE_EMAIL_SENDING=false
+
+npm run seed-db
+
+npm start
+```
+
+You can go with your browser to `http://localhost:3000/kirjaudu/1` or `http://localhost:3000/kirjaudu/2` to automatically log in as either of the seeded test users: no SSO or members registry API required. After you receive `Ok`, you can navigate to `http://localhost:3000/` and have a valid session in cookies.
 
 Run tests:
 
@@ -79,3 +96,20 @@ Run tests:
 npm test
 npm testFrontend
 ```
+
+## License
+
+Copyright (C) 2017  Tradenomiliitto
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.

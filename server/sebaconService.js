@@ -2,6 +2,9 @@ const uuid = require('uuid');
 const request = require('request-promise-native');
 
 module.exports = function initialize(params) {
+
+  const disable = params.disable;
+
   function url() {
     return `https://voltage.sebacon.net/SebaconAPI/?auth=${params.auth}`;
   }
@@ -62,17 +65,9 @@ module.exports = function initialize(params) {
     });
   }
 
-  function getUserDomains(id) {
-    return Promise.all([
-      getDomainTitles(),
-      getUserEmploymentHistory(id)
-    ]).then(([ titles, res ]) =>
-            res.result
-            .map(o => titles[o.sopimusala])
-            .filter(x => x));
-  }
-
   function getUserEmploymentExtras(id) {
+    if (disable) return Promise.resolve({ domains: [], positions: []});
+
     return Promise.all([
       getDomainTitles(),
       getPositionTitles(),
@@ -95,21 +90,9 @@ module.exports = function initialize(params) {
     })
   }
 
-
-  function getUserPositions(id) {
-    return Promise.all([
-      getPositionTitles(),
-      getUserEmploymentHistory(id)
-    ]).then(([ titles, res ]) =>
-            res.result
-              .map(o => titles[o.tehtavanimike_val])
-              .filter(x => x));
-  }
-
   function getUser(id) {
     return getObject(id, 'getPersonObject');
   }
-
 
   function getOrganisation(id) {
     return getObject(id, 'getOrganisationObject');
@@ -134,31 +117,43 @@ module.exports = function initialize(params) {
   }
 
   function getUserFirstName(id) {
+    if (disable) return Promise.resolve('');
+
     return getUser(id)
       .then(res => res.result.firstname || '');
   }
 
   function getUserNickName(id) {
+    if (disable) return Promise.resolve('');
+
     return getUser(id)
       .then(res => res.result.kutsumanimi || '');
   }
 
   function getUserLastName(id) {
+    if (disable) return Promise.resolve('');
+
     return getUser(id)
       .then(res => res.result.lastname || '');
   }
 
   function getUserEmail(id) {
+    if (disable) return Promise.resolve('');
+
     return getUser(id)
       .then(res => res.result.email1 || res.result.email2 || '');
   }
 
   function getUserPhoneNumber(id) {
+    if (disable) return Promise.resolve('');
+
     return getUser(id)
       .then(res => res.result.matkapuhelin || '');
   }
 
   function getUserGeoArea(id) {
+    if (disable) return Promise.resolve('');
+
     return Promise.all([
       getGeoAreas(),
       getUser(id)
@@ -166,11 +161,9 @@ module.exports = function initialize(params) {
   }
 
   return {
-    getUserPositions,
     getUserFirstName,
     getUserNickName,
     getUserLastName,
-    getUserDomains,
     getUserEmploymentExtras,
     getUserEmail,
     getUserPhoneNumber,

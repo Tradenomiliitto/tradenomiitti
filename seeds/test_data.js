@@ -27,6 +27,11 @@ exports.seed = function(knex, Promise) {
         data: dataForName('Tradenomi2')
       });
     }).then(() => {
+      return knex('sessions').insert([
+        { id: '00000000-0000-0000-0000-000000000001', user_id: 1},
+        { id: '00000000-0000-0000-0000-000000000002', user_id: 2}
+      ])
+    }).then(() => {
       return knex('ads').insert({
         data: {heading: "foo", content: "bar"},
         user_id: 1,
