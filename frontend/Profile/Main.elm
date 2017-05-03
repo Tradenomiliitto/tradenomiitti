@@ -254,7 +254,7 @@ update msg model config =
           , specialization = model.selectedSpecialization
           }
       in
-        updateUser (\u -> { u | education = newEducation :: u.education })
+        updateUser (\u -> { u | education = u.education ++ [ newEducation ]})
           { model
             | selectedInstitute = Nothing
             , selectedDegree = Nothing
