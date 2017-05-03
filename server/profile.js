@@ -101,6 +101,30 @@ module.exports = function initialize(params) {
               const query = `${insertPart} ON CONFLICT (title) DO NOTHING`;
               return knex.raw(query);
             })
+            .then(() => {
+              if (!newData.education || newData.education.length === 0) {
+                return null;
+              }
+
+              const insertObjectLists = newData.education.map(o => {
+                const makeObject = (type) => {
+                  return o[type] ? ({
+                    type,
+                    category: 'Käyttäjien lisäämät',
+                    title: o[type]
+                  }) : null;
+                };
+                return [
+                  makeObject('degree'),
+                  makeObject('major'),
+                  makeObject('specialization')
+                ].filter(x => x);
+              });
+              const insertObjects = [].concat.apply([], insertObjectLists);
+              const insertPart = knex('education').insert(insertObjects).toString();
+              const query = `${insertPart} ON CONFLICT (title, type, category) DO NOTHING`;
+              return knex.raw(query);
+            })
             .then(() => trx('skills').where({ user_id: user.id }).del())
             .then(() => {
               const domainPromises = domains.map(domain => {
