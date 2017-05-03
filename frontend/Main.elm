@@ -448,7 +448,7 @@ logoImage : Int -> H.Html msg
 logoImage width =
   H.img
     [ A.alt "Tradenomiitti"
-    , A.src "/static/tradenomiitti_BETA_logo.svg"
+    , A.src "/static/tradenomiitti_logo.svg"
     , A.class "logo-image"
     , A.width width
     ]
