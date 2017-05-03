@@ -31,7 +31,7 @@ type Msg
   | UpdateConsent
   | UpdateBusinessCard BusinessCardField String
   | ChangeImage User
-  | ImageDetailsUpdate (String ,PictureEditing)
+  | ImageDetailsUpdate (String, PictureEditing)
   | MouseEnterProfilePic
   | MouseLeaveProfilePic
   | StartAddContact
