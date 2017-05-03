@@ -93,7 +93,7 @@ userDecoder =
     |> P.optional "extra" (Json.map Just userExtraDecoder) Nothing
     |> P.optional "business_card" (Json.map Just businessCardDecoder) Nothing
     |> P.optional "contacted" Json.bool False
-    |> P.hardcoded [ Education "first uni" (Just "Tradenomi") Nothing (Just "awesomeness specialization"), Education "second uni" Nothing (Just "amazing major") Nothing ]
+    |> P.required "education" (Json.list educationDecoder)
 
 encode : User -> JS.Value
 encode user =
@@ -106,6 +106,7 @@ encode user =
     , ("location", JS.string user.location)
     , ("cropped_picture", JS.string (user.croppedPictureFileName |> Maybe.withDefault ""))
     , ("special_skills", JS.list (List.map JS.string user.skills))
+    , ("education", educationEncode user.education)
     ] ++ (
          user.pictureEditingDetails
            |> Maybe.map (\details ->
@@ -116,6 +117,24 @@ encode user =
       ++ case user.businessCard of
         Nothing -> []
         Just businessCard -> [("business_card", businessCardEncode businessCard)]
+
+
+educationEncode : List Education -> JS.Value
+educationEncode educationList =
+  let
+    encodeOne education =
+      JS.object <|
+        [ ("institute", JS.string education.institute)
+        ] ++
+        (List.filterMap identity
+           [ Maybe.map (\value -> ("degree", JS.string value)) education.degree
+           , Maybe.map (\value -> ("major", JS.string value)) education.major
+           , Maybe.map (\value -> ("specialization", JS.string value)) education.specialization
+           ])
+  in
+    educationList
+      |> List.map encodeOne
+      |> JS.list
 
 settingsEncode : Settings -> JS.Value
 settingsEncode settings =
@@ -194,3 +213,12 @@ businessCardDecoder =
     |> P.required "phone" Json.string
     |> P.required "email" Json.string
     |> P.required "linkedin" Json.string
+
+
+educationDecoder : Json.Decoder Education
+educationDecoder =
+  P.decode Education
+    |> P.required "institute" Json.string
+    |> P.optional "degree" (Json.map Just Json.string) Nothing
+    |> P.optional "major" (Json.map Just Json.string) Nothing
+    |> P.optional "specialization" (Json.map Just Json.string) Nothing

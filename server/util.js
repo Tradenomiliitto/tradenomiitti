@@ -34,6 +34,7 @@ module.exports = function initialize(params) {
     formattedUser.profile_creation_consented = userData.profile_creation_consented || false;
     formattedUser.cropped_picture = loggedIn ? (userData.cropped_picture || '') : '';
     formattedUser.special_skills = userData.special_skills || [];
+    formattedUser.education = userData.education || [];
 
     return formattedUser;
   }
