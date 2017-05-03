@@ -3,8 +3,7 @@ module Tests exposing (..)
 import Test exposing (..)
 import Expect
 import Fuzz exposing (list, int, tuple, string)
-import ListUsers exposing (chunk3)
-import Common exposing (chunk2)
+import Common exposing (chunk2, chunk3)
 
 
 all : Test

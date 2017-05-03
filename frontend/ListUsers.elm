@@ -96,7 +96,7 @@ view : Model -> Config.Model -> Bool -> H.Html (ViewMessage Msg)
 view model config isLoggedIn =
   let
     usersHtml = List.map viewUser model.users
-    rows = chunk3 usersHtml
+    rows = Common.chunk3 usersHtml
     rowsHtml = List.map row rows
 
     sorterRow = H.map LocalViewMessage <|
@@ -190,18 +190,3 @@ row users =
     [ A.class "row list-users__user-row list-users__row" ]
     users
 
-chunk3 : List a -> List (List a)
-chunk3 = List.reverse << List.foldl rowFolder []
-
--- transforms a list to a list of lists of three elements: [1, 2, 3, 4, 5] => [[4, 5], [1, 2, 3]]
--- note: reverse the results if you need the elements to be in original order
-rowFolder : a -> List (List a) -> List (List a)
-rowFolder x acc =
-  case acc of
-    [] -> [[x]]
-    row :: rows ->
-      case row of
-        el1 :: el2 :: el3 :: els -> [x] :: row :: rows
-        el1 :: el2 :: els -> [el1, el2, x] :: rows
-        el1 :: els -> [el1, x] :: rows
-        els -> ([x]) :: rows
