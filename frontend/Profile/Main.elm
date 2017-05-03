@@ -48,27 +48,43 @@ port imageUpload : Maybe PictureEditing -> Cmd msg
 -- cropped picture file name and full picture details
 port imageSave : ((String, PictureEditing) -> msg) -> Sub msg
 
-port typeahead : (String, JS.Value) -> Cmd msg
-port typeaheadResult : (String -> msg) -> Sub msg
+port typeahead : (String, JS.Value, Bool, Bool) -> Cmd msg
+port typeaheadResult : ((String, String) -> msg) -> Sub msg
 
-skillTypeahead : Config.Model -> Cmd msg
-skillTypeahead config =
+typeaheads : Config.Model -> Cmd msg
+typeaheads config =
   let
-    asList =
-      Dict.toList config.specialSkillOptions
+    toJsValue categoriedOptions =
+      Dict.toList categoriedOptions
         |> List.map
           (\ (key, values) ->
              (key, JS.list <| List.map
                 (\value -> JS.string value) values))
-    jsValue = JS.object asList
+        |> JS.object
   in
-    typeahead ("skills-input", jsValue)
+    Cmd.batch
+      [ typeahead ("skills-input", toJsValue config.specialSkillOptions, True, False)
+      , typeahead ("education-institute", toJsValue << Config.institutes <| config, False, False)
+      , typeahead ("education-degree", toJsValue << Config.degrees <| config, False, True)
+      , typeahead ("education-major", toJsValue << Config.majors <| config, False, True)
+      , typeahead ("education-specialization", toJsValue << Config.specializations <| config, False, True)
+      ]
+
+typeAheadToMsg : (String, String) -> Msg
+typeAheadToMsg (typeAheadResultStr, id) =
+  case id of
+    "skills-input" -> SkillSelected typeAheadResultStr
+    "education-institute" -> NoOp -- TODO
+    "education-degree" -> NoOp -- TODO
+    "education-major" -> NoOp -- TODO
+    "education-specialization" -> NoOp -- TODO
+    _ -> NoOp
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
   Sub.batch
     [ imageSave ImageDetailsUpdate
-    , if model.editing then typeaheadResult SkillSelected else Sub.none
+    , if model.editing then typeaheadResult typeAheadToMsg else Sub.none
     ]
 
 getMe : Cmd (UpdateMessage Msg)
@@ -168,11 +184,11 @@ update msg model config =
       in
         newModel !
           [ updateConsent
-          , skillTypeahead config
+          , typeaheads config
           ]
 
     Edit ->
-      { model | editing = True } ! [ skillTypeahead config ]
+      { model | editing = True } ! [ typeaheads config ]
 
     DomainSkillMessage index (Skill.LevelChange skillLevel) ->
       updateUser (\u -> { u | domains = updateSkillList index skillLevel u.domains }) model ! []
@@ -206,11 +222,11 @@ update msg model config =
 
     SkillSelected str ->
       updateUser (\u -> { u | skills = List.unique <| u.skills ++ [ str ] }) model !
-        [ skillTypeahead config ]
+        [ typeaheads config ]
 
     DeleteSkill str ->
       updateUser (\u -> { u | skills = List.filter (\skill -> skill /= str) u.skills}) model !
-        [ skillTypeahead config ]
+        [ typeaheads config ]
 
     UpdateUser _ ->
       { model | editing = False } !

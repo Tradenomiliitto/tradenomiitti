@@ -37,6 +37,7 @@ editProfileView model user rootState =
     , membershipInfoEditing user
     , H.map LocalViewMessage (publicInfoEditing model user)
     , H.map LocalViewMessage (competences model rootState.config user)
+    , H.map LocalViewMessage (educationEditing model rootState.config user)
     ]
 
 
@@ -315,6 +316,10 @@ competences model config user =
       ]
     ]
 
+educationEditing : Model -> Config.Model -> User -> H.Html Msg
+educationEditing model config user =
+  viewEducations model config user
+
 userExpertise : Model -> User -> Config.Model -> List (H.Html Msg)
 userExpertise model user config =
   [ userDomains model user config
@@ -334,6 +339,105 @@ viewUserMaybe model ownProfile config =
           ]
       ]
 
+viewEducations : Model -> Config.Model -> User -> H.Html Msg
+viewEducations model config user =
+  let
+    educations =
+      user.education
+        |> List.map
+          (\education ->
+              let
+                rowMaybe title valueMaybe =
+                  valueMaybe
+                    |> Maybe.map
+                      (\value ->
+                        [ H.tr [] <|
+                          [ H.td [] [ H.text title ]
+                          , H.td [] [ H.text value ]
+                          ] ++ if model.editing then [ H.td [] []] else []
+                        ]
+                      )
+                    |> Maybe.withDefault []
+              in
+              H.div
+                [ A.class "col-xs-12 col-sm-6" ]
+                [ H.table
+                  [ A.class "user-page__education-details" ]
+                  (List.concat
+                    [ [ H.tr [] <|
+                        [ H.td [] [ H.text "Oppilaitos" ]
+                        , H.td [] [ H.text education.institute ]
+                        ] ++ if model.editing
+                             then
+                               [ H.td
+                                  []
+                                  [ H.i
+                                    [ A.class "fa fa-remove user-page__education-details-remove"
+                                    , E.onClick NoOp
+                                    ]
+                                    []
+                                  ]
+                               ]
+                             else
+                               []
+                      ]
+                    , rowMaybe "Tutkintonimike" education.degree
+                    , rowMaybe "Koulutus" education.major
+                    , rowMaybe "Suuntautuminen / pääaine" education.specialization
+                    ]
+                  )
+                ]
+          )
+        |> Common.chunk2
+        |> List.map (\rowContents -> H.div [ A.class "row" ] rowContents)
+  in
+    H.div
+      [ A.class "user-page__education" ]
+      [ H.div
+        [ A.class "container" ] <|
+        [ H.div
+          [ A.class "row" ]
+          [ H.div
+            [ A.class "col-xs-12" ]
+            [ H.h3 [ A.class "user-page__education-header" ] [ H.text "Koulutus" ]
+            ]
+          ]
+        ] ++ educations
+          ++ (educationsEditing model config)
+      ]
+
+educationsEditing : Model -> Config.Model -> List (H.Html Msg)
+educationsEditing model config =
+  let
+    input placeholder id =
+      H.div
+        []
+        [ H.span
+          [ A.class "user-page__education-details-select-container user-page__education-details-input" ]
+          [ H.input
+            [ A.type_ "text"
+            , A.id id
+            , A.class "user-page__education-details-select"
+            , A.placeholder placeholder
+            ] []
+          ]
+        ]
+  in
+    if model.editing
+    then
+      [ H.div
+        [ A.class "row"]
+        [ H.div [ A.class "col-xs-5" ]
+          [ H.p [] [ H.text "Lisää koulutus"]
+          , input "Valitse oppilaitos" "education-institute"
+          , input "Valitse tutkintonimike" "education-degree"
+          , input "Valitse koulutus" "education-major"
+          , input "Valitse suuntautuminen / pääaine" "education-specialization"
+          ]
+        ]
+      ]
+    else
+      []
 
 viewUser : Model -> Bool -> H.Html (ViewMessage Msg) -> Config.Model -> User -> List (H.Html (ViewMessage Msg))
 viewUser model ownProfile contactUser config user =
@@ -351,39 +455,6 @@ viewUser model ownProfile contactUser config user =
           , H.i [ A.class "fa fa-chevron-down" ] []
           ]
         ]
-
-    viewEducations =
-      user.education
-        |> List.map
-          (\education ->
-             let
-               rowMaybe title valueMaybe =
-                 valueMaybe
-                   |> Maybe.map
-                     (\value ->
-                        [ H.tr []
-                          [ H.td [] [ H.text title ]
-                          , H.td [] [ H.text value ]
-                          ]
-                        ]
-                     )
-                   |> Maybe.withDefault []
-             in
-              H.div
-                [ A.class "col-xs-12 col-sm-6" ]
-                [ H.table
-                  [ A.class "user-page__education-details" ]
-                  (List.concat
-                   [ rowMaybe "Oppilaitos" <| Just education.institute
-                   , rowMaybe "Tutkintonimike" education.degree
-                   , rowMaybe "Koulutus" education.major
-                   , rowMaybe "Suuntautuminen / pääaine" education.specialization
-                   ]
-                  )
-                ]
-          )
-        |> Common.chunk2
-        |> List.map (\rowContents -> H.div [ A.class "row" ] rowContents)
   in
     [ H.div
       [ A.class "container" ]
@@ -415,19 +486,7 @@ viewUser model ownProfile contactUser config user =
         [ A.class "row" ] <|
           List.map (H.map LocalViewMessage) (userExpertise model user config)
       ]
-    , H.div
-      [ A.class "user-page__education" ]
-      [ H.div
-        [ A.class "container" ] <|
-        [ H.div
-          [ A.class "row" ]
-          [ H.div
-            [ A.class "col-xs-12" ]
-            [ H.h3 [ A.class "user-page__education-header" ] [ H.text "Koulutus" ]
-            ]
-          ]
-        ] ++ viewEducations
-      ]
+    , H.map LocalViewMessage <| viewEducations model config user
     ]
 
 editProfileBox : User -> H.Html Msg

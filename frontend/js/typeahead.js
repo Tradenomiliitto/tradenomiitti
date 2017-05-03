@@ -1,7 +1,7 @@
 import autocomplete from 'autocomplete.js';
 
 export default function initTypeahead(elm2js, js2elm) {
-  elm2js.subscribe(([ id, lists ]) => {
+  elm2js.subscribe(([ id, lists, emptyAfter, allowCreation ]) => {
 
     //wait until element is rendered
     let counter = 0;
@@ -40,7 +40,7 @@ export default function initTypeahead(elm2js, js2elm) {
             }
           }
         }
-      }).concat({
+      }).concat(allowCreation ? {
           source: function (q, cb) {
             q.length > 0
               ? cb([{value: `Lisää "${q}" vaihtoehdoksi`, original: q}])
@@ -52,11 +52,15 @@ export default function initTypeahead(elm2js, js2elm) {
               return autocomplete.escapeHighlightedString(val);
             }
           }
-        }));
+      } : []));
       autocompleter.on('autocomplete:selected', (ev, suggestion, dataset) => {
-        autocompleter.autocomplete.setVal('');
+        const value = suggestion.original || suggestion.value;
+        if (emptyAfter)
+          autocompleter.autocomplete.setVal('');
+        else
+          autocompleter.autocomplete.setVal(value);
         $(element).blur();
-        js2elm.send(suggestion.original || suggestion.value);
+        js2elm.send([ value, id ]);
       })
     }
   })

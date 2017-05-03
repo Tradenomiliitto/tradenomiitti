@@ -91,13 +91,22 @@
       $padding: 8px;
       padding-top: $padding;
       padding-bottom: $padding;
+      padding-right: 2em;
     }
     & td:first-child {
       font-weight: bold;
-      padding-right: 2em;
       &:after {
         content: ':';
       }
+    }
+
+    &-remove {
+      color: $pink;
+      cursor: pointer;
+    }
+
+    &-input {
+      margin-bottom: 20px;
     }
   }
 
@@ -151,6 +160,7 @@
   }
 
   &__location-select,
+  &__education-details-select,
   &__competence-select {
     @include select(80%);
 
