@@ -2,10 +2,10 @@
 exports.up = function(knex, Promise) {
   return knex.schema.createTable('education', function (table) {
     table.increments('id');
-    table.enum('type', [ 'institute', 'degree', 'major', 'specialization' ]).index();
+    table.enum('type', [ 'institute', 'degree', 'major', 'specialization' ]).notNullable().index();
     table.string('category');
     table.string('title');
-    table.unique([ 'title', 'type' ]);
+    table.unique([ 'title', 'type', 'category' ]);
   }).then(() => {
     const institutes = {
       'Ammattikorkeakoulu': [
@@ -206,13 +206,16 @@ exports.up = function(knex, Promise) {
       });
     }
 
-    const insertObjects = [].concat.apply(
-      [],
-      toObjectLists(institutes),
-      toObjectLists(degrees),
-      toObjectLists(majors),
-      toObjectLists(specializations)
-    );
+    const listOfListsOfListsOfObjects = [
+      toObjectLists(institutes, 'institute'),
+      toObjectLists(degrees, 'degree'),
+      toObjectLists(majors, 'major'),
+      toObjectLists(specializations, 'specialization')
+    ]
+
+    const listOfListsOfObjects = [].concat.apply([], listOfListsOfListsOfObjects);
+
+    const insertObjects = [].concat.apply([], listOfListsOfObjects);
     return knex('education').insert(insertObjects);
   });
 };
