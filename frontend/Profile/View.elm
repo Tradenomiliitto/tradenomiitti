@@ -344,8 +344,8 @@ viewEducations model config user =
   let
     educations =
       user.education
-        |> List.map
-          (\education ->
+        |> List.indexedMap
+          (\index education ->
               let
                 rowMaybe title valueMaybe =
                   valueMaybe
@@ -373,7 +373,7 @@ viewEducations model config user =
                                   []
                                   [ H.i
                                     [ A.class "fa fa-remove user-page__education-details-remove"
-                                    , E.onClick NoOp
+                                    , E.onClick (DeleteEducation index)
                                     ]
                                     []
                                   ]
