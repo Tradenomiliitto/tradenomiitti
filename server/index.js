@@ -268,6 +268,24 @@ app.get('/api/osaaminen', (req, res, next) => {
   }).catch(next);
 })
 
+app.get('/api/koulutus', (req, res, next) => {
+  knex('education').where({}).orderBy('title').then(rows => {
+    const objects = {
+      'institute': {},
+      'degree': {},
+      'major': {},
+      'specialization': {}
+    };
+    rows.forEach(o => {
+      if (objects[o.type][o.category]) {
+        objects[o.type][o.category].push(o.title);
+      } else {
+        objects[o.type][o.category] = [ o.title ];
+      }
+    });
+    return res.json(objects);
+  }).catch(next);
+})
 app.post('/api/ilmoitukset', jsonParser, ads.createAd);
 app.get('/api/ilmoitukset/:id', ads.getAd);
 app.get('/api/ilmoitukset', ads.listAds);

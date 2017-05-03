@@ -10,6 +10,7 @@ type Msg
   = GetDomainOptions (List String)
   | GetPositionOptions (List String)
   | GetSpecialSkillOptions (Dict String (List String))
+  | GetEducationOptions Education
 
 getDomainOptions : Cmd (UpdateMessage Msg)
 getDomainOptions =
@@ -26,10 +27,20 @@ getSpecialSkillOptions =
   Http.get "/api/osaaminen" (Json.dict (Json.list Json.string))
     |> Util.errorHandlingSend GetSpecialSkillOptions
 
+getEducationOptions : Cmd (UpdateMessage Msg)
+getEducationOptions =
+  Http.get "/api/koulutus" (Json.dict (Json.dict (Json.list Json.string)))
+    |> Util.errorHandlingSend GetEducationOptions
+
 
 initTasks : Cmd (UpdateMessage Msg)
 initTasks =
-  Cmd.batch [ getPositionOptions, getDomainOptions, getSpecialSkillOptions ]
+  Cmd.batch
+    [ getPositionOptions
+    , getDomainOptions
+    , getSpecialSkillOptions
+    , getEducationOptions
+    ]
 
 
 update : Msg -> Model -> (Model, Cmd msg)
@@ -43,3 +54,6 @@ update msg model =
 
     GetSpecialSkillOptions dict ->
       { model | specialSkillOptions = dict } ! []
+
+    GetEducationOptions education ->
+      { model | educationOptions = education } ! []

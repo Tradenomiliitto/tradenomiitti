@@ -5,8 +5,31 @@ import Dict exposing (Dict)
 type alias Model =
   { positionOptions : List String
   , domainOptions : List String
-  , specialSkillOptions : Dict String (List String)
+  , specialSkillOptions : CategoriedOptions
+  , educationOptions : Education
   }
+
+type alias CategoriedOptions = Dict String (List String)
+type alias Education = Dict String CategoriedOptions
+
+
+educationOptions : String -> Model -> CategoriedOptions
+educationOptions type_ =
+  .educationOptions >>
+    Dict.get type_ >>
+      Maybe.withDefault Dict.empty
+
+institutes : Model -> CategoriedOptions
+institutes = educationOptions "institute"
+
+degrees : Model -> CategoriedOptions
+degrees = educationOptions "degree"
+
+majors : Model -> CategoriedOptions
+majors = educationOptions "major"
+
+specializations : Model -> CategoriedOptions
+specializations = educationOptions "specialization"
 
 
 init : Model
@@ -14,6 +37,7 @@ init =
   { positionOptions = []
   , domainOptions = []
   , specialSkillOptions = Dict.empty
+  , educationOptions = Dict.empty
   }
 
 
