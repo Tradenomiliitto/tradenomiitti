@@ -1,4 +1,6 @@
-# tradenomiitti
+# Tradenomiitti
+
+Tradenomiitti is a social web service for members of the trade union Tradenomiliitto. It is up and running at [https://tradenomiitti.fi]() and you can read more about it in [the press release](https://www.sttinfo.fi/tiedote/tradenomien-uusi-palvelu-tarjoaa-rekrytointiapua-ja-mentorointia?publisherId=59695169&releaseId=59695181) (in Finnish) and more about why it's open source [the blog post](http://futurice.com/blog/open-sourcing-a-client-project)
 
 ## Deployment
 
