@@ -59,22 +59,13 @@ port typeaheadResult : ((String, String) -> msg) -> Sub msg
 
 typeaheads : Config.Model -> Cmd msg
 typeaheads config =
-  let
-    toJsValue categoriedOptions =
-      Dict.toList categoriedOptions
-        |> List.map
-          (\ (key, values) ->
-             (key, JS.list <| List.map
-                (\value -> JS.string value) values))
-        |> JS.object
-  in
-    Cmd.batch
-      [ typeahead ("skills-input", toJsValue config.specialSkillOptions, True, False)
-      , typeahead ("education-institute", toJsValue << Config.institutes <| config, False, False)
-      , typeahead ("education-degree", toJsValue << Config.degrees <| config, False, True)
-      , typeahead ("education-major", toJsValue << Config.majors <| config, False, True)
-      , typeahead ("education-specialization", toJsValue << Config.specializations <| config, False, True)
-      ]
+  Cmd.batch
+    [ typeahead ("skills-input", Config.categoriedOptionsEncode config.specialSkillOptions, True, False)
+    , typeahead ("education-institute", Config.categoriedOptionsEncode << Config.institutes <| config, False, False)
+    , typeahead ("education-degree", Config.categoriedOptionsEncode << Config.degrees <| config, False, True)
+    , typeahead ("education-major", Config.categoriedOptionsEncode << Config.majors <| config, False, True)
+    , typeahead ("education-specialization", Config.categoriedOptionsEncode << Config.specializations <| config, False, True)
+    ]
 
 typeAheadToMsg : (String, String) -> Msg
 typeAheadToMsg (typeAheadResultStr, id) =

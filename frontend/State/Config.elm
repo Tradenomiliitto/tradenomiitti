@@ -1,6 +1,9 @@
 module State.Config exposing (..)
 
 import Dict exposing (Dict)
+import Json.Decode as Json
+import Json.Decode.Pipeline as P
+import Json.Encode as JS
 
 type alias Model =
   { positionOptions : List String
@@ -9,15 +12,38 @@ type alias Model =
   , educationOptions : Education
   }
 
-type alias CategoriedOptions = Dict String (List String)
+type alias CategoriedOption = { category: String, title : String }
+type alias CategoriedOptions = List CategoriedOption
 type alias Education = Dict String CategoriedOptions
+
+categoriedOptionsDecoder : Json.Decoder CategoriedOptions
+categoriedOptionsDecoder =
+  let
+    singleDecoder =
+      P.decode CategoriedOption
+        |> P.required "category" Json.string
+        |> P.required "title" Json.string
+  in
+    Json.list singleDecoder
+
+categoriedOptionsEncode : CategoriedOptions -> JS.Value
+categoriedOptionsEncode categoriedOptions =
+  categoriedOptions
+    |> List.map
+      (\option ->
+        JS.object
+          [ ("category", JS.string option.category)
+          , ("title", JS.string option.title)
+          ]
+      )
+    |> JS.list
 
 
 educationOptions : String -> Model -> CategoriedOptions
 educationOptions type_ =
   .educationOptions >>
     Dict.get type_ >>
-      Maybe.withDefault Dict.empty
+      Maybe.withDefault []
 
 institutes : Model -> CategoriedOptions
 institutes = educationOptions "institute"
@@ -36,7 +62,7 @@ init : Model
 init =
   { positionOptions = []
   , domainOptions = []
-  , specialSkillOptions = Dict.empty
+  , specialSkillOptions = []
   , educationOptions = Dict.empty
   }
 

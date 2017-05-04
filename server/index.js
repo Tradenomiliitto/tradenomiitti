@@ -266,35 +266,23 @@ app.get('/api/toimialat', (req, res) => {
 });
 
 app.get('/api/osaaminen', (req, res, next) => {
-  knex('special_skills').where({}).orderBy('title').then(rows => {
-    const lists = {};
-    rows.forEach(o => {
-      if (lists[o.category]) {
-        lists[o.category].push(o.title);
-      } else {
-        lists[o.category] = [ o.title ];
-      }
-    });
-    return res.json(lists);
+  knex('special_skills').where({}).orderBy('id').then(rows => {
+    return res.json(rows);
   }).catch(next);
 })
 
 app.get('/api/koulutus', (req, res, next) => {
-  knex('education').where({}).orderBy('title').then(rows => {
-    const objects = {
-      'institute': {},
-      'degree': {},
-      'major': {},
-      'specialization': {}
+  knex('education').where({}).orderBy('id').then(rows => {
+    const lists = {
+      'institute': [],
+      'degree': [],
+      'major': [],
+      'specialization': []
     };
     rows.forEach(o => {
-      if (objects[o.type][o.category]) {
-        objects[o.type][o.category].push(o.title);
-      } else {
-        objects[o.type][o.category] = [ o.title ];
-      }
+      lists[o.type].push(o);
     });
-    return res.json(objects);
+    return res.json(lists);
   }).catch(next);
 })
 app.post('/api/ilmoitukset', jsonParser, ads.createAd);
