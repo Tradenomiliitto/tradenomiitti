@@ -392,7 +392,11 @@ viewEducations model config user =
         |> List.map (\rowContents -> H.div [ A.class "row" ] rowContents)
   in
     H.div
-      [ A.class "user-page__education last-row" ]
+      [ A.classList
+          [ ("user-page__education last-row", True)
+          , ("user-page__education--editing", model.editing)
+          ]
+      ]
       [ H.div
         [ A.class "container" ] <|
         [ H.div

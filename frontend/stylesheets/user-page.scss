@@ -86,9 +86,11 @@
   }
 
   &__education {
-    margin-top: $full-width-ruler-margin-top;
     padding-top: $full-width-ruler-margin-bottom;
     background-color: $light-grey;
+    &--editing {
+      background-color: $white;
+    }
     &-header {
       @include gotham-bold;
       text-transform: uppercase;
