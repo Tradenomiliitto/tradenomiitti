@@ -122,7 +122,7 @@ module.exports = function initialize(params) {
               });
               const insertObjects = [].concat.apply([], insertObjectLists);
               const insertPart = knex('education').insert(insertObjects).toString();
-              const query = `${insertPart} ON CONFLICT (title, type, category) DO NOTHING`;
+              const query = `${insertPart} ON CONFLICT (title, type) DO NOTHING`;
               return knex.raw(query);
             })
             .then(() => trx('skills').where({ user_id: user.id }).del())

@@ -5,7 +5,7 @@ exports.up = function(knex, Promise) {
     table.enum('type', [ 'institute', 'degree', 'major', 'specialization' ]).notNullable().index();
     table.string('category');
     table.string('title');
-    table.unique([ 'title', 'type', 'category' ]);
+    table.unique([ 'title', 'type' ]);
   }).then(() => {
     const institutes = {
       'Ammattikorkeakoulu': [
@@ -131,18 +131,7 @@ exports.up = function(knex, Promise) {
         'Taiteiden ala',
         'Terveystieteet'
       ],
-      'Muut AMK-opetusalat': [
-        'Humanistinen ja kasvatusala',
-        'Kulttuuriala',
-        'Luonnontieteet',
-        'Luonnonvara-ala',
-        'Matkailu-, ravitsemis- ja talousala',
-        'Sosiaali-, terveys- ja liikunta-ala',
-        'Tekniikan ja liikenteen ala',
-        'Turvallisuusala'
-      ],
-      'Toisen asteen opinnot': [
-        'Lukion oppimäärä',
+      'Muut opetusalat': [
         'Humanistinen ja kasvatusala',
         'Kulttuuriala',
         'Luonnontieteiden ala',
@@ -150,8 +139,9 @@ exports.up = function(knex, Promise) {
         'Matkailu-, ravitsemis- ja talousala',
         'Sosiaali-, terveys- ja liikunta-ala',
         'Tekniikan ja liikenteen ala',
-        'Turvallisuusala',
-        'Yhteiskuntatieteiden, liiketalouden ja hallinnon ala'
+        'Turvallisuusala (muu)',
+        'Yhteiskuntatieteiden, liiketalouden ja hallinnon ala',
+        'Lukion oppimäärä'
       ]
     };
     const specializations = {
