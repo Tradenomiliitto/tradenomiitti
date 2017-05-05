@@ -9,6 +9,10 @@ type alias Model =
   , viewAllAds : Bool
   , editing : Bool
   , mouseOverUserImage : Bool
+  , selectedInstitute : Maybe String
+  , selectedDegree : Maybe String
+  , selectedMajor : Maybe String
+  , selectedSpecialization : Maybe String
   }
 
 init : Model
@@ -18,4 +22,8 @@ init =
   , viewAllAds = False
   , editing = False
   , mouseOverUserImage = False
+  , selectedInstitute = Nothing
+  , selectedDegree = Nothing
+  , selectedMajor = Nothing
+  , selectedSpecialization = Nothing
   }

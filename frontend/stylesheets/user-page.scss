@@ -85,6 +85,51 @@
     }
   }
 
+  &__education {
+    padding-top: $full-width-ruler-margin-bottom;
+    background-color: $light-grey;
+    &-button {
+      float: right;
+      &-container {
+        margin-top: 10px;
+        width: 80%;
+      }
+    }
+    &--editing {
+      background-color: $white;
+    }
+    &-header {
+      @include gotham-bold;
+      text-transform: uppercase;
+      margin-bottom: 25px;
+    }
+
+    &-details {
+      margin-bottom: 30px;
+      & td {
+        $padding: 8px;
+        padding-top: $padding;
+        padding-bottom: $padding;
+        padding-right: 2em;
+      }
+      & td:first-child {
+        font-weight: bold;
+        &:after {
+          content: ':';
+        }
+      }
+
+      &-remove {
+        color: $pink;
+        cursor: pointer;
+      }
+
+      &-input {
+        margin-bottom: 20px;
+      }
+    }
+  }
+
   &__membership-info {
     border: 1px solid $medium-grey;
     $padding: 33px;
@@ -135,6 +180,7 @@
   }
 
   &__location-select,
+  &__education-details-select,
   &__competence-select {
     @include select(80%);
 

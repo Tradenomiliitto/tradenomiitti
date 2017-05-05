@@ -33,9 +33,6 @@ module.exports = function initialize(params) {
         return res.status(400).send('Kirjautuminen epäonnistui');
       }
 
-      // http://stackoverflow.com/a/14438954/1517818
-      const unique = (value, i, array) => array.indexOf(value) === i;
-
       const sessionId = uuid.v4();
       const remoteId = body.result.local_id;
       return knex('users').where({ remote_id: remoteId })

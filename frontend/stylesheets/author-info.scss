@@ -4,6 +4,7 @@
     @include round-profile-pic(40px, $pink);
   }
   &__info {
+    width: calc(100% - 40px - 15px);
     display: inline-block;
     margin-left: 15px;
     position: relative;
@@ -14,11 +15,13 @@
     @include gotham-bold;
     color: $green;
     font-size: 16px;
+    word-wrap: break-word;
   }
   &__title {
     font-weight: bold;
     @include gotham-bold;
     font-size:12px;
     color: $pink;
+    word-wrap: break-word;
   }
 }
