@@ -145,6 +145,9 @@ div#not-implemented {
   & .author-info__pic {
     @include round-profile-pic(60px, $pink); // Override with bigger picture
   }
+  & .author-info__info {
+    width: calc(100% - 60px - 15px); // override
+  }
 }
 
 
