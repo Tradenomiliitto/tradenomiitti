@@ -88,6 +88,13 @@
   &__education {
     padding-top: $full-width-ruler-margin-bottom;
     background-color: $light-grey;
+    &-button {
+      float: right;
+      &-container {
+        margin-top: 10px;
+        width: 80%;
+      }
+    }
     &--editing {
       background-color: $white;
     }

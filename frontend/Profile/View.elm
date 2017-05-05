@@ -437,23 +437,26 @@ educationsEditing model config =
           , input "Valitse tutkintonimike" "education-degree"
           , input "Valitse koulutus" "education-major"
           , input "Valitse suuntautuminen / pääaine" "education-specialization"
-          , model.selectedInstitute
+          , H.div
+            [ A.class "user-page__education-button-container"]
+            [ model.selectedInstitute
             |> Maybe.map
               (\institute ->
                  H.button
-                   [ A.class "btn btn-primary"
+                   [ A.class "btn btn-primary user-page__education-button"
                    , E.onClick <| AddEducation institute
                    ]
                    [ H.text "Lisää koulutus"]
               )
             |> Maybe.withDefault
               (H.button
-                [ A.class "btn btn-primary"
+                [ A.class "btn btn-primary user-page__education-button"
                 , A.disabled True
                 , A.title "Oppilaitos on pakollinen tieto"
                 ]
                 [ H.text "Lisää koulutus"]
               )
+            ]
           ]
         ]
       ]
