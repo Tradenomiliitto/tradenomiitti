@@ -570,7 +570,8 @@ userSkills model user config =
         (if model.editing
           then [ H.p [ A.class "profile__editing--competences--text"] [H.text "Mitä taitoja sinulla on?" ] ]
           else [ H.p [ A.class "profile__editing--competences--text"] [] ])
-       ++ (List.map
+       ++ [ H.div [] -- wrapper div so that the search box doesn't get rerendered and lose it's state on JS side
+             (List.map
             (\rowItems ->
                H.div
                [ A.class "row user-page__competences-special-skills-row" ]
@@ -588,7 +589,7 @@ userSkills model user config =
                      ] else []
                   ) rowItems)
             ) (Common.chunk2 user.skills)
-         ) ++
+         ) ] ++
      (if model.editing then [ H.div
        []
        [ H.label
