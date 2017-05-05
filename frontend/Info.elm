@@ -14,9 +14,6 @@ view =
         [ A.class "col-sm-12" ]
         [ H.h1
           [ A.class "info__heading" ]
-          [ H.text "Tietoa" ]
-        , H.h2
-          []
           [ H.text "Mikä on Tradenomiitti?" ]
         , H.h3
           []
