@@ -31,7 +31,7 @@ type Msg
   | UpdateConsent
   | UpdateBusinessCard BusinessCardField String
   | ChangeImage User
-  | ImageDetailsUpdate (String ,PictureEditing)
+  | ImageDetailsUpdate (String, PictureEditing)
   | MouseEnterProfilePic
   | MouseLeaveProfilePic
   | StartAddContact
@@ -40,6 +40,12 @@ type Msg
   | ShowAll
   | SkillSelected String
   | DeleteSkill String
+  | InstituteSelected String
+  | DegreeSelected String
+  | MajorSelected String
+  | SpecializationSelected String
+  | AddEducation String
+  | DeleteEducation Int
   | NoOp
 
 
@@ -48,27 +54,34 @@ port imageUpload : Maybe PictureEditing -> Cmd msg
 -- cropped picture file name and full picture details
 port imageSave : ((String, PictureEditing) -> msg) -> Sub msg
 
-port typeahead : (String, JS.Value) -> Cmd msg
-port typeaheadResult : (String -> msg) -> Sub msg
+port typeahead : (String, JS.Value, Bool, Bool) -> Cmd msg
+port typeaheadResult : ((String, String) -> msg) -> Sub msg
 
-skillTypeahead : Config.Model -> Cmd msg
-skillTypeahead config =
-  let
-    asList =
-      Dict.toList config.specialSkillOptions
-        |> List.map
-          (\ (key, values) ->
-             (key, JS.list <| List.map
-                (\value -> JS.string value) values))
-    jsValue = JS.object asList
-  in
-    typeahead ("skills-input", jsValue)
+typeaheads : Config.Model -> Cmd msg
+typeaheads config =
+  Cmd.batch
+    [ typeahead ("skills-input", Config.categoriedOptionsEncode config.specialSkillOptions, True, False)
+    , typeahead ("education-institute", Config.categoriedOptionsEncode << Config.institutes <| config, False, False)
+    , typeahead ("education-degree", Config.categoriedOptionsEncode << Config.degrees <| config, False, True)
+    , typeahead ("education-major", Config.categoriedOptionsEncode << Config.majors <| config, False, True)
+    , typeahead ("education-specialization", Config.categoriedOptionsEncode << Config.specializations <| config, False, True)
+    ]
+
+typeAheadToMsg : (String, String) -> Msg
+typeAheadToMsg (typeAheadResultStr, id) =
+  case id of
+    "skills-input" -> SkillSelected typeAheadResultStr
+    "education-institute" -> InstituteSelected typeAheadResultStr
+    "education-degree" -> DegreeSelected typeAheadResultStr
+    "education-major" -> MajorSelected typeAheadResultStr
+    "education-specialization" -> SpecializationSelected typeAheadResultStr
+    _ -> NoOp
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
   Sub.batch
     [ imageSave ImageDetailsUpdate
-    , if model.editing then typeaheadResult SkillSelected else Sub.none
+    , if model.editing then typeaheadResult typeAheadToMsg else Sub.none
     ]
 
 getMe : Cmd (UpdateMessage Msg)
@@ -103,11 +116,10 @@ updateSkillList index skillLevel list =
     (\i x -> if i == index then Skill.update skillLevel x else x)
     list
 
-deleteFromSkillList : Int -> List Skill.Model -> List Skill.Model
-deleteFromSkillList index list =
+deleteFromList : Int -> List a -> List a
+deleteFromList index list =
   List.indexedMap (\i x -> if i == index then Nothing else Just x) list
     |> List.filterMap identity
-
 
 updateUser : (User -> User) -> Model -> Model
 updateUser update model =
@@ -168,11 +180,11 @@ update msg model config =
       in
         newModel !
           [ updateConsent
-          , skillTypeahead config
+          , typeaheads config
           ]
 
     Edit ->
-      { model | editing = True } ! [ skillTypeahead config ]
+      { model | editing = True } ! [ typeaheads config ]
 
     DomainSkillMessage index (Skill.LevelChange skillLevel) ->
       updateUser (\u -> { u | domains = updateSkillList index skillLevel u.domains }) model ! []
@@ -181,10 +193,10 @@ update msg model config =
       updateUser (\u -> { u | positions = updateSkillList index skillLevel u.positions }) model ! []
 
     DomainSkillMessage index Skill.Delete ->
-      updateUser (\u -> { u | domains = deleteFromSkillList index u.domains }) model ! []
+      updateUser (\u -> { u | domains = deleteFromList index u.domains }) model ! []
 
     PositionSkillMessage index Skill.Delete ->
-      updateUser (\u -> { u | positions = deleteFromSkillList index u.positions }) model ! []
+      updateUser (\u -> { u | positions = deleteFromList index u.positions }) model ! []
 
     ChangeDomainSelect str ->
       updateUser (\u -> { u | domains = List.uniqueBy .heading <| u.domains ++ [ Skill.Model str Skill.Interested ] }) model ! []
@@ -206,11 +218,44 @@ update msg model config =
 
     SkillSelected str ->
       updateUser (\u -> { u | skills = List.unique <| u.skills ++ [ str ] }) model !
-        [ skillTypeahead config ]
+        [ typeaheads config ]
 
     DeleteSkill str ->
       updateUser (\u -> { u | skills = List.filter (\skill -> skill /= str) u.skills}) model !
-        [ skillTypeahead config ]
+        [ typeaheads config ]
+
+    InstituteSelected str ->
+      { model | selectedInstitute = Just str } ! []
+
+    DegreeSelected str ->
+      { model | selectedDegree = Just str } ! []
+
+    MajorSelected str ->
+      { model | selectedMajor = Just str } ! []
+
+    SpecializationSelected str ->
+      { model | selectedSpecialization = Just str } ! []
+
+    AddEducation institute ->
+      let
+        newEducation =
+          { institute = institute
+          , degree = model.selectedDegree
+          , major = model.selectedMajor
+          , specialization = model.selectedSpecialization
+          }
+      in
+        updateUser (\u -> { u | education = u.education ++ [ newEducation ]})
+          { model
+            | selectedInstitute = Nothing
+            , selectedDegree = Nothing
+            , selectedMajor = Nothing
+            , selectedSpecialization = Nothing
+          } ! [ typeaheads config ]
+
+    DeleteEducation index ->
+      updateUser
+      (\u -> { u | education = deleteFromList index u.education }) model ! [ typeaheads config ]
 
     UpdateUser _ ->
       { model | editing = False } !

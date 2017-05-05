@@ -256,3 +256,19 @@ rowFolder x acc =
         el1 :: el2 :: els -> [x] :: row :: rows
         el :: els -> [el, x] :: rows
         els -> (x :: els) :: rows
+
+chunk3 : List a -> List (List a)
+chunk3 = List.reverse << List.foldl rowFolder3 []
+
+-- transforms a list to a list of lists of three elements: [1, 2, 3, 4, 5] => [[4, 5], [1, 2, 3]]
+-- note: reverse the results if you need the elements to be in original order
+rowFolder3 : a -> List (List a) -> List (List a)
+rowFolder3 x acc =
+  case acc of
+    [] -> [[x]]
+    row :: rows ->
+      case row of
+        el1 :: el2 :: el3 :: els -> [x] :: row :: rows
+        el1 :: el2 :: els -> [el1, el2, x] :: rows
+        el1 :: els -> [el1, x] :: rows
+        els -> ([x]) :: rows

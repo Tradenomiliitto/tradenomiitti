@@ -1,7 +1,9 @@
 import autocomplete from 'autocomplete.js';
 
+const autocompletersById = {};
+
 export default function initTypeahead(elm2js, js2elm) {
-  elm2js.subscribe(([ id, lists ]) => {
+  elm2js.subscribe(([ id, list, emptyAfter, allowCreation ]) => {
 
     //wait until element is rendered
     let counter = 0;
@@ -19,28 +21,38 @@ export default function initTypeahead(elm2js, js2elm) {
     }, 20);
 
     function init(element) {
-      if (element.classList.contains('aa-input'))
+      if (element.classList.contains('aa-input')) {
+        autocompletersById[id].autocomplete.setVal('');
         return;
+      }
+
+      // http://stackoverflow.com/a/14438954/1517818
+      const unique = (value, i, array) => array.indexOf(value) === i;
+      const categories = list.map(o => o.category).filter(unique);
 
       const autocompleter = autocomplete(`#${id}`, {
         hint: false,
         openOnFocus: true,
         minLength: 0
-      }, Object.keys(lists).map(key => {
+      }, categories.map(category => {
+        const categoryOptions = list
+              .filter(o => o.category === category)
+              .map(o => o.title)
+              .sort();
         return {
           source: function (q, cb) {
             const qLower = q.toLowerCase();
-            cb(lists[key].filter(x => x.toLowerCase().includes(qLower)).map(x => ({ value: x})))
+            cb(categoryOptions.filter(x => x.toLowerCase().includes(qLower)).map(x => ({ value: x})))
           },
           templates: {
-            header: `<h4 class="aa-category">${key}</h4>`,
+            header: `<h4 class="aa-category">${category}</h4>`,
             suggestion: function(suggestion) {
               var val = suggestion.value;
               return autocomplete.escapeHighlightedString(val);
             }
           }
         }
-      }).concat({
+      }).concat(allowCreation ? {
           source: function (q, cb) {
             q.length > 0
               ? cb([{value: `Lisää "${q}" vaihtoehdoksi`, original: q}])
@@ -52,11 +64,16 @@ export default function initTypeahead(elm2js, js2elm) {
               return autocomplete.escapeHighlightedString(val);
             }
           }
-        }));
+      } : []));
+      autocompletersById[id] = autocompleter;
       autocompleter.on('autocomplete:selected', (ev, suggestion, dataset) => {
-        autocompleter.autocomplete.setVal('');
+        const value = suggestion.original || suggestion.value;
+        if (emptyAfter)
+          autocompleter.autocomplete.setVal('');
+        else
+          autocompleter.autocomplete.setVal(value);
         $(element).blur();
-        js2elm.send(suggestion.original || suggestion.value);
+        js2elm.send([ value, id ]);
       })
     }
   })
