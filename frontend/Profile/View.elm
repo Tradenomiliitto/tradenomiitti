@@ -432,10 +432,10 @@ educationsEditing model config =
       [ H.div
         [ A.class "row"]
         [ H.div [ A.class "col-xs-5" ]
-          [ H.p [] [ H.text "Lisää koulutus"]
+          [ H.p [] [ H.text "Lisää koulutus. Valitse omaa koulutustasi parhaiten vastaavat vaihtoehdot. Mikäli oppilaitoksesi on vaihtanut nimeä, valitse nykyisen nimen mukainen oppilaitos. Mikäli valikoista ei löydy oikeaa vaihtoehtoa, voit lisätä sen itse."]
           , input "Valitse oppilaitos" "education-institute"
           , input "Valitse tutkintonimike" "education-degree"
-          , input "Valitse koulutus" "education-major"
+          , input "Valitse koulutusala / koulutusohjelma" "education-major"
           , input "Valitse suuntautuminen / pääaine" "education-specialization"
           , H.div
             [ A.class "user-page__education-button-container"]
