@@ -202,7 +202,7 @@ update msg model config =
       updateUser (\u -> { u | name = str }) model ! []
 
     ChangeDescription str ->
-      updateUser (\u -> { u | description = String.slice 0 300 str }) model ! []
+      updateUser (\u -> { u | description = String.slice 0 400 str }) model ! []
 
     SkillSelected str ->
       updateUser (\u -> { u | skills = List.unique <| u.skills ++ [ str ] }) model !
