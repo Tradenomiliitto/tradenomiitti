@@ -82,7 +82,7 @@ module.exports = function initialize(params) {
   function findRowUserCanDelete(req, table) {
     return util.userForSession(req).then(user => {
       return knex(table).where({
-        user_id: user.id, // if it's not their own ad, don't delete it
+        user_id: user.id, // if it's not their own row, don't delete it
         id: req.params.id
       });
     })
