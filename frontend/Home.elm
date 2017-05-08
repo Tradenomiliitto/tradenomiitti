@@ -51,13 +51,16 @@ initTasks model =
 
 view : Model -> Maybe User -> H.Html (ViewMessage Msg)
 view model userMaybe =
-  H.div
-    []
-    [ introScreen userMaybe
-    , listLatestAds model
-    , listUsers model userMaybe
-    , tradenomiittiSection
-    ]
+  userMaybe
+    |> Maybe.map (\user ->
+      H.div
+        []
+        [ introScreen userMaybe
+        , listLatestAds user model
+        , listUsers model userMaybe
+        , tradenomiittiSection
+        ])
+    |> Maybe.withDefault (H.div [] [])
 
 -- FIRST INFO SCREEN --
 
@@ -110,14 +113,14 @@ introBoxes userMaybe =
 
 -- LIST LATEST ADS --
 
-listLatestAds : Model -> H.Html (ViewMessage Msg)
-listLatestAds model =
+listLatestAds : User -> Model -> H.Html (ViewMessage Msg)
+listLatestAds user model =
   H.div
     [ A.class "home__latest-ads" ]
     [ H.div
       [ A.class "home__section--container" ]
       [ listAdsHeading
-      , listFourAds model
+      , listFourAds user model
       ]
      ]
 
@@ -149,11 +152,11 @@ sectionHeader title =
     [ A.class "home__section--heading--text col-sm-5" ]
     [ H.text title ]
 
-listFourAds : Model -> H.Html (ViewMessage msg)
-listFourAds model =
+listFourAds : User -> Model -> H.Html (ViewMessage msg)
+listFourAds user model =
   H.div
     []
-    (ListAds.viewAds (List.take 4 model.listAds.ads))
+    (ListAds.viewAds user (List.take 4 model.listAds.ads))
 
 -- LIST USERS --
 

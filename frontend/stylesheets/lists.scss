@@ -75,6 +75,7 @@
 
 .list-ads {
   &__ad-preview {
+    position: relative;
     margin-top: 25px;
     padding: 15px;
     @include shadow;
@@ -103,7 +104,17 @@
       }
     }
     &-author-info {
-      width: calc(100% - 52px);
+      width: calc(100% - 62px);
+    }
+    &-delete {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      padding: 5px;
+      width: 21px;
+      height: 21px;
+      box-sizing: content-box;
+      cursor: pointer;
     }
   }
 }

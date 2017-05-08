@@ -9,6 +9,7 @@ import Json.Decode as Json
 import Link
 import List.Extra as List
 import Models.Ad
+import Models.User exposing (User)
 import Nav
 import QueryString
 import QueryString.Extra as QueryString
@@ -79,45 +80,48 @@ getAds model =
     Util.errorHandlingSend (UpdateAds model.cursor) request
 
 
-view : Model -> Config.Model -> H.Html (ViewMessage Msg)
-view model config =
-  H.div []
-    [ H.div
-      [ A.class "container" ]
-      [ H.div
-        [ A.class "row" ]
+view : Maybe User -> Model -> Config.Model -> H.Html (ViewMessage Msg)
+view userMaybe model config =
+  userMaybe
+    |> Maybe.map (\user ->
+      H.div []
         [ H.div
-          [ A.class "col-sm-12" ]
-          [ H.h1
-            [ A.class "list-ads__header" ]
-            [ H.text "Selaa ilmoituksia" ]
+          [ A.class "container" ]
+          [ H.div
+            [ A.class "row" ]
+            [ H.div
+              [ A.class "col-sm-12" ]
+              [ H.h1
+                [ A.class "list-ads__header" ]
+                [ H.text "Selaa ilmoituksia" ]
+              ]
+            ]
+          , H.div
+            [ A.class "row list-users__filters" ]
+            [ H.div
+              [ A.class "col-xs-12 col-sm-4" ]
+              [ Common.select "list-users" (LocalViewMessage << ChangeDomainFilter) Domain config.domainOptions model ]
+            , H.div
+              [ A.class "col-xs-12 col-sm-4" ]
+              [ Common.select "list-users" (LocalViewMessage << ChangePositionFilter) Position config.positionOptions model ]
+            , H.div
+              [ A.class "col-xs-12 col-sm-4" ]
+              [ Common.select "list-users" (LocalViewMessage << ChangeLocationFilter) Location Config.finnishRegions model ]
+            ]
           ]
-        ]
-      , H.div
-        [ A.class "row list-users__filters" ]
-        [ H.div
-          [ A.class "col-xs-12 col-sm-4" ]
-          [ Common.select "list-users" (LocalViewMessage << ChangeDomainFilter) Domain config.domainOptions model ]
         , H.div
-          [ A.class "col-xs-12 col-sm-4" ]
-          [ Common.select "list-users" (LocalViewMessage << ChangePositionFilter) Position config.positionOptions model ]
-        , H.div
-          [ A.class "col-xs-12 col-sm-4" ]
-          [ Common.select "list-users" (LocalViewMessage << ChangeLocationFilter) Location Config.finnishRegions model ]
-        ]
-      ]
-    , H.div
-      [ A.class "list-ads__list-background"]
-      [ H.div
-        [ A.class "container last-row" ]
-        (viewAds model.ads)
-      ]
-    ]
+          [ A.class "list-ads__list-background"]
+          [ H.div
+            [ A.class "container last-row" ]
+            (viewAds user model.ads)
+          ]
+        ])
+    |> Maybe.withDefault (H.div [] [])
 
-viewAds : List Models.Ad.Ad -> List (H.Html (ViewMessage msg))
-viewAds ads =
+viewAds : User -> List Models.Ad.Ad -> List (H.Html (ViewMessage msg))
+viewAds user ads =
   let
-    adsHtml = List.map adListView ads
+    adsHtml = List.map (adListView user) ads
     rows = Common.chunk2 adsHtml
     rowsHtml = List.map row rows
   in
@@ -129,13 +133,13 @@ row ads =
     [ A.class "row list-ads__row" ]
     ads
 
-adListView : Models.Ad.Ad -> H.Html (ViewMessage msg)
-adListView ad =
+adListView : User -> Models.Ad.Ad -> H.Html (ViewMessage msg)
+adListView user ad =
   H.div
     [ A.class "col-xs-12 col-sm-6 list-ads__item-container"
     ]
     [ H.div
-      [ A.class "list-ads__ad-preview list-ads__item" ]
+      [ A.class "list-ads__ad-preview list-ads__item" ] <|
       [ H.a
         [ A.href (Nav.routeToPath (Nav.ShowAd ad.id))
         , Link.action (Nav.ShowAd ad.id)
@@ -162,5 +166,14 @@ adListView ad =
           ]
         , H.div [ A.class "list-ads__ad-preview-author-info" ] [ Common.authorInfo ad.createdBy ]
         ]
-      ]
+      ] ++
+        if user.id == ad.createdBy.id then
+          [ H.img
+            [ A.class "list-ads__ad-preview-delete"
+            , A.src "/static/close.svg"
+            ]
+            []
+          ]
+        else
+          []
     ]
