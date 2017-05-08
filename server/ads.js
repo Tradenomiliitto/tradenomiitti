@@ -79,6 +79,22 @@ module.exports = function initialize(params) {
     }).catch(next);
   }
 
+  function deleteAd(req, res, next) {
+    util.userForSession(req).then(user => {
+      return knex('ads').where({
+        user_id: user.id, // if it's not their own ad, don't delete it
+        id: req.params.id
+      });
+    }).then(rows => {
+      if (rows.length === 1) {
+        return knex('ads').where('id', rows[0].id).del();
+      } else {
+        return Promise.reject('Did not find ad to delete');
+      }
+    }).then(() => res.json('Ok'))
+      .catch(next);
+  }
+
   function adsForUser(req, res, next) {
     const getAds = knex('ads').where('user_id', req.params.id);
     const getAnswers = knex('answers').where('user_id', req.params.id).select('ad_id').distinct()
@@ -102,6 +118,7 @@ module.exports = function initialize(params) {
   return {
     createAd,
     getAd,
+    deleteAd,
     listAds,
     createAnswer,
     adsForUser
