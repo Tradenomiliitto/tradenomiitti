@@ -301,7 +301,12 @@ update msg model =
                                              ++ body
                                              ++ "\n\nja virhe oli\n\n"
                                              ++ error
-            Http.BadStatus { body } -> showAlert <| errorCodeToUserVisibleErrorMessage body
+            Http.BadStatus { status, body } ->
+              case status.code of
+                404 ->
+                  showAlert <| "Haettua sisältöä ei löytynyt. Se on voitu poistaa tai osoitteessa voi olla virhe. Voit ottaa yhteyttä osoitteeseen " ++ supportEmail ++ " halutessasi. Ota silloin kuvakaappaus sivusta ja lähetä se viestin liitteenä. " ++ body
+                _ ->
+                  showAlert <| errorCodeToUserVisibleErrorMessage body
       in
         model ! [ cmd ]
 
@@ -613,6 +618,9 @@ sendError msg =
   Http.post "/api/virhe" (Http.stringBody "text/plain" msg) Json.string
     |> Http.send SendErrorResponse
 
+supportEmail : String
+supportEmail = "tradenomiitti@tral.fi"
+
 errorCodeToUserVisibleErrorMessage : String -> String
 errorCodeToUserVisibleErrorMessage body =
-  "Jotain meni pieleen. Virheen tunnus on " ++ body ++ ". Meille olisi suuri apu, jos otat kuvakaappauksen koko sivusta ja lähetät sen osoitteeseen tradenomiitti@tral.fi."
+  "Jotain meni pieleen. Virheen tunnus on " ++ body ++ ". Meille olisi suuri apu, jos otat kuvakaappauksen koko sivusta ja lähetät sen osoitteeseen " ++ supportEmail ++ "."
