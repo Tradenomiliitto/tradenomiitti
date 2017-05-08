@@ -196,16 +196,17 @@ $padding-before-footer-mobile: 35px;
 
 @mixin placeholder-color-pink {
   &::-webkit-input-placeholder {
-    color: $pink;
+    color: lighten($pink, 15%);
+
   }
 
   &::-moz-placeholder {
-    color: $pink;
+    color: lighten($pink, 15%);
     opacity: 1;
   }
 
   &:-ms-input-placeholder {
-    color: $pink;
+    color: lighten($pink, 15%);
   }
 }
 

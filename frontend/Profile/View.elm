@@ -432,10 +432,10 @@ educationsEditing model config =
       [ H.div
         [ A.class "row"]
         [ H.div [ A.class "col-xs-5" ]
-          [ H.p [] [ H.text "Lisää koulutus"]
+          [ H.p [] [ H.text "Lisää koulutus. Valitse omaa koulutustasi parhaiten vastaavat vaihtoehdot. Mikäli oppilaitoksesi on vaihtanut nimeä, valitse nykyisen nimen mukainen oppilaitos. Mikäli valikoista ei löydy oikeaa vaihtoehtoa, voit lisätä sen itse."]
           , input "Valitse oppilaitos" "education-institute"
           , input "Valitse tutkintonimike" "education-degree"
-          , input "Valitse koulutus" "education-major"
+          , input "Valitse koulutusala / koulutusohjelma" "education-major"
           , input "Valitse suuntautuminen / pääaine" "education-specialization"
           , H.div
             [ A.class "user-page__education-button-container"]
@@ -468,7 +468,9 @@ viewUser model ownProfile contactUser config user =
   let
     viewAds = ListAds.viewAds <| if model.viewAllAds then model.ads else List.take 2 model.ads
     showMoreAds =
-      if model.viewAllAds || List.length model.ads > 2
+      -- if we are seeing all ads, don't show button
+      -- if we don't have anything more to show, don't show button
+      if model.viewAllAds || List.length model.ads <= 2
       then []
       else
         [ H.button
@@ -697,7 +699,8 @@ userSkills model user config =
         (if model.editing
           then [ H.p [ A.class "profile__editing--competences--text"] [H.text "Mitä taitoja sinulla on?" ] ]
           else [ H.p [ A.class "profile__editing--competences--text"] [] ])
-       ++ (List.map
+       ++ [ H.div [] -- wrapper div so that the search box doesn't get rerendered and lose it's state on JS side
+             (List.map
             (\rowItems ->
                H.div
                [ A.class "row user-page__competences-special-skills-row" ]
@@ -715,7 +718,7 @@ userSkills model user config =
                      ] else []
                   ) rowItems)
             ) (Common.chunk2 user.skills)
-         ) ++
+         ) ] ++
      (if model.editing then [ H.div
        []
        [ H.label

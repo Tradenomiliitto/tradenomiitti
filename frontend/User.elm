@@ -46,7 +46,7 @@ update msg model =
         , addContactText = ""
       } ! []
     ProfileMessage (Profile.ChangeContactAddingText str) ->
-      { model | addContactText = str} ! []
+      { model | addContactText = String.slice 0 1000 str} ! []
     ProfileMessage (Profile.AddContact user) ->
       model ! [ addContact user model.addContactText ]
 
