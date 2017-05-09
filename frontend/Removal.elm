@@ -11,6 +11,7 @@ import Util exposing (ViewMessage(..), UpdateMessage(..))
 
 type Msg
   = InitiateRemoveAd Int Models.Ad.Ad
+  | CancelRemoval Int
 
 type alias Model = List Removal
 
@@ -28,6 +29,8 @@ update msg model =
   case msg of
     InitiateRemoveAd index ad ->
       ({ index = index, adId = ad.id } :: model) ! []
+    CancelRemoval index ->
+      List.filterNot (\removal -> removal.index == index) model ! []
 
 
 view : User -> Int -> Models.Ad.Ad -> List Removal -> List (H.Html (ViewMessage Msg))
@@ -55,7 +58,9 @@ view user index ad removals =
         , H.div
           [ A.class "list-ads__ad-preview-delete-confirmation-buttons" ]
           [ H.button
-            [ A.class "btn list-ads__ad-preview-delete-confirmation-button-cancel"]
+            [ A.class "btn list-ads__ad-preview-delete-confirmation-button-cancel"
+            , E.onClick << LocalViewMessage <| CancelRemoval index
+            ]
             [ H.text "Peru" ]
           , H.button
             [ A.class "btn btn-primary list-ads__ad-preview-delete-confirmation-button-confirm" ]
