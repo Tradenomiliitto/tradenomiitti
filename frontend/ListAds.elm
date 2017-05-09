@@ -174,6 +174,6 @@ adListView user removal index ad =
           ]
         , H.div [ A.class "list-ads__ad-preview-author-info" ] [ Common.authorInfo ad.createdBy ]
         ]
-      ] ++ Removal.view user index ad removal.removals
+      ] ++ Removal.view (Just user) index ad removal.removals
     ]
 

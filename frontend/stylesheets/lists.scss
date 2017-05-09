@@ -106,50 +106,5 @@
     &-author-info {
       width: calc(100% - 62px);
     }
-    &-delete {
-      position: absolute;
-      top: 8px;
-      right: 8px;
-      padding: 5px;
-      &-icon {
-        width: 21px;
-        height: 21px;
-      }
-      cursor: pointer;
-      &-confirmation {
-        @media (min-width: $screen-sm-min) {
-          position: absolute;
-          left: -320px;
-          top: -20px;
-        }
-        padding: 50px;
-        @include shadow;
-        background-color: $white;
-        z-index: 10;
-        &-text {
-          font-weight: bold;
-          text-align: center;
-        }
-        &-buttons {
-          text-align: center;
-          margin-top: 40px;
-          display: flex;
-        }
-        &-button {
-          &-cancel {
-            @include button-paddings;
-            background-color: $white !important;
-            box-shadow: unset !important;
-            color: $pink !important;
-            @include gotham-bold;
-            text-transform: uppercase;
-          }
-          &-confirm {
-            margin-left: 30px;
-            @include button-paddings;
-          }
-        }
-      }
-    }
   }
 }

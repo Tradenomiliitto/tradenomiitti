@@ -14,6 +14,7 @@ import Maybe.Extra as Maybe
 import Models.Ad exposing (Ad, Answers(..), Answer)
 import Models.User exposing (User)
 import Nav
+import Removal
 import State.Ad exposing (..)
 import State.Util exposing (SendingStatus(..))
 import Util exposing (UpdateMessage(..), ViewMessage(..))
@@ -24,6 +25,7 @@ type Msg
   | SendAnswer Int
   | SendAnswerResponse Int (Result Http.Error String)
   | GetAd Ad
+  | RemovalMessage Removal.Msg
 
 
 getAd : Int -> Cmd (UpdateMessage Msg)
@@ -66,6 +68,12 @@ update msg model =
 
     GetAd ad ->
       { model | ad = Just ad } ! []
+
+    RemovalMessage msg ->
+      let
+        (newRemoval, cmd) = Removal.update msg model.removal
+      in
+        { model | removal = newRemoval } ! [ Util.localMap RemovalMessage cmd ]
 
 view : Model -> Int -> Maybe User -> String -> H.Html (ViewMessage Msg)
 view model adId user rootUrl =
@@ -147,17 +155,17 @@ viewAd adId model userMaybe rootUrl ad =
       , H.hr [ A.class "full-width-ruler" ] []
       , H.div
         [ A.class "container last-row"]
-        [ viewAnswers userMaybe ad.answers adId rootUrl ]
+        [ viewAnswers userMaybe model ad.answers adId rootUrl ]
       ]
 
 
-viewAnswers : Maybe User -> Answers -> Int -> String -> H.Html (ViewMessage Msg)
-viewAnswers userMaybe answers adId rootUrl =
+viewAnswers : Maybe User -> Model -> Answers -> Int -> String -> H.Html (ViewMessage Msg)
+viewAnswers userMaybe model answers adId rootUrl =
   case answers of
     AnswerCount num ->
       viewAnswerCount num adId rootUrl
     AnswerList (fst :: rst) ->
-      viewAnswerList userMaybe (fst :: rst)
+      viewAnswerList userMaybe model (fst :: rst)
     AnswerList _ ->
       H.div
         [ A.class "ad-page__answers" ]
@@ -165,14 +173,14 @@ viewAnswers userMaybe answers adId rootUrl =
         , H.p [] [ H.text "Lisää omasi ylhäällä" ]
         ]
 
-viewAnswerList : Maybe User -> List Answer -> H.Html (ViewMessage Msg)
-viewAnswerList userMaybe answers =
+viewAnswerList : Maybe User -> Model -> List Answer -> H.Html (ViewMessage Msg)
+viewAnswerList userMaybe model answers =
   H.div
     [ A.class "ad-page__answers" ]
-    (List.indexedMap (\i answer -> (viewAnswer userMaybe) answer ((i+1) % 2 == 0)) answers)
+    (List.indexedMap (\i answer -> viewAnswer userMaybe model answer ((i+1) % 2 == 0) i) answers)
 
-viewAnswer : Maybe User -> Answer -> Bool -> H.Html (ViewMessage Msg)
-viewAnswer userMaybe answer isEven =
+viewAnswer : Maybe User -> Model -> Answer -> Bool -> Int -> H.Html (ViewMessage Msg)
+viewAnswer userMaybe model answer isEven zerobasedIndex =
   H.div
     [ A.class "row ad-page__answers-row" ] <|
     (if isEven then List.reverse else identity)
@@ -195,20 +203,8 @@ viewAnswer userMaybe answer isEven =
           , H.hr [] []
           , H.p [] [ H.text answer.content ]
           , Common.authorInfo answer.createdBy
-          ] ++
-          if Maybe.map .id userMaybe == Just answer.createdBy.id then
-            [ H.img
-              [ A.classList
-                  [ ("ad-page__answers-delete", True)
-                  , ("ad-page__answers-delete--left", not isEven)
-                  , ("ad-page__answers-delete--right", isEven)
-                  ]
-              , A.src "/static/close.svg"
-              ]
-              []
-            ]
-        else
-          []
+          ] ++ (List.map (Util.localViewMap RemovalMessage) <|
+                 Removal.view userMaybe zerobasedIndex answer model.removal.removals)
       , H.span
         [ A.classList
             [ ("ad-page__answers-icon", True)
