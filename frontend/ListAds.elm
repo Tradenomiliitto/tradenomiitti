@@ -66,7 +66,7 @@ initTasks = getAds
 reInitItems : Model -> (Model, Cmd (UpdateMessage Msg))
 reInitItems model =
   let
-    newModel = { model | ads = [], cursor = 0 }
+    newModel = { model | ads = [], cursor = 0, removal = Removal.init }
   in
     newModel ! [ getAds newModel ]
 
