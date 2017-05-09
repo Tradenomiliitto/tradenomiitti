@@ -89,6 +89,7 @@
     }
     &-delete {
       position: absolute;
+      z-index: 10;
       &--left {
         top: -4px;
         right: #{ $right-padding-on-left + 2px };
