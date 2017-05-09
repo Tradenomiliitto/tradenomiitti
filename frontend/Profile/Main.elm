@@ -7,6 +7,7 @@ import List.Extra as List
 import ListAds
 import Models.Ad
 import Models.User exposing (User, BusinessCard, PictureEditing)
+import Removal
 import Skill
 import State.Config as Config
 import State.Profile exposing (Model)
@@ -46,7 +47,7 @@ type Msg
   | SpecializationSelected String
   | AddEducation String
   | DeleteEducation Int
-  | AdViewMessage ListAds.AdViewMsg
+  | RemovalMessage Removal.Msg
   | NoOp
 
 
@@ -303,7 +304,7 @@ update msg model config =
     ShowAll ->
       { model | viewAllAds = True } ! []
 
-    AdViewMessage (ListAds.InitiateRemoveAd index ad) ->
+    RemovalMessage (Removal.InitiateRemoveAd index ad) ->
       { model | initiatedRemovals = { index = index, adId = ad.id } :: model.initiatedRemovals } ! []
 
     NoOp ->

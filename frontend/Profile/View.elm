@@ -467,7 +467,7 @@ viewUser : Model -> Bool -> H.Html (ViewMessage Msg) -> Config.Model -> User -> 
 viewUser model ownProfile contactUser config user =
   let
     viewAds =
-      List.map (Util.localViewMap AdViewMessage) <|
+      List.map (Util.localViewMap RemovalMessage) <|
         ListAds.viewAds user model.initiatedRemovals <|
           if model.viewAllAds then model.ads else List.take 2 model.ads
     showMoreAds =

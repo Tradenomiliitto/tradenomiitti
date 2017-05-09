@@ -1,5 +1,7 @@
 module State.ListAds exposing (..)
+
 import Models.Ad
+import Removal
 
 type alias Model =
   { ads: List Models.Ad.Ad
@@ -7,12 +9,7 @@ type alias Model =
   , selectedDomain : Maybe String
   , selectedPosition : Maybe String
   , selectedLocation : Maybe String
-  , initiatedRemovals : List Removal
-  }
-
-type alias Removal =
-  { adId : Int
-  , index : Int
+  , initiatedRemovals : Removal.Model
   }
 
 limit : Int
@@ -25,5 +22,5 @@ init =
   , selectedDomain = Nothing
   , selectedPosition = Nothing
   , selectedLocation = Nothing
-  , initiatedRemovals = []
+  , initiatedRemovals = Removal.init
   }

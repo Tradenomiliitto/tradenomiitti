@@ -4,17 +4,16 @@ import Ad
 import Common exposing (Filter(..))
 import Html as H
 import Html.Attributes as A
-import Html.Events as E
 import Http
 import Json.Decode as Json
 import Link
 import List.Extra as List
-import Maybe.Extra as Maybe
 import Models.Ad
 import Models.User exposing (User)
 import Nav
 import QueryString
 import QueryString.Extra as QueryString
+import Removal
 import State.Config as Config
 import State.ListAds exposing (..)
 import SvgIcons
@@ -26,10 +25,7 @@ type Msg
   | ChangeDomainFilter (Maybe String)
   | ChangePositionFilter (Maybe String)
   | ChangeLocationFilter (Maybe String)
-  | AdViewMessage AdViewMsg
-
-type AdViewMsg
-  = InitiateRemoveAd Int Models.Ad.Ad
+  | RemovalMessage Removal.Msg
 
 
 update : Msg -> Model -> (Model, Cmd (UpdateMessage Msg))
@@ -58,7 +54,7 @@ update msg model =
     ChangeLocationFilter value ->
       reInitItems { model | selectedLocation = value }
 
-    AdViewMessage (InitiateRemoveAd index ad) ->
+    RemovalMessage (Removal.InitiateRemoveAd index ad) ->
       { model | initiatedRemovals = { index = index, adId = ad.id } :: model.initiatedRemovals } ! []
 
 initTasks : Model -> Cmd (UpdateMessage Msg)
@@ -122,12 +118,12 @@ view userMaybe model config =
           [ A.class "list-ads__list-background"]
           [ H.div
             [ A.class "container last-row" ]
-            (List.map (Util.localViewMap AdViewMessage) <| viewAds user model.initiatedRemovals model.ads)
+            (List.map (Util.localViewMap RemovalMessage) <| viewAds user model.initiatedRemovals model.ads)
           ]
         ])
     |> Maybe.withDefault (H.div [] [])
 
-viewAds : User -> List Removal -> List Models.Ad.Ad -> List (H.Html (ViewMessage AdViewMsg))
+viewAds : User -> Removal.Model -> List Models.Ad.Ad -> List (H.Html (ViewMessage Removal.Msg))
 viewAds user removals ads =
   let
     adsHtml = List.indexedMap (adListView user removals) ads
@@ -142,7 +138,7 @@ row ads =
     [ A.class "row list-ads__row" ]
     ads
 
-adListView : User -> List Removal -> Int -> Models.Ad.Ad -> H.Html (ViewMessage AdViewMsg)
+adListView : User -> Removal.Model -> Int -> Models.Ad.Ad -> H.Html (ViewMessage Removal.Msg)
 adListView user removals index ad =
   H.div
     [ A.class "col-xs-12 col-sm-6 list-ads__item-container"
@@ -175,49 +171,6 @@ adListView user removals index ad =
           ]
         , H.div [ A.class "list-ads__ad-preview-author-info" ] [ Common.authorInfo ad.createdBy ]
         ]
-      ] ++ deletion user index ad removals
+      ] ++ Removal.view user index ad removals
     ]
 
-deletion : User -> Int -> Models.Ad.Ad -> List Removal -> List (H.Html (ViewMessage AdViewMsg))
-deletion user index ad removals =
-  let
-    icon =
-      H.img
-        [ A.class "list-ads__ad-preview-delete-icon"
-        , A.src "/static/close.svg"
-        , A.title "Poista oma ilmoituksesi"
-        , E.onClick << LocalViewMessage <| InitiateRemoveAd index ad
-        ]
-        []
-    isBeingRemoved =
-      removals
-        |> List.find (\removal -> removal.index == index)
-        |> Maybe.isJust
-
-    confirmationBox =
-      H.div
-        [ A.class "list-ads__ad-preview-delete-confirmation"]
-        [ H.p
-          [ A.class "list-ads__ad-preview-delete-confirmation-text"]
-          [ H.text "Tämä poistaa ilmoituksen ja kaikki siihen tulleet vastaukset pysyvästi. Oletko varma?" ]
-        , H.div
-          [ A.class "list-ads__ad-preview-delete-confirmation-buttons" ]
-          [ H.button
-            [ A.class "btn list-ads__ad-preview-delete-confirmation-button-cancel"]
-            [ H.text "Peru" ]
-          , H.button
-            [ A.class "btn btn-primary list-ads__ad-preview-delete-confirmation-button-confirm" ]
-            [ H.text "Haluan poistaa ilmoituksen" ]
-          ]
-        ]
-  in
-    if user.id == ad.createdBy.id then
-      [ H.div
-        [ A.class "list-ads__ad-preview-delete" ]
-        [ if not isBeingRemoved
-          then icon
-          else confirmationBox
-        ]
-      ]
-    else
-      []
