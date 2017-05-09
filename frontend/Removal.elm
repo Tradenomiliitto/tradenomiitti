@@ -7,11 +7,14 @@ import List.Extra as List
 import Maybe.Extra as Maybe
 import Models.Ad
 import Models.User exposing (User)
+import Navigation
 import Util exposing (ViewMessage(..), UpdateMessage(..))
 
 type Msg
   = InitiateRemoveAd Int Models.Ad.Ad
   | CancelRemoval Int
+  | ConfirmRemoval Int -- id to remove
+  | SuccesfullyRemoved
 
 type alias Model = List Removal
 
@@ -24,6 +27,12 @@ type alias Removal =
   }
 
 
+deleteAd : Int -> Cmd (UpdateMessage Msg)
+deleteAd id =
+  Util.delete ("/api/ilmoitukset/" ++ toString id)
+    |> Util.errorHandlingSend (always SuccesfullyRemoved)
+
+
 update : Msg -> Model -> (Model, Cmd (UpdateMessage Msg))
 update msg model =
   case msg of
@@ -31,6 +40,10 @@ update msg model =
       ({ index = index, adId = ad.id } :: model) ! []
     CancelRemoval index ->
       List.filterNot (\removal -> removal.index == index) model ! []
+    ConfirmRemoval id ->
+      model ! [ deleteAd id ]
+    SuccesfullyRemoved ->
+      model ! [ Navigation.reload ]
 
 
 view : User -> Int -> Models.Ad.Ad -> List Removal -> List (H.Html (ViewMessage Msg))
@@ -63,7 +76,9 @@ view user index ad removals =
             ]
             [ H.text "Peru" ]
           , H.button
-            [ A.class "btn btn-primary list-ads__ad-preview-delete-confirmation-button-confirm" ]
+            [ A.class "btn btn-primary list-ads__ad-preview-delete-confirmation-button-confirm"
+            , E.onClick << LocalViewMessage <| ConfirmRemoval ad.id
+            ]
             [ H.text "Haluan poistaa ilmoituksen" ]
           ]
         ]
