@@ -54,8 +54,11 @@ update msg model =
     ChangeLocationFilter value ->
       reInitItems { model | selectedLocation = value }
 
-    RemovalMessage (Removal.InitiateRemoveAd index ad) ->
-      { model | initiatedRemovals = { index = index, adId = ad.id } :: model.initiatedRemovals } ! []
+    RemovalMessage msg ->
+      let
+        (newRemoval, cmd) = Removal.update msg model.removal
+      in
+        { model | removal = newRemoval } ! [ Util.localMap RemovalMessage cmd ]
 
 initTasks : Model -> Cmd (UpdateMessage Msg)
 initTasks = getAds
@@ -118,7 +121,7 @@ view userMaybe model config =
           [ A.class "list-ads__list-background"]
           [ H.div
             [ A.class "container last-row" ]
-            (List.map (Util.localViewMap RemovalMessage) <| viewAds user model.initiatedRemovals model.ads)
+            (List.map (Util.localViewMap RemovalMessage) <| viewAds user model.removal model.ads)
           ]
         ])
     |> Maybe.withDefault (H.div [] [])

@@ -23,6 +23,13 @@ type alias Removal =
   }
 
 
+update : Msg -> Model -> (Model, Cmd (UpdateMessage Msg))
+update msg model =
+  case msg of
+    InitiateRemoveAd index ad ->
+      ({ index = index, adId = ad.id } :: model) ! []
+
+
 view : User -> Int -> Models.Ad.Ad -> List Removal -> List (H.Html (ViewMessage Msg))
 view user index ad removals =
   let

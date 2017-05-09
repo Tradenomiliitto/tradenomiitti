@@ -9,7 +9,7 @@ type alias Model =
   , selectedDomain : Maybe String
   , selectedPosition : Maybe String
   , selectedLocation : Maybe String
-  , initiatedRemovals : Removal.Model
+  , removal : Removal.Model
   }
 
 limit : Int
@@ -22,5 +22,5 @@ init =
   , selectedDomain = Nothing
   , selectedPosition = Nothing
   , selectedLocation = Nothing
-  , initiatedRemovals = Removal.init
+  , removal = Removal.init
   }

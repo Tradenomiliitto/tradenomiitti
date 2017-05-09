@@ -14,7 +14,7 @@ type alias Model =
   , selectedDegree : Maybe String
   , selectedMajor : Maybe String
   , selectedSpecialization : Maybe String
-  , initiatedRemovals : Removal.Model
+  , removal : Removal.Model
   }
 
 init : Model
@@ -28,5 +28,5 @@ init =
   , selectedDegree = Nothing
   , selectedMajor = Nothing
   , selectedSpecialization = Nothing
-  , initiatedRemovals = Removal.init
+  , removal = Removal.init
   }

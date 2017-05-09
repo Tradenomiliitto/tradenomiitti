@@ -304,8 +304,11 @@ update msg model config =
     ShowAll ->
       { model | viewAllAds = True } ! []
 
-    RemovalMessage (Removal.InitiateRemoveAd index ad) ->
-      { model | initiatedRemovals = { index = index, adId = ad.id } :: model.initiatedRemovals } ! []
+    RemovalMessage msg ->
+      let
+        (newRemoval, cmd) = Removal.update msg model.removal
+      in
+        { model | removal = newRemoval } ! [ Util.localMap RemovalMessage cmd ]
 
     NoOp ->
       model ! []
