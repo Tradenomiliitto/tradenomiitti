@@ -18,6 +18,7 @@ type Msg
   | ListUsersMessage ListUsers.Msg
   | ClickCreateProfile
   | ScrollBelowFold
+  | RemovalMessage Removal.Msg
   | NoOp
 
 
@@ -42,6 +43,12 @@ update msg model =
 
     ScrollBelowFold ->
       model ! [ scrollHomeBelowFold True ]
+
+    RemovalMessage msg ->
+      let
+        (newRemoval, cmd) = Removal.update msg model.removal
+      in
+        { model | removal = newRemoval } ! [ Util.localMap RemovalMessage cmd ]
 
     NoOp ->
       model ! []
@@ -159,9 +166,9 @@ sectionHeader title =
 
 listFourAds : User -> Model -> H.Html (ViewMessage Msg)
 listFourAds user model =
-  H.map (always (LocalViewMessage NoOp)) <| H.div
+  Util.localViewMap RemovalMessage <| H.div
     []
-    (ListAds.viewAds user (Removal.init Removal.Ad) (List.take 4 model.listAds.ads))
+    (ListAds.viewAds user model.removal (List.take 4 model.listAds.ads))
 
 -- LIST USERS --
 
