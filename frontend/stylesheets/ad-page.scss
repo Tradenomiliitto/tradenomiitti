@@ -44,15 +44,6 @@
   }
   &__answers {
     margin-top: 70px;
-    &-separator {
-      width: 1px;
-      height: 50px;
-      background-color: $pink;
-      &-container {
-        display: flex;
-        justify-content: center;
-      }
-    }
     &-icon {
       color: $pink;
       background-color: $white;

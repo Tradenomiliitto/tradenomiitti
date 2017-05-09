@@ -182,8 +182,7 @@ viewAnswerList userMaybe model answers =
 viewAnswer : Maybe User -> Model -> Answer -> Bool -> Int -> H.Html (ViewMessage Msg)
 viewAnswer userMaybe model answer isEven zerobasedIndex =
   H.div
-    [ A.class "row ad-page__answers-row" ] <|
-    (if isEven then List.reverse else identity)
+    [ A.class "row ad-page__answers-row" ]
     [ H.div
       [ A.classList
         [ ("col-sm-6", True)
