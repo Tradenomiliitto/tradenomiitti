@@ -16,10 +16,18 @@ type Msg
   | ConfirmRemoval Int -- id to remove
   | SuccesfullyRemoved
 
-type alias Model = List Removal
+type alias Model =
+  { removals : List Removal
+  , target : RemovalTarget
+  }
 
-init : Model
-init = []
+type RemovalTarget = Ad | Answer
+
+init : RemovalTarget -> Model
+init target =
+  { removals = []
+  , target = target
+  }
 
 type alias Removal =
   { adId : Int
@@ -37,11 +45,17 @@ update : Msg -> Model -> (Model, Cmd (UpdateMessage Msg))
 update msg model =
   case msg of
     InitiateRemoveAd index ad ->
-      ({ index = index, adId = ad.id } :: model) ! []
+      { model | removals = { index = index, adId = ad.id } :: model.removals } ! []
     CancelRemoval index ->
-      List.filterNot (\removal -> removal.index == index) model ! []
+      { model | removals =  List.filterNot (\removal -> removal.index == index) model.removals } ! []
     ConfirmRemoval id ->
-      model ! [ deleteAd id ]
+      let
+        cmd =
+          case model.target of
+            Ad -> deleteAd id
+            Answer -> Cmd.none
+      in
+        model ! [ cmd ]
     SuccesfullyRemoved ->
       model ! [ Navigation.reload ]
 

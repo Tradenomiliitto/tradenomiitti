@@ -28,5 +28,5 @@ init =
   , selectedDegree = Nothing
   , selectedMajor = Nothing
   , selectedSpecialization = Nothing
-  , removal = Removal.init
+  , removal = Removal.init Removal.Ad
   }

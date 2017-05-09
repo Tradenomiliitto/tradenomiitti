@@ -9,6 +9,7 @@ import ListUsers
 import Maybe.Extra as Maybe
 import Models.User exposing (User)
 import Nav
+import Removal
 import State.Home exposing (..)
 import Util exposing (ViewMessage(..), UpdateMessage(..))
 
@@ -160,7 +161,7 @@ listFourAds : User -> Model -> H.Html (ViewMessage Msg)
 listFourAds user model =
   H.map (always (LocalViewMessage NoOp)) <| H.div
     []
-    (ListAds.viewAds user [] (List.take 4 model.listAds.ads))
+    (ListAds.viewAds user (Removal.init Removal.Ad) (List.take 4 model.listAds.ads))
 
 -- LIST USERS --
 

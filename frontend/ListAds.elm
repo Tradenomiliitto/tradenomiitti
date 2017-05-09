@@ -66,7 +66,7 @@ initTasks = getAds
 reInitItems : Model -> (Model, Cmd (UpdateMessage Msg))
 reInitItems model =
   let
-    newModel = { model | ads = [], cursor = 0, removal = Removal.init }
+    newModel = { model | ads = [], cursor = 0, removal = Removal.init Removal.Ad }
   in
     newModel ! [ getAds newModel ]
 
@@ -127,9 +127,9 @@ view userMaybe model config =
     |> Maybe.withDefault (H.div [] [])
 
 viewAds : User -> Removal.Model -> List Models.Ad.Ad -> List (H.Html (ViewMessage Removal.Msg))
-viewAds user removals ads =
+viewAds user removal ads =
   let
-    adsHtml = List.indexedMap (adListView user removals) ads
+    adsHtml = List.indexedMap (adListView user removal) ads
     rows = Common.chunk2 adsHtml
     rowsHtml = List.map row rows
   in
@@ -142,7 +142,7 @@ row ads =
     ads
 
 adListView : User -> Removal.Model -> Int -> Models.Ad.Ad -> H.Html (ViewMessage Removal.Msg)
-adListView user removals index ad =
+adListView user removal index ad =
   H.div
     [ A.class "col-xs-12 col-sm-6 list-ads__item-container"
     ]
@@ -174,6 +174,6 @@ adListView user removals index ad =
           ]
         , H.div [ A.class "list-ads__ad-preview-author-info" ] [ Common.authorInfo ad.createdBy ]
         ]
-      ] ++ Removal.view user index ad removals
+      ] ++ Removal.view user index ad removal.removals
     ]
 

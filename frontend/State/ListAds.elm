@@ -22,5 +22,5 @@ init =
   , selectedDomain = Nothing
   , selectedPosition = Nothing
   , selectedLocation = Nothing
-  , removal = Removal.init
+  , removal = Removal.init Removal.Ad
   }
