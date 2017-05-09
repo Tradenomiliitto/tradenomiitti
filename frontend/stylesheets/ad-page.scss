@@ -83,11 +83,11 @@
       z-index: 10;
       &--left {
         top: -4px;
-        right: #{ $right-padding-on-left + 2px };
+        right: $right-padding-on-left;
       }
       &--right {
         top: -4px;
-        right: 2px;
+        right: 0;
       }
     }
   }

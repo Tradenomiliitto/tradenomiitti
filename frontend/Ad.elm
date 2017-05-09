@@ -187,6 +187,8 @@ viewAnswer userMaybe model answer isEven zerobasedIndex =
       [ A.classList
         [ ("col-sm-6", True)
         , ("col-sm-offset-6", isEven)
+        , ("col-xs-11", True)
+        , ("col-xs-offset-1", isEven)
         , ("ad-page__answers-row--left", not isEven)
         , ("ad-page__answers-row--right", isEven)
         ]
