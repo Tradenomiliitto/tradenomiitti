@@ -147,17 +147,17 @@ viewAd adId model userMaybe rootUrl ad =
       , H.hr [ A.class "full-width-ruler" ] []
       , H.div
         [ A.class "container last-row"]
-        [ viewAnswers ad.answers adId rootUrl ]
+        [ viewAnswers userMaybe ad.answers adId rootUrl ]
       ]
 
 
-viewAnswers : Answers -> Int -> String -> H.Html (ViewMessage Msg)
-viewAnswers answers adId rootUrl =
+viewAnswers : Maybe User -> Answers -> Int -> String -> H.Html (ViewMessage Msg)
+viewAnswers userMaybe answers adId rootUrl =
   case answers of
     AnswerCount num ->
       viewAnswerCount num adId rootUrl
     AnswerList (fst :: rst) ->
-      viewAnswerList (fst :: rst)
+      viewAnswerList userMaybe (fst :: rst)
     AnswerList _ ->
       H.div
         [ A.class "ad-page__answers" ]
@@ -165,14 +165,14 @@ viewAnswers answers adId rootUrl =
         , H.p [] [ H.text "Lisää omasi ylhäällä" ]
         ]
 
-viewAnswerList : List Answer -> H.Html (ViewMessage Msg)
-viewAnswerList answers =
+viewAnswerList : Maybe User -> List Answer -> H.Html (ViewMessage Msg)
+viewAnswerList userMaybe answers =
   H.div
     [ A.class "ad-page__answers" ]
-    (List.indexedMap (\i answer -> viewAnswer answer ((i+1) % 2 == 0)) answers)
+    (List.indexedMap (\i answer -> (viewAnswer userMaybe) answer ((i+1) % 2 == 0)) answers)
 
-viewAnswer : Answer -> Bool -> H.Html (ViewMessage Msg)
-viewAnswer answer isEven =
+viewAnswer : Maybe User -> Answer -> Bool -> H.Html (ViewMessage Msg)
+viewAnswer userMaybe answer isEven =
   H.div
     [ A.class "row ad-page__answers-row" ] <|
     (if isEven then List.reverse else identity)
@@ -190,12 +190,25 @@ viewAnswer answer isEven =
               , ("ad-page__answers-content--left", not isEven)
               , ("ad-page__answers-content--right", isEven)
               ]
-          ]
+          ] <|
           [ viewDate answer.createdAt
           , H.hr [] []
           , H.p [] [ H.text answer.content ]
           , Common.authorInfo answer.createdBy
-          ]
+          ] ++
+          if Maybe.map .id userMaybe == Just answer.createdBy.id then
+            [ H.img
+              [ A.classList
+                  [ ("ad-page__answers-delete", True)
+                  , ("ad-page__answers-delete--left", not isEven)
+                  , ("ad-page__answers-delete--right", isEven)
+                  ]
+              , A.src "/static/close.svg"
+              ]
+              []
+            ]
+        else
+          []
       , H.span
         [ A.classList
             [ ("ad-page__answers-icon", True)
