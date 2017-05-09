@@ -19,7 +19,6 @@ type Msg
   | ClickCreateProfile
   | ScrollBelowFold
   | RemovalMessage Removal.Msg
-  | NoOp
 
 
 port scrollHomeBelowFold : Bool -> Cmd msg -- param is ignored
@@ -50,8 +49,6 @@ update msg model =
       in
         { model | removal = newRemoval } ! [ Util.localMap RemovalMessage cmd ]
 
-    NoOp ->
-      model ! []
 
 initTasks : Model -> Cmd (UpdateMessage Msg)
 initTasks model =
