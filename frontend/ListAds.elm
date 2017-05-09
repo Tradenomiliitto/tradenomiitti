@@ -8,6 +8,7 @@ import Http
 import Json.Decode as Json
 import Link
 import List.Extra as List
+import Maybe.Extra as Maybe
 import Models.Ad
 import Models.User exposing (User)
 import Nav
@@ -24,6 +25,7 @@ type Msg
   | ChangeDomainFilter (Maybe String)
   | ChangePositionFilter (Maybe String)
   | ChangeLocationFilter (Maybe String)
+  | InitiateRemoveAd Int Models.Ad.Ad
 
 
 update : Msg -> Model -> (Model, Cmd (UpdateMessage Msg))
@@ -51,6 +53,9 @@ update msg model =
 
     ChangeLocationFilter value ->
       reInitItems { model | selectedLocation = value }
+
+    InitiateRemoveAd index ad ->
+      { model | initiatedRemovals = { index = index, adId = ad.id } :: model.initiatedRemovals } ! []
 
 initTasks : Model -> Cmd (UpdateMessage Msg)
 initTasks = getAds
@@ -121,7 +126,7 @@ view userMaybe model config =
 viewAds : User -> List Models.Ad.Ad -> List (H.Html (ViewMessage msg))
 viewAds user ads =
   let
-    adsHtml = List.map (adListView user) ads
+    adsHtml = List.indexedMap (adListView user) ads
     rows = Common.chunk2 adsHtml
     rowsHtml = List.map row rows
   in
@@ -133,8 +138,8 @@ row ads =
     [ A.class "row list-ads__row" ]
     ads
 
-adListView : User -> Models.Ad.Ad -> H.Html (ViewMessage msg)
-adListView user ad =
+adListView : User -> Int -> Models.Ad.Ad -> H.Html (ViewMessage msg)
+adListView user index ad =
   H.div
     [ A.class "col-xs-12 col-sm-6 list-ads__item-container"
     ]
@@ -166,14 +171,48 @@ adListView user ad =
           ]
         , H.div [ A.class "list-ads__ad-preview-author-info" ] [ Common.authorInfo ad.createdBy ]
         ]
-      ] ++
-        if user.id == ad.createdBy.id then
-          [ H.img
-            [ A.class "list-ads__ad-preview-delete"
-            , A.src "/static/close.svg"
-            ]
-            []
-          ]
-        else
-          []
+      ] ++ deletion user index ad [ {  adId = 0, index = 3 }]
     ]
+
+deletion : User -> Int -> Models.Ad.Ad -> List Removal -> List (H.Html msg)
+deletion user index ad removals =
+  let
+    icon =
+      H.img
+        [ A.class "list-ads__ad-preview-delete-icon"
+        , A.src "/static/close.svg"
+        , A.title "Poista oma ilmoituksesi"
+        ]
+        []
+    isBeingRemoved =
+      removals
+        |> List.find (\removal -> removal.index == index)
+        |> Maybe.isJust
+
+    confirmationBox =
+      H.div
+        [ A.class "list-ads__ad-preview-delete-confirmation"]
+        [ H.p
+          [ A.class "list-ads__ad-preview-delete-confirmation-text"]
+          [ H.text "Tämä poistaa ilmoituksen ja kaikki siihen tulleet vastaukset pysyvästi. Oletko varma?" ]
+        , H.div
+          [ A.class "list-ads__ad-preview-delete-confirmation-buttons" ]
+          [ H.button
+            [ A.class "btn list-ads__ad-preview-delete-confirmation-button-cancel"]
+            [ H.text "Peru" ]
+          , H.button
+            [ A.class "btn btn-primary list-ads__ad-preview-delete-confirmation-button-confirm" ]
+            [ H.text "Haluan poistaa ilmoituksen" ]
+          ]
+        ]
+  in
+    if user.id == ad.createdBy.id then
+      [ H.div
+        [ A.class "list-ads__ad-preview-delete" ]
+        [ if not isBeingRemoved
+          then icon
+          else confirmationBox
+        ]
+      ]
+    else
+      []

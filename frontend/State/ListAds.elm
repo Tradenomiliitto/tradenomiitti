@@ -7,6 +7,12 @@ type alias Model =
   , selectedDomain : Maybe String
   , selectedPosition : Maybe String
   , selectedLocation : Maybe String
+  , initiatedRemovals : List Removal
+  }
+
+type alias Removal =
+  { adId : Int
+  , index : Int
   }
 
 limit : Int
@@ -19,4 +25,5 @@ init =
   , selectedDomain = Nothing
   , selectedPosition = Nothing
   , selectedLocation = Nothing
+  , initiatedRemovals = []
   }
