@@ -4,6 +4,7 @@ import Ad
 import Common exposing (Filter(..))
 import Html as H
 import Html.Attributes as A
+import Html.Events as E
 import Http
 import Json.Decode as Json
 import Link
@@ -25,7 +26,10 @@ type Msg
   | ChangeDomainFilter (Maybe String)
   | ChangePositionFilter (Maybe String)
   | ChangeLocationFilter (Maybe String)
-  | InitiateRemoveAd Int Models.Ad.Ad
+  | AdViewMessage AdViewMsg
+
+type AdViewMsg
+  = InitiateRemoveAd Int Models.Ad.Ad
 
 
 update : Msg -> Model -> (Model, Cmd (UpdateMessage Msg))
@@ -54,7 +58,7 @@ update msg model =
     ChangeLocationFilter value ->
       reInitItems { model | selectedLocation = value }
 
-    InitiateRemoveAd index ad ->
+    AdViewMessage (InitiateRemoveAd index ad) ->
       { model | initiatedRemovals = { index = index, adId = ad.id } :: model.initiatedRemovals } ! []
 
 initTasks : Model -> Cmd (UpdateMessage Msg)
@@ -118,15 +122,15 @@ view userMaybe model config =
           [ A.class "list-ads__list-background"]
           [ H.div
             [ A.class "container last-row" ]
-            (viewAds user model.ads)
+            (List.map (Util.localViewMap AdViewMessage) <| viewAds user model.initiatedRemovals model.ads)
           ]
         ])
     |> Maybe.withDefault (H.div [] [])
 
-viewAds : User -> List Models.Ad.Ad -> List (H.Html (ViewMessage msg))
-viewAds user ads =
+viewAds : User -> List Removal -> List Models.Ad.Ad -> List (H.Html (ViewMessage AdViewMsg))
+viewAds user removals ads =
   let
-    adsHtml = List.indexedMap (adListView user) ads
+    adsHtml = List.indexedMap (adListView user removals) ads
     rows = Common.chunk2 adsHtml
     rowsHtml = List.map row rows
   in
@@ -138,8 +142,8 @@ row ads =
     [ A.class "row list-ads__row" ]
     ads
 
-adListView : User -> Int -> Models.Ad.Ad -> H.Html (ViewMessage msg)
-adListView user index ad =
+adListView : User -> List Removal -> Int -> Models.Ad.Ad -> H.Html (ViewMessage AdViewMsg)
+adListView user removals index ad =
   H.div
     [ A.class "col-xs-12 col-sm-6 list-ads__item-container"
     ]
@@ -171,10 +175,10 @@ adListView user index ad =
           ]
         , H.div [ A.class "list-ads__ad-preview-author-info" ] [ Common.authorInfo ad.createdBy ]
         ]
-      ] ++ deletion user index ad [ {  adId = 0, index = 3 }]
+      ] ++ deletion user index ad removals
     ]
 
-deletion : User -> Int -> Models.Ad.Ad -> List Removal -> List (H.Html msg)
+deletion : User -> Int -> Models.Ad.Ad -> List Removal -> List (H.Html (ViewMessage AdViewMsg))
 deletion user index ad removals =
   let
     icon =
@@ -182,6 +186,7 @@ deletion user index ad removals =
         [ A.class "list-ads__ad-preview-delete-icon"
         , A.src "/static/close.svg"
         , A.title "Poista oma ilmoituksesi"
+        , E.onClick << LocalViewMessage <| InitiateRemoveAd index ad
         ]
         []
     isBeingRemoved =

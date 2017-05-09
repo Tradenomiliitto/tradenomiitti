@@ -466,7 +466,10 @@ educationsEditing model config =
 viewUser : Model -> Bool -> H.Html (ViewMessage Msg) -> Config.Model -> User -> List (H.Html (ViewMessage Msg))
 viewUser model ownProfile contactUser config user =
   let
-    viewAds = ListAds.viewAds user <| if model.viewAllAds then model.ads else List.take 2 model.ads
+    viewAds =
+      List.map (Util.localViewMap AdViewMessage) <|
+        ListAds.viewAds user model.initiatedRemovals <|
+          if model.viewAllAds then model.ads else List.take 2 model.ads
     showMoreAds =
       -- if we are seeing all ads, don't show button
       -- if we don't have anything more to show, don't show button

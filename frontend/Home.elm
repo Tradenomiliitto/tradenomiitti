@@ -17,6 +17,7 @@ type Msg
   | ListUsersMessage ListUsers.Msg
   | ClickCreateProfile
   | ScrollBelowFold
+  | NoOp
 
 
 port scrollHomeBelowFold : Bool -> Cmd msg -- param is ignored
@@ -40,6 +41,9 @@ update msg model =
 
     ScrollBelowFold ->
       model ! [ scrollHomeBelowFold True ]
+
+    NoOp ->
+      model ! []
 
 initTasks : Model -> Cmd (UpdateMessage Msg)
 initTasks model =
@@ -152,11 +156,11 @@ sectionHeader title =
     [ A.class "home__section--heading--text col-sm-5" ]
     [ H.text title ]
 
-listFourAds : User -> Model -> H.Html (ViewMessage msg)
+listFourAds : User -> Model -> H.Html (ViewMessage Msg)
 listFourAds user model =
-  H.div
+  H.map (always (LocalViewMessage NoOp)) <| H.div
     []
-    (ListAds.viewAds user (List.take 4 model.listAds.ads))
+    (ListAds.viewAds user [] (List.take 4 model.listAds.ads))
 
 -- LIST USERS --
 

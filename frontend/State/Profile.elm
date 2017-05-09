@@ -2,6 +2,7 @@ module State.Profile exposing (..)
 
 import Models.Ad
 import Models.User exposing (User)
+import State.ListAds exposing (Removal)
 
 type alias Model =
   { user : Maybe User
@@ -13,6 +14,7 @@ type alias Model =
   , selectedDegree : Maybe String
   , selectedMajor : Maybe String
   , selectedSpecialization : Maybe String
+  , initiatedRemovals : List Removal
   }
 
 init : Model
@@ -26,4 +28,5 @@ init =
   , selectedDegree = Nothing
   , selectedMajor = Nothing
   , selectedSpecialization = Nothing
+  , initiatedRemovals = []
   }

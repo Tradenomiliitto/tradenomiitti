@@ -1,10 +1,10 @@
 port module Profile.Main exposing (..)
 
-import Dict
 import Http
 import Json.Decode as Json
 import Json.Encode as JS
 import List.Extra as List
+import ListAds
 import Models.Ad
 import Models.User exposing (User, BusinessCard, PictureEditing)
 import Skill
@@ -46,6 +46,7 @@ type Msg
   | SpecializationSelected String
   | AddEducation String
   | DeleteEducation Int
+  | AdViewMessage ListAds.AdViewMsg
   | NoOp
 
 
@@ -301,6 +302,9 @@ update msg model config =
 
     ShowAll ->
       { model | viewAllAds = True } ! []
+
+    AdViewMessage (ListAds.InitiateRemoveAd index ad) ->
+      { model | initiatedRemovals = { index = index, adId = ad.id } :: model.initiatedRemovals } ! []
 
     NoOp ->
       model ! []
