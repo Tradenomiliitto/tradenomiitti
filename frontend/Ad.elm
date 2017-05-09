@@ -203,8 +203,16 @@ viewAnswer userMaybe model answer isEven zerobasedIndex =
           , H.hr [] []
           , H.p [] [ H.text answer.content ]
           , Common.authorInfo answer.createdBy
-          ] ++ (List.map (Util.localViewMap RemovalMessage) <|
-                 Removal.view userMaybe zerobasedIndex answer model.removal.removals)
+          , Util.localViewMap RemovalMessage <|
+            H.div
+              [ A.classList
+                  [ ("ad-page__answers-delete", True)
+                  , ("ad-page__answers-delete--left", not isEven)
+                  , ("ad-page__answers-delete--right", isEven)
+                  ]
+              ]
+              (Removal.view userMaybe zerobasedIndex answer model.removal)
+          ]
       , H.span
         [ A.classList
             [ ("ad-page__answers-icon", True)

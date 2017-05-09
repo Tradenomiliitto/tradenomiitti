@@ -70,14 +70,23 @@ type alias AdLike a =
     , createdBy : User
   }
 
-view : Maybe User -> Int -> AdLike a -> List Removal -> List (H.Html (ViewMessage Msg))
-view userMaybe index ad removals =
+view : Maybe User -> Int -> AdLike a -> Model -> List (H.Html (ViewMessage Msg))
+view userMaybe index ad model =
   let
+    targetSecondPersonPossessiveString =
+      case model.target of
+        Ad -> "ilmoituksesi"
+        Answer -> "vastauksesi"
+    targetFirstPersonPossessiveString =
+      case model.target of
+        Ad -> "ilmoitukseni"
+        Answer -> "vastaukseni"
+    removals = model.removals
     icon =
       H.img
         [ A.class "removal__icon"
         , A.src "/static/close.svg"
-        , A.title "Poista oma ilmoituksesi"
+        , A.title <| "Poista oma " ++ targetSecondPersonPossessiveString
         , E.onClick << LocalViewMessage <| InitiateRemove index ad.id
         ]
         []
@@ -86,12 +95,17 @@ view userMaybe index ad removals =
         |> List.find (\removal -> removal.index == index)
         |> Maybe.isJust
 
+    confirmationText =
+      case model.target of
+        Ad -> "Tämä poistaa ilmoituksen ja kaikki siihen tulleet vastaukset pysyvästi. Oletko varma?"
+        Answer -> "Tämä poistaa vastauksen pysyvästi. Oletko varma?"
+
     confirmationBox =
       H.div
         [ A.class "removal__confirmation"]
         [ H.p
           [ A.class "removal__confirmation-text"]
-          [ H.text "Tämä poistaa ilmoituksen ja kaikki siihen tulleet vastaukset pysyvästi. Oletko varma?" ]
+          [ H.text confirmationText ]
         , H.div
           [ A.class "removal__confirmation-buttons" ]
           [ H.button
@@ -103,7 +117,7 @@ view userMaybe index ad removals =
             [ A.class "btn btn-primary removal__confirmation-button-confirm"
             , E.onClick << LocalViewMessage <| ConfirmRemoval ad.id
             ]
-            [ H.text "Haluan poistaa ilmoituksen" ]
+            [ H.text <| "Haluan poistaa " ++ targetFirstPersonPossessiveString ]
           ]
         ]
   in

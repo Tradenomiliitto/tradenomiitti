@@ -89,11 +89,6 @@
     }
     &-delete {
       position: absolute;
-      padding: 5px;
-      width: 21px;
-      height: 21px;
-      box-sizing: content-box;
-      cursor: pointer;
       &--left {
         top: -4px;
         right: #{ $right-padding-on-left + 2px };
