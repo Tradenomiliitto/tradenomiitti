@@ -236,7 +236,8 @@ tradenomiittiHeader : H.Html msg
 tradenomiittiHeader =
   H.h2
     [ A.class "home__tradenomiitti-info--header" ]
-    [ H.text "Kokemuksellasi on aina arvoa" ]
+    -- \xad === &shy;, that is soft hyphen
+    [ H.text "Ko\xadke\xadmuk\xadsel\xadla\xadsi on aina arvoa" ]
 
 tradenomiittiInfoText : H.Html msg
 tradenomiittiInfoText =
