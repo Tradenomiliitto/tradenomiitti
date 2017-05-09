@@ -118,11 +118,6 @@ updateSkillList index skillLevel list =
     (\i x -> if i == index then Skill.update skillLevel x else x)
     list
 
-deleteFromList : Int -> List a -> List a
-deleteFromList index list =
-  List.indexedMap (\i x -> if i == index then Nothing else Just x) list
-    |> List.filterMap identity
-
 updateUser : (User -> User) -> Model -> Model
 updateUser update model =
   { model | user = Maybe.map update model.user }
@@ -195,10 +190,10 @@ update msg model config =
       updateUser (\u -> { u | positions = updateSkillList index skillLevel u.positions }) model ! []
 
     DomainSkillMessage index Skill.Delete ->
-      updateUser (\u -> { u | domains = deleteFromList index u.domains }) model ! []
+      updateUser (\u -> { u | domains = List.removeAt index u.domains }) model ! []
 
     PositionSkillMessage index Skill.Delete ->
-      updateUser (\u -> { u | positions = deleteFromList index u.positions }) model ! []
+      updateUser (\u -> { u | positions = List.removeAt index u.positions }) model ! []
 
     ChangeDomainSelect str ->
       updateUser (\u -> { u | domains = List.uniqueBy .heading <| u.domains ++ [ Skill.Model str Skill.Interested ] }) model ! []
@@ -257,7 +252,7 @@ update msg model config =
 
     DeleteEducation index ->
       updateUser
-      (\u -> { u | education = deleteFromList index u.education }) model ! [ typeaheads config ]
+      (\u -> { u | education = List.removeAt index u.education }) model ! [ typeaheads config ]
 
     UpdateUser _ ->
       { model | editing = False } !
