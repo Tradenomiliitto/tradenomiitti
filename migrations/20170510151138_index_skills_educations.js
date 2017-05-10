@@ -10,12 +10,12 @@ exports.up = function(knex, Promise) {
   }).then(() => knex('users').where({}))
     .then(users => {
       const userPromises = users.map(user => {
-        const skillPromises = user.data.special_skills.map(skill => {
+        const skillPromises = user.data.special_skills ? user.data.special_skills.map(skill => {
           return knex('user_special_skills').insert({
             user_id: user.id,
             heading: skill
           })
-        })
+        }) : [];
 
         const educationPromises = user.data.education ? user.data.education.map(education => {
           return knex('user_educations').insert({
