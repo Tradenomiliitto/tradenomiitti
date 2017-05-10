@@ -44,15 +44,6 @@
   }
   &__answers {
     margin-top: 70px;
-    &-separator {
-      width: 1px;
-      height: 50px;
-      background-color: $pink;
-      &-container {
-        display: flex;
-        justify-content: center;
-      }
-    }
     &-icon {
       color: $pink;
       background-color: $white;
@@ -68,10 +59,11 @@
       }
       top: -5px;
     }
+    $right-padding-on-left: 20px;
     &-content {
       padding-bottom: 15px;
       &--left {
-        padding-right: 20px;
+        padding-right: $right-padding-on-left;
       }
       &--right {
         padding-left: 20px;
@@ -84,6 +76,18 @@
       }
       &--right {
         border-left: 2px solid $pink;
+      }
+    }
+    &-delete {
+      position: absolute;
+      z-index: 10;
+      &--left {
+        top: -4px;
+        right: $right-padding-on-left;
+      }
+      &--right {
+        top: -4px;
+        right: 0;
       }
     }
   }

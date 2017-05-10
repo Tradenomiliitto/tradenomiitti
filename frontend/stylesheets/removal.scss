@@ -1,0 +1,62 @@
+.removal {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  padding: 5px;
+  &__icon {
+    width: 21px;
+    height: 21px;
+  }
+  cursor: pointer;
+  &__confirmation {
+    max-width: 90vw;
+    position: absolute;
+    left: calc(60px - 100vw);
+    @media (min-width: $screen-sm-min) {
+      left: -320px;
+      top: -20px;
+    }
+    padding: 50px;
+    @media (max-width: $screen-xs-max) {
+      left: -300px;
+      padding: 20px 10px 20px 10px;
+    }
+    @include shadow;
+    background-color: $white;
+    z-index: 10;
+    &-text {
+      font-weight: bold;
+      text-align: center;
+    }
+    &-buttons {
+      text-align: center;
+      margin-top: 40px;
+      @media (max-width: $screen-xs-max) {
+        margin-top: 20px;
+      }
+      display: flex;
+      flex-direction: row;
+      @media (max-width: $screen-xs-max) {
+        flex-direction: column;
+      }
+    }
+    &-button {
+      &-cancel {
+        @include button-paddings;
+        background-color: $white !important;
+        box-shadow: unset !important;
+        color: $pink !important;
+        @include gotham-bold;
+        text-transform: uppercase;
+      }
+      &-confirm {
+        margin-left: 30px;
+        @media (max-width: $screen-xs-max) {
+          margin-top: 10px;
+          margin-left: 0;
+        }
+        @include button-paddings;
+      }
+    }
+  }
+}

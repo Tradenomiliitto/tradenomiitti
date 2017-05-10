@@ -9,9 +9,11 @@ import Json.Decode as Json
 import Link
 import List.Extra as List
 import Models.Ad
+import Models.User exposing (User)
 import Nav
 import QueryString
 import QueryString.Extra as QueryString
+import Removal
 import State.Config as Config
 import State.ListAds exposing (..)
 import SvgIcons
@@ -23,6 +25,7 @@ type Msg
   | ChangeDomainFilter (Maybe String)
   | ChangePositionFilter (Maybe String)
   | ChangeLocationFilter (Maybe String)
+  | RemovalMessage Removal.Msg
 
 
 update : Msg -> Model -> (Model, Cmd (UpdateMessage Msg))
@@ -51,13 +54,19 @@ update msg model =
     ChangeLocationFilter value ->
       reInitItems { model | selectedLocation = value }
 
+    RemovalMessage msg ->
+      let
+        (newRemoval, cmd) = Removal.update msg model.removal
+      in
+        { model | removal = newRemoval } ! [ Util.localMap RemovalMessage cmd ]
+
 initTasks : Model -> Cmd (UpdateMessage Msg)
 initTasks = getAds
 
 reInitItems : Model -> (Model, Cmd (UpdateMessage Msg))
 reInitItems model =
   let
-    newModel = { model | ads = [], cursor = 0 }
+    newModel = { model | ads = [], cursor = 0, removal = Removal.init Removal.Ad }
   in
     newModel ! [ getAds newModel ]
 
@@ -79,8 +88,8 @@ getAds model =
     Util.errorHandlingSend (UpdateAds model.cursor) request
 
 
-view : Model -> Config.Model -> H.Html (ViewMessage Msg)
-view model config =
+view : Maybe User -> Model -> Config.Model -> H.Html (ViewMessage Msg)
+view loggedInUserMaybe model config =
   H.div []
     [ H.div
       [ A.class "container" ]
@@ -110,14 +119,14 @@ view model config =
       [ A.class "list-ads__list-background"]
       [ H.div
         [ A.class "container last-row" ]
-        (viewAds model.ads)
+        (List.map (Util.localViewMap RemovalMessage) <| viewAds loggedInUserMaybe model.removal model.ads)
       ]
     ]
 
-viewAds : List Models.Ad.Ad -> List (H.Html (ViewMessage msg))
-viewAds ads =
+viewAds : Maybe User -> Removal.Model -> List Models.Ad.Ad -> List (H.Html (ViewMessage Removal.Msg))
+viewAds loggedInUserMaybe removal ads =
   let
-    adsHtml = List.map adListView ads
+    adsHtml = List.indexedMap (adListView loggedInUserMaybe removal) ads
     rows = Common.chunk2 adsHtml
     rowsHtml = List.map row rows
   in
@@ -129,13 +138,13 @@ row ads =
     [ A.class "row list-ads__row" ]
     ads
 
-adListView : Models.Ad.Ad -> H.Html (ViewMessage msg)
-adListView ad =
+adListView : Maybe User -> Removal.Model -> Int -> Models.Ad.Ad -> H.Html (ViewMessage Removal.Msg)
+adListView loggedInUserMaybe removal index ad =
   H.div
     [ A.class "col-xs-12 col-sm-6 list-ads__item-container"
     ]
     [ H.div
-      [ A.class "list-ads__ad-preview list-ads__item" ]
+      [ A.class "list-ads__ad-preview list-ads__item" ] <|
       [ H.a
         [ A.href (Nav.routeToPath (Nav.ShowAd ad.id))
         , Link.action (Nav.ShowAd ad.id)
@@ -162,5 +171,6 @@ adListView ad =
           ]
         , H.div [ A.class "list-ads__ad-preview-author-info" ] [ Common.authorInfo ad.createdBy ]
         ]
-      ]
+      ] ++ Removal.view loggedInUserMaybe index ad removal
     ]
+

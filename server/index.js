@@ -287,9 +287,11 @@ app.get('/api/koulutus', (req, res, next) => {
 })
 app.post('/api/ilmoitukset', jsonParser, ads.createAd);
 app.get('/api/ilmoitukset/:id', ads.getAd);
+app.delete('/api/ilmoitukset/:id', ads.deleteAd);
 app.get('/api/ilmoitukset', ads.listAds);
 app.get('/api/ilmoitukset/tradenomilta/:id', ads.adsForUser);
 app.post('/api/ilmoitukset/:id/vastaus', jsonParser, ads.createAnswer);
+app.delete('/api/vastaukset/:id', ads.deleteAnswer);
 
 
 app.get('/api/asetukset', (req, res) => {

@@ -1,12 +1,13 @@
 port module Profile.Main exposing (..)
 
-import Dict
 import Http
 import Json.Decode as Json
 import Json.Encode as JS
 import List.Extra as List
+import ListAds
 import Models.Ad
 import Models.User exposing (User, BusinessCard, PictureEditing)
+import Removal
 import Skill
 import State.Config as Config
 import State.Profile exposing (Model)
@@ -46,6 +47,7 @@ type Msg
   | SpecializationSelected String
   | AddEducation String
   | DeleteEducation Int
+  | RemovalMessage Removal.Msg
   | NoOp
 
 
@@ -115,11 +117,6 @@ updateSkillList index skillLevel list =
   List.indexedMap
     (\i x -> if i == index then Skill.update skillLevel x else x)
     list
-
-deleteFromList : Int -> List a -> List a
-deleteFromList index list =
-  List.indexedMap (\i x -> if i == index then Nothing else Just x) list
-    |> List.filterMap identity
 
 updateUser : (User -> User) -> Model -> Model
 updateUser update model =
@@ -193,10 +190,10 @@ update msg model config =
       updateUser (\u -> { u | positions = updateSkillList index skillLevel u.positions }) model ! []
 
     DomainSkillMessage index Skill.Delete ->
-      updateUser (\u -> { u | domains = deleteFromList index u.domains }) model ! []
+      updateUser (\u -> { u | domains = List.removeAt index u.domains }) model ! []
 
     PositionSkillMessage index Skill.Delete ->
-      updateUser (\u -> { u | positions = deleteFromList index u.positions }) model ! []
+      updateUser (\u -> { u | positions = List.removeAt index u.positions }) model ! []
 
     ChangeDomainSelect str ->
       updateUser (\u -> { u | domains = List.uniqueBy .heading <| u.domains ++ [ Skill.Model str Skill.Interested ] }) model ! []
@@ -255,7 +252,7 @@ update msg model config =
 
     DeleteEducation index ->
       updateUser
-      (\u -> { u | education = deleteFromList index u.education }) model ! [ typeaheads config ]
+      (\u -> { u | education = List.removeAt index u.education }) model ! [ typeaheads config ]
 
     UpdateUser _ ->
       { model | editing = False } !
@@ -301,6 +298,12 @@ update msg model config =
 
     ShowAll ->
       { model | viewAllAds = True } ! []
+
+    RemovalMessage msg ->
+      let
+        (newRemoval, cmd) = Removal.update msg model.removal
+      in
+        { model | removal = newRemoval } ! [ Util.localMap RemovalMessage cmd ]
 
     NoOp ->
       model ! []

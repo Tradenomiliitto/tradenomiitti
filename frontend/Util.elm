@@ -77,6 +77,17 @@ put url body =
     , withCredentials = False
     }
 
+delete : String -> Http.Request ()
+delete url =
+  Http.request
+    { method = "DELETE"
+    , headers = []
+    , url = url
+    , body = Http.emptyBody
+    , expect = Http.expectStringResponse (\_ -> Ok ())
+    , timeout = Nothing
+    , withCredentials = False
+    }
 
 
 -- truncates content so that the result includes at most numChars characters, taking full words. "…" is added if the content is truncated

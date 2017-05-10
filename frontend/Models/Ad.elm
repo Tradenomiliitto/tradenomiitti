@@ -24,6 +24,7 @@ type alias Answer =
   { content: String
   , createdBy: User
   , createdAt: Date.Date
+  , id : Int
   }
 
 
@@ -54,6 +55,7 @@ answerDecoder =
     |> P.required "content" Json.string
     |> P.required "created_by" Models.User.userDecoder
     |> P.required "created_at" date
+    |> P.required "id" Json.int
 
 
 adCount : Answers -> Int

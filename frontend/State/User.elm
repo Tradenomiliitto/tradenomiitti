@@ -2,6 +2,7 @@ module State.User exposing (..)
 
 import Models.User exposing (User)
 import Models.Ad exposing (Ad)
+import Removal
 
 type alias Model =
   { user : Maybe User
@@ -9,6 +10,7 @@ type alias Model =
   , viewAllAds : Bool
   , addingContact : Bool
   , addContactText : String
+  , removal : Removal.Model
   }
 
 init : Model
@@ -18,4 +20,5 @@ init =
   , viewAllAds = False
   , addingContact = False
   , addContactText = ""
+  , removal = Removal.init Removal.Ad
   }

@@ -286,7 +286,7 @@ showProfileView : Model -> User -> RootState.Model ->  H.Html (ViewMessage Msg)
 showProfileView model user rootState =
   H.div [ A.class "user-page" ] <|
     [ Common.profileTopRow user model.editing Common.ProfileTab (saveOrEdit user model.editing)
-    ] ++ (viewUserMaybe model True rootState.config)
+    ] ++ (viewOwnProfileMaybe model True rootState.config)
 
 
 competences : Model -> Config.Model -> User -> H.Html Msg
@@ -327,10 +327,10 @@ userExpertise model user config =
   , userSkills model user config
   ]
 
-viewUserMaybe : Model -> Bool -> Config.Model -> List (H.Html (ViewMessage Msg))
-viewUserMaybe model ownProfile config =
+viewOwnProfileMaybe : Model -> Bool -> Config.Model -> List (H.Html (ViewMessage Msg))
+viewOwnProfileMaybe model ownProfile config =
   model.user
-    |> Maybe.map (viewUser model ownProfile (H.div [] []) config)
+    |> Maybe.map (viewUser model ownProfile (H.div [] []) config model.user)
     |> Maybe.withDefault
       [ H.div
         [ A.class "container"]
@@ -463,10 +463,13 @@ educationsEditing model config =
     else
       []
 
-viewUser : Model -> Bool -> H.Html (ViewMessage Msg) -> Config.Model -> User -> List (H.Html (ViewMessage Msg))
-viewUser model ownProfile contactUser config user =
+viewUser : Model -> Bool -> H.Html (ViewMessage Msg) -> Config.Model -> Maybe User -> User -> List (H.Html (ViewMessage Msg))
+viewUser model ownProfile contactUser config loggedInUserMaybe user  =
   let
-    viewAds = ListAds.viewAds <| if model.viewAllAds then model.ads else List.take 2 model.ads
+    viewAds =
+      List.map (Util.localViewMap RemovalMessage) <|
+        ListAds.viewAds loggedInUserMaybe model.removal <|
+          if model.viewAllAds then model.ads else List.take 2 model.ads
     showMoreAds =
       -- if we are seeing all ads, don't show button
       -- if we don't have anything more to show, don't show button

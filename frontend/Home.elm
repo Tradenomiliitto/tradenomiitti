@@ -9,6 +9,7 @@ import ListUsers
 import Maybe.Extra as Maybe
 import Models.User exposing (User)
 import Nav
+import Removal
 import State.Home exposing (..)
 import Util exposing (ViewMessage(..), UpdateMessage(..))
 
@@ -17,6 +18,7 @@ type Msg
   | ListUsersMessage ListUsers.Msg
   | ClickCreateProfile
   | ScrollBelowFold
+  | RemovalMessage Removal.Msg
 
 
 port scrollHomeBelowFold : Bool -> Cmd msg -- param is ignored
@@ -41,6 +43,13 @@ update msg model =
     ScrollBelowFold ->
       model ! [ scrollHomeBelowFold True ]
 
+    RemovalMessage msg ->
+      let
+        (newRemoval, cmd) = Removal.update msg model.removal
+      in
+        { model | removal = newRemoval } ! [ Util.localMap RemovalMessage cmd ]
+
+
 initTasks : Model -> Cmd (UpdateMessage Msg)
 initTasks model =
   Cmd.batch
@@ -50,22 +59,22 @@ initTasks model =
 
 
 view : Model -> Maybe User -> H.Html (ViewMessage Msg)
-view model userMaybe =
+view model loggedInUserMaybe =
   H.div
     []
-    [ introScreen userMaybe
-    , listLatestAds model
-    , listUsers model userMaybe
+    [ introScreen loggedInUserMaybe
+    , listLatestAds loggedInUserMaybe model
+    , listUsers model loggedInUserMaybe
     , tradenomiittiSection
     ]
 
 -- FIRST INFO SCREEN --
 
 introScreen : Maybe User -> H.Html (ViewMessage Msg)
-introScreen userMaybe =
+introScreen loggedInUserMaybe =
   H.div
     [ A.class "home__intro-screen" ]
-    (introAnimation :: introBoxes userMaybe)
+    (introAnimation :: introBoxes loggedInUserMaybe)
 
 introAnimation : H.Html msg
 introAnimation =
@@ -74,10 +83,10 @@ introAnimation =
            ] []
 
 introBoxes : Maybe User -> List ( H.Html (ViewMessage Msg) )
-introBoxes userMaybe =
+introBoxes loggedInUserMaybe =
   let
     createProfile =
-      case userMaybe of
+      case loggedInUserMaybe of
         Just _ ->
           []
         Nothing ->
@@ -110,14 +119,14 @@ introBoxes userMaybe =
 
 -- LIST LATEST ADS --
 
-listLatestAds : Model -> H.Html (ViewMessage Msg)
-listLatestAds model =
+listLatestAds : Maybe User -> Model -> H.Html (ViewMessage Msg)
+listLatestAds loggedInUserMaybe model =
   H.div
     [ A.class "home__latest-ads" ]
     [ H.div
       [ A.class "home__section--container" ]
       [ listAdsHeading
-      , listFourAds model
+      , listFourAds loggedInUserMaybe model
       ]
      ]
 
@@ -149,35 +158,35 @@ sectionHeader title =
     [ A.class "home__section--heading--text col-sm-5" ]
     [ H.text title ]
 
-listFourAds : Model -> H.Html (ViewMessage msg)
-listFourAds model =
-  H.div
+listFourAds : Maybe User -> Model -> H.Html (ViewMessage Msg)
+listFourAds loggedInUserMaybe model =
+  Util.localViewMap RemovalMessage <| H.div
     []
-    (ListAds.viewAds (List.take 4 model.listAds.ads))
+    (ListAds.viewAds loggedInUserMaybe model.removal (List.take 4 model.listAds.ads))
 
 -- LIST USERS --
 
 listUsers : Model -> Maybe User -> H.Html (ViewMessage msg)
-listUsers model userMaybe =
+listUsers model loggedInUserMaybe =
   H.div
     [ A.class "home__list-users" ]
     [ H.div
       [ A.class "home__section--container" ]
-      [ listUsersHeading userMaybe
+      [ listUsersHeading loggedInUserMaybe
       , listThreeUsers model
       ]
      ]
 
 listUsersHeading : Maybe User -> H.Html (ViewMessage msg)
-listUsersHeading userMaybe =
+listUsersHeading loggedInUserMaybe =
   H.div
     [ A.class "home__section--heading row" ]
     [ sectionHeader "Löydä tradenomi"
-    , listUsersButtons userMaybe
+    , listUsersButtons loggedInUserMaybe
     ]
 
 listUsersButtons : Maybe User -> H.Html (ViewMessage msg)
-listUsersButtons userMaybe =
+listUsersButtons loggedInUserMaybe =
   H.div
     [ A.class "home__section--heading--buttons col-sm-7" ]
     [ Link.button
@@ -185,9 +194,9 @@ listUsersButtons userMaybe =
         "home__section--heading--buttons--inverse btn btn-primary"
         Nav.ListUsers
     , Link.button
-        (if Maybe.isJust userMaybe then "Muokkaa omaa profiilia" else "Luo oma profiili")
+        (if Maybe.isJust loggedInUserMaybe then "Muokkaa omaa profiilia" else "Luo oma profiili")
         "home__section--heading--buttons--normal btn btn-primary"
-        (if Maybe.isJust userMaybe
+        (if Maybe.isJust loggedInUserMaybe
          then Nav.Profile
          else Nav.LoginNeeded << Just << Nav.routeToPath <| Nav.Profile)
     ]
@@ -228,7 +237,8 @@ tradenomiittiHeader : H.Html msg
 tradenomiittiHeader =
   H.h2
     [ A.class "home__tradenomiitti-info--header" ]
-    [ H.text "Kokemuksellasi on aina arvoa" ]
+    -- \xad === &shy;, that is soft hyphen
+    [ H.text "Ko\xadke\xadmuk\xadsel\xadla\xadsi on aina arvoa" ]
 
 tradenomiittiInfoText : H.Html msg
 tradenomiittiInfoText =

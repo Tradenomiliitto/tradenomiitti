@@ -13,6 +13,7 @@ import Models.User exposing (User)
 import Nav
 import Profile.Main as Profile
 import Profile.View
+import Removal
 import State.Config as Config
 import State.Profile
 import State.User exposing (..)
@@ -50,6 +51,12 @@ update msg model =
     ProfileMessage (Profile.AddContact user) ->
       model ! [ addContact user model.addContactText ]
 
+    ProfileMessage (Profile.RemovalMessage msg) ->
+      let
+        (newRemoval, cmd) = Removal.update msg model.removal
+      in
+        { model | removal = newRemoval } ! [ Util.localMap (ProfileMessage << Profile.RemovalMessage) cmd ]
+
     ProfileMessage Profile.ShowAll ->
       { model | viewAllAds = True } ! []
 
@@ -58,6 +65,7 @@ update msg model =
 
     Refresh userId ->
       model ! [ getUser userId ]
+
 
 
 initTasks : Int -> Cmd (UpdateMessage Msg)
@@ -105,11 +113,12 @@ view model loggedInUser config =
       { profileInit
         | ads = model.ads
         , viewAllAds = model.viewAllAds
+        , removal = model.removal
       }
     views = model.user
       |> Maybe.map
         (\u ->
-           List.map (Util.localViewMap ProfileMessage) <| Profile.View.viewUser profile False (contactUser model u loggedInUser) config u)
+           List.map (Util.localViewMap ProfileMessage) <| Profile.View.viewUser profile False (contactUser model u loggedInUser) config loggedInUser u)
       |> Maybe.withDefault []
 
   in

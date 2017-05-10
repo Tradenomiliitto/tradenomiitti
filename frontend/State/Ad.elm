@@ -1,13 +1,15 @@
 module State.Ad exposing (..)
 
-import State.Util exposing (SendingStatus(..))
 import Models.Ad exposing (Ad)
+import Removal
+import State.Util exposing (SendingStatus(..))
 
 type alias Model =
   { addingAnswer : Bool
   , answerText : String
   , sending : SendingStatus
   , ad : Maybe Ad
+  , removal : Removal.Model
   }
 
 init : Model
@@ -16,4 +18,5 @@ init =
   , answerText = ""
   , sending = NotSending
   , ad = Nothing
+  , removal = Removal.init Removal.Answer
   }
