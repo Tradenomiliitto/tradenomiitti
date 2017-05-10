@@ -53,6 +53,15 @@ module.exports = function initialize(params) {
     return knex('skills').where({ user_id });
   }
 
+  function profileEducations(user_id) {
+    return knex('user_educations').where({ user_id }).then(rows => rows.map(row => row.data));
+  }
+
+  function profileSpecialSkills(user_id) {
+    return knex('user_special_skills').where({ user_id }).then(rows => rows.map(row => row.heading));
+  }
+
+
   function addContact(loggedInUser, toUserId, introductionText) {
     if (typeof introductionText !== 'string' || introductionText.length < 10) {
       return Promise.reject({ status: 400, msg: 'Introduction text is mandatory'});
@@ -103,6 +112,8 @@ module.exports = function initialize(params) {
   return {
     listProfiles,
     profileSkills,
+    profileEducations,
+    profileSpecialSkills,
     addContact,
     listContacts
   }

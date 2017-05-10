@@ -28,13 +28,16 @@ module.exports = function initialize(params) {
     formattedUser.name = loggedIn ? (userData.name || '') : 'Tradenomi';
     formattedUser.description = userData.description || '';
     formattedUser.title = userData.title || 'Ei titteliä';
-    formattedUser.domains = []; // only get these when getting detailed profile
-    formattedUser.positions = []; // only get these when getting detailed profile
+
+    // only get these when getting detailed profile
+    formattedUser.domains = [];
+    formattedUser.positions = [];
+    formattedUser.special_skills = [];
+    formattedUser.education = [];
+
     formattedUser.location = userData.location || "";
     formattedUser.profile_creation_consented = userData.profile_creation_consented || false;
     formattedUser.cropped_picture = loggedIn ? (userData.cropped_picture || '') : '';
-    formattedUser.special_skills = userData.special_skills || [];
-    formattedUser.education = userData.education || [];
 
     return formattedUser;
   }
