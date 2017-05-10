@@ -78,6 +78,9 @@ export default function initTypeahead(elm2js, js2elm) {
       })
 
       element.addEventListener('input', () => {
+        // if user empties the field, the filter should get lost too
+        // without this we only send values to elm side on selection of an
+        // option, but there is no selection for nothing selected, hence this
         if (autocompleter.autocomplete.getVal() === '')
           js2elm.send([ '', id ]);
       })
