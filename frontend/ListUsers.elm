@@ -27,12 +27,12 @@ sortToString sort =
 
 
 -- initialize typeaheads, don't clear any of them on selection and don't show "add new" section
-typeaheads : Config.Model -> Cmd msg
-typeaheads config =
+typeaheads : Model -> Config.Model -> Cmd msg
+typeaheads model config =
   Cmd.batch
-    [ typeahead ("skills-input", Config.categoriedOptionsEncode config.specialSkillOptions, False, False)
-    , typeahead ("education-institute", Config.categoriedOptionsEncode << Config.institutes <| config, False, False)
-    , typeahead ("education-specialization", Config.categoriedOptionsEncode << Config.specializations <| config, False, False)
+    [ typeahead ("skills-input", Config.categoriedOptionsEncode config.specialSkillOptions, False, False, model.selectedSkill)
+    , typeahead ("education-institute", Config.categoriedOptionsEncode << Config.institutes <| config, False, False, model.selectedInstitute)
+    , typeahead ("education-specialization", Config.categoriedOptionsEncode << Config.specializations <| config, False, False, model.selectedSpecialization)
     ]
 
 typeAheadToMsg : (String, String) -> Msg

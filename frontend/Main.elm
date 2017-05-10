@@ -154,7 +154,7 @@ update msg model =
                 (newModel, cmd) = initWithUpdateMessage { modelWithRoute | listUsers = newListUsers }
                   ListUsersMessage (ListUsers.initTasks newListUsers)
               in
-                newModel ! [ cmd, ListUsers.typeaheads model.config ]
+                newModel ! [ cmd, ListUsers.typeaheads newModel.listUsers model.config ]
 
             LoginNeeded _ ->
               modelWithRoute ! [ animation ("login-needed-canvas", False) ]
