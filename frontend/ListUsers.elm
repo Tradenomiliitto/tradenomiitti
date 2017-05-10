@@ -51,6 +51,10 @@ subscriptions =
     [ typeaheadResult typeAheadToMsg
     ]
 
+emptyToNothing : String -> Maybe String
+emptyToNothing str =
+  if String.length str == 0 then Nothing else Just str
+
 getUsers : Model -> Cmd (UpdateMessage Msg)
 getUsers model =
   let
@@ -61,6 +65,9 @@ getUsers model =
         |> QueryString.optional "domain" model.selectedDomain
         |> QueryString.optional "position" model.selectedPosition
         |> QueryString.optional "location" model.selectedLocation
+        |> QueryString.optional "special_skill" (emptyToNothing model.selectedSkill)
+        |> QueryString.optional "specialization" (emptyToNothing model.selectedSpecialization)
+        |> QueryString.optional "institute" (emptyToNothing model.selectedInstitute)
         |> QueryString.add "order" (sortToString model.sort)
         |> QueryString.render
 
@@ -81,12 +88,8 @@ type Msg
   | ChangeSort Sort
   | NoOp
 
-initTasks : Model -> Config.Model -> Cmd (UpdateMessage Msg)
-initTasks model config =
-  Cmd.batch
-    [ getUsers model
-    , typeaheads config
-    ]
+initTasks : Model -> Cmd (UpdateMessage Msg)
+initTasks = getUsers
 
 
 reInitItems : Model -> (Model, Cmd (UpdateMessage Msg))

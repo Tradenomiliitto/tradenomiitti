@@ -75,6 +75,11 @@ export default function initTypeahead(elm2js, js2elm) {
         $(element).blur();
         js2elm.send([ value, id ]);
       })
+
+      element.addEventListener('input', () => {
+        if (autocompleter.autocomplete.getVal() === '')
+          js2elm.send([ '', id ]);
+      })
     }
   })
 }

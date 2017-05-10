@@ -51,11 +51,11 @@ update msg model =
         { model | removal = newRemoval } ! [ Util.localMap RemovalMessage cmd ]
 
 
-initTasks : Model -> Config.Model -> Cmd (UpdateMessage Msg)
-initTasks model config =
+initTasks : Model -> Cmd (UpdateMessage Msg)
+initTasks model =
   Cmd.batch
     [ Util.localMap ListAdsMessage (ListAds.initTasks model.listAds)
-    , Util.localMap ListUsersMessage (ListUsers.initTasks model.listUsers config)
+    , Util.localMap ListUsersMessage (ListUsers.initTasks model.listUsers)
     ]
 
 

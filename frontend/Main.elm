@@ -136,7 +136,7 @@ update msg model =
                 newHome = State.Home.init
                 (newModel, cmd) =
                   initWithUpdateMessage { modelWithRoute | home = newHome }
-                    HomeMessage (Home.initTasks newHome model.config)
+                    HomeMessage (Home.initTasks newHome)
               in
                 newModel ! [ cmd, animation ("home-intro-canvas", False) ]
 
@@ -149,10 +149,12 @@ update msg model =
                   UserMessage (User.initTasks userId)
 
             ListUsers ->
-              let newListUsers = State.ListUsers.init
+              let
+                newListUsers = State.ListUsers.init
+                (newModel, cmd) = initWithUpdateMessage { modelWithRoute | listUsers = newListUsers }
+                  ListUsersMessage (ListUsers.initTasks newListUsers)
               in
-                initWithUpdateMessage { modelWithRoute | listUsers = newListUsers }
-                  ListUsersMessage (ListUsers.initTasks newListUsers model.config)
+                newModel ! [ cmd, ListUsers.typeaheads model.config ]
 
             LoginNeeded _ ->
               modelWithRoute ! [ animation ("login-needed-canvas", False) ]

@@ -27,6 +27,33 @@ module.exports = function initialize(params) {
       query = query.whereRaw("users.data->>'location' = ?", [ filters.location ])
     }
 
+    if (filters.special_skill !== undefined) {
+      query = query.whereExists(function () {
+        this.select('user_id')
+          .from('user_special_skills')
+          .whereRaw('users.id = user_special_skills.user_id and heading = ?',
+                    [filters.special_skill])
+      });
+    }
+
+    if (filters.institute !== undefined) {
+      query = query.whereExists(function () {
+        this.select('user_id')
+          .from('user_educations')
+          .whereRaw("users.id = user_educations.user_id and data->>'institute' = ?",
+                    [filters.institute])
+      });
+    }
+
+    if (filters.specialization !== undefined) {
+      query = query.whereExists(function () {
+        this.select('user_id')
+          .from('user_educations')
+          .whereRaw("users.id = user_educations.user_id and data->>'specialization' = ?",
+                    [filters.specialization])
+      });
+    }
+
     if (order === undefined || order === 'recent') {
       query = query
         .leftOuterJoin('ads', 'users.id', 'ads.user_id')
