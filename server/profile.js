@@ -272,9 +272,7 @@ module.exports = function initialize(params) {
         loggedIn,
         req.query.limit,
         req.query.offset,
-        req.query.domain,
-        req.query.position,
-        req.query.location,
+        req.query || {}, // get filters from query object
         req.query.order
       ))
       .then(users => res.json(users))

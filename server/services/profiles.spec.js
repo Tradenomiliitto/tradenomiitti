@@ -62,7 +62,7 @@ describe('Handle users', function() {
     return knex('users').insert({id: 3, remote_id: -3, data: {
       name: 'Ökynomi'
     }, settings: {}, modified_at: moment()}).then(() => {
-      return service.listProfiles(false, undefined, undefined, undefined, undefined, undefined, sort)
+      return service.listProfiles(false, undefined, undefined, {}, sort)
     })
   }
 
@@ -102,7 +102,7 @@ describe('Handle users', function() {
     knex('users').insert({id: 3, remote_id: -3, data: {
       location: 'siellätäällä'
     }, settings: {}, modified_at: moment()}).then(() => {
-      return service.listProfiles(false, undefined, undefined, undefined, undefined, 'siellätäällä', 'recent')
+      return service.listProfiles(false, undefined, undefined, { location: 'siellätäällä' }, 'recent')
     }).then(users => {
       users.should.have.length(1);
       users[0].id.should.equal(3);

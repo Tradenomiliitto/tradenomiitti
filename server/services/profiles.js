@@ -3,28 +3,28 @@ module.exports = function initialize(params) {
   const util = params.util;
   const emails = params.emails;
 
-  function listProfiles(loggedIn, limit, offset, domain, position, location, order) {
+  function listProfiles(loggedIn, limit, offset, filters = {}, order) {
     let query = knex('users').where({}).select('users.*');
     if (limit !== undefined) query = query.limit(limit);
     if (offset !== undefined) query = query.offset(offset);
-    if (domain !== undefined) {
+    if (filters.domain !== undefined) {
       query = query.whereExists(function () {
         this.select('user_id')
           .from('skills')
           .whereRaw('users.id = skills.user_id and heading = ? and type = ?',
-                    [domain, 'domain'])
+                    [filters.domain, 'domain'])
       });
     }
-    if (position !== undefined) {
+    if (filters.position !== undefined) {
       query = query.whereExists(function () {
         this.select('user_id')
           .from('skills')
           .whereRaw('users.id = skills.user_id and heading = ? and type = ?',
-                    [position, 'position'])
+                    [filters.position, 'position'])
       });
     }
-    if (location !== undefined) {
-      query = query.whereRaw("users.data->>'location' = ?", [ location ])
+    if (filters.location !== undefined) {
+      query = query.whereRaw("users.data->>'location' = ?", [ filters.location ])
     }
 
     if (order === undefined || order === 'recent') {
