@@ -62,7 +62,7 @@ port typeaheadResult : ((String, String) -> msg) -> Sub msg
 typeaheads : Config.Model -> Cmd msg
 typeaheads config =
   Cmd.batch
-    [ typeahead ("skills-input", Config.categoriedOptionsEncode config.specialSkillOptions, True, False)
+    [ typeahead ("skills-input", Config.categoriedOptionsEncode config.specialSkillOptions, True, True)
     , typeahead ("education-institute", Config.categoriedOptionsEncode << Config.institutes <| config, False, False)
     , typeahead ("education-degree", Config.categoriedOptionsEncode << Config.degrees <| config, False, True)
     , typeahead ("education-major", Config.categoriedOptionsEncode << Config.majors <| config, False, True)
