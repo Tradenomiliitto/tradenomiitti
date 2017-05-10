@@ -10,6 +10,7 @@ import Maybe.Extra as Maybe
 import Models.User exposing (User)
 import Nav
 import Removal
+import State.Config as Config
 import State.Home exposing (..)
 import Util exposing (ViewMessage(..), UpdateMessage(..))
 
@@ -50,11 +51,11 @@ update msg model =
         { model | removal = newRemoval } ! [ Util.localMap RemovalMessage cmd ]
 
 
-initTasks : Model -> Cmd (UpdateMessage Msg)
-initTasks model =
+initTasks : Model -> Config.Model -> Cmd (UpdateMessage Msg)
+initTasks model config =
   Cmd.batch
     [ Util.localMap ListAdsMessage (ListAds.initTasks model.listAds)
-    , Util.localMap ListUsersMessage (ListUsers.initTasks model.listUsers)
+    , Util.localMap ListUsersMessage (ListUsers.initTasks model.listUsers config)
     ]
 
 

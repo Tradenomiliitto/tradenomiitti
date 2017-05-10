@@ -10,6 +10,7 @@ import Link
 import List.Extra as List
 import Models.User exposing (User)
 import Nav
+import Profile.Main exposing (typeahead, typeaheadResult)
 import QueryString
 import QueryString.Extra as QueryString
 import State.Config as Config
@@ -23,6 +24,32 @@ sortToString sort =
     Recent -> "recent"
     AlphaAsc -> "alphaAsc"
     AlphaDesc -> "alphaDesc"
+
+
+-- initialize typeaheads, don't clear any of them on selection and don't show "add new" section
+typeaheads : Config.Model -> Cmd msg
+typeaheads config =
+  Cmd.batch
+    [ typeahead ("skills-input", Config.categoriedOptionsEncode config.specialSkillOptions, False, False)
+    , typeahead ("education-institute", Config.categoriedOptionsEncode << Config.institutes <| config, False, False)
+    , typeahead ("education-specialization", Config.categoriedOptionsEncode << Config.specializations <| config, False, False)
+    ]
+
+typeAheadToMsg : (String, String) -> Msg
+typeAheadToMsg (typeAheadResultStr, id) =
+  case id of
+    "skills-input" -> ChangeSkillFilter typeAheadResultStr
+    "education-institute" -> ChangeInstituteFilter typeAheadResultStr
+    "education-specialization" -> ChangeSpecializationFilter typeAheadResultStr
+    _ -> NoOp
+
+
+-- this is unuconditional here, but conditional in the top level on ListUsers being active
+subscriptions : Sub Msg
+subscriptions =
+  Sub.batch
+    [ typeaheadResult typeAheadToMsg
+    ]
 
 getUsers : Model -> Cmd (UpdateMessage Msg)
 getUsers model =
@@ -48,10 +75,18 @@ type Msg
   | ChangeDomainFilter (Maybe String)
   | ChangePositionFilter (Maybe String)
   | ChangeLocationFilter (Maybe String)
+  | ChangeInstituteFilter String
+  | ChangeSpecializationFilter String
+  | ChangeSkillFilter String
   | ChangeSort Sort
+  | NoOp
 
-initTasks : Model -> Cmd (UpdateMessage Msg)
-initTasks = getUsers
+initTasks : Model -> Config.Model -> Cmd (UpdateMessage Msg)
+initTasks model config =
+  Cmd.batch
+    [ getUsers model
+    , typeaheads config
+    ]
 
 
 reInitItems : Model -> (Model, Cmd (UpdateMessage Msg))
@@ -87,8 +122,20 @@ update msg model =
     ChangeLocationFilter value ->
       reInitItems { model | selectedLocation = value }
 
+    ChangeInstituteFilter value ->
+      reInitItems { model | selectedInstitute = value }
+
+    ChangeSpecializationFilter value ->
+      reInitItems { model | selectedSpecialization = value }
+
+    ChangeSkillFilter value ->
+      reInitItems { model | selectedSkill = value }
+
     ChangeSort value ->
       reInitItems { model | sort = value }
+
+    NoOp ->
+      model ! []
 
 
 
@@ -159,6 +206,18 @@ view model config isLoggedIn =
           , H.div
             [ A.class "col-xs-12 col-sm-4" ]
             [ Common.select "list-users" (LocalViewMessage << ChangeLocationFilter) Location Config.finnishRegions model ]
+          ]
+        , H.div
+          [ A.class "row list-users__filters" ]
+          [ H.div
+            [ A.class "col-xs-12 col-sm-4" ]
+            [ Common.typeaheadInput "list-users__" "Valitse oppilaitos" "education-institute" ]
+          , H.div
+            [ A.class "col-xs-12 col-sm-4" ]
+            [ Common.typeaheadInput "list-users__" "Valitse suuntautuminen / pääaine" "education-specialization" ]
+          , H.div
+            [ A.class "col-xs-12 col-sm-4" ]
+            [ Common.typeaheadInput "list-users__" "Valitse taito" "skills-input"]
           ]
         ]
       , H.div

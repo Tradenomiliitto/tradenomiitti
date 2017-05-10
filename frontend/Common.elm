@@ -231,6 +231,26 @@ select class toMsg filter options model =
             (prompt filter :: options)
       ]
 
+
+typeaheadInput : String -> String -> String -> H.Html msg
+typeaheadInput classPrefix placeholder id =
+  H.div
+    []
+    [ H.span
+      [ A.classList
+          [ (classPrefix ++ "select-container", True)
+          , (classPrefix ++ "input", True)
+          ]
+      ]
+      [ H.input
+        [ A.type_ "text"
+        , A.id id
+        , A.class <| classPrefix ++ "select"
+        , A.placeholder placeholder
+        ] []
+      ]
+    ]
+
 {--
    don't ask for more when
      * we are not getting any more

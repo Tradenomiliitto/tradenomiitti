@@ -136,7 +136,7 @@ update msg model =
                 newHome = State.Home.init
                 (newModel, cmd) =
                   initWithUpdateMessage { modelWithRoute | home = newHome }
-                    HomeMessage (Home.initTasks newHome)
+                    HomeMessage (Home.initTasks newHome model.config)
               in
                 newModel ! [ cmd, animation ("home-intro-canvas", False) ]
 
@@ -152,7 +152,7 @@ update msg model =
               let newListUsers = State.ListUsers.init
               in
                 initWithUpdateMessage { modelWithRoute | listUsers = newListUsers }
-                  ListUsersMessage (ListUsers.initTasks newListUsers)
+                  ListUsersMessage (ListUsers.initTasks newListUsers model.config)
 
             LoginNeeded _ ->
               modelWithRoute ! [ animation ("login-needed-canvas", False) ]
@@ -332,10 +332,18 @@ subscriptions model =
           Sub.map ListUsersMessage (footerAppeared (always ListUsers.FooterAppeared))
         _ ->
           Sub.none
+
+    typeaheadInUsersListener =
+      case model.route of
+        ListUsers ->
+          Sub.map ListUsersMessage ListUsers.subscriptions
+        _ ->
+          Sub.none
   in
     Sub.batch
       [ Sub.map ProfileMessage (Profile.subscriptions model.profile)
       , footerListener
+      , typeaheadInUsersListener
       ]
 
 -- VIEW
