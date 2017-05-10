@@ -89,47 +89,44 @@ getAds model =
 
 
 view : Maybe User -> Model -> Config.Model -> H.Html (ViewMessage Msg)
-view userMaybe model config =
-  userMaybe
-    |> Maybe.map (\user ->
-      H.div []
+view loggedInUserMaybe model config =
+  H.div []
+    [ H.div
+      [ A.class "container" ]
+      [ H.div
+        [ A.class "row" ]
         [ H.div
-          [ A.class "container" ]
-          [ H.div
-            [ A.class "row" ]
-            [ H.div
-              [ A.class "col-sm-12" ]
-              [ H.h1
-                [ A.class "list-ads__header" ]
-                [ H.text "Selaa ilmoituksia" ]
-              ]
-            ]
-          , H.div
-            [ A.class "row list-users__filters" ]
-            [ H.div
-              [ A.class "col-xs-12 col-sm-4" ]
-              [ Common.select "list-users" (LocalViewMessage << ChangeDomainFilter) Domain config.domainOptions model ]
-            , H.div
-              [ A.class "col-xs-12 col-sm-4" ]
-              [ Common.select "list-users" (LocalViewMessage << ChangePositionFilter) Position config.positionOptions model ]
-            , H.div
-              [ A.class "col-xs-12 col-sm-4" ]
-              [ Common.select "list-users" (LocalViewMessage << ChangeLocationFilter) Location Config.finnishRegions model ]
-            ]
+          [ A.class "col-sm-12" ]
+          [ H.h1
+            [ A.class "list-ads__header" ]
+            [ H.text "Selaa ilmoituksia" ]
           ]
+        ]
+      , H.div
+        [ A.class "row list-users__filters" ]
+        [ H.div
+          [ A.class "col-xs-12 col-sm-4" ]
+          [ Common.select "list-users" (LocalViewMessage << ChangeDomainFilter) Domain config.domainOptions model ]
         , H.div
-          [ A.class "list-ads__list-background"]
-          [ H.div
-            [ A.class "container last-row" ]
-            (List.map (Util.localViewMap RemovalMessage) <| viewAds user model.removal model.ads)
-          ]
-        ])
-    |> Maybe.withDefault (H.div [] [])
+          [ A.class "col-xs-12 col-sm-4" ]
+          [ Common.select "list-users" (LocalViewMessage << ChangePositionFilter) Position config.positionOptions model ]
+        , H.div
+          [ A.class "col-xs-12 col-sm-4" ]
+          [ Common.select "list-users" (LocalViewMessage << ChangeLocationFilter) Location Config.finnishRegions model ]
+        ]
+      ]
+    , H.div
+      [ A.class "list-ads__list-background"]
+      [ H.div
+        [ A.class "container last-row" ]
+        (List.map (Util.localViewMap RemovalMessage) <| viewAds loggedInUserMaybe model.removal model.ads)
+      ]
+    ]
 
-viewAds : User -> Removal.Model -> List Models.Ad.Ad -> List (H.Html (ViewMessage Removal.Msg))
-viewAds user removal ads =
+viewAds : Maybe User -> Removal.Model -> List Models.Ad.Ad -> List (H.Html (ViewMessage Removal.Msg))
+viewAds loggedInUserMaybe removal ads =
   let
-    adsHtml = List.indexedMap (adListView user removal) ads
+    adsHtml = List.indexedMap (adListView loggedInUserMaybe removal) ads
     rows = Common.chunk2 adsHtml
     rowsHtml = List.map row rows
   in
@@ -141,8 +138,8 @@ row ads =
     [ A.class "row list-ads__row" ]
     ads
 
-adListView : User -> Removal.Model -> Int -> Models.Ad.Ad -> H.Html (ViewMessage Removal.Msg)
-adListView user removal index ad =
+adListView : Maybe User -> Removal.Model -> Int -> Models.Ad.Ad -> H.Html (ViewMessage Removal.Msg)
+adListView loggedInUserMaybe removal index ad =
   H.div
     [ A.class "col-xs-12 col-sm-6 list-ads__item-container"
     ]
@@ -174,6 +171,6 @@ adListView user removal index ad =
           ]
         , H.div [ A.class "list-ads__ad-preview-author-info" ] [ Common.authorInfo ad.createdBy ]
         ]
-      ] ++ Removal.view (Just user) index ad removal
+      ] ++ Removal.view loggedInUserMaybe index ad removal
     ]
 
