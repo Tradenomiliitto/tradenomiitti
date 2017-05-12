@@ -97,11 +97,11 @@ module.exports = function initialize(params) {
               modified_at: new Date()
             })
             .then(() => {
-              if (!newData.special_skills || newData.special_skills.length === 0) {
+              if (!specialSkills || specialSkills.length === 0) {
                 return null;
               }
 
-              const insertObjects = newData.special_skills.map(title => ({
+              const insertObjects = specialSkills.map(title => ({
                 category: 'Käyttäjien lisäämät',
                 title
               }));
