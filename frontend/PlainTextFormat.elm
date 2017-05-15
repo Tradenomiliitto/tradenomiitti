@@ -8,5 +8,11 @@ view str =
     paragraphs =
       str
         |> String.split "\n\n"
+
+    lines paragraph =
+      paragraph
+        |> String.split "\n"
+        |> List.map H.text
+        |> List.intersperse (H.br [] [])
   in
-    List.map (\p -> H.p [] [ H.text p ]) paragraphs
+    List.map (\p -> H.p [] (lines p)) paragraphs
