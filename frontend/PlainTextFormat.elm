@@ -10,6 +10,7 @@ view str =
     paragraphs =
       str
         |> String.split "\n\n"
+        |> List.map (H.p [] << lines)
 
     lines paragraph =
       paragraph
@@ -61,4 +62,4 @@ view str =
         ] |> List.filterMap identity
 
   in
-    List.map (\p -> H.p [] (lines p)) paragraphs
+    paragraphs
