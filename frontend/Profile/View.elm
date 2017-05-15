@@ -9,6 +9,7 @@ import Link
 import ListAds
 import Models.User exposing (User)
 import Nav
+import PlainTextFormat
 import Profile.Main exposing (Msg(..), BusinessCardField(..))
 import Skill
 import State.Config as Config
@@ -626,7 +627,7 @@ userDescription model user =
                       , E.onInput ChangeDescription
                       ] []
         else
-          H.text user.description
+          H.span [] <| PlainTextFormat.view user.description
       ]
     ]
 
