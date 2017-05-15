@@ -86,7 +86,7 @@ module.exports = function initialize(params) {
         // Don't save things saved elsewhere to data
         delete newData.domains;
         delete newData.positions;
-        delete newData.educations;
+        delete newData.education;
         delete newData.special_skills;
 
         return knex.transaction(trx => {
@@ -110,11 +110,11 @@ module.exports = function initialize(params) {
               return knex.raw(query);
             })
             .then(() => {
-              if (!newData.education || newData.education.length === 0) {
+              if (!educations || educations.length === 0) {
                 return null;
               }
 
-              const insertObjectLists = newData.education.map(o => {
+              const insertObjectLists = educations.map(o => {
                 const makeObject = (type) => {
                   return o[type] ? ({
                     type,
