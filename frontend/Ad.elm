@@ -203,7 +203,7 @@ viewAnswer userMaybe model answer isEven zerobasedIndex =
           ] <|
           [ viewDate answer.createdAt
           , H.hr [] []
-          , H.p [] [ H.text answer.content ]
+          , H.p [] (PlainTextFormat.view answer.content)
           , Common.authorInfo answer.createdBy
           , Util.localViewMap RemovalMessage <|
             H.div
