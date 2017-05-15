@@ -14,6 +14,7 @@ import Maybe.Extra as Maybe
 import Models.Ad exposing (Ad, Answers(..), Answer)
 import Models.User exposing (User)
 import Nav
+import PlainTextFormat
 import Removal
 import State.Ad exposing (..)
 import State.Util exposing (SendingStatus(..))
@@ -138,7 +139,7 @@ viewAd adId model userMaybe rootUrl ad =
             [ A.class "col-xs-12 col-sm-6 ad-page__ad" ]
             [ viewDate ad.createdAt
             , H.h1 [ A.class "user-page__activity-item-heading" ] [ H.text ad.heading ]
-            , H.p [ A.class "user-page__activity-item-content" ]  [ H.text ad.content ]
+            , H.p [ A.class "user-page__activity-item-content" ]  (PlainTextFormat.view ad.content)
             , H.hr [] []
             , H.div
               [ A.class "row" ]
