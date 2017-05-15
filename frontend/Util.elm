@@ -97,17 +97,20 @@ truncateContent content numChars =
     then content
     else
       let
-        truncated = List.foldl (takeNChars numChars) "" (String.words content)
+        (truncated, _) = List.foldl (takeNChars numChars) ("", True) (String.words content)
       in
         -- drop extra whitespace created by takeNChars and add three dots
         (String.dropRight 1 truncated) ++ "…"
 
 -- takes first x words where sum of the characters is less than n
-takeNChars : Int -> String -> String -> String
-takeNChars n word accumulator =
+-- canAddMore is needed so we don't skip long words and take a short word
+-- after some dropped long words. When we can't add something, we don't
+-- add anymore
+takeNChars : Int -> String -> (String, Bool) -> (String, Bool)
+takeNChars n word (accumulator, canAddMore) =
   let
     totalLength = (String.length accumulator) + (String.length word)
   in
-    if totalLength < n
-      then accumulator ++ word ++ " "
-      else accumulator
+    if totalLength < n && canAddMore
+      then (accumulator ++ word ++ " ", canAddMore)
+      else (accumulator, False)
