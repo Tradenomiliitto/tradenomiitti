@@ -10,6 +10,9 @@ type alias Model =
   , selectedDomain : Maybe String
   , selectedPosition : Maybe String
   , selectedLocation : Maybe String
+  , selectedInstitute : String
+  , selectedSpecialization : String
+  , selectedSkill : String
   , sort : Sort
   }
 
@@ -23,5 +26,8 @@ init =
   , selectedDomain = Nothing
   , selectedPosition = Nothing
   , selectedLocation = Nothing
+  , selectedInstitute = ""
+  , selectedSpecialization = ""
+  , selectedSkill = ""
   , sort = Recent
   }

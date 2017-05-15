@@ -3,7 +3,7 @@ import autocomplete from 'autocomplete.js';
 const autocompletersById = {};
 
 export default function initTypeahead(elm2js, js2elm) {
-  elm2js.subscribe(([ id, list, emptyAfter, allowCreation ]) => {
+  elm2js.subscribe(([ id, list, emptyAfter, allowCreation, initialValue ]) => {
 
     //wait until element is rendered
     let counter = 0;
@@ -65,6 +65,7 @@ export default function initTypeahead(elm2js, js2elm) {
             }
           }
       } : []));
+      autocompleter.autocomplete.setVal(initialValue);
       autocompletersById[id] = autocompleter;
       autocompleter.on('autocomplete:selected', (ev, suggestion, dataset) => {
         const value = suggestion.original || suggestion.value;
@@ -74,6 +75,14 @@ export default function initTypeahead(elm2js, js2elm) {
           autocompleter.autocomplete.setVal(value);
         $(element).blur();
         js2elm.send([ value, id ]);
+      })
+
+      element.addEventListener('input', () => {
+        // if user empties the field, the filter should get lost too
+        // without this we only send values to elm side on selection of an
+        // option, but there is no selection for nothing selected, hence this
+        if (autocompleter.autocomplete.getVal() === '')
+          js2elm.send([ '', id ]);
       })
     }
   })

@@ -10,6 +10,7 @@ import Link
 import List.Extra as List
 import Models.User exposing (User)
 import Nav
+import Profile.Main exposing (typeahead, typeaheadResult)
 import QueryString
 import QueryString.Extra as QueryString
 import State.Config as Config
@@ -24,6 +25,36 @@ sortToString sort =
     AlphaAsc -> "alphaAsc"
     AlphaDesc -> "alphaDesc"
 
+
+-- initialize typeaheads, don't clear any of them on selection and don't show "add new" section
+typeaheads : Model -> Config.Model -> Cmd msg
+typeaheads model config =
+  Cmd.batch
+    [ typeahead ("skills-input", Config.categoriedOptionsEncode config.specialSkillOptions, False, False, model.selectedSkill)
+    , typeahead ("education-institute", Config.categoriedOptionsEncode << Config.institutes <| config, False, False, model.selectedInstitute)
+    , typeahead ("education-specialization", Config.categoriedOptionsEncode << Config.specializations <| config, False, False, model.selectedSpecialization)
+    ]
+
+typeAheadToMsg : (String, String) -> Msg
+typeAheadToMsg (typeAheadResultStr, id) =
+  case id of
+    "skills-input" -> ChangeSkillFilter typeAheadResultStr
+    "education-institute" -> ChangeInstituteFilter typeAheadResultStr
+    "education-specialization" -> ChangeSpecializationFilter typeAheadResultStr
+    _ -> NoOp
+
+
+-- this is unuconditional here, but conditional in the top level on ListUsers being active
+subscriptions : Sub Msg
+subscriptions =
+  Sub.batch
+    [ typeaheadResult typeAheadToMsg
+    ]
+
+emptyToNothing : String -> Maybe String
+emptyToNothing str =
+  if String.length str == 0 then Nothing else Just str
+
 getUsers : Model -> Cmd (UpdateMessage Msg)
 getUsers model =
   let
@@ -34,6 +65,9 @@ getUsers model =
         |> QueryString.optional "domain" model.selectedDomain
         |> QueryString.optional "position" model.selectedPosition
         |> QueryString.optional "location" model.selectedLocation
+        |> QueryString.optional "special_skill" (emptyToNothing model.selectedSkill)
+        |> QueryString.optional "specialization" (emptyToNothing model.selectedSpecialization)
+        |> QueryString.optional "institute" (emptyToNothing model.selectedInstitute)
         |> QueryString.add "order" (sortToString model.sort)
         |> QueryString.render
 
@@ -48,7 +82,11 @@ type Msg
   | ChangeDomainFilter (Maybe String)
   | ChangePositionFilter (Maybe String)
   | ChangeLocationFilter (Maybe String)
+  | ChangeInstituteFilter String
+  | ChangeSpecializationFilter String
+  | ChangeSkillFilter String
   | ChangeSort Sort
+  | NoOp
 
 initTasks : Model -> Cmd (UpdateMessage Msg)
 initTasks = getUsers
@@ -87,8 +125,20 @@ update msg model =
     ChangeLocationFilter value ->
       reInitItems { model | selectedLocation = value }
 
+    ChangeInstituteFilter value ->
+      reInitItems { model | selectedInstitute = value }
+
+    ChangeSpecializationFilter value ->
+      reInitItems { model | selectedSpecialization = value }
+
+    ChangeSkillFilter value ->
+      reInitItems { model | selectedSkill = value }
+
     ChangeSort value ->
       reInitItems { model | sort = value }
+
+    NoOp ->
+      model ! []
 
 
 
@@ -159,6 +209,18 @@ view model config isLoggedIn =
           , H.div
             [ A.class "col-xs-12 col-sm-4" ]
             [ Common.select "list-users" (LocalViewMessage << ChangeLocationFilter) Location Config.finnishRegions model ]
+          ]
+        , H.div
+          [ A.class "row list-users__filters" ]
+          [ H.div
+            [ A.class "col-xs-12 col-sm-4" ]
+            [ Common.typeaheadInput "list-users__" "Valitse oppilaitos" "education-institute" ]
+          , H.div
+            [ A.class "col-xs-12 col-sm-4" ]
+            [ Common.typeaheadInput "list-users__" "Valitse suuntautuminen / pääaine" "education-specialization" ]
+          , H.div
+            [ A.class "col-xs-12 col-sm-4" ]
+            [ Common.typeaheadInput "list-users__" "Valitse taito" "skills-input"]
           ]
         ]
       , H.div

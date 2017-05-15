@@ -4,7 +4,6 @@ import Http
 import Json.Decode as Json
 import Json.Encode as JS
 import List.Extra as List
-import ListAds
 import Models.Ad
 import Models.User exposing (User, BusinessCard, PictureEditing)
 import Removal
@@ -56,17 +55,18 @@ port imageUpload : Maybe PictureEditing -> Cmd msg
 -- cropped picture file name and full picture details
 port imageSave : ((String, PictureEditing) -> msg) -> Sub msg
 
-port typeahead : (String, JS.Value, Bool, Bool) -> Cmd msg
+port typeahead : (String, JS.Value, Bool, Bool, String) -> Cmd msg
 port typeaheadResult : ((String, String) -> msg) -> Sub msg
 
+-- initialize all autocompletes to empty string
 typeaheads : Config.Model -> Cmd msg
 typeaheads config =
   Cmd.batch
-    [ typeahead ("skills-input", Config.categoriedOptionsEncode config.specialSkillOptions, True, False)
-    , typeahead ("education-institute", Config.categoriedOptionsEncode << Config.institutes <| config, False, False)
-    , typeahead ("education-degree", Config.categoriedOptionsEncode << Config.degrees <| config, False, True)
-    , typeahead ("education-major", Config.categoriedOptionsEncode << Config.majors <| config, False, True)
-    , typeahead ("education-specialization", Config.categoriedOptionsEncode << Config.specializations <| config, False, True)
+    [ typeahead ("skills-input", Config.categoriedOptionsEncode config.specialSkillOptions, True, True, "")
+    , typeahead ("education-institute", Config.categoriedOptionsEncode << Config.institutes <| config, False, False, "")
+    , typeahead ("education-degree", Config.categoriedOptionsEncode << Config.degrees <| config, False, True, "")
+    , typeahead ("education-major", Config.categoriedOptionsEncode << Config.majors <| config, False, True, "")
+    , typeahead ("education-specialization", Config.categoriedOptionsEncode << Config.specializations <| config, False, True, "")
     ]
 
 typeAheadToMsg : (String, String) -> Msg

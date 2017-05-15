@@ -412,56 +412,41 @@ viewEducations model config user =
 
 educationsEditing : Model -> Config.Model -> List (H.Html Msg)
 educationsEditing model config =
-  let
-    input placeholder id =
-      H.div
-        []
-        [ H.span
-          [ A.class "user-page__education-details-select-container user-page__education-details-input" ]
-          [ H.input
-            [ A.type_ "text"
-            , A.id id
-            , A.class "user-page__education-details-select"
-            , A.placeholder placeholder
-            ] []
-          ]
-        ]
-  in
-    if model.editing
-    then
-      [ H.div
-        [ A.class "row"]
-        [ H.div [ A.class "col-xs-5" ]
-          [ H.p [] [ H.text "Lisää koulutus. Valitse omaa koulutustasi parhaiten vastaavat vaihtoehdot. Mikäli oppilaitoksesi on vaihtanut nimeä, valitse nykyisen nimen mukainen oppilaitos. Mikäli valikoista ei löydy oikeaa vaihtoehtoa, voit lisätä sen itse."]
-          , input "Valitse oppilaitos" "education-institute"
-          , input "Valitse tutkintonimike" "education-degree"
-          , input "Valitse koulutusala / koulutusohjelma" "education-major"
-          , input "Valitse suuntautuminen / pääaine" "education-specialization"
-          , H.div
-            [ A.class "user-page__education-button-container"]
-            [ model.selectedInstitute
-            |> Maybe.map
-              (\institute ->
-                 H.button
-                   [ A.class "btn btn-primary user-page__education-button"
-                   , E.onClick <| AddEducation institute
-                   ]
-                   [ H.text "Lisää koulutus"]
-              )
-            |> Maybe.withDefault
-              (H.button
-                [ A.class "btn btn-primary user-page__education-button"
-                , A.disabled True
-                , A.title "Oppilaitos on pakollinen tieto"
-                ]
-                [ H.text "Lisää koulutus"]
-              )
-            ]
+  if model.editing
+  then
+    [ H.div
+      [ A.class "row"]
+      [ H.div [ A.class "col-xs-5" ]
+        [ H.p [] [ H.text "Lisää koulutus. Valitse omaa koulutustasi parhaiten vastaavat vaihtoehdot. Mikäli oppilaitoksesi on vaihtanut nimeä, valitse nykyisen nimen mukainen oppilaitos. Mikäli valikoista ei löydy oikeaa vaihtoehtoa, voit lisätä sen itse."]
+        , Common.typeaheadInput "user-page__education-details-" "Valitse oppilaitos" "education-institute"
+        , Common.typeaheadInput "user-page__education-details-" "Valitse tutkintonimike" "education-degree"
+        , Common.typeaheadInput "user-page__education-details-" "Valitse koulutusala / koulutusohjelma" "education-major"
+        , Common.typeaheadInput "user-page__education-details-" "Valitse suuntautuminen / pääaine" "education-specialization"
+        , H.div
+          [ A.class "user-page__education-button-container"]
+          [ model.selectedInstitute
+          |> Maybe.map
+            (\institute ->
+                H.button
+                  [ A.class "btn btn-primary user-page__education-button"
+                  , E.onClick <| AddEducation institute
+                  ]
+                  [ H.text "Lisää koulutus"]
+            )
+          |> Maybe.withDefault
+            (H.button
+              [ A.class "btn btn-primary user-page__education-button"
+              , A.disabled True
+              , A.title "Oppilaitos on pakollinen tieto"
+              ]
+              [ H.text "Lisää koulutus"]
+            )
           ]
         ]
       ]
-    else
-      []
+    ]
+  else
+    []
 
 viewUser : Model -> Bool -> H.Html (ViewMessage Msg) -> Config.Model -> Maybe User -> User -> List (H.Html (ViewMessage Msg))
 viewUser model ownProfile contactUser config loggedInUserMaybe user  =

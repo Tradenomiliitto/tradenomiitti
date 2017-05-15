@@ -3,28 +3,55 @@ module.exports = function initialize(params) {
   const util = params.util;
   const emails = params.emails;
 
-  function listProfiles(loggedIn, limit, offset, domain, position, location, order) {
+  function listProfiles(loggedIn, limit, offset, filters = {}, order) {
     let query = knex('users').where({}).select('users.*');
     if (limit !== undefined) query = query.limit(limit);
     if (offset !== undefined) query = query.offset(offset);
-    if (domain !== undefined) {
+    if (filters.domain !== undefined) {
       query = query.whereExists(function () {
         this.select('user_id')
           .from('skills')
           .whereRaw('users.id = skills.user_id and heading = ? and type = ?',
-                    [domain, 'domain'])
+                    [filters.domain, 'domain'])
       });
     }
-    if (position !== undefined) {
+    if (filters.position !== undefined) {
       query = query.whereExists(function () {
         this.select('user_id')
           .from('skills')
           .whereRaw('users.id = skills.user_id and heading = ? and type = ?',
-                    [position, 'position'])
+                    [filters.position, 'position'])
       });
     }
-    if (location !== undefined) {
-      query = query.whereRaw("users.data->>'location' = ?", [ location ])
+    if (filters.location !== undefined) {
+      query = query.whereRaw("users.data->>'location' = ?", [ filters.location ])
+    }
+
+    if (filters.special_skill !== undefined) {
+      query = query.whereExists(function () {
+        this.select('user_id')
+          .from('user_special_skills')
+          .whereRaw('users.id = user_special_skills.user_id and heading = ?',
+                    [filters.special_skill])
+      });
+    }
+
+    if (filters.institute !== undefined) {
+      query = query.whereExists(function () {
+        this.select('user_id')
+          .from('user_educations')
+          .whereRaw("users.id = user_educations.user_id and data->>'institute' = ?",
+                    [filters.institute])
+      });
+    }
+
+    if (filters.specialization !== undefined) {
+      query = query.whereExists(function () {
+        this.select('user_id')
+          .from('user_educations')
+          .whereRaw("users.id = user_educations.user_id and data->>'specialization' = ?",
+                    [filters.specialization])
+      });
     }
 
     if (order === undefined || order === 'recent') {
@@ -52,6 +79,15 @@ module.exports = function initialize(params) {
   function profileSkills(user_id) {
     return knex('skills').where({ user_id });
   }
+
+  function profileEducations(user_id) {
+    return knex('user_educations').where({ user_id }).then(rows => rows.map(row => row.data));
+  }
+
+  function profileSpecialSkills(user_id) {
+    return knex('user_special_skills').where({ user_id }).then(rows => rows.map(row => row.heading));
+  }
+
 
   function addContact(loggedInUser, toUserId, introductionText) {
     if (typeof introductionText !== 'string' || introductionText.length < 10) {
@@ -103,6 +139,8 @@ module.exports = function initialize(params) {
   return {
     listProfiles,
     profileSkills,
+    profileEducations,
+    profileSpecialSkills,
     addContact,
     listContacts
   }

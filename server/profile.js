@@ -26,11 +26,12 @@ module.exports = function initialize(params) {
           sebacon.getUserPhoneNumber(user.remote_id),
           sebacon.getUserGeoArea(user.remote_id),
           service.profileSkills(user.id),
+          service.profileSpecialSkills(user.id),
+          service.profileEducations(user.id),
           user
         ])
       })
-      .then(([ firstname, nickname, lastname, { positions, domains }, email, phone, geoArea, skills, databaseUser ]) => {
-
+      .then(([ firstname, nickname, lastname, { positions, domains }, email, phone, geoArea, skills, specialSkills, educations, databaseUser ]) => {
         const user = util.formatUser(databaseUser, true);
 
         if (!databaseUser.data.business_card) {
@@ -54,6 +55,9 @@ module.exports = function initialize(params) {
 
         util.patchSkillsToUser(user, skills);
 
+        user.education = educations;
+        user.special_skills = specialSkills;
+
         return res.json(user);
       })
       .catch((err) => {
@@ -75,11 +79,15 @@ module.exports = function initialize(params) {
       .then(user => {
         const domains = req.body.domains;
         const positions = req.body.positions;
+        const educations = req.body.education;
+        const specialSkills = req.body.special_skills;
 
         const newData = Object.assign({}, user.data, req.body);
-        // Don't save domains and positions to data
+        // Don't save things saved elsewhere to data
         delete newData.domains;
         delete newData.positions;
+        delete newData.education;
+        delete newData.special_skills;
 
         return knex.transaction(trx => {
           return trx('users')
@@ -89,11 +97,11 @@ module.exports = function initialize(params) {
               modified_at: new Date()
             })
             .then(() => {
-              if (!newData.special_skills || newData.special_skills.length === 0) {
+              if (!specialSkills || specialSkills.length === 0) {
                 return null;
               }
 
-              const insertObjects = newData.special_skills.map(title => ({
+              const insertObjects = specialSkills.map(title => ({
                 category: 'Käyttäjien lisäämät',
                 title
               }));
@@ -102,11 +110,11 @@ module.exports = function initialize(params) {
               return knex.raw(query);
             })
             .then(() => {
-              if (!newData.education || newData.education.length === 0) {
+              if (!educations || educations.length === 0) {
                 return null;
               }
 
-              const insertObjectLists = newData.education.map(o => {
+              const insertObjectLists = educations.map(o => {
                 const makeObject = (type) => {
                   return o[type] ? ({
                     type,
@@ -126,6 +134,8 @@ module.exports = function initialize(params) {
               return knex.raw(query);
             })
             .then(() => trx('skills').where({ user_id: user.id }).del())
+            .then(() => trx('user_special_skills').where({ user_id: user.id }).del())
+            .then(() => trx('user_educations').where({ user_id: user.id }).del())
             .then(() => {
               const domainPromises = domains.map(domain => {
                 return trx('skills').insert({
@@ -143,7 +153,24 @@ module.exports = function initialize(params) {
                   type: 'position'
                 });
               });
-              return Promise.all(domainPromises.concat(positionPromises));
+              const specialSkillPromises = specialSkills.map(skill => {
+                return trx('user_special_skills').insert({
+                  user_id: user.id,
+                  heading: skill
+                });
+              });
+              const educationPromises = educations.map(education => {
+                return trx('user_educations').insert({
+                  user_id: user.id,
+                  data: education
+                });
+              });
+              return Promise.all(
+                domainPromises
+                  .concat(positionPromises)
+                  .concat(specialSkillPromises)
+                  .concat(educationPromises)
+              );
             });
         })
       }).then(resp => {
@@ -245,9 +272,7 @@ module.exports = function initialize(params) {
         loggedIn,
         req.query.limit,
         req.query.offset,
-        req.query.domain,
-        req.query.position,
-        req.query.location,
+        req.query || {}, // get filters from query object
         req.query.order
       ))
       .then(users => res.json(users))

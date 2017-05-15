@@ -149,10 +149,12 @@ update msg model =
                   UserMessage (User.initTasks userId)
 
             ListUsers ->
-              let newListUsers = State.ListUsers.init
-              in
-                initWithUpdateMessage { modelWithRoute | listUsers = newListUsers }
+              let
+                newListUsers = State.ListUsers.init
+                (newModel, cmd) = initWithUpdateMessage { modelWithRoute | listUsers = newListUsers }
                   ListUsersMessage (ListUsers.initTasks newListUsers)
+              in
+                newModel ! [ cmd, ListUsers.typeaheads newModel.listUsers model.config ]
 
             LoginNeeded _ ->
               modelWithRoute ! [ animation ("login-needed-canvas", False) ]
@@ -332,10 +334,18 @@ subscriptions model =
           Sub.map ListUsersMessage (footerAppeared (always ListUsers.FooterAppeared))
         _ ->
           Sub.none
+
+    typeaheadInUsersListener =
+      case model.route of
+        ListUsers ->
+          Sub.map ListUsersMessage ListUsers.subscriptions
+        _ ->
+          Sub.none
   in
     Sub.batch
       [ Sub.map ProfileMessage (Profile.subscriptions model.profile)
       , footerListener
+      , typeaheadInUsersListener
       ]
 
 -- VIEW
