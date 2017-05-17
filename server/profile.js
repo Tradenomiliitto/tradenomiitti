@@ -312,8 +312,15 @@ module.exports = function initialize(params) {
 
         return util.formatUser(user, loggedIn);
       }).then(user => {
-        return service.profileSkills(user.id).then(skills => {
+        const promises = [
+          service.profileSkills(user.id),
+          service.profileSpecialSkills(user.id),
+          service.profileEducations(user.id),
+        ];
+        return Promise.all(promises).then(([ skills, specialSkills, educations ]) => {
           util.patchSkillsToUser(user, skills);
+          user.education = educations;
+          user.special_skills = specialSkills;
 
           return user
         });
