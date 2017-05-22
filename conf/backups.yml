@@ -1,0 +1,53 @@
+---
+- hosts: [ prod ]
+  remote_user: ubuntu
+  become: yes
+  tasks:
+    - name: setup cron job to run pg_dump
+      cron:
+        user: postgres
+        hour: "2"
+        minute: "0"
+        name: dump_db
+        job: pg_dump --clean tradenomiitti >/tmp/dbdump
+
+    - name: setup cron job to tar up images
+      cron:
+        user: ubuntu
+        hour: "2"
+        minute: "0"
+        name: tar_images
+        job: tar czfP /tmp/images.tar.gz /srv/static/images
+
+
+- hosts: qa
+  remote_user: ubuntu
+  become: no
+  tasks:
+    - name: create or read ssh public key
+      shell: "(test -f ~/.ssh/id_rsa.pub || ssh-keygen -N '' -f .ssh/id_rsa &>/dev/null); cat ~/.ssh/id_rsa.pub"
+      register: public_key
+
+    - name: setup cron to download database dump and images
+      cron:
+        user: ubuntu
+        hour: "3"
+        minute: "0"
+        name: download backups
+        job: scp {{ hostvars[groups['prod'][0]].server_name }}:/tmp/images.tar.gz {{ hostvars[groups['prod'][0]].server_name }}:/tmp/dbdump /home/ubuntu && mkdir -p backups && mv --backup=numbered images.tar.gz dbdump backups
+
+- hosts: [ prod ]
+  remote_user: ubuntu
+  tasks:
+    - name: Add authorized key from qa
+      authorized_key:
+        user: ubuntu
+        state: present
+        key: "{{ hostvars[ groups['qa'][0] ].public_key.stdout }}"
+
+- hosts: [ qa ]
+  remote_user: ubuntu
+  tasks:
+    - name: approve host key
+      command: ssh -oStrictHostKeyChecking=no {{ hostvars[groups['prod'][0]].server_name }}
+
