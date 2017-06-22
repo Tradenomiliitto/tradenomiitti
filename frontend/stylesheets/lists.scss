@@ -81,7 +81,7 @@
     @include shadow;
     background-color: $white;
     &-heading {
-      color: $pink;
+      color: $primary;
       @include gotham-bold;
       margin-top: 10px;
     }
@@ -99,7 +99,7 @@
         margin-right: 4px;
       }
       & svg {
-        fill: $pink;
+        fill: $primary;
         width: 37px;
       }
     }

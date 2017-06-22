@@ -1,13 +1,16 @@
-//color definitions
+// Individual colors
+
 $pink: #ff6889;
+$light-pink: #ff96ad;
+
 $green:  rgb(74, 97, 97);
-$light-green: #5f7d7d;
-$medium-grey: rgb(207, 208, 207);
-$dark-grey: rgb(99, 99, 99);
+$light-green: rgb(95, 125, 125);
+
+//$light-green: #5f7d7d;
 
 $light-grey: rgb(241, 241, 241);
-$light-green: rgb(95, 125, 125);
-$light-pink: #ff96ad;
+$medium-grey: rgb(207, 208, 207);
+$dark-grey: rgb(99, 99, 99);
 
 $white: #FFF;
 $black: #000;
@@ -15,3 +18,15 @@ $black: #000;
 $light-grey-background: #fbfbfb;
 
 $inactive-grey: #cecece;
+
+
+// Main color definitions
+
+$primary: $pink;
+$light-primary: $light-pink;
+
+$secondary1: $green;
+$light-secondary1: $light-green;
+
+$secondary2: $white;
+

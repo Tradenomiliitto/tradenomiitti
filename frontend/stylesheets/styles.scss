@@ -33,7 +33,7 @@ body {
   }
   z-index: 10;
   border: 1px solid $white;
-  background-color: $pink;
+  background-color: $primary;
   &__animation {
     height: 100vh;
     width: 100vw;
@@ -87,7 +87,7 @@ body {
   top: 0;
   left: 0;
   z-index: 9001;
-  background-color: $pink;
+  background-color: $primary;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -119,7 +119,7 @@ body {
 div#not-implemented {
   padding: 100px;
   font-size: large;
-  color: $pink;
+  color: $primary;
   text-align: center;
 }
 
@@ -131,7 +131,7 @@ div#not-implemented {
 }
 
 .loader {
-  @include loader($white, $pink, 10em);
+  @include loader($white, $primary, 10em);
 }
 
 .home__list-users .user-card {
@@ -144,7 +144,7 @@ div#not-implemented {
   margin-top: 25px;
 
   & .author-info__pic {
-    @include round-profile-pic(60px, $pink); // Override with bigger picture
+    @include round-profile-pic(60px, $primary); // Override with bigger picture
   }
   & .author-info__info {
     width: calc(100% - 60px - 15px); // override

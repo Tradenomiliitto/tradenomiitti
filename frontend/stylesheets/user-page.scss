@@ -39,10 +39,10 @@
   }
   &__pic {
     $size: 90px;
-    @include round-profile-pic($size, $pink);
+    @include round-profile-pic($size, $primary);
   }
   &__businesscard-view-pic {
-    @include round-profile-pic(60px, $pink);
+    @include round-profile-pic(60px, $primary);
   }
   &__editing-name-details {
     flex-grow: 1;
@@ -66,9 +66,9 @@
     @include gotham-bold;
   }
   &__work-details {
-    color: $pink;
+    color: $primary;
     & input {
-      @include placeholder-color-pink;
+      @include placeholder-color-primary;
     }
     font-weight: bold;
   }
@@ -81,7 +81,7 @@
       width: 100% !important;
       height: 90px;
       padding: 8px;
-      border: 2px solid $pink;
+      border: 2px solid $primary;
     }
   }
 
@@ -120,7 +120,7 @@
       }
 
       &-remove {
-        color: $pink;
+        color: $primary;
         cursor: pointer;
       }
 
@@ -173,7 +173,7 @@
         padding-right: 10px;
       }
       &-delete {
-        color: $pink;
+        color: $primary;
         cursor: pointer;
       }
     }
@@ -213,7 +213,7 @@
       padding: 15px;
       @include shadow;
       &-heading {
-        color: $pink;
+        color: $primary;
         @include gotham-bold;
       }
       &-content {}
@@ -222,7 +222,7 @@
       }
       &-profile {
         &-pic {
-          @include round-profile-pic(40px, $pink);
+          @include round-profile-pic(40px, $primary);
         }
         &-info {
           display: inline-block;
@@ -235,7 +235,7 @@
         }
         &-title {
           font-weight: bold;
-          color: $pink;
+          color: $primary;
         }
       }
     }
@@ -244,7 +244,7 @@
       &:hover,
       &:active,
       &:focus {
-        color: $pink;
+        color: $primary;
         height: 1.4em;
         background-color: transparent;
         float: right;
@@ -269,7 +269,7 @@
     margin-right: auto;
     &-icon {
       width: 40px;
-      fill: $pink;
+      fill: $primary;
       display: inline-block;
       vertical-align: middle;
     }

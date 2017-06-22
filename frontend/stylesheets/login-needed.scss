@@ -14,7 +14,7 @@
   &__box {
     z-index: 10;
     margin-top: $content-top-margin;
-    border: 1px solid $pink;
+    border: 1px solid $primary;
     padding: 60px 80px;
     text-align: center;
     background-color: $white;
@@ -22,7 +22,7 @@
     & > h1 {
       @include gotham-bold;
       text-transform: uppercase;
-      color: $pink;
+      color: $primary;
       margin-bottom: 20px;
     }
     & > p {

@@ -25,7 +25,7 @@
       @include gotham-bold;
       text-transform: uppercase;
       font-size: 42px;
-      color: $pink
+      color: $primary
     }
     &--content {
       margin-top: 40px;
@@ -133,7 +133,7 @@
     }
     &-info {
       &--header {
-        color: $pink;
+        color: $primary;
         @include gotham-bold;
         text-transform: uppercase;
         font-size: 42px;

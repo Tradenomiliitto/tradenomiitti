@@ -18,13 +18,13 @@ export default function getStyleValues() {
   const styleValueInPx = getStyleRuleValue('height', '#navbar-height-to-js');
 
   const navbarHeight = Number(styleValueInPx.replace(/[^\d]+/, ''))
-  const pink = getStyleRuleValue('color', '#pink-to-js');
+  const primary = getStyleRuleValue('color', '#primary-to-js');
   const green = getStyleRuleValue('color', '#green-to-js');
   const white = getStyleRuleValue('color', '#white-to-js');
 
   return {
     navbarHeight,
-    pink,
+    primary,
     green,
     white
   };

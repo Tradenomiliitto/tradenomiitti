@@ -16,9 +16,9 @@
 
   &__heading {
     &-input {
-      color: $pink;
+      color: $primary;
       & textarea {
-        @include placeholder-color-pink;
+        @include placeholder-color-primary;
       }
       @include gotham-bold;
       margin-bottom: 0;

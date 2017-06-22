@@ -45,7 +45,7 @@
         @include button-paddings;
         background-color: $white !important;
         box-shadow: unset !important;
-        color: $pink !important;
+        color: $primary !important;
         @include gotham-bold;
         text-transform: uppercase;
       }

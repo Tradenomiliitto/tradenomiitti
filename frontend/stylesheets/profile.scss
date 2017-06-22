@@ -6,7 +6,7 @@
       padding-bottom: 50px;
       &--title {
         text-transform: uppercase;
-        color: $pink;
+        color: $primary;
         font-size: 36px;
         @include gotham-bold;
         margin-bottom: 50px;
@@ -23,7 +23,7 @@
         padding: 8px $padding $padding $padding;
         &--heading {
           @include gotham-bold;
-          color: $pink;
+          color: $primary;
           text-transform: uppercase;
         }
         &-definitions {
@@ -66,7 +66,7 @@
       padding-bottom: 100px;
 
       &--header {
-        color: $pink;
+        color: $primary;
         text-transform: uppercase;
         @include gotham-bold;
       }
@@ -87,7 +87,7 @@
         &--title {
           @include gotham-bold;
           text-transform: uppercase;
-          color: $pink;
+          color: $primary;
         }
         &--text {
           margin-top: 30px;
@@ -145,7 +145,7 @@
       margin-right: 35px;
       font-weight: bold;
       cursor: pointer;
-      color: $pink;
+      color: $primary;
       display: inline;
       vertical-align: middle;
       &--active {
@@ -209,7 +209,7 @@
     text-align: left;
 
     &--name-work--input {
-      @include placeholder-color-pink;
+      @include placeholder-color-primary;
       padding: 5px;
       width: 100%;
     }
@@ -227,7 +227,7 @@
       input {
         width: calc(100% - 30px);
         font-size: 12px;
-        @include placeholder-color-pink;
+        @include placeholder-color-primary;
       }
       svg {
         position: relative;
@@ -247,12 +247,12 @@
         }
       }
       &--filled {
-        color: $pink;
+        color: $primary;
         svg {
-          fill: $pink;
+          fill: $primary;
         }
         hr {
-        border-top: 1px solid $pink !important;
+        border-top: 1px solid $primary !important;
         }
       }
     }
@@ -272,7 +272,7 @@
           @include gotham-bold;
         }
         h5 {
-          color: $pink;
+          color: $primary;
           @include gotham-bold;
         }
       }

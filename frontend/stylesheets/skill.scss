@@ -8,7 +8,7 @@
   }
 
   &__level-text {
-    color: $pink;
+    color: $primary;
     font-weight: bold;
   }
 
@@ -42,7 +42,7 @@
       }
 
       &--filled {
-        background-color: $pink;
+        background-color: $primary;
       }
       &--unfilled {
         background-color: #CCC;
@@ -53,7 +53,7 @@
     }
 
     &--filled {
-      background-color: $pink;
+      background-color: $primary;
       @include circle(16px);
     }
     &--unfilled {
@@ -61,7 +61,7 @@
       @include circle(16px);
     }
     &--active {
-      background-color: $pink;
+      background-color: $primary;
       @include circle(22px);
     }
   }
@@ -71,7 +71,7 @@
     top: 1em;
     text-align: center;
     &-icon {
-      color: $pink;
+      color: $primary;
       cursor: pointer;
     }
   }

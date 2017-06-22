@@ -40,12 +40,12 @@
     }
   }
   &__sending {
-    @include loader($pink, $light-grey-background, 4em);
+    @include loader($primary, $light-grey-background, 4em);
   }
   &__answers {
     margin-top: 70px;
     &-icon {
-      color: $pink;
+      color: $primary;
       background-color: $white;
       padding-bottom: 20px;
       position: absolute;
@@ -72,10 +72,10 @@
     &-row {
       margin-top: 30px;
       &--left {
-        border-right: 2px solid $pink;
+        border-right: 2px solid $primary;
       }
       &--right {
-        border-left: 2px solid $pink;
+        border-left: 2px solid $primary;
       }
     }
     &-delete {
@@ -95,7 +95,7 @@
     font-weight: bold;
   }
   &__domains {
-    color: $pink;
+    color: $primary;
     font-weight: bold;
   }
 }
