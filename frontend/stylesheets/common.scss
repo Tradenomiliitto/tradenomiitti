@@ -54,7 +54,7 @@ $padding-before-footer-mobile: 35px;
 
 #navbar-height-to-js { height: $navbar-height; }
 #primary-to-js { color: $primary; }
-#green-to-js { color: $green; }
+#secondary-to-js { color: $secondary; }
 #white-to-js { color: $white; }
 
 
@@ -91,7 +91,7 @@ $padding-before-footer-mobile: 35px;
   text-transform: uppercase;
   margin-bottom: 50px;
   margin-top: $basic-header-margin-top;
-  color: $green;
+  color: $secondary;
   @media (max-width: $screen-xs-max) {
     font-size: 24px;
   }

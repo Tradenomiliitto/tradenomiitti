@@ -33,7 +33,7 @@
 
   &__sorter-button {
     &--active {
-      background-color: $green !important;
+      background-color: $secondary !important;
       opacity: 1.0 !important;
     }
 
@@ -42,7 +42,7 @@
     &:focus,
     &:active {
       opacity: 0.8;
-      background-color: $light-green;
+      background-color: $light-secondary;
       color: $white;
       @include gotham-bold;
       text-transform: uppercase;
