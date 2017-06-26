@@ -198,6 +198,8 @@ app.get('/api/tehtavaluokat', (req, res) => {
 
 app.get('/api/toimialat', (req, res) => {
     const domains = [
+      "Tilitoimistot",
+      "Turvallisuusala",
       "Tukku- ja vähittäiskauppa",
       "Kuljetus ja varastointi",
       "Viestintätoimistot",
