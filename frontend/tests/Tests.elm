@@ -11,37 +11,45 @@ import Util exposing (truncateContent)
 all : Test
 all =
     describe "All"
-        [ describe "Fuzz test chunking algorithm"
-            [ fuzz (list int) "Elements stay in same order for chunk3" <|
-                \aList ->
-                    List.concat (chunk3 aList) |> Expect.equal aList
-            , fuzz (list int) "Elements stay in same order for chunk2" <|
-                \aList ->
-                    List.concat (chunk2 aList) |> Expect.equal aList
-            ]
-        , describe "Fuzz test truncation algorithm"
-          [ fuzz (tuple (string, int)) "original starts with truncation minus ellipsis and whitespace" <|
-              \ (str, numChars) ->
-              let
-                strippedWhiteSpace = str
-                  |> normalize
-                truncated = truncateContent str numChars
-                  |> normalize
-              in
-                String.startsWith truncated strippedWhiteSpace
-                  |> Expect.true ("'" ++ strippedWhiteSpace ++ "' should start with '" ++ truncated ++ "'")
-          , test "known string" <|
-            \ () ->
-              let
-                knownString = "word word LONGLONGLONGWORD short" |> normalize
-                truncated =
-                  truncateContent knownString 17
-                    |> normalize
-              in
-                String.startsWith truncated knownString
-                  |> Expect.true ("'" ++ knownString ++ "' should start with '" ++ truncated ++ "'")
-          ]
-        ]
+      [ chunkingAlgorithm
+      , truncationAlgorithm
+      ]
+
+chunkingAlgorithm : Test
+chunkingAlgorithm =
+  describe "Fuzz test chunking algorithm"
+    [ fuzz (list int) "Elements stay in same order for chunk3" <|
+        \aList ->
+            List.concat (chunk3 aList) |> Expect.equal aList
+    , fuzz (list int) "Elements stay in same order for chunk2" <|
+        \aList ->
+            List.concat (chunk2 aList) |> Expect.equal aList
+    ]
+
+truncationAlgorithm : Test
+truncationAlgorithm =
+  describe "Fuzz test truncation algorithm"
+    [ fuzz (tuple (string, int)) "original starts with truncation minus ellipsis and whitespace" <|
+        \ (str, numChars) ->
+        let
+          strippedWhiteSpace = str
+            |> normalize
+          truncated = truncateContent str numChars
+            |> normalize
+        in
+          String.startsWith truncated strippedWhiteSpace
+            |> Expect.true ("'" ++ strippedWhiteSpace ++ "' should start with '" ++ truncated ++ "'")
+    , test "known string" <|
+      \ () ->
+        let
+          knownString = "word word LONGLONGLONGWORD short" |> normalize
+          truncated =
+            truncateContent knownString 17
+              |> normalize
+        in
+          String.startsWith truncated knownString
+            |> Expect.true ("'" ++ knownString ++ "' should start with '" ++ truncated ++ "'")
+    ]
 
 normalize : String -> String
 normalize string =
