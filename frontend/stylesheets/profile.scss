@@ -218,6 +218,9 @@
       @include gotham-bold;
       &-icon {
         width: 20px;
+        @include ie-only {
+          height: 20px; // not exactly correct, but good enough for IE
+        }
         font-size: 18px;
         margin-right: 10px;
         display: inline-block;
