@@ -86,8 +86,7 @@ $navbar-element-height: 35px;
     float: right;
   }
 
-  // IE fix
-  @media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
+  @include ie-only {
     &-pic {
       float: none;
       vertical-align: middle;
