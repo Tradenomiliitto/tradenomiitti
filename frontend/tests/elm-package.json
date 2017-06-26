@@ -12,6 +12,7 @@
     "dependencies": {
         "Bogdanp/elm-querystring": "1.0.0 <= v < 2.0.0",
         "NoRedInk/elm-decode-pipeline": "3.0.0 <= v < 4.0.0",
+        "eeue56/elm-html-test": "2.0.0 <= v < 3.0.0",
         "elm-community/elm-test": "3.1.0 <= v < 4.0.0",
         "elm-community/json-extra": "2.1.0 <= v < 3.0.0",
         "elm-community/list-extra": "6.0.0 <= v < 7.0.0",

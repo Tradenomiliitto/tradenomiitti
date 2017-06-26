@@ -1,10 +1,14 @@
 module Tests exposing (..)
 
-import Test exposing (..)
-import Regex
+import Common exposing (chunk2, chunk3)
 import Expect
 import Fuzz exposing (list, int, tuple, string)
-import Common exposing (chunk2, chunk3)
+import Html as H
+import PlainTextFormat
+import Regex
+import Test exposing (..)
+import Test.Html.Query as Query
+import Test.Html.Selector exposing (tag)
 import Util exposing (truncateContent)
 
 
@@ -13,7 +17,28 @@ all =
     describe "All"
       [ chunkingAlgorithm
       , truncationAlgorithm
+      , urlGuessing
       ]
+
+
+urlCases : List String
+urlCases =
+    [ "Tämä on linkki https://example.com"
+    , "ja toinen linkki ilman http-alkua www.example.com"
+    , "ja vielä yksi ilman www:tä, mutta kauttaviivalla example.com/sisältö"
+    , "ja vielä taas, jossa sulkeva sulje, pilkku, tai piste ei kuulu linkkiin http://example.com/mitätahansa."
+    ]
+
+urlGuessing : Test
+urlGuessing =
+  describe "Url guessing algorithm" <|
+    List.map (\str -> test "has a single link" <|
+                \ () ->
+                H.div [] (PlainTextFormat.view str)
+                |> Query.fromHtml
+                |> Query.findAll [ tag "a" ]
+                |> Query.count (Expect.equal 1)
+             ) urlCases
 
 chunkingAlgorithm : Test
 chunkingAlgorithm =
