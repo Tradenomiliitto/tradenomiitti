@@ -27,6 +27,7 @@ urlCases =
     , "ja toinen linkki ilman http-alkua www.example.com"
     , "ja vielä yksi ilman www:tä, mutta kauttaviivalla example.com/sisältö"
     , "ja vielä taas, jossa sulkeva sulje, pilkku, tai piste ei kuulu linkkiin http://example.com/mitätahansa."
+    , "Myös alkava sulje pitäisi urlittaa (http://example.com)"
     ]
 
 urlGuessing : Test
