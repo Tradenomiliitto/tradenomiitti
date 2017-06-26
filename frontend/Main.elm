@@ -552,7 +552,11 @@ viewProfileLink model =
           [ A.href endpoint
           ])
           [ H.span
-            [ A.classList [ ("navbar__login-link", not loggedIn) ]]
+            [ A.classList
+              [ ("navbar__login-link", not loggedIn)
+              , ("navbar__profile-name", loggedIn)
+              ]
+            ]
             [ H.text linkText
             ]
           , linkGraphic
