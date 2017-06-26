@@ -26,13 +26,16 @@ view str =
         |> List.intersperse [ H.text " " ]
         |> List.concatMap identity
 
-    isUrl word =
-      [ String.startsWith "http://" word
-      , String.startsWith "https://" word
-      , String.startsWith "www." word
-      , Regex.contains (Regex.regex "\\w+\\.\\w+/\\w+") word
-      ]
-      |> List.any identity
+    isUrl wordIn =
+      let
+        word = Regex.replace Regex.All (Regex.regex "^\\(") (always "") wordIn
+      in
+        [ String.startsWith "http://" word
+        , String.startsWith "https://" word
+        , String.startsWith "www." word
+        , Regex.contains (Regex.regex "\\w+\\.\\w+/\\w+") word
+        ]
+        |> List.any identity
 
     toUrl word =
       if isUrl word
