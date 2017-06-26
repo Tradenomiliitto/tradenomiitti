@@ -8,7 +8,7 @@ import PlainTextFormat
 import Regex
 import Test exposing (..)
 import Test.Html.Query as Query
-import Test.Html.Selector exposing (tag)
+import Test.Html.Selector exposing (tag, attribute)
 import Util exposing (truncateContent)
 
 
@@ -21,24 +21,30 @@ all =
       ]
 
 
-urlCases : List String
+urlCases : List (String, String)
 urlCases =
-    [ "Tämä on linkki https://example.com"
-    , "ja toinen linkki ilman http-alkua www.example.com"
-    , "ja vielä yksi ilman www:tä, mutta kauttaviivalla example.com/sisältö"
-    , "ja vielä taas, jossa sulkeva sulje, pilkku, tai piste ei kuulu linkkiin http://example.com/mitätahansa."
-    , "Myös alkava sulje pitäisi urlittaa (http://example.com)"
+    [ ("https://example.com", "Tämä on linkki https://example.com")
+    , ("http://www.example.com", "ja toinen linkki ilman http-alkua www.example.com")
+    , ("http://example.com/sisältö", "ja vielä yksi ilman www:tä, mutta kauttaviivalla example.com/sisältö")
+    , ("http://example.com/mitätahansa", "ja vielä taas, jossa sulkeva sulje, pilkku, tai piste ei kuulu linkkiin http://example.com/mitätahansa.")
+    , ("http://example.com", "Myös alkava sulje pitäisi urlittaa (http://example.com)")
     ]
 
 urlGuessing : Test
 urlGuessing =
   describe "Url guessing algorithm" <|
-    List.map (\str -> test "has a single link" <|
+    List.map (\ (expectedUrl, str) -> test "has a single link" <|
                 \ () ->
-                H.div [] (PlainTextFormat.view str)
-                |> Query.fromHtml
-                |> Query.findAll [ tag "a" ]
-                |> Query.count (Expect.equal 1)
+                let
+                  elements =
+                    H.div [] (PlainTextFormat.view str)
+                    |> Query.fromHtml
+                    |> Query.findAll [ tag "a" ]
+                in
+                  Expect.all
+                    [ Query.count (Expect.equal 1)
+                    , Query.first >> Query.has [ attribute "href" expectedUrl ]
+                    ] elements
              ) urlCases
 
 chunkingAlgorithm : Test
