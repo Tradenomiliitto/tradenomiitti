@@ -235,12 +235,12 @@ div#not-implemented {
   width: 100%;
 }
 .algolia-autocomplete .aa-hint {
-  color: #999;
+  color: $medium-dark-grey;
 }
 .algolia-autocomplete .aa-dropdown-menu {
   width: 100%;
-  background-color: #fff;
-  border: 1px solid #999;
+  background-color: $white;
+  border: 1px solid $medium-dark-grey;
   border-top: none;
   max-height: 250px;
   overflow-y: auto;
@@ -250,7 +250,7 @@ div#not-implemented {
   padding: 5px 4px 5px 20px;
 }
 .algolia-autocomplete .aa-dropdown-menu .aa-suggestion.aa-cursor {
-  background-color: #B2D7FF;
+  background-color: $light-blue;
 }
 .aa-category {
   @include gotham-bold;

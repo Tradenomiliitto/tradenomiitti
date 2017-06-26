@@ -64,15 +64,15 @@ $padding-before-footer-mobile: 35px;
 }
 
 //fonts
-@font-face  {
-  font-family: mundoSansRegular;
-  src: url("/static/MundoSansStd.otf");
-}
+// @font-face  {
+//   font-family: mundoSansRegular;
+//   src: url("/static/MundoSansStd.otf");
+// }
 
-@font-face  {
-  font-family: mundoSansLightItalic;
-  src: url("/static/MundoSansStd-LightItalic.otf");
-}
+// @font-face  {
+//   font-family: mundoSansLightItalic;
+//   src: url("/static/MundoSansStd-LightItalic.otf");
+// }
 
 @mixin round-profile-pic($diameter, $color) {
   width: $diameter;
@@ -196,17 +196,17 @@ $padding-before-footer-mobile: 35px;
 
 @mixin placeholder-color-primary {
   &::-webkit-input-placeholder {
-    color: lighten($primary, 15%);
+    color: $lighter-primary;
 
   }
 
   &::-moz-placeholder {
-    color: lighten($primary, 15%);
+    color: $lighter-primary;
     opacity: 1;
   }
 
   &:-ms-input-placeholder {
-    color: lighten($primary, 15%);
+    color: $lighter-primary;
   }
 }
 

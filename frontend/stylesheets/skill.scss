@@ -45,10 +45,10 @@
         background-color: $primary;
       }
       &--unfilled {
-        background-color: #CCC;
+        background-color: $medium-grey;
       }
       &--active {
-        background-color: #CCC;
+        background-color: $medium-grey;
       }
     }
 
@@ -57,7 +57,7 @@
       @include circle(16px);
     }
     &--unfilled {
-      background-color: #CCC;
+      background-color: $medium-grey;
       @include circle(16px);
     }
     &--active {

@@ -1,29 +1,29 @@
-// Individual colors
+// Individual color definitions
 
 $pink: #ff6889;
-$light-pink: #ff96ad;
 
-$green:  rgb(74, 97, 97);
-$light-green: rgb(95, 125, 125);
+$green:  #4a6161;
 
-//$light-green: #5f7d7d;
+$light-blue: #b2d7ff;
 
-$light-grey: rgb(241, 241, 241);
-$medium-grey: rgb(207, 208, 207);
-$dark-grey: rgb(99, 99, 99);
-
-$white: #FFF;
+$white: #fff;
+$lighter-grey: #fbfbfb;
+$light-grey: #f1f1f1;
+$medium-grey: #cfcfcf;
+$medium-dark-grey: #999;
+$dark-grey: #636363;
 $black: #000;
-
-$light-grey-background: #fbfbfb;
-
-$inactive-grey: #cecece;
 
 
 // Main color definitions
+// Define the 2-color theme here
 
 $primary: $pink;
-$light-primary: $light-pink;
-
 $secondary: $green;
-$light-secondary: $light-green;
+
+// Derived lighter colors
+
+$light-primary: lighten($primary, 9%);
+$lighter-primary: lighten($primary, 15%);
+
+$light-secondary: lighten($secondary, 9%);

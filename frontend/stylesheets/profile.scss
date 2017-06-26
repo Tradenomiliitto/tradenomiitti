@@ -238,12 +238,12 @@
         margin-bottom: 10px;
       }
       &--empty {
-        color: $inactive-grey;
+        color: $medium-grey;
         svg {
-          fill: $inactive-grey;
+          fill: $medium-grey;
         }
         hr {
-        border-top: 1px solid $inactive-grey !important;
+        border-top: 1px solid $medium-grey !important;
         }
       }
       &--filled {

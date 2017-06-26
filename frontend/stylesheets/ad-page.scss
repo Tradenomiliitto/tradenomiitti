@@ -4,7 +4,7 @@
   &__ad {
     &-container {
       @include shadow;
-      background-color: $light-grey-background;
+      background-color: $lighter-grey;
     }
     background-color: $white;
     padding: $padding;
@@ -40,7 +40,7 @@
     }
   }
   &__sending {
-    @include loader($primary, $light-grey-background, 4em);
+    @include loader($primary, $lighter-grey, 4em);
   }
   &__answers {
     margin-top: 70px;
