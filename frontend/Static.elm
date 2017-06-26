@@ -52,8 +52,10 @@ registerDescriptionTexts =
   , ("Rekisterin nimi"
     , [ "Tradenomiitti.fi –palvelun käyttäjärekisteri" ])
   , ("Henkilötietojen käsittelyn tarkoitus"
-    , [ "Tradenomiitti on Tradenomiliiton jäsenille suunnattu verkkopalvelu, johon kirjaudutaan jäsennumerolla Jäsenpalvelujen toimittaminen Palvelun jatkokehittäminen "
-      , " Henkilötietoja käsitellään henkilötietolain sallimissa ja velvoittamissa rajoissa palvelun tuottamisessa. " ])
+    , [ "Tradenomiitti on Tradenomiliiton jäsenille suunnattu verkkopalvelu, johon kirjaudutaan jäsennumerolla."
+      , "Jäsenpalvelujen toimittaminen"
+      , "Palvelun jatkokehittäminen"
+      , "Henkilötietoja käsitellään henkilötietolain sallimissa ja velvoittamissa rajoissa palvelun tuottamisessa. " ])
   , ("Rekisterin tietosisältö"
     , [ " Käyttäjien palveluun syöttämät tiedot, kuten nimi, yhteys-, työpaikka-, kokemus- ja työnantajatiedot sekä käyttäjän jättämät ilmoitukset ja vastaukset ilmoituksiin. "
       , " Käyttäjän nimimerkki ja profiilikuva on saatavilla vain muille kirjautuneille käyttäjille. Käyttäjä määrittelee itse, mitä yhteystietoja haluaa jakaa ja kenelle. Kirjautumaton käyttäjä näkee profiilit ja jätetyt ilmoitukset anonyymeina. "
