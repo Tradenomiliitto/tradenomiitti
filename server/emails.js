@@ -146,7 +146,7 @@ module.exports = function init(params) {
     <img style="width: 45px;" src="cid:logo.png" alt="logo" />
     <h1 style="margin-bottom: 50px; color: ${scssVars.$pink}">Olet saanut uuden kontaktin</h1>
     <p>Toinen tradenomi on antanut sinulle käyntikorttinsa Tradenomiitti-palvelussa. Voitte nyt olla yhteydessä ja jakaa osaamistanne vaikka kasvotusten.</p>
-    <p>Profiili-sivun kautta voit lähettää oman käyntikorttisi</p>
+    <p>Profiilisivun kautta voit lähettää oman käyntikorttisi.</p>
     <p style="margin-top: 80px;">
       <a style="font-weight: bold; text-transform: uppercase; background-color: ${scssVars.$pink}; padding-left: 45px; padding-right: 45px; padding-top: 25px; padding-bottom: 25px; color: ${scssVars.$white}; text-decoration: none;" href="https://${serviceDomain}/tradenomit/${user.id}">Katso profiili</a>
     </p>
