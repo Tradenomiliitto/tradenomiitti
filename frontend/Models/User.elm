@@ -58,6 +58,7 @@ type alias User =
   , contacted : Bool
   , education : List Education
   , isAdmin : Bool
+  , memberId : Maybe Int
   }
 
 type alias Education =
@@ -96,6 +97,7 @@ userDecoder =
     |> P.optional "contacted" Json.bool False
     |> P.required "education" (Json.list educationDecoder)
     |> P.optional "is_admin" Json.bool False
+    |> P.optional "member_id" (Json.map Just Json.int) Nothing
 
 encode : User -> JS.Value
 encode user =

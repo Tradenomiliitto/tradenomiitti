@@ -611,6 +611,7 @@ userInfoBox model user =
         ]
       ]
     , userDescription model user
+    , userIdForAdmins user
     ]
 
 
@@ -630,6 +631,11 @@ userDescription model user =
           H.span [] <| PlainTextFormat.view user.description
       ]
     ]
+
+userIdForAdmins user =
+  user.memberId
+    |> Maybe.map (\id -> H.p [] [ H.text <| "Jäsentunniste: " ++ toString id ])
+    |> Maybe.withDefault (H.div [] [])
 
 location : Model -> User -> H.Html Msg
 location model user =
