@@ -4,6 +4,7 @@ const request = require('request-promise-native');
 module.exports = function initialize(params) {
 
   const disable = params.disable;
+  const adminGroup = params.adminGroup;
 
   function url() {
     return `https://voltage.sebacon.net/SebaconAPI/?auth=${params.auth}`;
@@ -98,6 +99,13 @@ module.exports = function initialize(params) {
     return getObject(id, 'getOrganisationObject');
   }
 
+  function isAdmin(id) {
+    if (!adminGroup) return Promise.resolve(false);
+
+    return getObject(id, 'getData')
+      .then(o => o.result.groups.includes(adminGroup));
+  }
+
   function getObject(id, method) {
     return request.post({
       url: url(),
@@ -169,6 +177,7 @@ module.exports = function initialize(params) {
     getUserPhoneNumber,
     getPositionTitles,
     getUserGeoArea,
-    getDomainTitles
+    getDomainTitles,
+    isAdmin
   }
 }

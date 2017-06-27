@@ -28,10 +28,11 @@ module.exports = function initialize(params) {
           service.profileSkills(user.id),
           service.profileSpecialSkills(user.id),
           service.profileEducations(user.id),
+          sebacon.isAdmin(user.remote_id),
           user
         ])
       })
-      .then(([ firstname, nickname, lastname, { positions, domains }, email, phone, geoArea, skills, specialSkills, educations, databaseUser ]) => {
+      .then(([ firstname, nickname, lastname, { positions, domains }, email, phone, geoArea, skills, specialSkills, educations, isAdmin, databaseUser ]) => {
         const user = util.formatUser(databaseUser, true);
 
         if (!databaseUser.data.business_card) {
@@ -50,6 +51,9 @@ module.exports = function initialize(params) {
           phone,
           geo_area: geoArea
         }
+
+        user.is_admin = isAdmin;
+
         if (databaseUser.data.picture_editing)
           user.picture_editing = databaseUser.data.picture_editing;
 

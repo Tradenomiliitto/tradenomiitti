@@ -4,6 +4,7 @@ module.exports = function initialize(params) {
   const knex = params.knex;
   const emails = params.emails;
   const service = require('./services/ads')({ knex, util });
+  const sebacon = params.sebacon;
 
   function createAd(req, res, next) {
     if (!req.session || !req.session.id) {
@@ -81,10 +82,17 @@ module.exports = function initialize(params) {
 
   function findRowUserCanDelete(req, table) {
     return util.userForSession(req).then(user => {
-      return knex(table).where({
-        user_id: user.id, // if it's not their own row, don't delete it
-        id: req.params.id
-      });
+      return sebacon.isAdmin(user.remote_id).then(isAdmin => {
+        if (isAdmin)
+          return knex(table).where({
+            id: req.params.id
+          });
+        else
+          return knex(table).where({
+            user_id: user.id, // if it's not their own row, don't delete it
+            id: req.params.id
+        });
+      })
     })
   }
 

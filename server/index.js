@@ -51,6 +51,7 @@ const sebaconAuth = process.env.SEBACON_AUTH;
 const sebaconCustomer = process.env.SEBACON_CUSTOMER;
 const sebaconUser = process.env.SEBACON_USER;
 const sebaconPassword = process.env.SEBACON_PASSWORD;
+const adminGroup = process.env.ADMIN_GROUP;
 if ((!sebaconAuth ||
     !sebaconCustomer ||
     !sebaconUser ||
@@ -61,7 +62,8 @@ if ((!sebaconAuth ||
 const sebacon = require('./sebaconService')({
   customer: sebaconCustomer, user: sebaconUser,
   password: sebaconPassword, auth: sebaconAuth,
-  disable: disableSebacon
+  disable: disableSebacon,
+  adminGroup
 });
 
 const smtpHost = process.env.SMTP_HOST;
@@ -87,7 +89,7 @@ const emails = require('./emails')({ smtp, mailFrom, staticDir, serviceDomain, u
 
 const logon = require('./logonHandling')({ communicationsKey, knex, sebacon });
 const profile = require('./profile')({ knex, sebacon, util, userImagesPath, emails});
-const ads = require('./ads')({ util, knex, emails });
+const ads = require('./ads')({ util, knex, emails, sebacon });
 const adNotifications = require('./adNotifications')({ emails, knex, util })
 
 const urlEncoded = bodyParser.urlencoded({extended: true});

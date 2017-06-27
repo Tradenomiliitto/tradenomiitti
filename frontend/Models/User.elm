@@ -57,6 +57,7 @@ type alias User =
   , businessCard : Maybe BusinessCard
   , contacted : Bool
   , education : List Education
+  , isAdmin : Bool
   }
 
 type alias Education =
@@ -94,6 +95,7 @@ userDecoder =
     |> P.optional "business_card" (Json.map Just businessCardDecoder) Nothing
     |> P.optional "contacted" Json.bool False
     |> P.required "education" (Json.list educationDecoder)
+    |> P.optional "is_admin" Json.bool False
 
 encode : User -> JS.Value
 encode user =
@@ -222,3 +224,10 @@ educationDecoder =
     |> P.optional "degree" (Json.map Just Json.string) Nothing
     |> P.optional "major" (Json.map Just Json.string) Nothing
     |> P.optional "specialization" (Json.map Just Json.string) Nothing
+
+
+isAdmin : Maybe User -> Bool
+isAdmin userMaybe =
+  userMaybe
+    |> Maybe.map .isAdmin
+    |> Maybe.withDefault False

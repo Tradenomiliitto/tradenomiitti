@@ -121,7 +121,7 @@ view userMaybe index ad model =
           ]
         ]
   in
-    if Maybe.map .id userMaybe == Just ad.createdBy.id then
+    if Models.User.isAdmin userMaybe || Maybe.map .id userMaybe == Just ad.createdBy.id then
       [ H.div
         [ A.class "removal" ]
         [ if not isBeingRemoved
