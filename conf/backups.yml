@@ -24,8 +24,11 @@
   remote_user: ubuntu
   become: no
   tasks:
-    - name: create or read ssh public key
-      shell: "(test -f ~/.ssh/id_rsa.pub || ssh-keygen -N '' -f .ssh/id_rsa &>/dev/null); cat ~/.ssh/id_rsa.pub"
+    - name: create a new ssh key if it doesn't exist
+      shell: "test -f ~/.ssh/id_rsa.pub || ssh-keygen -N '' -f .ssh/id_rsa &>/dev/null"
+
+    - name: output the ssh public key
+      shell: "cat ~/.ssh/id_rsa.pub"
       register: public_key
 
     - name: setup cron to download database dump and images
@@ -39,7 +42,7 @@
 - hosts: [ prod ]
   remote_user: ubuntu
   tasks:
-    - name: Add authorized key from qa
+    - name: add authorized key from qa
       authorized_key:
         user: ubuntu
         state: present
