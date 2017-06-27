@@ -61,7 +61,7 @@
   },
   "devDependencies": {
     "chai": "^3.5.0",
-    "elm-test": "^0.18.2",
+    "elm-test": "=0.18.2",
     "mocha": "^3.2.0",
     "mockdate": "^2.0.1",
     "seedrandom": "^2.4.2",
