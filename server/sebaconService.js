@@ -100,7 +100,8 @@ module.exports = function initialize(params) {
   }
 
   function isAdmin(id) {
-    if (!adminGroup) return Promise.resolve(false);
+    // if sebacon is disabled or we don't have a known admin group, nobody is admin
+    if (disable || !adminGroup) return Promise.resolve(false);
 
     return getObject(id, 'getData')
       .then(o => o.result.groups.includes(adminGroup));
