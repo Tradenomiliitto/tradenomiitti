@@ -23,7 +23,9 @@
       border-radius: #{$diameter / 2};
       position: relative;
       top: -9px; // By trial and error
-
+      @include ie-only {
+        top: -11px;
+      }
     }
     display: inline-block;
     vertical-align: middle;

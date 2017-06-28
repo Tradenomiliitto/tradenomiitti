@@ -101,6 +101,8 @@
       & svg {
         fill: $pink;
         width: 37px;
+        // explicit height needed for IE
+        height: #{ 37px / $answer-icon-width-to-height-ratio };
       }
     }
     &-author-info {

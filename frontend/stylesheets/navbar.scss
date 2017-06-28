@@ -79,8 +79,21 @@ $navbar-element-height: 35px;
   }
 }
 
-.navbar__profile-pic {
-  @include round-profile-pic($navbar-element-height, $white);
-  margin-top: #{-$navbar-element-height / 4};
-  float: right;
+.navbar__profile {
+  &-pic {
+    @include round-profile-pic($navbar-element-height, $white);
+    margin-top: #{-$navbar-element-height / 4};
+    float: right;
+  }
+
+  @include ie-only {
+    &-pic {
+      float: none;
+      vertical-align: middle;
+    }
+
+    &-name {
+      vertical-align: top;
+    }
+  }
 }
