@@ -405,7 +405,7 @@ view model =
       H.div [ A.class "page-layout" ]
         [ navigation model
         , viewPage model
-        , Footer.view NewUrl
+        , Footer.view NewUrl model.profile.user
         ]
   in
     if model.initialLoading
