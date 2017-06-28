@@ -91,6 +91,7 @@ const logon = require('./logonHandling')({ communicationsKey, knex, sebacon });
 const profile = require('./profile')({ knex, sebacon, util, userImagesPath, emails});
 const ads = require('./ads')({ util, knex, emails, sebacon });
 const adNotifications = require('./adNotifications')({ emails, knex, util })
+const admin = require('./admin')({ knex, util, sebacon });
 
 const urlEncoded = bodyParser.urlencoded({extended: true});
 const jsonParser = bodyParser.json();
@@ -315,6 +316,8 @@ app.put('/api/asetukset', jsonParser, (req, res) => {
 
 app.post('/api/kontaktit/:user_id', jsonParser, profile.addContact);
 app.get('/api/kontaktit', profile.listContacts);
+
+app.get('/api/raportti', admin.report);
 
 app.post('/api/virhe', textParser, (req, res) => {
   const errorHash = logError(req, req.body);
