@@ -82,10 +82,12 @@ const smtp =
 
 const enableEmailGlobally = process.env.ENABLE_EMAIL_SENDING === 'true';
 
+const restrictToGroup = process.env.RESTRICT_TO_GROUP; // can be empty
+
 const util = require('./util')({ knex });
 const emails = require('./emails')({ smtp, mailFrom, staticDir, serviceDomain, util, enableEmailGlobally });
 
-const logon = require('./logonHandling')({ communicationsKey, knex, sebacon });
+const logon = require('./logonHandling')({ communicationsKey, knex, sebacon, restrictToGroup });
 const profile = require('./profile')({ knex, sebacon, util, userImagesPath, emails});
 const ads = require('./ads')({ util, knex, emails });
 const adNotifications = require('./adNotifications')({ emails, knex, util })
