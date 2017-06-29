@@ -45,7 +45,7 @@
     "file-type": "^4.1.0",
     "font-awesome": "^4.7.0",
     "gm": "^1.23.0",
-    "json2csv": "^3.7.4",
+    "json2csv": "^3.7.3",
     "knex": "^0.12.9",
     "lodash.groupby": "^4.6.0",
     "moment": "^2.18.1",
