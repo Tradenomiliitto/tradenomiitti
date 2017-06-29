@@ -3,10 +3,11 @@ module Footer exposing (..)
 import Common
 import Html as H
 import Html.Attributes as A
+import Models.User exposing (User)
 import Nav
 
-view : (Nav.Route -> msg) -> H.Html msg
-view routeToMsg =
+view : (Nav.Route -> msg) -> Maybe User -> H.Html msg
+view routeToMsg userMaybe =
   H.div
     [ A.class "footer" ]
     [ H.div
@@ -20,13 +21,17 @@ view routeToMsg =
               ] []
           ]
         , H.div
-          [ A.class "col-xs-12 col-sm-3" ]
+          [ A.class "col-xs-12 col-sm-3" ] <|
           [ H.p [] [ Common.link Nav.Terms routeToMsg ]
           , H.p [] [ Common.link Nav.RegisterDescription routeToMsg ]
           , H.p [] [ H.a [ A.href "http://tral.fi" ] [ H.text "tral.fi" ]]
           , H.p [] [ H.a [ A.href "http://liity.tral.fi/#liity" ] [ H.text "Liity jäseneksi" ]]
           , H.p [] [ H.a [ A.href "mailto:tradenomiitti@tral.fi" ] [ H.text "Anna palautetta" ]]
-          ]
+          ] ++ (if Models.User.isAdmin userMaybe
+               then
+                 [ H.p [ A.class "footer__admin-link" ] [ H.a [ A.href "/api/raportti" ] [ H.text "Tilastoja" ] ] ]
+               else
+                 [])
         , H.div
           [ A.class "col-xs-12 col-sm-6 footer__social-icons" ]
           [ H.a [ A.href "https://www.facebook.com/tradenomiliitto" ] [ H.i [ A.class "fa fa-facebook"] [] ]

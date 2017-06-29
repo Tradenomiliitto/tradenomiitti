@@ -28,10 +28,11 @@ module.exports = function initialize(params) {
           service.profileSkills(user.id),
           service.profileSpecialSkills(user.id),
           service.profileEducations(user.id),
+          sebacon.isAdmin(user.remote_id),
           user
         ])
       })
-      .then(([ firstname, nickname, lastname, { positions, domains }, email, phone, geoArea, skills, specialSkills, educations, databaseUser ]) => {
+      .then(([ firstname, nickname, lastname, { positions, domains }, email, phone, geoArea, skills, specialSkills, educations, isAdmin, databaseUser ]) => {
         const user = util.formatUser(databaseUser, true);
 
         if (!databaseUser.data.business_card) {
@@ -50,6 +51,9 @@ module.exports = function initialize(params) {
           phone,
           geo_area: geoArea
         }
+
+        user.is_admin = isAdmin;
+
         if (databaseUser.data.picture_editing)
           user.picture_editing = databaseUser.data.picture_editing;
 
@@ -294,23 +298,22 @@ module.exports = function initialize(params) {
                          util.loggedIn(req)
                        ])
       .then(([ user, loggedIn ]) => {
+        const formattedUser = util.formatUser(user, loggedIn)
         if (loggedIn) {
-          // this trainwreck checks whether the logged in user
-          // has shared their business card with the requested user
           return util.userForSession(req).then(loggedInUser => {
-            return knex('contacts').where({
-              from_user: loggedInUser.id,
-              to_user: user.id
-            }).then(resp => resp.length > 0)
-              .then(contactExists => {
-                const formattedUser = util.formatUser(user, loggedIn)
-                formattedUser.contacted = contactExists;
-                return formattedUser;
-              })
-          })
+            const promises = [
+              service.contactExists(loggedInUser, user),
+              sebacon.isAdmin(loggedInUser.remote_id)
+            ];
+            return Promise.all(promises).then(([ contactExists, isAdmin ]) => {
+              formattedUser.contacted = contactExists;
+              if (isAdmin) formattedUser.member_id = parseInt(user.remote_id);
+              return formattedUser;
+            });
+          });
         }
 
-        return util.formatUser(user, loggedIn);
+        return formattedUser;
       }).then(user => {
         const promises = [
           service.profileSkills(user.id),

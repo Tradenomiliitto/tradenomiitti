@@ -136,12 +136,20 @@ module.exports = function initialize(params) {
     });
   }
 
+  function contactExists(from, to) {
+    return knex('contacts').where({
+      from_user: from.id,
+      to_user: to.id
+    }).then(resp => resp.length > 0)
+  }
+
   return {
     listProfiles,
     profileSkills,
     profileEducations,
     profileSpecialSkills,
     addContact,
-    listContacts
+    listContacts,
+    contactExists
   }
 };
