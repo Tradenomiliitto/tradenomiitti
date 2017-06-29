@@ -26,29 +26,39 @@ view str =
         |> List.intersperse [ H.text " " ]
         |> List.concatMap identity
 
-    isUrl word =
-      [ String.startsWith "http://" word
-      , String.startsWith "https://" word
-      , String.startsWith "www." word
-      , Regex.contains (Regex.regex "\\w+\\.\\w+/\\w+") word
-      ]
-      |> List.any identity
+    isUrl rawWord =
+      let
+        word = Regex.replace Regex.All (Regex.regex "^\\(") (always "") rawWord
+      in
+        [ String.startsWith "http://" word
+        , String.startsWith "https://" word
+        , String.startsWith "www." word
+        , Regex.contains (Regex.regex "\\w+\\.\\w+/\\w+") word
+        ]
+        |> List.any identity
 
     toUrl word =
       if isUrl word
       then
-        splitClosingSpecialChars word
+        splitSpecialChars word
       else
         [ H.text word ]
 
-    splitClosingSpecialChars url =
+    splitSpecialChars url =
       let
-        (urlPart, otherPart) =
+        (withoutEnd, endPart) =
           if Regex.contains (Regex.regex "[.,;:)]$") url
           then
             (String.dropRight 1 url, Just <| String.right 1 url)
           else
             (url, Nothing)
+
+        (beginningPart, urlPart) =
+          if Regex.contains (Regex.regex "^\\(") withoutEnd
+          then
+            (Just <| String.left 1 withoutEnd, String.dropLeft 1 withoutEnd)
+          else
+            (Nothing, withoutEnd)
 
         urlWithGuessedHttp =
           if not (String.startsWith "http" urlPart)
@@ -57,8 +67,9 @@ view str =
           else
             urlPart
       in
-        [ Just <| H.a [ A.href urlWithGuessedHttp ] [ H.text urlPart ]
-        , Maybe.map H.text otherPart
+        [ Maybe.map H.text beginningPart
+        , Just <| H.a [ A.href urlWithGuessedHttp ] [ H.text urlPart ]
+        , Maybe.map H.text endPart
         ] |> List.filterMap identity
 
   in
