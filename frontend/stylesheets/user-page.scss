@@ -20,7 +20,7 @@
       @include button-paddings;
     }
     &-prompt {
-      @include gotham-bold;
+      @include display-font;
       font-size: 16px;
       margin-bottom: 40px;
       color: $dark-grey;
@@ -63,7 +63,7 @@
   }
 
   &__name {
-    @include gotham-bold;
+    @include display-font;
   }
   &__work-details {
     color: $primary;
@@ -99,7 +99,7 @@
       background-color: $white;
     }
     &-header {
-      @include gotham-bold;
+      @include display-font;
       text-transform: uppercase;
       margin-bottom: 25px;
     }
@@ -159,7 +159,7 @@
 
   &__competences {
     &-header {
-      @include gotham-bold;
+      @include display-font;
       text-transform: uppercase;
     }
     &-special-skills {
@@ -203,7 +203,7 @@
     padding-top: $full-width-ruler-margin-bottom;
     background-color: $light-grey;
     &-header {
-      @include gotham-bold;
+      @include display-font;
       text-transform: uppercase;
       margin-bottom: 25px;
     }
@@ -214,7 +214,7 @@
       @include shadow;
       &-heading {
         color: $primary;
-        @include gotham-bold;
+        @include display-font;
       }
       &-content {}
       > hr {
@@ -251,7 +251,7 @@
         margin-top: 30px;
         border: 0;
         padding: 0;
-        @include gotham-bold;
+        @include display-font;
         text-transform: uppercase;
         & i {
           height: 100%;
@@ -274,7 +274,7 @@
       vertical-align: middle;
     }
     &-text {
-      @include gotham-bold;
+      @include display-font;
       vertical-align: middle;
       margin-left: 15px;
     }

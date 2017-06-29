@@ -1,4 +1,5 @@
 @import 'colors';
+@import 'fonts';
 
 $content-top-margin: 70px;
 
@@ -7,8 +8,7 @@ $navbar-default-color: $white;
 $navbar-default-link-color: $navbar-default-color;
 $navbar-default-link-active-color: $white;
 $navbar-default-link-hover-color: $white;
-$font-family-sans-serif: mundoSansRegular;
-$font-size-base: 14px;
+
 $navbar-height: 66px;
 $profilebar-height: 55px;
 $profilebar-height-mobile: 77px;
@@ -58,22 +58,6 @@ $padding-before-footer-mobile: 35px;
 #white-to-js { color: $white; }
 
 
-@mixin gotham-bold {
-  font-family: "Gotham A","Gotham B",Arial,sans-serif;
-  font-weight: 700 !important;
-}
-
-//fonts
-// @font-face  {
-//   font-family: mundoSansRegular;
-//   src: url("/static/MundoSansStd.otf");
-// }
-
-// @font-face  {
-//   font-family: mundoSansLightItalic;
-//   src: url("/static/MundoSansStd-LightItalic.otf");
-// }
-
 @mixin round-profile-pic($diameter, $color) {
   width: $diameter;
   height: $diameter;
@@ -87,7 +71,7 @@ $padding-before-footer-mobile: 35px;
 }
 
 @mixin basic-header {
-  @include gotham-bold;
+  @include display-font;
   text-transform: uppercase;
   margin-bottom: 50px;
   margin-top: $basic-header-margin-top;
@@ -221,7 +205,7 @@ $padding-before-footer-mobile: 35px;
   background-color: $white;
   color: $primary;
   @include placeholder-color-primary;
-  @include gotham-bold;
+  @include display-font;
   width: 100%;
   border: 1px solid $primary;
 

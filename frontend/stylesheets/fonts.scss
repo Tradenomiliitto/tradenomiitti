@@ -1,0 +1,18 @@
+$font-family-sans-serif: mundoSansRegular;
+$font-size-base: 14px;
+$italic-font: mundoSansLightItalic;
+
+@mixin display-font {
+  font-family: "Gotham A","Gotham B",Arial,sans-serif;
+  font-weight: 700 !important;
+}
+
+@font-face  {
+  font-family: mundoSansRegular;
+  src: url("/static/MundoSansStd.otf");
+}
+
+@font-face  {
+  font-family: mundoSansLightItalic;
+  src: url("/static/MundoSansStd-LightItalic.otf");
+}

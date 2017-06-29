@@ -5,7 +5,7 @@
   }
 
   &__subsection-heading {
-    @include gotham-bold;
+    @include display-font;
     text-transform: capitalize;
     color: $primary;
   }

@@ -43,7 +43,7 @@ body {
     z-index: 2;
   }
   & h1 {
-    @include gotham-bold;
+    @include display-font;
     text-transform: uppercase;
   }
 
@@ -54,7 +54,7 @@ body {
 
   &__btn-inverse {
     @include inverse-button-colors;
-    @include gotham-bold;
+    @include display-font;
     text-transform: uppercase;
   }
   &__actionable {
@@ -77,7 +77,7 @@ body {
 }
 
 .btn-primary {
-  @include gotham-bold;
+  @include display-font;
   text-transform: uppercase;
 }
 
@@ -197,7 +197,8 @@ div#not-implemented {
   }
 
   &__tral-in-general {
-    font-family: mundoSansLightItalic;
+    font-family: $italic-font;
+    font-style: italic;
   }
 }
 
@@ -253,7 +254,7 @@ div#not-implemented {
   background-color: $light-blue;
 }
 .aa-category {
-  @include gotham-bold;
+  @include display-font;
   padding-left: 10px;
 }
 .algolia-autocomplete .aa-dropdown-menu .aa-suggestion em {

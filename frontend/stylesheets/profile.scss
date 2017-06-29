@@ -8,7 +8,7 @@
         text-transform: uppercase;
         color: $primary;
         font-size: 36px;
-        @include gotham-bold;
+        @include display-font;
         margin-bottom: 50px;
       }
       &--content {
@@ -22,7 +22,7 @@
         $padding: 33px;
         padding: 8px $padding $padding $padding;
         &--heading {
-          @include gotham-bold;
+          @include display-font;
           color: $primary;
           text-transform: uppercase;
         }
@@ -68,7 +68,7 @@
       &--header {
         color: $primary;
         text-transform: uppercase;
-        @include gotham-bold;
+        @include display-font;
       }
       &--text {
         font-size: 16px;
@@ -85,7 +85,7 @@
         margin-top: 50px;
         margin-bottom: 30px;
         &--title {
-          @include gotham-bold;
+          @include display-font;
           text-transform: uppercase;
           color: $primary;
         }
@@ -172,7 +172,7 @@
     padding: 85px;
     border: 1px solid $white;
     & h1 {
-      @include gotham-bold;
+      @include display-font;
       text-transform: uppercase;
     }
 
@@ -185,7 +185,7 @@
   &__consent-btn-inverse {
     margin-top: 50px;
     @include inverse-button-colors;
-    @include gotham-bold;
+    @include display-font;
     text-transform: uppercase;
   }
 
@@ -215,7 +215,7 @@
     }
 
     &--input {
-      @include gotham-bold;
+      @include display-font;
       &-icon {
         width: 20px;
         font-size: 18px;
@@ -269,11 +269,11 @@
 
         h4 {
           color: $secondary;
-          @include gotham-bold;
+          @include display-font;
         }
         h5 {
           color: $primary;
-          @include gotham-bold;
+          @include display-font;
         }
       }
       &--contact {
