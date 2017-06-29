@@ -1,9 +1,9 @@
-$font-family-sans-serif: mundoSansRegular;
+$font-family-sans-serif: mundoSansRegular, Helvetica, Arial, sans-serif;
 $font-size-base: 14px;
-$italic-font: mundoSansLightItalic;
+$italic-font: mundoSansLightItalic, Helvetica, Arial, sans-serif;
 
 @mixin display-font {
-  font-family: "Gotham A","Gotham B",Arial,sans-serif;
+  font-family: "Gotham A","Gotham B", Helvetica, Arial, sans-serif;
   font-weight: 700 !important;
 }
 
