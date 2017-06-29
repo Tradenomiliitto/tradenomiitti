@@ -96,7 +96,7 @@ Run tests:
 
 ```
 npm test
-npm testFrontend
+npm run testFrontend
 ```
 
 ## License
