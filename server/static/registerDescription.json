@@ -1,0 +1,11 @@
+[
+    ["1 Rekisterinpitäjä","Tradenomiliitto TRAL ry Ratavartijankatu 2, 00520 Helsinki Puh. 020 155 8800 toimisto@tral.fi"],
+    ["2 Yhteyshenkilö rekisteriä koskevissa asioissa","Tomi Kouva", "Ratavartijankatu 2, 00520 Helsinki Puh. 020 155 8813 tomi.kouva@tral.fi"],
+    ["3 Rekisterin nimi", "Tradenomiitti.fi –palvelun käyttäjärekisteri"],
+    ["4 Henkilötietojen käsittelyn tarkoitus", "Tradenomiitti on Tradenomiliiton jäsenille suunnattu verkkopalvelu, johon kirjaudutaan jäsennumerolla Jäsenpalvelujen toimittaminen Palvelun jatkokehittäminen", "Henkilötietoja käsitellään henkilötietolain sallimissa ja velvoittamissa rajoissa palvelun tuottamisessa."],
+    ["5 Rekisterin tietosisältö", "Käyttäjien palveluun syöttämät tiedot, kuten nimi, yhteys-, työpaikka-, kokemus- ja työnantajatiedot sekä käyttäjän jättämät ilmoitukset ja vastaukset ilmoituksiin.", "Käyttäjän nimimerkki ja profiilikuva on saatavilla vain muille kirjautuneille käyttäjille. Käyttäjä määrittelee itse, mitä yhteystietoja haluaa jakaa ja kenelle. Kirjautumaton käyttäjä näkee profiilit ja jätetyt ilmoitukset anonyymeina.", "Kerättyä tietoa ylläpidetään Nebulassa."],
+    ["6 Säännönmukaiset tietolähteet", "Käyttäjien itse palveluun syöttämät tiedot ja Tradenomiliiton jäsenrekisteri. Tradenomiittiin tallennetut tiedot eivät päivity Tradenomiliiton jäsenrekisteriin."], 
+    ["7 Tietojen säännönmukaiset luovutukset", "Alihankkijalla, Futurice Oy:lla on oikeus käsitellä käyttäjien palveluun syöttämiä tietoja. Palvelun kehityksessä hyödynnetään Google Analytics –palvelua.", "Käyttäjän luvalla ilmoitettuja tietoja voidaan hyödyntää Tradenomiitin ja Tradenomiliiton markkinioinnissa."],
+    ["8 Tietojen siirto EU:n tai ETA:n ulkopuolelle", "Tietoja ei siirretä EU- tai ETA-maiden ulkopuolelle."],
+    ["9 Rekisterin suojauksen periaatteet", "Rekisteri on suojattu ulkopuoliselta käytöltä ja henkilötietojen käyttöä valvotaan. Pääsy rekisteriin on sallittu rajatulle joukolle."]
+]

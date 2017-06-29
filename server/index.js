@@ -11,6 +11,11 @@ const rootDir = './frontend';
 const nonLocal = process.env.NON_LOCAL === 'true';
 const staticDir = nonLocal ? '/srv/static' : `${rootDir}/static`;
 
+// Legal etc. information on the service
+const registerDescription = require('./static/registerDescription.json');
+const termsOfService = require('./static/termsOfService.json');
+const serviceInformation = require('./static/serviceInformation.json');
+
 const app = express();
 
 // knex
@@ -315,6 +320,18 @@ app.get('/api/kontaktit', profile.listContacts);
 app.post('/api/virhe', textParser, (req, res) => {
   const errorHash = logError(req, req.body);
   res.json(errorHash);
+});
+
+app.get('/api/staattiset/rekisteriseloste', (req, res) => {
+  return res.json(registerDescription);
+});
+
+app.get('/api/staattiset/ehdot', (req, res) => {
+  return res.json(termsOfService);
+});
+
+app.get('/api/staattiset/tietoa', (req, res) => {
+  return res.json(serviceInformation);
 });
 
 app.get('*', (req, res) => {
