@@ -29,7 +29,7 @@ view routeToMsg userMaybe =
           , H.p [] [ H.a [ A.href "mailto:tradenomiitti@tral.fi" ] [ H.text "Anna palautetta" ]]
           ] ++ (if Models.User.isAdmin userMaybe
                then
-                 [ H.p [] [ H.a [ A.href "/api/raportti" ] [ H.text "Tilastoja" ] ] ]
+                 [ H.p [ A.class "footer__admin-link" ] [ H.a [ A.href "/api/raportti" ] [ H.text "Tilastoja" ] ] ]
                else
                  [])
         , H.div

@@ -177,6 +177,10 @@ div#not-implemented {
     margin-bottom: 20px;
   }
 
+  &__admin-link {
+    margin: 0;
+  }
+
   & a {
     color: $white;
   }
