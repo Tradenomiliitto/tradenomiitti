@@ -1,12 +1,17 @@
-$font-family-sans-serif: mundoSansRegular, Helvetica, Arial, sans-serif;
-$font-size-base: 14px;
-$italic-font: mundoSansLightItalic, Helvetica, Arial, sans-serif;
 
+// Font definitions for the main content
+$font-family-sans-serif: mundoSansRegular;
+$font-size-base: 14px;
+
+$italic-font: mundoSansLightItalic;
+
+// The font for various headings
 @mixin display-font {
   font-family: "Gotham A","Gotham B", Helvetica, Arial, sans-serif;
   font-weight: 700 !important;
 }
 
+// Import custom fonts
 @font-face  {
   font-family: mundoSansRegular;
   src: url("/static/MundoSansStd.otf");
