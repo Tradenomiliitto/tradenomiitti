@@ -38,7 +38,8 @@ module.exports = function initialize(params) {
         req.query.offset,
         req.query.domain,
         req.query.position,
-        req.query.location
+        req.query.location,
+        req.query.sorting
       ))
       .then(ads => res.send(ads))
       .catch(next)
