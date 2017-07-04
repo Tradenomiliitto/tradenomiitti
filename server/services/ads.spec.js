@@ -60,6 +60,13 @@ describe('Handle ads', function() {
     })
   });
 
+  it('should list ads sorted by newest answer date in descending order', (done) => {
+    service.listAds(false, undefined, undefined, undefined, undefined, undefined, 'newest_answer_desc').then((ads) => {
+      ads.map(ad => ad.id).should.eql([1, 3, 2]);
+      done();
+    })
+  });
+
   it('should respect limit and offset', (done) => {
     const limit = 1;
     const offset = 2

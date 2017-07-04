@@ -20,6 +20,11 @@ module.exports = function initialize(params) {
         answers.select('ad_id').count('* as count').groupBy('ad_id').as('answers');
         query = query.leftOuterJoin(answers, 'answers.ad_id', 'ads.id').orderByRaw('count ASC NULLS FIRST').orderBy('created_at', 'desc');
         break;
+      case 'newest_answer_desc':
+        // Ads with the newest answer first. If equal, newest first.
+        answers.select('ad_id').max('created_at as newest_answer').groupBy('ad_id').as('answers');
+        query = query.leftOuterJoin(answers, 'answers.ad_id', 'ads.id').orderByRaw('newest_answer DESC NULLS LAST').orderBy('created_at', 'desc');
+        break;
       default:
         query = query.orderBy('created_at', 'desc');
         break;

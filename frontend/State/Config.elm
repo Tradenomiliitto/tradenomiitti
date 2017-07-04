@@ -118,4 +118,5 @@ sortingOptions =
     , ( "Vanhin ensin", "created_at_asc" )
     , ( "Eniten vastauksia ensin", "answers_desc" )
     , ( "Vähiten vastauksia ensin", "answers_asc" )
+    , ( "Uusin vastaus ensin", "newest_answer_desc" )
     ]
