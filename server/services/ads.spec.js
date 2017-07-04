@@ -32,48 +32,42 @@ describe('Handle ads', function() {
   });
 
 
-  it('should list ads sorted by creation date in descending order', (done) => {
-    service.listAds(false).then((ads) => {
+  it('should list ads sorted by creation date in descending order', () => {
+    return service.listAds(false).then((ads) => {
       ads.map(ad => ad.id).should.eql([2, 3, 1]);
-      done();
     })
   });
 
-  it('should list ads sorted by creation date in ascending order', (done) => {
-    service.listAds(false, undefined, undefined, undefined, undefined, undefined, 'created_at_asc').then((ads) => {
+  it('should list ads sorted by creation date in ascending order', () => {
+    return service.listAds(false, undefined, undefined, undefined, undefined, undefined, 'created_at_asc').then((ads) => {
       ads.map(ad => ad.id).should.eql([1, 3, 2]);
-      done();
     })
   });
 
-  it('should list ads sorted by answer count in descending order', (done) => {
-    service.listAds(false, undefined, undefined, undefined, undefined, undefined, 'answers_desc').then((ads) => {
+  it('should list ads sorted by answer count in descending order', () => {
+    return service.listAds(false, undefined, undefined, undefined, undefined, undefined, 'answers_desc').then((ads) => {
       ads.map(ad => ad.id).should.eql([3, 1, 2]);
-      done();
     })
   });
 
-  it('should list ads sorted by answer count in ascending order', (done) => {
-    service.listAds(false, undefined, undefined, undefined, undefined, undefined, 'answers_asc').then((ads) => {
+  it('should list ads sorted by answer count in ascending order', () => {
+    return service.listAds(false, undefined, undefined, undefined, undefined, undefined, 'answers_asc').then((ads) => {
       ads.map(ad => ad.id).should.eql([2, 3, 1]);
-      done();
     })
   });
 
-  it('should list ads sorted by newest answer date in descending order', (done) => {
-    service.listAds(false, undefined, undefined, undefined, undefined, undefined, 'newest_answer_desc').then((ads) => {
+  it('should list ads sorted by newest answer date in descending order', () => {
+    return service.listAds(false, undefined, undefined, undefined, undefined, undefined, 'newest_answer_desc').then((ads) => {
       ads.map(ad => ad.id).should.eql([1, 3, 2]);
-      done();
     })
   });
 
-  it('should respect limit and offset', (done) => {
+  it('should respect limit and offset', () => {
     const limit = 1;
     const offset = 2
-    service.listAds(false, limit, offset).then((ads) => {
+    return service.listAds(false, limit, offset).then((ads) => {
       ads.should.have.length(1);
       ads[0].id.should.equal(1);
-      done();
     })
   })
 });
