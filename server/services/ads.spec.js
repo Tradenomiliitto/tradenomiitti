@@ -48,14 +48,14 @@ describe('Handle ads', function() {
 
   it('should list ads sorted by answer count in descending order', (done) => {
     service.listAds(false, undefined, undefined, undefined, undefined, undefined, 'answers_desc').then((ads) => {
-      ads.map(ad => ad.id).should.eql([2, 3, 1]);
+      ads.map(ad => ad.id).should.eql([3, 1, 2]);
       done();
     })
   });
 
   it('should list ads sorted by answer count in ascending order', (done) => {
     service.listAds(false, undefined, undefined, undefined, undefined, undefined, 'answers_asc').then((ads) => {
-      ads.map(ad => ad.id).should.eql([1, 2, 3]);
+      ads.map(ad => ad.id).should.eql([2, 3, 1]);
       done();
     })
   });
