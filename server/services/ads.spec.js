@@ -32,9 +32,30 @@ describe('Handle ads', function() {
   });
 
 
-  it('should list ads in order', (done) => {
+  it('should list ads sorted by creation date in descending order', (done) => {
     service.listAds(false).then((ads) => {
       ads.map(ad => ad.id).should.eql([2, 3, 1]);
+      done();
+    })
+  });
+
+  it('should list ads sorted by creation date in ascending order', (done) => {
+    service.listAds(false, undefined, undefined, undefined, undefined, undefined, 'created_at_asc').then((ads) => {
+      ads.map(ad => ad.id).should.eql([1, 3, 2]);
+      done();
+    })
+  });
+
+  it('should list ads sorted by answer count in descending order', (done) => {
+    service.listAds(false, undefined, undefined, undefined, undefined, undefined, 'answers_desc').then((ads) => {
+      ads.map(ad => ad.id).should.eql([2, 3, 1]);
+      done();
+    })
+  });
+
+  it('should list ads sorted by answer count in ascending order', (done) => {
+    service.listAds(false, undefined, undefined, undefined, undefined, undefined, 'answers_asc').then((ads) => {
+      ads.map(ad => ad.id).should.eql([1, 2, 3]);
       done();
     })
   });
