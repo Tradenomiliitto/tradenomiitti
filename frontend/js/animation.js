@@ -43,7 +43,7 @@ export default function initAnimation(port) {
           maxDistance2 = maxDistance * maxDistance;
 
       var tau = 2 * Math.PI,
-          n = Math.max(Math.floor(width*height/15000), 20),
+          n = Math.max(Math.floor(width * height / 25000), 20),
           particles = new Array(n);
 
       for (var i = 0; i < n; ++i) {
