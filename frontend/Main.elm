@@ -41,27 +41,27 @@ type alias HtmlId =
     String
 
 
-port animation :
-    ( HtmlId, Bool )
-    -> Cmd msg -- send True on splash screen, False otherwise
+{-| send True on splash screen, False otherwise
+-}
+port animation : ( HtmlId, Bool ) -> Cmd msg
 
 
-port scrollTop :
-    Bool
-    -> Cmd msg -- parameter tells whether to scroll
+{-| parameter tells whether to scroll
+-}
+port scrollTop : Bool -> Cmd msg
 
 
-port sendGaPageView :
-    String
-    -> Cmd msg -- parameter is path
+{-| parameter is path
+-}
+port sendGaPageView : String -> Cmd msg
 
 
 port footerAppeared : (Bool -> msg) -> Sub msg
 
 
-port closeMenu :
-    Bool
-    -> Cmd msg -- parameter is ignored
+{-| parameter is ignored
+-}
+port closeMenu : Bool -> Cmd msg
 
 
 port showAlert : String -> Cmd msg
