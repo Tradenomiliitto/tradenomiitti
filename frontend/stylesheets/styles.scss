@@ -43,7 +43,7 @@ body {
     z-index: 2;
   }
   & h1 {
-    @include display-font;
+    @include heading-font;
     text-transform: uppercase;
   }
 
@@ -54,7 +54,7 @@ body {
 
   &__btn-inverse {
     @include inverse-button-colors;
-    @include display-font;
+    @include heading-font;
     text-transform: uppercase;
   }
   &__actionable {
@@ -77,7 +77,7 @@ body {
 }
 
 .btn-primary {
-  @include display-font;
+  @include heading-font;
   text-transform: uppercase;
 }
 
@@ -254,7 +254,7 @@ div#not-implemented {
   background-color: $light-blue;
 }
 .aa-category {
-  @include display-font;
+  @include heading-font;
   padding-left: 10px;
 }
 .algolia-autocomplete .aa-dropdown-menu .aa-suggestion em {

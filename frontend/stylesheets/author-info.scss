@@ -12,14 +12,14 @@
   }
   &__name {
     font-weight: bold;
-    @include display-font;
+    @include heading-font;
     color: $secondary;
     font-size: 16px;
     word-wrap: break-word;
   }
   &__title {
     font-weight: bold;
-    @include display-font;
+    @include heading-font;
     font-size:12px;
     color: $primary;
     word-wrap: break-word;

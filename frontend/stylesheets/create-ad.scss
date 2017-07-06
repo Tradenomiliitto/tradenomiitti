@@ -20,7 +20,7 @@
       & textarea {
         @include placeholder-color-primary;
       }
-      @include display-font;
+      @include heading-font;
       margin-bottom: 0;
       & textarea {
         padding: $input-padding;
@@ -40,7 +40,7 @@
   }
 
   &__filters-heading {
-    @include display-font;
+    @include heading-font;
   }
 
   &__select {
@@ -63,7 +63,7 @@
     text-align: center;
     color: $white;
     & h1 {
-      @include display-font;
+      @include heading-font;
     }
   }
 }

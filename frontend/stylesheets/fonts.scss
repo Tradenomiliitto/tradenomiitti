@@ -6,7 +6,7 @@ $font-size-base: 14px;
 $italic-font: mundoSansLightItalic;
 
 // The font for various headings
-@mixin display-font {
+@mixin heading-font {
   font-family: "Gotham A","Gotham B", Helvetica, Arial, sans-serif;
   font-weight: 700 !important;
 }

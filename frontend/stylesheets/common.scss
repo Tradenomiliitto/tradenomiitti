@@ -71,7 +71,7 @@ $padding-before-footer-mobile: 35px;
 }
 
 @mixin basic-header {
-  @include display-font;
+  @include heading-font;
   text-transform: uppercase;
   margin-bottom: 50px;
   margin-top: $basic-header-margin-top;
@@ -205,7 +205,7 @@ $padding-before-footer-mobile: 35px;
   background-color: $white;
   color: $primary;
   @include placeholder-color-primary;
-  @include display-font;
+  @include heading-font;
   width: 100%;
   border: 1px solid $primary;
 

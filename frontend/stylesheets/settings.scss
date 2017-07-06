@@ -5,7 +5,7 @@
   }
 
   &__subsection-heading {
-    @include display-font;
+    @include heading-font;
     text-transform: capitalize;
     color: $primary;
   }

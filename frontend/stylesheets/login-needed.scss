@@ -20,7 +20,7 @@
     background-color: $white;
 
     & > h1 {
-      @include display-font;
+      @include heading-font;
       text-transform: uppercase;
       color: $primary;
       margin-bottom: 20px;

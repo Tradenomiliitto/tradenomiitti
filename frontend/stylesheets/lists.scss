@@ -44,7 +44,7 @@
       opacity: 0.8;
       background-color: $light-secondary;
       color: $white;
-      @include display-font;
+      @include heading-font;
       text-transform: uppercase;
       margin-right: 15px;
       padding: 14px 20px;
@@ -82,7 +82,7 @@
     background-color: $white;
     &-heading {
       color: $primary;
-      @include display-font;
+      @include heading-font;
       margin-top: 10px;
     }
     &-content {

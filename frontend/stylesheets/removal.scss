@@ -46,7 +46,7 @@
         background-color: $white !important;
         box-shadow: unset !important;
         color: $primary !important;
-        @include display-font;
+        @include heading-font;
         text-transform: uppercase;
       }
       &-confirm {
