@@ -11,6 +11,7 @@ import State.ListAds
 import State.ListUsers
 import State.Profile as ProfileState
 import State.Settings
+import State.StaticContent
 import State.User
 
 
@@ -31,6 +32,7 @@ type alias Model =
     , settings : State.Settings.Model
     , config : State.Config.Model
     , contacts : State.Contacts.Model
+    , staticContent : State.StaticContent.Model
     }
 
 
@@ -52,4 +54,5 @@ initState location =
     , settings = State.Settings.init
     , config = State.Config.init
     , contacts = State.Contacts.init
+    , staticContent = State.StaticContent.init
     }

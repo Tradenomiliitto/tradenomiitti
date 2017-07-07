@@ -33,6 +33,7 @@ import State.Profile
 import State.Settings
 import State.User
 import Static
+import StaticContent
 import User
 import Util exposing (UpdateMessage(..), ViewMessage(..))
 
@@ -89,8 +90,11 @@ init location =
 
         configCmd =
             unpackUpdateMessage ConfigMessage Config.initTasks
+
+        staticContentCmd =
+            unpackUpdateMessage StaticContentMessage StaticContent.initTasks
     in
-    model ! [ profileCmd, configCmd ]
+    model ! [ profileCmd, configCmd, staticContentCmd ]
 
 
 
@@ -112,6 +116,7 @@ type Msg
     | SettingsMessage Settings.Msg
     | ConfigMessage Config.Msg
     | ContactsMessage Contacts.Msg
+    | StaticContentMessage StaticContent.Msg
     | Error Http.Error
     | SendErrorResponse (Result Http.Error String)
     | NoOp
@@ -363,6 +368,13 @@ update msg model =
                     Contacts.update msg model.contacts
             in
             { model | contacts = contactsModel } ! [ cmd ]
+
+        StaticContentMessage msg ->
+            let
+                ( staticContentModel, cmd ) =
+                    StaticContent.update msg model.staticContent
+            in
+            { model | staticContent = staticContentModel } ! [ cmd ]
 
         Error err ->
             let
@@ -718,7 +730,7 @@ viewPage model =
                     unpackViewMessage SettingsMessage <| Settings.view model.settings model.profile.user
 
                 Info ->
-                    Info.view
+                    Info.view model.staticContent.info
 
                 Contacts ->
                     unpackViewMessage identity <| Contacts.view model.contacts model.profile.user
