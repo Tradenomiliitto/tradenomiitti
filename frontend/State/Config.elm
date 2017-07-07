@@ -11,7 +11,6 @@ type alias Model =
     , domainOptions : List String
     , specialSkillOptions : CategoriedOptions
     , educationOptions : Education
-    , sortingOptions : List ( String, String )
     }
 
 
@@ -84,7 +83,6 @@ init =
     , domainOptions = []
     , specialSkillOptions = []
     , educationOptions = Dict.empty
-    , sortingOptions = []
     }
 
 
@@ -109,14 +107,4 @@ finnishRegions =
     , "Uusimaa"
     , "Varsinais-Suomi"
     , "Ahvenanmaa"
-    ]
-
-
-sortingOptions : List ( String, String )
-sortingOptions =
-    [ ( "Uusin ensin", "created_ad_desc" )
-    , ( "Vanhin ensin", "created_at_asc" )
-    , ( "Eniten vastauksia ensin", "answers_desc" )
-    , ( "Vähiten vastauksia ensin", "answers_asc" )
-    , ( "Uusin vastaus ensin", "newest_answer_desc" )
     ]
