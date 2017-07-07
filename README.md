@@ -101,7 +101,7 @@ npm run testFrontend
 
 ## License
 
-Copyright (C) 2017  Tradenomiliitto
+Copyright (C) 2017  Tradenomiliitto and others, see AUTHORS
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published by

@@ -15,240 +15,288 @@ import QueryString
 import QueryString.Extra as QueryString
 import State.Config as Config
 import State.ListUsers exposing (..)
-import Util exposing (ViewMessage(..), UpdateMessage(..))
+import Util exposing (UpdateMessage(..), ViewMessage(..))
 
 
 sortToString : Sort -> String
 sortToString sort =
-  case sort of
-    Recent -> "recent"
-    AlphaAsc -> "alphaAsc"
-    AlphaDesc -> "alphaDesc"
+    case sort of
+        Recent ->
+            "recent"
+
+        AlphaAsc ->
+            "alphaAsc"
+
+        AlphaDesc ->
+            "alphaDesc"
+
 
 
 -- initialize typeaheads, don't clear any of them on selection and don't show "add new" section
+
+
 typeaheads : Model -> Config.Model -> Cmd msg
 typeaheads model config =
-  Cmd.batch
-    [ typeahead ("skills-input", Config.categoriedOptionsEncode config.specialSkillOptions, False, False, model.selectedSkill)
-    , typeahead ("education-institute", Config.categoriedOptionsEncode << Config.institutes <| config, False, False, model.selectedInstitute)
-    , typeahead ("education-specialization", Config.categoriedOptionsEncode << Config.specializations <| config, False, False, model.selectedSpecialization)
-    ]
+    Cmd.batch
+        [ typeahead ( "skills-input", Config.categoriedOptionsEncode config.specialSkillOptions, False, False, model.selectedSkill )
+        , typeahead ( "education-institute", Config.categoriedOptionsEncode << Config.institutes <| config, False, False, model.selectedInstitute )
+        , typeahead ( "education-specialization", Config.categoriedOptionsEncode << Config.specializations <| config, False, False, model.selectedSpecialization )
+        ]
 
-typeAheadToMsg : (String, String) -> Msg
-typeAheadToMsg (typeAheadResultStr, id) =
-  case id of
-    "skills-input" -> ChangeSkillFilter typeAheadResultStr
-    "education-institute" -> ChangeInstituteFilter typeAheadResultStr
-    "education-specialization" -> ChangeSpecializationFilter typeAheadResultStr
-    _ -> NoOp
+
+typeAheadToMsg : ( String, String ) -> Msg
+typeAheadToMsg ( typeAheadResultStr, id ) =
+    case id of
+        "skills-input" ->
+            ChangeSkillFilter typeAheadResultStr
+
+        "education-institute" ->
+            ChangeInstituteFilter typeAheadResultStr
+
+        "education-specialization" ->
+            ChangeSpecializationFilter typeAheadResultStr
+
+        _ ->
+            NoOp
+
 
 
 -- this is unuconditional here, but conditional in the top level on ListUsers being active
+
+
 subscriptions : Sub Msg
 subscriptions =
-  Sub.batch
-    [ typeaheadResult typeAheadToMsg
-    ]
+    Sub.batch
+        [ typeaheadResult typeAheadToMsg
+        ]
+
 
 emptyToNothing : String -> Maybe String
 emptyToNothing str =
-  if String.length str == 0 then Nothing else Just str
+    if String.length str == 0 then
+        Nothing
+    else
+        Just str
+
 
 getUsers : Model -> Cmd (UpdateMessage Msg)
 getUsers model =
-  let
-    queryString =
-      QueryString.empty
-        |> QueryString.add "limit" (toString limit)
-        |> QueryString.add "offset" (toString model.cursor)
-        |> QueryString.optional "domain" model.selectedDomain
-        |> QueryString.optional "position" model.selectedPosition
-        |> QueryString.optional "location" model.selectedLocation
-        |> QueryString.optional "special_skill" (emptyToNothing model.selectedSkill)
-        |> QueryString.optional "specialization" (emptyToNothing model.selectedSpecialization)
-        |> QueryString.optional "institute" (emptyToNothing model.selectedInstitute)
-        |> QueryString.add "order" (sortToString model.sort)
-        |> QueryString.render
+    let
+        queryString =
+            QueryString.empty
+                |> QueryString.add "limit" (toString limit)
+                |> QueryString.add "offset" (toString model.cursor)
+                |> QueryString.optional "domain" model.selectedDomain
+                |> QueryString.optional "position" model.selectedPosition
+                |> QueryString.optional "location" model.selectedLocation
+                |> QueryString.optional "special_skill" (emptyToNothing model.selectedSkill)
+                |> QueryString.optional "specialization" (emptyToNothing model.selectedSpecialization)
+                |> QueryString.optional "institute" (emptyToNothing model.selectedInstitute)
+                |> QueryString.add "order" (sortToString model.sort)
+                |> QueryString.render
 
-    url = "/api/profiilit/" ++ queryString
-  in
+        url =
+            "/api/profiilit/" ++ queryString
+    in
     Http.get url (Json.list Models.User.userDecoder)
-      |> Util.errorHandlingSend UpdateUsers
+        |> Util.errorHandlingSend UpdateUsers
+
 
 type Msg
-  = UpdateUsers (List User)
-  | FooterAppeared
-  | ChangeDomainFilter (Maybe String)
-  | ChangePositionFilter (Maybe String)
-  | ChangeLocationFilter (Maybe String)
-  | ChangeInstituteFilter String
-  | ChangeSpecializationFilter String
-  | ChangeSkillFilter String
-  | ChangeSort Sort
-  | NoOp
+    = UpdateUsers (List User)
+    | FooterAppeared
+    | ChangeDomainFilter (Maybe String)
+    | ChangePositionFilter (Maybe String)
+    | ChangeLocationFilter (Maybe String)
+    | ChangeInstituteFilter String
+    | ChangeSpecializationFilter String
+    | ChangeSkillFilter String
+    | ChangeSort Sort
+    | NoOp
+
 
 initTasks : Model -> Cmd (UpdateMessage Msg)
-initTasks = getUsers
+initTasks =
+    getUsers
 
 
-reInitItems : Model -> (Model, Cmd (UpdateMessage Msg))
+reInitItems : Model -> ( Model, Cmd (UpdateMessage Msg) )
 reInitItems model =
-  let
-    newModel = { model | users = [], cursor = 0 }
-  in
+    let
+        newModel =
+            { model | users = [], cursor = 0 }
+    in
     newModel ! [ getUsers newModel ]
 
-update : Msg -> Model -> (Model, Cmd (UpdateMessage Msg))
+
+update : Msg -> Model -> ( Model, Cmd (UpdateMessage Msg) )
 update msg model =
-  case msg of
-    UpdateUsers users ->
-      { model
-        | users = List.uniqueBy .id <| model.users ++ users
-        -- always advance by full amount, so we know when to stop asking for more
-        , cursor = model.cursor + limit
-      } ! []
+    case msg of
+        UpdateUsers users ->
+            { model
+                | users = List.uniqueBy .id <| model.users ++ users
 
-    FooterAppeared ->
-      if Common.shouldNotGetMoreOnFooter model.users model.cursor
-      then
-        model ! []
-      else
-        model ! [ getUsers model ]
+                -- always advance by full amount, so we know when to stop asking for more
+                , cursor = model.cursor + limit
+            }
+                ! []
 
-    ChangeDomainFilter value ->
-      reInitItems { model | selectedDomain = value }
+        FooterAppeared ->
+            if Common.shouldNotGetMoreOnFooter model.users model.cursor then
+                model ! []
+            else
+                model ! [ getUsers model ]
 
-    ChangePositionFilter value ->
-      reInitItems { model | selectedPosition = value }
+        ChangeDomainFilter value ->
+            reInitItems { model | selectedDomain = value }
 
-    ChangeLocationFilter value ->
-      reInitItems { model | selectedLocation = value }
+        ChangePositionFilter value ->
+            reInitItems { model | selectedPosition = value }
 
-    ChangeInstituteFilter value ->
-      reInitItems { model | selectedInstitute = value }
+        ChangeLocationFilter value ->
+            reInitItems { model | selectedLocation = value }
 
-    ChangeSpecializationFilter value ->
-      reInitItems { model | selectedSpecialization = value }
+        ChangeInstituteFilter value ->
+            reInitItems { model | selectedInstitute = value }
 
-    ChangeSkillFilter value ->
-      reInitItems { model | selectedSkill = value }
+        ChangeSpecializationFilter value ->
+            reInitItems { model | selectedSpecialization = value }
 
-    ChangeSort value ->
-      reInitItems { model | sort = value }
+        ChangeSkillFilter value ->
+            reInitItems { model | selectedSkill = value }
 
-    NoOp ->
-      model ! []
+        ChangeSort value ->
+            reInitItems { model | sort = value }
 
+        NoOp ->
+            model ! []
 
 
 view : Model -> Config.Model -> Bool -> H.Html (ViewMessage Msg)
 view model config isLoggedIn =
-  let
-    usersHtml = List.map viewUser model.users
-    rows = Common.chunk3 usersHtml
-    rowsHtml = List.map row rows
+    let
+        usersHtml =
+            List.map viewUser model.users
 
-    sorterRow = H.map LocalViewMessage <|
-      H.div
-        [ A.class "row" ]
-        [ H.div
-          [ A.class "col-xs-12" ]
-          [ H.button
-              [ A.classList
-                  [ ("btn", True)
-                  , ("list-users__sorter-button", True)
-                  , ("list-users__sorter-button--active", model.sort == Recent)
-                  ]
-              , E.onClick (ChangeSort Recent)
-              ]
-              [ H.text "Aktiivisuus"]
-          , H.button
-              [ A.classList
-                  [ ("btn", True)
-                  , ("list-users__sorter-button", True)
-                  , ("list-users__sorter-button--active"
-                    , List.member model.sort [AlphaDesc, AlphaAsc])
-                  ]
-              , E.onClick (ChangeSort <| if model.sort == AlphaAsc then AlphaDesc else AlphaAsc)
-              ]
-              [ H.text "Nimi"
-              , H.i
-                [ A.classList
-                  [ ("fa", True)
-                  , ("fa-chevron-down", model.sort == AlphaDesc)
-                  , ("fa-chevron-up", model.sort /= AlphaDesc)
-                  ]
-                ] []
-              ]
-          ]
-        ]
+        rows =
+            Common.chunk3 usersHtml
 
-  in
+        rowsHtml =
+            List.map row rows
+
+        sorterRow =
+            H.map LocalViewMessage <|
+                H.div
+                    [ A.class "row" ]
+                    [ H.div
+                        [ A.class "col-xs-12" ]
+                        [ H.button
+                            [ A.classList
+                                [ ( "btn", True )
+                                , ( "list-users__sorter-button", True )
+                                , ( "list-users__sorter-button--active", model.sort == Recent )
+                                ]
+                            , E.onClick (ChangeSort Recent)
+                            ]
+                            [ H.text "Aktiivisuus" ]
+                        , H.button
+                            [ A.classList
+                                [ ( "btn", True )
+                                , ( "list-users__sorter-button", True )
+                                , ( "list-users__sorter-button--active"
+                                  , List.member model.sort [ AlphaDesc, AlphaAsc ]
+                                  )
+                                ]
+                            , E.onClick
+                                (ChangeSort <|
+                                    if model.sort == AlphaAsc then
+                                        AlphaDesc
+                                    else
+                                        AlphaAsc
+                                )
+                            ]
+                            [ H.text "Nimi"
+                            , H.i
+                                [ A.classList
+                                    [ ( "fa", True )
+                                    , ( "fa-chevron-down", model.sort == AlphaDesc )
+                                    , ( "fa-chevron-up", model.sort /= AlphaDesc )
+                                    ]
+                                ]
+                                []
+                            ]
+                        ]
+                    ]
+    in
     H.div
-      []
-      [ H.div
-        [ A.class "container" ]
+        []
         [ H.div
-          [ A.class "row" ]
-          [ H.div
-            [ A.class "col-sm-12" ]
-            [ H.h1
-              [ A.class "list-users__header" ]
-              [ H.text "Selaa tradenomeja" ]
+            [ A.class "container" ]
+            [ H.div
+                [ A.class "row" ]
+                [ H.div
+                    [ A.class "col-sm-12" ]
+                    [ H.h1
+                        [ A.class "list-users__header" ]
+                        [ H.text "Selaa tradenomeja" ]
+                    ]
+                ]
+            , H.div
+                [ A.class "row list-users__filters" ]
+                [ H.div
+                    [ A.class "col-xs-12 col-sm-4" ]
+                    [ Common.select "list-users" (LocalViewMessage << ChangeDomainFilter) Domain config.domainOptions model ]
+                , H.div
+                    [ A.class "col-xs-12 col-sm-4" ]
+                    [ Common.select "list-users" (LocalViewMessage << ChangePositionFilter) Position config.positionOptions model ]
+                , H.div
+                    [ A.class "col-xs-12 col-sm-4" ]
+                    [ Common.select "list-users" (LocalViewMessage << ChangeLocationFilter) Location Config.finnishRegions model ]
+                ]
+            , H.div
+                [ A.class "row list-users__filters" ]
+                [ H.div
+                    [ A.class "col-xs-12 col-sm-4" ]
+                    [ Common.typeaheadInput "list-users__" "Valitse oppilaitos" "education-institute" ]
+                , H.div
+                    [ A.class "col-xs-12 col-sm-4" ]
+                    [ Common.typeaheadInput "list-users__" "Valitse suuntautuminen / pääaine" "education-specialization" ]
+                , H.div
+                    [ A.class "col-xs-12 col-sm-4" ]
+                    [ Common.typeaheadInput "list-users__" "Valitse taito" "skills-input" ]
+                ]
             ]
-          ]
         , H.div
-          [ A.class "row list-users__filters" ]
-          [ H.div
-            [ A.class "col-xs-12 col-sm-4" ]
-            [ Common.select "list-users" (LocalViewMessage << ChangeDomainFilter) Domain config.domainOptions model ]
-          , H.div
-            [ A.class "col-xs-12 col-sm-4" ]
-            [ Common.select "list-users" (LocalViewMessage << ChangePositionFilter) Position config.positionOptions model ]
-          , H.div
-            [ A.class "col-xs-12 col-sm-4" ]
-            [ Common.select "list-users" (LocalViewMessage << ChangeLocationFilter) Location Config.finnishRegions model ]
-          ]
-        , H.div
-          [ A.class "row list-users__filters" ]
-          [ H.div
-            [ A.class "col-xs-12 col-sm-4" ]
-            [ Common.typeaheadInput "list-users__" "Valitse oppilaitos" "education-institute" ]
-          , H.div
-            [ A.class "col-xs-12 col-sm-4" ]
-            [ Common.typeaheadInput "list-users__" "Valitse suuntautuminen / pääaine" "education-specialization" ]
-          , H.div
-            [ A.class "col-xs-12 col-sm-4" ]
-            [ Common.typeaheadInput "list-users__" "Valitse taito" "skills-input"]
-          ]
+            [ A.class "list-users__list-background last-row" ]
+            [ H.div
+                [ A.class "container" ]
+              <|
+                if isLoggedIn then
+                    sorterRow :: rowsHtml
+                else
+                    rowsHtml
+            ]
         ]
-      , H.div
-        [ A.class "list-users__list-background last-row"]
-        [ H.div
-          [ A.class "container" ] <|
-          if isLoggedIn then sorterRow :: rowsHtml else rowsHtml
-        ]
-      ]
+
 
 viewUser : User -> H.Html (ViewMessage msg)
 viewUser user =
-  H.a
-    [ A.class "col-xs-12 col-sm-4 card-link list-users__item-container"
-    , A.href (Nav.routeToPath (Nav.User user.id))
-    , Link.action (Nav.User user.id)
-    ]
-    [ H.div
-      [ A.class "user-card list-users__item" ]
-      [ Common.authorInfoWithLocation user
-      , H.hr [ A.class "list-users__item-ruler"] []
-      , H.p [] [ H.text (Util.truncateContent user.description 200) ]
-      ]
-    ]
+    H.a
+        [ A.class "col-xs-12 col-sm-4 card-link list-users__item-container"
+        , A.href (Nav.routeToPath (Nav.User user.id))
+        , Link.action (Nav.User user.id)
+        ]
+        [ H.div
+            [ A.class "user-card list-users__item" ]
+            [ Common.authorInfoWithLocation user
+            , H.hr [ A.class "list-users__item-ruler" ] []
+            , H.p [] [ H.text (Util.truncateContent user.description 200) ]
+            ]
+        ]
+
 
 row : List (H.Html msg) -> H.Html msg
 row users =
-  H.div
-    [ A.class "row list-users__user-row list-users__row" ]
-    users
-
+    H.div
+        [ A.class "row list-users__user-row list-users__row" ]
+        users
