@@ -93,7 +93,7 @@ getAds model =
                 |> QueryString.optional "domain" model.selectedDomain
                 |> QueryString.optional "position" model.selectedPosition
                 |> QueryString.optional "location" model.selectedLocation
-                |> QueryString.add "sorting" (sortToString model.sort)
+                |> QueryString.add "order" (sortToString model.sort)
                 |> QueryString.render
 
         url =

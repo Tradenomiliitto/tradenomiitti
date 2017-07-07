@@ -2,11 +2,11 @@ module.exports = function initialize(params) {
   const knex = params.knex;
   const util = params.util;
 
-  function listAds(loggedIn, limit, offset, domain, position, location, sorting) {
+  function listAds(loggedIn, limit, offset, domain, position, location, order) {
     let query = knex('ads');
     let answers = knex('answers');
 
-    switch(sorting) {
+    switch(order) {
       case 'created_at_asc':
         query.orderBy('created_at', 'asc');
         break;
