@@ -25,6 +25,7 @@ module.exports = function initialize(params) {
         answers.select('ad_id').max('created_at as newest_answer').groupBy('ad_id').as('answers');
         query.leftOuterJoin(answers, 'answers.ad_id', 'ads.id').orderByRaw('newest_answer DESC NULLS LAST').orderBy('created_at', 'desc');
         break;
+      case 'created_at_desc':
       default:
         query.orderBy('created_at', 'desc');
         break;
