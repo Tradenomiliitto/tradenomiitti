@@ -9,23 +9,21 @@ import State.StaticContent exposing (StaticContent, StaticContentBlock)
 
 view : StaticContent -> H.Html msg
 view staticContent =
+    let
+        contents =
+            H.h1 [ A.class "info__heading" ] [ H.text staticContent.title ]
+                :: List.concatMap sectionView staticContent.contents
+    in
     H.div
         [ A.class "container" ]
         [ H.div
             [ A.class "row last-row" ]
-            [ H.div
-                [ A.class "col-sm-12" ]
-              <|
-                [ H.h1
-                    [ A.class "info__heading" ]
-                    [ H.text staticContent.title ]
-                ]
-                    ++ List.map sectionView staticContent.contents
+            [ H.div [ A.class "col-sm-12" ] contents
             ]
         ]
 
 
-sectionView : StaticContentBlock -> H.Html msg
+sectionView : StaticContentBlock -> List (H.Html msg)
 sectionView block =
     let
         heading =
@@ -33,6 +31,5 @@ sectionView block =
                 |> Maybe.toList
                 |> List.map (\a -> H.h3 [] [ H.text a ])
     in
-    H.div [] <|
-        heading
-            ++ [ Markdown.toHtml [] block.content ]
+    heading
+        ++ [ Markdown.toHtml [] block.content ]
