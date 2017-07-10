@@ -22,7 +22,6 @@
         - python-psycopg2
         - graphicsmagick
 
-
     - name: install nginx basic auth password file
       template: src=passwd dest=/etc/nginx/passwd
       notify:
@@ -48,7 +47,6 @@
     - name: ensure base services are running
       service: name={{item}} state=started enabled=yes
       with_items: [ nginx, postgresql ]
-
 
     # Set up deployment by git push env master
     - name: make base directories
@@ -88,12 +86,10 @@
         - footer_logo.png
         - home_image.jpg
 
-    # upload custom font files
+    # upload custom font files - defined in inventory.ini
     - name: upload fonts
       copy: src=assets/{{ item }} dest=/srv/static/{{ item }}
       with_items: "{{ custom_font_files }}"
-        # - MundoSansStd.otf
-        # - MundoSansStd-LightItalic.otf
 
     - name: upload google analytics id
       template: src=google-analytics-id dest=/srv/static/google-analytics-id
