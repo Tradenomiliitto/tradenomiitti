@@ -32,7 +32,7 @@ import State.Main exposing (..)
 import State.Profile
 import State.Settings
 import State.User
-import Static
+import StaticContent
 import User
 import Util exposing (UpdateMessage(..), ViewMessage(..))
 
@@ -41,27 +41,27 @@ type alias HtmlId =
     String
 
 
-port animation :
-    ( HtmlId, Bool )
-    -> Cmd msg -- send True on splash screen, False otherwise
+{-| send True on splash screen, False otherwise
+-}
+port animation : ( HtmlId, Bool ) -> Cmd msg
 
 
-port scrollTop :
-    Bool
-    -> Cmd msg -- parameter tells whether to scroll
+{-| parameter tells whether to scroll
+-}
+port scrollTop : Bool -> Cmd msg
 
 
-port sendGaPageView :
-    String
-    -> Cmd msg -- parameter is path
+{-| parameter is path
+-}
+port sendGaPageView : String -> Cmd msg
 
 
 port footerAppeared : (Bool -> msg) -> Sub msg
 
 
-port closeMenu :
-    Bool
-    -> Cmd msg -- parameter is ignored
+{-| parameter is ignored
+-}
+port closeMenu : Bool -> Cmd msg
 
 
 port showAlert : String -> Cmd msg
@@ -89,8 +89,11 @@ init location =
 
         configCmd =
             unpackUpdateMessage ConfigMessage Config.initTasks
+
+        staticContentCmd =
+            unpackUpdateMessage StaticContentMessage StaticContent.initTasks
     in
-    model ! [ profileCmd, configCmd ]
+    model ! [ profileCmd, configCmd, staticContentCmd ]
 
 
 
@@ -112,6 +115,7 @@ type Msg
     | SettingsMessage Settings.Msg
     | ConfigMessage Config.Msg
     | ContactsMessage Contacts.Msg
+    | StaticContentMessage StaticContent.Msg
     | Error Http.Error
     | SendErrorResponse (Result Http.Error String)
     | NoOp
@@ -363,6 +367,13 @@ update msg model =
                     Contacts.update msg model.contacts
             in
             { model | contacts = contactsModel } ! [ cmd ]
+
+        StaticContentMessage msg ->
+            let
+                ( staticContentModel, cmd ) =
+                    StaticContent.update msg model.staticContent
+            in
+            { model | staticContent = staticContentModel } ! [ cmd ]
 
         Error err ->
             let
@@ -709,16 +720,16 @@ viewPage model =
                     unpackViewMessage ListUsersMessage <| ListUsers.view model.listUsers model.config (Maybe.isJust model.profile.user)
 
                 Terms ->
-                    PreformattedText.view Static.termsHeading Static.termsTexts
+                    PreformattedText.view model.staticContent.terms
 
                 RegisterDescription ->
-                    PreformattedText.view Static.registerDescriptionHeading Static.registerDescriptionTexts
+                    PreformattedText.view model.staticContent.registerDescription
 
                 Settings ->
                     unpackViewMessage SettingsMessage <| Settings.view model.settings model.profile.user
 
                 Info ->
-                    Info.view
+                    Info.view model.staticContent.info
 
                 Contacts ->
                     unpackViewMessage identity <| Contacts.view model.contacts model.profile.user
