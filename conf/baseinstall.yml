@@ -79,12 +79,21 @@
     - name: static folder creation
       file: path=/srv/static/images state=directory mode=0755 owner=ubuntu
 
-    - name: upload static assets
+    # upload static images (logos etc.)
+    - name: upload images
       copy: src=assets/{{ item }} dest=/srv/static/{{ item }}
       with_items:
-        - MundoSansStd.otf
-        - MundoSansStd-LightItalic.otf
-        - tral_person_image_square_1.jpg
+        - main_logo.svg
+        - email_logo.png
+        - footer_logo.png
+        - home_image.jpg
+
+    # upload custom font files
+    - name: upload fonts
+      copy: src=assets/{{ item }} dest=/srv/static/{{ item }}
+      with_items: "{{ custom_font_files }}"
+        # - MundoSansStd.otf
+        # - MundoSansStd-LightItalic.otf
 
     - name: upload google analytics id
       template: src=google-analytics-id dest=/srv/static/google-analytics-id
