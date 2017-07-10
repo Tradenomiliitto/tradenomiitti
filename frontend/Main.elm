@@ -32,7 +32,6 @@ import State.Main exposing (..)
 import State.Profile
 import State.Settings
 import State.User
-import Static
 import StaticContent
 import User
 import Util exposing (UpdateMessage(..), ViewMessage(..))
@@ -721,10 +720,10 @@ viewPage model =
                     unpackViewMessage ListUsersMessage <| ListUsers.view model.listUsers model.config (Maybe.isJust model.profile.user)
 
                 Terms ->
-                    PreformattedText.view Static.termsHeading Static.termsTexts
+                    PreformattedText.view model.staticContent.terms
 
                 RegisterDescription ->
-                    PreformattedText.view Static.registerDescriptionHeading Static.registerDescriptionTexts
+                    PreformattedText.view model.staticContent.registerDescription
 
                 Settings ->
                     unpackViewMessage SettingsMessage <| Settings.view model.settings model.profile.user

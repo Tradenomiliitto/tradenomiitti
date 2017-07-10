@@ -6,6 +6,8 @@ import Json.Decode.Pipeline as P
 
 type alias Model =
     { info : StaticContent
+    , terms : StaticContent
+    , registerDescription : StaticContent
     }
 
 
@@ -31,6 +33,8 @@ empty =
 init : Model
 init =
     { info = empty
+    , terms = empty
+    , registerDescription = empty
     }
 
 
