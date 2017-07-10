@@ -1,0 +1,12 @@
+{
+  "title": "Main headline for the page",
+  "contents": [
+    {
+      "heading": "Optional section heading",
+      "content": "Markdown-formatted content: **bold**, _italic_ and [links](#links) work.\n\nIf you need to, you can also include some <em class=\"special\">plain HTML</em>.\n\n- lists\n- are\n- fun"
+    },
+    {
+      "content": "A section without a heading."
+    }
+  ]
+}
