@@ -43,9 +43,9 @@ describe('Send notifications for ads', function() {
   const twoWeeksLater = new Date('2017-01-27T11:00:00.000Z');
 
 
-  it('should not send ads to people who have just received a notification', (done) => {
+  it('should not send ads to people who have just received a notification', () => {
     MockDate.set(aDate);
-    knex('user_ad_notifications').insert({
+    return knex('user_ad_notifications').insert({
       user_id: userId,
       ad_id: 1,
       created_at: new Date()
@@ -54,13 +54,12 @@ describe('Send notifications for ads', function() {
       return service.usersThatCanReceiveNow();
     }).then(users => {
       users.should.not.include(userId);
-      done();
     })
   });
 
-  it('should send ads to people who have not recently received a notification', (done) => {
+  it('should send ads to people who have not recently received a notification', () => {
     MockDate.set(aDate);
-    knex('user_ad_notifications').insert({
+    return knex('user_ad_notifications').insert({
       user_id: userId,
       ad_id: 1,
       created_at: new Date()
@@ -69,26 +68,24 @@ describe('Send notifications for ads', function() {
       return service.usersThatCanReceiveNow();
     }).then(users => {
       users.should.include(userId);
-      done();
     })
   });
 
-  it('should send ads to people who have never received a notification', (done) => {
-    service.usersThatCanReceiveNow()
+  it('should send ads to people who have never received a notification', () => {
+    return service.usersThatCanReceiveNow()
       .then(users => {
         users.should.include(userId);
-        done();
       })
   });
 
-  it('should not send ads a person has received a notification about', (done) => {
+  it('should not send ads a person has received a notification about', () => {
     MockDate.set(aDate);
     const anAd = {
       data: {heading: "foo", content: "bar"},
       user_id: otherUserId,
       created_at: moment()
     }
-    knex('ads').insert(anAd).then(() => {
+    return knex('ads').insert(anAd).then(() => {
       return knex('user_ad_notifications').insert({
         user_id: userId,
         ad_id: 1,
@@ -103,18 +100,17 @@ describe('Send notifications for ads', function() {
         .ads
         .map(ad => ad.id)
         .should.not.include(1);
-      done();
     })
   });
 
-  it('should send at most 5 ads per notification', (done) => {
+  it('should send at most 5 ads per notification', () => {
     MockDate.set(aDate);
     const anAd = {
       data: {heading: "foo", content: "bar"},
       user_id: otherUserId,
       created_at: new Date()
     }
-    Promise.all([
+    return Promise.all([
       knex('ads').insert(anAd),
       knex('ads').insert(anAd),
       knex('ads').insert(anAd),
@@ -130,13 +126,12 @@ describe('Send notifications for ads', function() {
         .find(notif => notif.user.id === userId)
         .ads
         .should.have.length(5);
-      done();
     })
   });
 
-  it('should send at least 3 ads per notification', (done) => {
+  it('should send at least 3 ads per notification', () => {
     MockDate.set(aDate);
-    service.notificationObjects()
+    return service.notificationObjects()
       .then(notifications => {
         notifications
           .find(notif => notif.user.id === userId)
@@ -145,18 +140,17 @@ describe('Send notifications for ads', function() {
 
         should.not.exist(
           notifications.find(notif => notif.user.id === otherUserId));
-        done();
       })
   });
 
-  it('should send randomly from the available ads', (done) => {
+  it('should send randomly from the available ads', () => {
     MockDate.set(aDate);
     const anAd = {
       data: {heading: "foo", content: "bar"},
       user_id: otherUserId,
       created_at: new Date()
     }
-    Promise.all([
+    return Promise.all([
       knex('ads').insert(anAd),
       knex('ads').insert(anAd),
       knex('ads').insert(anAd),
@@ -177,12 +171,11 @@ describe('Send notifications for ads', function() {
       ]);
     }).then(([ notifications1, notifications2 ]) => {
       notifications1.should.not.eql(notifications2);
-      done();
     })
 
   })
 
-  it('should not send ads of the user in question', (done) => {
+  it('should not send ads of the user in question', () => {
     MockDate.set(aDate);
     const forcedAdId = 42;
     const anAd = {
@@ -191,7 +184,7 @@ describe('Send notifications for ads', function() {
       user_id: userId,
       created_at: new Date()
     }
-    knex('ads').insert(anAd)
+    return knex('ads').insert(anAd)
       .then(() => service.notificationObjects())
       .then(notifications => {
         const adIds = notifications
@@ -201,11 +194,10 @@ describe('Send notifications for ads', function() {
 
         adIds.should.not.include(forcedAdId);
         adIds.should.have.length(3);
-        done();
       })
   });
 
-  it('should not send an ad that already has at least 3 answers', (done) => {
+  it('should not send an ad that already has at least 3 answers', () => {
     MockDate.set(aDate);
     const anAnswer = {
       user_id: otherUserId,
@@ -217,7 +209,7 @@ describe('Send notifications for ads', function() {
       user_id: otherUserId,
       created_at: moment()
     }
-    Promise.all([
+    return Promise.all([
       knex('ads').insert(anAd),
       knex('answers').insert(anAnswer),
       knex('answers').insert(anAnswer),
@@ -232,11 +224,10 @@ describe('Send notifications for ads', function() {
             .map(ad => ad.id)
       adIds.should.not.include(1);
       adIds.should.have.length(3);
-      done();
     })
   });
 
-  it('should not send an ad that is more than a month old', (done) => {
+  it('should not send an ad that is more than a month old', () => {
     MockDate.set(aDate);
     const forcedAdId = 42;
     const anAd = {
@@ -245,7 +236,7 @@ describe('Send notifications for ads', function() {
       user_id: otherUserId,
       created_at: moment().subtract(1, 'months').subtract(2, 'days')
     };
-    knex('ads').insert(anAd)
+    return knex('ads').insert(anAd)
       .then(() => service.notificationObjects())
       .then(notifications => {
         const adIds = notifications
@@ -255,11 +246,10 @@ describe('Send notifications for ads', function() {
 
         adIds.should.not.include(forcedAdId);
         adIds.should.have.length(3);
-        done();
       })
   });
 
-  it('should rather send an ad with a fitting category than any old ad', (done) => {
+  it('should rather send an ad with a fitting category than any old ad', () => {
     MockDate.set(aDate);
     const forcedAdId = 42;
     const anAd = {
@@ -269,7 +259,7 @@ describe('Send notifications for ads', function() {
       created_at: moment()
     };
     seedrandom('whatever', { global: true });
-    Promise.all([
+    return Promise.all([
       knex('users').where('id', userId).update('data', { location: 'foobar' }),
       knex('ads').insert(anAd)
     ]).then(() => service.notificationObjects())
@@ -280,11 +270,10 @@ describe('Send notifications for ads', function() {
               .map(ad => ad.id)
 
         adIds[0].should.equal(forcedAdId);
-        done();
       })
   });
 
-  it('should send any old ad if categories in questions are wrong', (done) => {
+  it('should send any old ad if categories in questions are wrong', () => {
     MockDate.set(aDate);
     const forcedAdId = 42;
     const anAd = {
@@ -294,7 +283,7 @@ describe('Send notifications for ads', function() {
       created_at: moment()
     };
     seedrandom('whatever', { global: true });
-    Promise.all([
+    return Promise.all([
       knex('users').where('id', userId).update('data', { location: 'foobar' }),
       knex('ads').insert(anAd)
     ]).then(() => service.notificationObjects())
@@ -306,7 +295,6 @@ describe('Send notifications for ads', function() {
 
         adIds[0].should.not.equal(forcedAdId);
         adIds[3].should.equal(forcedAdId);
-        done();
       })
   });
 });
