@@ -1,7 +1,7 @@
 
 .author-info {
   &__pic {
-    @include round-profile-pic(40px, $pink);
+    @include round-profile-pic(40px, $primary);
   }
   &__info {
     width: calc(100% - 40px - 15px);
@@ -12,16 +12,16 @@
   }
   &__name {
     font-weight: bold;
-    @include gotham-bold;
-    color: $green;
+    @include heading-font;
+    color: $secondary;
     font-size: 16px;
     word-wrap: break-word;
   }
   &__title {
     font-weight: bold;
-    @include gotham-bold;
+    @include heading-font;
     font-size:12px;
-    color: $pink;
+    color: $primary;
     word-wrap: break-word;
   }
 }

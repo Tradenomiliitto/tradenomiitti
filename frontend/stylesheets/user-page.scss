@@ -20,7 +20,7 @@
       @include button-paddings;
     }
     &-prompt {
-      @include gotham-bold;
+      @include heading-font;
       font-size: 16px;
       margin-bottom: 40px;
       color: $dark-grey;
@@ -39,10 +39,10 @@
   }
   &__pic {
     $size: 90px;
-    @include round-profile-pic($size, $pink);
+    @include round-profile-pic($size, $primary);
   }
   &__businesscard-view-pic {
-    @include round-profile-pic(60px, $pink);
+    @include round-profile-pic(60px, $primary);
   }
   &__editing-name-details {
     flex-grow: 1;
@@ -63,12 +63,12 @@
   }
 
   &__name {
-    @include gotham-bold;
+    @include heading-font;
   }
   &__work-details {
-    color: $pink;
+    color: $primary;
     & input {
-      @include placeholder-color-pink;
+      @include placeholder-color-primary;
     }
     font-weight: bold;
   }
@@ -81,7 +81,7 @@
       width: 100% !important;
       height: 90px;
       padding: 8px;
-      border: 2px solid $pink;
+      border: 2px solid $primary;
     }
   }
 
@@ -99,7 +99,7 @@
       background-color: $white;
     }
     &-header {
-      @include gotham-bold;
+      @include heading-font;
       text-transform: uppercase;
       margin-bottom: 25px;
     }
@@ -120,7 +120,7 @@
       }
 
       &-remove {
-        color: $pink;
+        color: $primary;
         cursor: pointer;
       }
 
@@ -159,7 +159,7 @@
 
   &__competences {
     &-header {
-      @include gotham-bold;
+      @include heading-font;
       text-transform: uppercase;
     }
     &-special-skills {
@@ -173,7 +173,7 @@
         padding-right: 10px;
       }
       &-delete {
-        color: $pink;
+        color: $primary;
         cursor: pointer;
       }
     }
@@ -203,7 +203,7 @@
     padding-top: $full-width-ruler-margin-bottom;
     background-color: $light-grey;
     &-header {
-      @include gotham-bold;
+      @include heading-font;
       text-transform: uppercase;
       margin-bottom: 25px;
     }
@@ -213,8 +213,8 @@
       padding: 15px;
       @include shadow;
       &-heading {
-        color: $pink;
-        @include gotham-bold;
+        color: $primary;
+        @include heading-font;
       }
       &-content {}
       > hr {
@@ -222,7 +222,7 @@
       }
       &-profile {
         &-pic {
-          @include round-profile-pic(40px, $pink);
+          @include round-profile-pic(40px, $primary);
         }
         &-info {
           display: inline-block;
@@ -235,7 +235,7 @@
         }
         &-title {
           font-weight: bold;
-          color: $pink;
+          color: $primary;
         }
       }
     }
@@ -244,14 +244,14 @@
       &:hover,
       &:active,
       &:focus {
-        color: $pink;
+        color: $primary;
         height: 1.4em;
         background-color: transparent;
         float: right;
         margin-top: 30px;
         border: 0;
         padding: 0;
-        @include gotham-bold;
+        @include heading-font;
         text-transform: uppercase;
         & i {
           height: 100%;
@@ -269,12 +269,12 @@
     margin-right: auto;
     &-icon {
       width: 40px;
-      fill: $pink;
+      fill: $primary;
       display: inline-block;
       vertical-align: middle;
     }
     &-text {
-      @include gotham-bold;
+      @include heading-font;
       vertical-align: middle;
       margin-left: 15px;
     }

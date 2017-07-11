@@ -5,7 +5,7 @@
   @include equal-height-columns;
 
   &__inputs {
-    background-color: $light-grey-background;
+    background-color: $lighter-grey;
     padding: $box-padding;
   }
 
@@ -16,11 +16,11 @@
 
   &__heading {
     &-input {
-      color: $pink;
+      color: $primary;
       & textarea {
-        @include placeholder-color-pink;
+        @include placeholder-color-primary;
       }
-      @include gotham-bold;
+      @include heading-font;
       margin-bottom: 0;
       & textarea {
         padding: $input-padding;
@@ -40,7 +40,7 @@
   }
 
   &__filters-heading {
-    @include gotham-bold;
+    @include heading-font;
   }
 
   &__select {
@@ -63,7 +63,7 @@
     text-align: center;
     color: $white;
     & h1 {
-      @include gotham-bold;
+      @include heading-font;
     }
   }
 }

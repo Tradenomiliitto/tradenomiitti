@@ -45,8 +45,8 @@
         @include button-paddings;
         background-color: $white !important;
         box-shadow: unset !important;
-        color: $pink !important;
-        @include gotham-bold;
+        color: $primary !important;
+        @include heading-font;
         text-transform: uppercase;
       }
       &-confirm {

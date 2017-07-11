@@ -42,7 +42,7 @@ $navbar-element-height: 35px;
   $inverse-button-height: $navbar-element-height;
   font-size: 15px;
 
-  @include gotham-bold;
+  @include heading-font;
 
   & > a {
     text-transform: uppercase;
