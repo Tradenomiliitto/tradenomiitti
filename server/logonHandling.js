@@ -3,11 +3,8 @@ const request = require('request');
 
 
 module.exports = function initialize(params) {
-  const communicationsKey = params.communicationsKey;
-  const knex = params.knex;
-  const sebacon = params.sebacon;
-  const restrictToGroup = params.restrictToGroup;
-
+  const {communicationsKey, knex, sebacon, restrictToGroup, nonLocal} = params;
+  
   function login(req, res, next) {
     const ssoId = req.body.ssoid;
     const validationReq = {
@@ -116,12 +113,17 @@ module.exports = function initialize(params) {
   function logout(req, res, next) {
     const sessionId = req.session.id;
     req.session = null;
-    if (sessionId) {
-      return knex('sessions').where({id: sessionId}).del()
-        .then(() => res.redirect('https://tunnistus.avoine.fi/sso-logout/'))
-        .catch(next);
-    } else
-      res.redirect('https://tunnistus.avoine.fi/sso-logout/');
+    if(nonLocal) {
+      if (sessionId) {
+        return knex('sessions').where({id: sessionId}).del()
+          .then(() => res.redirect('https://tunnistus.avoine.fi/sso-logout/'))
+          .catch(next);
+      } else {
+        res.redirect('https://tunnistus.avoine.fi/sso-logout/');
+      }
+    } else {
+      res.redirect('/');
+    }
   }
 
   return {
