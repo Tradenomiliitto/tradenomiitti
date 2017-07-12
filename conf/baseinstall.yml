@@ -77,19 +77,11 @@
     - name: static folder creation
       file: path=/srv/static/images state=directory mode=0755 owner=ubuntu
 
-    # upload static images (logos etc.)
+    # upload all custom static content (images, logos, json files etc.)
     - name: upload images
-      copy: src=assets/{{ item }} dest=/srv/static/{{ item }}
-      with_items:
-        - main_logo.svg
-        - email_logo.png
-        - footer_logo.png
-        - home_image.jpg
-
-    # upload custom font files - defined in inventory.ini
-    - name: upload fonts
-      copy: src=assets/{{ item }} dest=/srv/static/{{ item }}
-      with_items: "{{ custom_font_files }}"
+      copy: src={{ item }} dest=/srv/static/{{ item | basename}}
+      with_fileglob:
+        - "assets/*"
 
     - name: upload google analytics id
       template: src=google-analytics-id dest=/srv/static/google-analytics-id
