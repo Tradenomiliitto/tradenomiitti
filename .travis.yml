@@ -1,0 +1,51 @@
+sudo: required
+
+language: node_js
+
+node_js:
+  - "7.10"
+
+notifications:
+  email: false
+
+addons:
+  postgresql: "9.4"
+
+env:
+  DISABLE_SEBACON=true db_user=postgres db_password=postgres environment=development ENABLE_EMAIL_SENDING=false
+
+cache:
+  directories:
+    - frontend/elm-stuff/build-artifacts
+    - sysconfcpus
+
+before_install:
+  - sudo apt-get install language-pack-fi
+  - sudo /etc/init.d/postgresql stop
+  - sudo /etc/init.d/postgresql start 9.4
+  - | # epic build time improvement - see https://github.com/elm-lang/elm-compiler/issues/1473#issuecomment-245704142
+    if [ ! -d sysconfcpus/bin ];
+    then
+      git clone https://github.com/obmarg/libsysconfcpus.git;
+      cd libsysconfcpus;
+      ./configure --prefix=$TRAVIS_BUILD_DIR/sysconfcpus;
+      make && make install;
+      cd ..;
+    fi
+install:
+  - npm install -g elm
+  - mv $(npm config get prefix)/bin/elm-make $(npm config get prefix)/bin/elm-make-old
+  - printf "#\041/bin/bash\n\necho \"Running elm-make with sysconfcpus -n 2\"\n\n$TRAVIS_BUILD_DIR/sysconfcpus/bin/sysconfcpus -n 2 elm-make-old \"\$@\"" > $(npm config get prefix)/bin/elm-make
+  - chmod +x $(npm config get prefix)/bin/elm-make
+  - npm install -g elm-test
+  - npm install
+  - pushd frontend && elm-package install -y && popd
+  - pushd frontend/tests && elm-package install -y && popd
+
+before_script:
+  - psql -c "create collation fi_FI (locale='fi_FI.UTF-8');" -U postgres
+  - psql -c "create database \"tradenomiitti-test\" LC_COLLATE='fi_FI.UTF-8' LC_CTYPE='fi_FI.UTF-8' template=template0;" -U postgres
+  - psql -c "create database \"tradenomiitti\" LC_COLLATE='fi_FI.UTF-8' LC_CTYPE='fi_FI.UTF-8' template=template0;" -U postgres
+script:
+  - npm run test
+  - npm run testFrontend
