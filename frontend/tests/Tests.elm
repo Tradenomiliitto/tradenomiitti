@@ -12,45 +12,48 @@ import Test.Html.Selector exposing (attribute, tag)
 import Util exposing (truncateContent)
 
 
-all : Test
-all =
-    describe "All"
-        [ chunkingAlgorithm
-        , truncationAlgorithm
-        , urlGuessing
-        ]
-
-
-urlCases : List ( String, String )
-urlCases =
-    [ ( "https://example.com", "Tämä on linkki https://example.com" )
-    , ( "http://www.example.com", "ja toinen linkki ilman http-alkua www.example.com" )
-    , ( "http://example.com/sisältö", "ja vielä yksi ilman www:tä, mutta kauttaviivalla example.com/sisältö" )
-    , ( "http://example.com/mitätahansa", "ja vielä taas, jossa sulkeva sulje, pilkku, tai piste ei kuulu linkkiin http://example.com/mitätahansa." )
-    , ( "http://example.com", "Myös alkava sulje pitäisi urlittaa (http://example.com)" )
-    ]
-
-
 urlGuessing : Test
 urlGuessing =
     describe "Url guessing algorithm" <|
-        List.map
-            (\( expectedUrl, str ) ->
-                test "has a single link" <|
-                    \() ->
-                        let
-                            elements =
-                                H.div [] (PlainTextFormat.view str)
-                                    |> Query.fromHtml
-                                    |> Query.findAll [ tag "a" ]
-                        in
-                        Expect.all
-                            [ Query.count (Expect.equal 1)
-                            , Query.first >> Query.has [ attribute "href" expectedUrl ]
-                            ]
-                            elements
-            )
-            urlCases
+        [ testUrlGuess
+            { testString = "Tämä on linkki https://example.com"
+            , expectedUrl = "https://example.com"
+            }
+        , testUrlGuess
+            { testString = "ja toinen linkki ilman http-alkua www.example.com"
+            , expectedUrl = "http://www.example.com"
+            }
+        , testUrlGuess
+            { testString = "ja vielä yksi ilman www:tä, mutta kauttaviivalla example.com/sisältö"
+            , expectedUrl = "http://example.com/sisältö"
+            }
+        , testUrlGuess
+            { testString = "ja vielä taas, jossa sulkeva sulje, pilkku, tai piste ei kuulu linkkiin http://example.com/mitätahansa."
+            , expectedUrl = "http://example.com/mitätahansa"
+            }
+        , testUrlGuess
+            { testString = "Myös alkava sulje pitäisi urlittaa (http://example.com)"
+            , expectedUrl = "http://example.com"
+            }
+        ]
+
+
+testUrlGuess : { expectedUrl : String, testString : String } -> Test
+testUrlGuess { expectedUrl, testString } =
+    test ("has a single link: \"" ++ testString ++ "\"") <|
+        \() ->
+            let
+                elements =
+                    H.div []
+                        (PlainTextFormat.view testString)
+                        |> Query.fromHtml
+                        |> Query.findAll [ tag "a" ]
+            in
+            Expect.all
+                [ Query.count (Expect.equal 1)
+                , Query.first >> Query.has [ attribute "href" expectedUrl ]
+                ]
+                elements
 
 
 chunkingAlgorithm : Test
