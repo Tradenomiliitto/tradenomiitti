@@ -3,6 +3,12 @@ language: node_js
 node_js:
   - "7.10"
 
+services:
+  - postgresql
+
+before_script:
+  - psql -c 'create database "tradenomiitti-test";' -U postgres
+
 cache:
   directories:
     - frontend/elm-stuff/build-artifacts
@@ -24,8 +30,10 @@ install:
   - printf "#\041/bin/bash\n\necho \"Running elm-make with sysconfcpus -n 2\"\n\n$TRAVIS_BUILD_DIR/sysconfcpus/bin/sysconfcpus -n 2 elm-make-old \"\$@\"" > $(npm config get prefix)/bin/elm-make
   - chmod +x $(npm config get prefix)/bin/elm-make
   - npm install -g elm-test
+  - npm install
   - pushd frontend && elm-package install -y && popd
   - pushd frontend/tests && elm-package install -y && popd
 
 script:
-  - pushd frontend && $(npm config get prefix)/bin/elm-test && popd
+  - npm run test
+  - npm run testFrontend
