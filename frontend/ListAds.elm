@@ -4,6 +4,7 @@ import Ad
 import Common exposing (Filter(..))
 import Html as H
 import Html.Attributes as A
+import Html.Events as E
 import Http
 import Json.Decode as Json
 import Link
@@ -26,6 +27,7 @@ type Msg
     | ChangeDomainFilter (Maybe String)
     | ChangePositionFilter (Maybe String)
     | ChangeLocationFilter (Maybe String)
+    | ChangeSort Sort
     | RemovalMessage Removal.Msg
 
 
@@ -55,6 +57,9 @@ update msg model =
 
         ChangeLocationFilter value ->
             reInitItems { model | selectedLocation = value }
+
+        ChangeSort value ->
+            reInitItems { model | sort = value }
 
         RemovalMessage msg ->
             let
@@ -88,6 +93,7 @@ getAds model =
                 |> QueryString.optional "domain" model.selectedDomain
                 |> QueryString.optional "position" model.selectedPosition
                 |> QueryString.optional "location" model.selectedLocation
+                |> QueryString.add "order" (sortToString model.sort)
                 |> QueryString.render
 
         url =
@@ -101,6 +107,80 @@ getAds model =
 
 view : Maybe User -> Model -> Config.Model -> H.Html (ViewMessage Msg)
 view loggedInUserMaybe model config =
+    let
+        sorterRow =
+            H.map LocalViewMessage <|
+                H.div
+                    [ A.class "row" ]
+                    [ H.div
+                        [ A.class "col-xs-12" ]
+                        [ H.button
+                            [ A.classList
+                                [ ( "btn", True )
+                                , ( "list-users__sorter-button", True )
+                                , ( "list-users__sorter-button--active"
+                                  , List.member model.sort [ CreatedDesc, CreatedAsc ]
+                                  )
+                                ]
+                            , E.onClick
+                                (ChangeSort <|
+                                    if model.sort == CreatedDesc then
+                                        CreatedAsc
+                                    else
+                                        CreatedDesc
+                                )
+                            ]
+                            [ H.text "Päivämäärä"
+                            , H.i
+                                [ A.classList
+                                    [ ( "fa", True )
+                                    , ( "fa-chevron-down", model.sort == CreatedDesc )
+                                    , ( "fa-chevron-up", model.sort == CreatedAsc )
+                                    ]
+                                ]
+                                []
+                            ]
+                        , H.button
+                            [ A.classList
+                                [ ( "btn", True )
+                                , ( "list-users__sorter-button", True )
+                                , ( "list-users__sorter-button--active"
+                                  , List.member model.sort [ AnswerCountDesc, AnswerCountAsc ]
+                                  )
+                                ]
+                            , E.onClick
+                                (ChangeSort <|
+                                    if model.sort == AnswerCountDesc then
+                                        AnswerCountAsc
+                                    else
+                                        AnswerCountDesc
+                                )
+                            ]
+                            [ H.text "Vastauksia"
+                            , H.i
+                                [ A.classList
+                                    [ ( "fa", True )
+                                    , ( "fa-chevron-down", model.sort == AnswerCountDesc )
+                                    , ( "fa-chevron-up", model.sort == AnswerCountAsc )
+                                    ]
+                                ]
+                                []
+                            ]
+                        , if loggedInUserMaybe /= Nothing then
+                            H.button
+                                [ A.classList
+                                    [ ( "btn", True )
+                                    , ( "list-users__sorter-button", True )
+                                    , ( "list-users__sorter-button--active", model.sort == NewestAnswerDesc )
+                                    ]
+                                , E.onClick (ChangeSort NewestAnswerDesc)
+                                ]
+                                [ H.text "Uusin vastaus" ]
+                          else
+                            H.text ""
+                        ]
+                    ]
+    in
     H.div []
         [ H.div
             [ A.class "container" ]
@@ -130,9 +210,28 @@ view loggedInUserMaybe model config =
             [ A.class "list-ads__list-background" ]
             [ H.div
                 [ A.class "container last-row" ]
-                (List.map (Util.localViewMap RemovalMessage) <| viewAds loggedInUserMaybe model.removal model.ads)
+                (sorterRow :: (List.map (Util.localViewMap RemovalMessage) <| viewAds loggedInUserMaybe model.removal model.ads))
             ]
         ]
+
+
+sortToString : Sort -> String
+sortToString sort =
+    case sort of
+        CreatedDesc ->
+            "created_at_desc"
+
+        CreatedAsc ->
+            "created_at_asc"
+
+        AnswerCountDesc ->
+            "answers_desc"
+
+        AnswerCountAsc ->
+            "answers_asc"
+
+        NewestAnswerDesc ->
+            "newest_answer_desc"
 
 
 viewAds : Maybe User -> Removal.Model -> List Models.Ad.Ad -> List (H.Html (ViewMessage Removal.Msg))
