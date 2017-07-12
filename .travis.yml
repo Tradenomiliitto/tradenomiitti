@@ -1,0 +1,30 @@
+language: node_js
+
+node_js:
+  - "7.10"
+
+cache:
+  directories:
+    - frontend/elm-stuff/build-artifacts
+    - sysconfcpus
+
+before_install:
+  - | # epic build time improvement - see https://github.com/elm-lang/elm-compiler/issues/1473#issuecomment-245704142
+    if [ ! -d sysconfcpus/bin ];
+    then
+      git clone https://github.com/obmarg/libsysconfcpus.git;
+      cd libsysconfcpus;
+      ./configure --prefix=$TRAVIS_BUILD_DIR/sysconfcpus;
+      make && make install;
+      cd ..;
+    fi
+install:
+  - npm install -g elm
+  - mv $(npm config get prefix)/bin/elm-make $(npm config get prefix)/bin/elm-make-old
+  - printf "#\041/bin/bash\n\necho \"Running elm-make with sysconfcpus -n 2\"\n\n$TRAVIS_BUILD_DIR/sysconfcpus/bin/sysconfcpus -n 2 elm-make-old \"\$@\"" > $(npm config get prefix)/bin/elm-make
+  - chmod +x $(npm config get prefix)/bin/elm-make
+  - pushd frontend && elm-package install -y && popd
+  - pushd frontend/tests && elm-package install -y && popd
+
+script:
+  - pushd frontend && ../node_modules/.bin/elm-test && popd
