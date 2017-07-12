@@ -8,6 +8,7 @@
         "COMMUNICATIONS_KEY": "{{ avoine_communications_key }}",
         "NON_LOCAL": "true",
         "COOKIE_SECRET": "{{ cookie_secret }}",
+        "DISABLE_SEBACON": "{{ disable_sebacon }}",
         "SEBACON_CUSTOMER": "{{ sebacon_customer }}",
         "SEBACON_USER": "{{ sebacon_user }}",
         "SEBACON_PASSWORD": "{{ sebacon_password }}",
