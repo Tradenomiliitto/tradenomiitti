@@ -83,14 +83,14 @@ export DISABLE_SEBACON=true
 export db_user=
 export db_password=
 export environment=development
-export ENABLE_EMAIL_SENDING=false
+export TEST_LOGIN=true
 
 npm run seed-db
 
 npm start
 ```
 
-You can go with your browser to `http://localhost:3000/kirjaudu/1` or `http://localhost:3000/kirjaudu/2` to automatically log in as either of the seeded test users: no SSO or members registry API required. After you receive `Ok`, you can navigate to `http://localhost:3000/` and have a valid session in cookies.
+You can click "Kirjaudu" to login as *Tradenomi1* test user. You can also open `http://localhost:3000/kirjaudu/1` or `http://localhost:3000/kirjaudu/2` to use either of the two test user accounts: no SSO or members registry API required. 
 
 Run tests:
 

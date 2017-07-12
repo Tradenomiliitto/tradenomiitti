@@ -7,6 +7,7 @@
         "db_password" : "{{ db_password }}",
         "COMMUNICATIONS_KEY": "{{ avoine_communications_key }}",
         "NON_LOCAL": "true",
+        "TEST_LOGIN": "{{ test_login }}",
         "COOKIE_SECRET": "{{ cookie_secret }}",
         "SEBACON_CUSTOMER": "{{ sebacon_customer }}",
         "SEBACON_USER": "{{ sebacon_user }}",
