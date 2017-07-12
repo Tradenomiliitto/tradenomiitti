@@ -77,8 +77,8 @@
     - name: static folder creation
       file: path=/srv/static/images state=directory mode=0755 owner=ubuntu
 
-    # upload all custom static content (images, logos, json files etc.)
-    - name: upload images
+    # upload all custom static assets (images, logos, json files etc.)
+    - name: upload static assets
       copy: src={{ item }} dest=/srv/static/{{ item | basename}}
       with_fileglob:
         - "assets/*"
