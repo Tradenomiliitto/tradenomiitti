@@ -1,7 +1,12 @@
+sudo: required
+
 language: node_js
 
 node_js:
   - "7.10"
+
+notifications:
+  email: false
 
 addons:
   postgresql: "9.4"
@@ -15,6 +20,9 @@ cache:
     - sysconfcpus
 
 before_install:
+  - sudo apt-get install language-pack-fi
+  - sudo /etc/init.d/postgresql stop
+  - sudo /etc/init.d/postgresql start 9.4
   - | # epic build time improvement - see https://github.com/elm-lang/elm-compiler/issues/1473#issuecomment-245704142
     if [ ! -d sysconfcpus/bin ];
     then
@@ -25,9 +33,6 @@ before_install:
       cd ..;
     fi
 install:
-  - sudo apt-get install language-pack-fi
-  - sudo /etc/init.d/postgresql stop
-  - sudo /etc/init.d/postgresql start 9.4
   - npm install -g elm
   - mv $(npm config get prefix)/bin/elm-make $(npm config get prefix)/bin/elm-make-old
   - printf "#\041/bin/bash\n\necho \"Running elm-make with sysconfcpus -n 2\"\n\n$TRAVIS_BUILD_DIR/sysconfcpus/bin/sysconfcpus -n 2 elm-make-old \"\$@\"" > $(npm config get prefix)/bin/elm-make
@@ -38,6 +43,7 @@ install:
   - pushd frontend/tests && elm-package install -y && popd
 
 before_script:
+  - psql -c "create collation fi_FI (locale='fi_FI.UTF-8');" -U postgres
   - psql -c 'create database "tradenomiitti-test";' -U postgres
   - psql -c 'create database "tradenomiitti";' -U postgres
 script:
