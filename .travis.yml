@@ -4,7 +4,7 @@ node_js:
   - "7.10"
 
 addons:
-  postgresql: "9.5"
+  postgresql: "9.4"
 
 env:
   DISABLE_SEBACON=true db_user=postgres db_password=postgres environment=development ENABLE_EMAIL_SENDING=false
