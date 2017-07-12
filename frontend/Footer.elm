@@ -1,6 +1,7 @@
 module Footer exposing (..)
 
 import Common
+import Constants
 import Html as H
 import Html.Attributes as A
 import Models.User exposing (User)
@@ -46,12 +47,12 @@ view routeToMsg userMaybe =
                            )
                 , H.div
                     [ A.class "col-xs-12 col-sm-6 footer__social-icons" ]
-                    [ H.a [ A.href "https://www.facebook.com/tradenomiliitto" ] [ H.i [ A.class "fa fa-facebook" ] [] ]
-                    , H.a [ A.href "https://twitter.com/Tradenomiliitto" ] [ H.i [ A.class "fa fa-twitter" ] [] ]
-                    , H.a [ A.href "https://www.instagram.com/tradenomiliitto/" ] [ H.i [ A.class "fa fa-instagram" ] [] ]
-                    , H.a [ A.href "http://www.linkedin.com/groups/Tradenomiliitto-TRAL-ry-2854058/about" ] [ H.i [ A.class "fa fa-linkedin" ] [] ]
-                    , H.a [ A.href "https://github.com/tradenomiliitto/tradenomiitti" ] [ H.i [ A.class "fa fa-github" ] [] ]
-                    ]
+                    (List.map
+                        (\{ url, faIcon } ->
+                            H.a [ A.href url ] [ H.i [ A.class <| "fa fa-" ++ faIcon ] [] ]
+                        )
+                        Constants.footerSocialIcons
+                    )
                 ]
             ]
         ]

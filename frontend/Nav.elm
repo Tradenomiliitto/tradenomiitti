@@ -1,5 +1,6 @@
 module Nav exposing (..)
 
+import Constants
 import Navigation
 import UrlParser as U exposing ((</>), (<?>))
 import Window
@@ -156,5 +157,4 @@ ssoUrl rootUrl maybePath =
         returnParameter =
             Window.encodeURIComponent loginUrl
     in
-    "https://tunnistus.avoine.fi/sso-login/?service=tradenomiitti&return="
-        ++ returnParameter
+    Constants.ssoBaseUrl ++ returnParameter

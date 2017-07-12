@@ -7,5 +7,6 @@ dev.sqlite3
 frontend/static/
 
 # customization and theming
+frontend/Constants.elm
 frontend/stylesheets/colors.scss
 frontend/stylesheets/fonts.scss
