@@ -62,7 +62,7 @@ describe('Handle users', function() {
     return knex('users').insert({id: 3, remote_id: -3, data: {
       name: 'Ökynomi'
     }, settings: {}, modified_at: moment()}).then(() => {
-      return service.listProfiles(false, undefined, undefined, {}, sort)
+      return service.listProfiles(true, undefined, undefined, {}, sort)
     })
   }
 
