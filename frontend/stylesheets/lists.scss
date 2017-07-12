@@ -33,7 +33,7 @@
 
   &__sorter-button {
     &--active {
-      background-color: $green !important;
+      background-color: $secondary !important;
       opacity: 1.0 !important;
     }
 
@@ -42,9 +42,9 @@
     &:focus,
     &:active {
       opacity: 0.8;
-      background-color: $light-green;
+      background-color: $light-secondary;
       color: $white;
-      @include gotham-bold;
+      @include heading-font;
       text-transform: uppercase;
       margin-right: 15px;
       padding: 14px 20px;
@@ -81,8 +81,8 @@
     @include shadow;
     background-color: $white;
     &-heading {
-      color: $pink;
-      @include gotham-bold;
+      color: $primary;
+      @include heading-font;
       margin-top: 10px;
     }
     &-content {
@@ -99,7 +99,7 @@
         margin-right: 4px;
       }
       & svg {
-        fill: $pink;
+        fill: $primary;
         width: 37px;
         // explicit height needed for IE
         height: #{ 37px / $answer-icon-width-to-height-ratio };

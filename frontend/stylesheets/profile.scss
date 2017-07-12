@@ -6,9 +6,9 @@
       padding-bottom: 50px;
       &--title {
         text-transform: uppercase;
-        color: $pink;
+        color: $primary;
         font-size: 36px;
-        @include gotham-bold;
+        @include heading-font;
         margin-bottom: 50px;
       }
       &--content {
@@ -22,8 +22,8 @@
         $padding: 33px;
         padding: 8px $padding $padding $padding;
         &--heading {
-          @include gotham-bold;
-          color: $pink;
+          @include heading-font;
+          color: $primary;
           text-transform: uppercase;
         }
         &-definitions {
@@ -66,9 +66,9 @@
       padding-bottom: 100px;
 
       &--header {
-        color: $pink;
+        color: $primary;
         text-transform: uppercase;
-        @include gotham-bold;
+        @include heading-font;
       }
       &--text {
         font-size: 16px;
@@ -85,9 +85,9 @@
         margin-top: 50px;
         margin-bottom: 30px;
         &--title {
-          @include gotham-bold;
+          @include heading-font;
           text-transform: uppercase;
-          color: $pink;
+          color: $primary;
         }
         &--text {
           margin-top: 30px;
@@ -134,7 +134,7 @@
     z-index: 8001;
     background-color: $medium-grey;
     &--editing {
-      background-color: $green;
+      background-color: $secondary;
 
       color: $white;
       & a {
@@ -145,11 +145,11 @@
       margin-right: 35px;
       font-weight: bold;
       cursor: pointer;
-      color: $pink;
+      color: $primary;
       display: inline;
       vertical-align: middle;
       &--active {
-        color: $green;
+        color: $secondary;
         cursor: default;
       }
       &--white {
@@ -172,7 +172,7 @@
     padding: 85px;
     border: 1px solid $white;
     & h1 {
-      @include gotham-bold;
+      @include heading-font;
       text-transform: uppercase;
     }
 
@@ -185,7 +185,7 @@
   &__consent-btn-inverse {
     margin-top: 50px;
     @include inverse-button-colors;
-    @include gotham-bold;
+    @include heading-font;
     text-transform: uppercase;
   }
 
@@ -212,13 +212,13 @@
     text-align: left;
 
     &--name-work--input {
-      @include placeholder-color-pink;
+      @include placeholder-color-primary;
       padding: 5px;
       width: 100%;
     }
 
     &--input {
-      @include gotham-bold;
+      @include heading-font;
       &-icon {
         width: 20px;
         @include ie-only {
@@ -233,7 +233,7 @@
       input {
         width: calc(100% - 30px);
         font-size: 12px;
-        @include placeholder-color-pink;
+        @include placeholder-color-primary;
       }
       svg {
         position: relative;
@@ -244,21 +244,21 @@
         margin-bottom: 10px;
       }
       &--empty {
-        color: $inactive-grey;
+        color: $medium-grey;
         svg {
-          fill: $inactive-grey;
+          fill: $medium-grey;
         }
         hr {
-        border-top: 1px solid $inactive-grey !important;
+        border-top: 1px solid $medium-grey !important;
         }
       }
       &--filled {
-        color: $pink;
+        color: $primary;
         svg {
-          fill: $pink;
+          fill: $primary;
         }
         hr {
-        border-top: 1px solid $pink !important;
+        border-top: 1px solid $primary !important;
         }
       }
     }
@@ -274,12 +274,12 @@
         flex-grow: 1;
 
         h4 {
-          color: $green;
-          @include gotham-bold;
+          color: $secondary;
+          @include heading-font;
         }
         h5 {
-          color: $pink;
-          @include gotham-bold;
+          color: $primary;
+          @include heading-font;
         }
       }
       &--contact {

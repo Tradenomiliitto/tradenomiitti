@@ -1,14 +1,14 @@
 @import 'colors';
+@import 'fonts';
 
 $content-top-margin: 70px;
 
-$navbar-default-bg: $pink;
+$navbar-default-bg: $primary;
 $navbar-default-color: $white;
 $navbar-default-link-color: $navbar-default-color;
 $navbar-default-link-active-color: $white;
 $navbar-default-link-hover-color: $white;
-$font-family-sans-serif: mundoSansRegular;
-$font-size-base: 14px;
+
 $navbar-height: 66px;
 $profilebar-height: 55px;
 $profilebar-height-mobile: 77px;
@@ -37,7 +37,7 @@ $full-width-ruler-margin-bottom: 20px;
 $btn-border-radius-small: 0;
 $btn-border-radius-large: 0;
 $btn-border-radius-base: 0;
-$btn-primary-bg: $pink;
+$btn-primary-bg: $primary;
 
 $link-color: $black;
 
@@ -54,26 +54,10 @@ $padding-before-footer-mobile: 35px;
 $answer-icon-width-to-height-ratio: 64 / 60;
 
 #navbar-height-to-js { height: $navbar-height; }
-#pink-to-js { color: $pink; }
-#green-to-js { color: $green; }
+#primary-to-js { color: $primary; }
+#secondary-to-js { color: $secondary; }
 #white-to-js { color: $white; }
 
-
-@mixin gotham-bold {
-  font-family: "Gotham A","Gotham B",Arial,sans-serif;
-  font-weight: 700 !important;
-}
-
-//fonts
-@font-face  {
-  font-family: mundoSansRegular;
-  src: url("/static/MundoSansStd.otf");
-}
-
-@font-face  {
-  font-family: mundoSansLightItalic;
-  src: url("/static/MundoSansStd-LightItalic.otf");
-}
 
 @mixin round-profile-pic($diameter, $color) {
   width: $diameter;
@@ -88,11 +72,11 @@ $answer-icon-width-to-height-ratio: 64 / 60;
 }
 
 @mixin basic-header {
-  @include gotham-bold;
+  @include heading-font;
   text-transform: uppercase;
   margin-bottom: 50px;
   margin-top: $basic-header-margin-top;
-  color: $green;
+  color: $secondary;
   @media (max-width: $screen-xs-max) {
     font-size: 24px;
   }
@@ -100,20 +84,20 @@ $answer-icon-width-to-height-ratio: 64 / 60;
 
 @mixin button-colors {
   color: $white !important;
-  background-color: $pink !important;
+  background-color: $primary !important;
   &:hover {
-    background-color: $light-pink !important;
-    border-color: $light-pink !important;
+    background-color: $light-primary !important;
+    border-color: $light-primary !important;
   }
 }
 
 @mixin inverse-button-colors {
-  color: $pink !important;
+  color: $primary !important;
   background-color: $white !important;
   &:hover {
     background-color: $white !important;
-    color: $light-pink !important;
-    border-color: $light-pink !important;
+    color: $light-primary !important;
+    border-color: $light-primary !important;
   }
 }
 
@@ -195,19 +179,19 @@ $answer-icon-width-to-height-ratio: 64 / 60;
   }
 }
 
-@mixin placeholder-color-pink {
+@mixin placeholder-color-primary {
   &::-webkit-input-placeholder {
-    color: lighten($pink, 15%);
+    color: $lighter-primary;
 
   }
 
   &::-moz-placeholder {
-    color: lighten($pink, 15%);
+    color: $lighter-primary;
     opacity: 1;
   }
 
   &:-ms-input-placeholder {
-    color: lighten($pink, 15%);
+    color: $lighter-primary;
   }
 }
 
@@ -220,11 +204,11 @@ $answer-icon-width-to-height-ratio: 64 / 60;
 	border-radius: 3px;
 	appearance: none;
   background-color: $white;
-  color: $pink;
-  @include placeholder-color-pink;
-  @include gotham-bold;
+  color: $primary;
+  @include placeholder-color-primary;
+  @include heading-font;
   width: 100%;
-  border: 1px solid $pink;
+  border: 1px solid $primary;
 
   &-container {
     position: relative;

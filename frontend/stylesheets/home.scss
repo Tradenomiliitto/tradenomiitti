@@ -22,10 +22,10 @@
       @media screen and (max-height: 600px) {
         margin-top: 5vh;
       }
-      @include gotham-bold;
+      @include heading-font;
       text-transform: uppercase;
       font-size: 42px;
-      color: $pink
+      color: $primary
     }
     &--content {
       margin-top: 40px;
@@ -65,7 +65,7 @@
         padding-bottom: 0px;
       }
       text-transform: uppercase;
-      @include gotham-bold;
+      @include heading-font;
       &--text {
         font-size: 28px;
       }
@@ -133,8 +133,8 @@
     }
     &-info {
       &--header {
-        color: $pink;
-        @include gotham-bold;
+        color: $primary;
+        @include heading-font;
         text-transform: uppercase;
         font-size: 42px;
       }

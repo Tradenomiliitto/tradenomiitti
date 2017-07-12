@@ -4,6 +4,14 @@ import Models.Ad
 import Removal
 
 
+type Sort
+    = CreatedDesc
+    | CreatedAsc
+    | AnswerCountDesc
+    | AnswerCountAsc
+    | NewestAnswerDesc
+
+
 type alias Model =
     { ads : List Models.Ad.Ad
     , cursor : Int
@@ -11,6 +19,7 @@ type alias Model =
     , selectedPosition : Maybe String
     , selectedLocation : Maybe String
     , removal : Removal.Model
+    , sort : Sort
     }
 
 
@@ -27,4 +36,5 @@ init =
     , selectedPosition = Nothing
     , selectedLocation = Nothing
     , removal = Removal.init Removal.Ad
+    , sort = CreatedDesc
     }

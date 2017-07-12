@@ -41,19 +41,17 @@ describe('Handle users', function() {
   });
 
 
-  it('should list users', (done) => {
-    service.listProfiles(false).then((users) => {
+  it('should list users', () => {
+    return service.listProfiles(false).then((users) => {
       users.map(user => user.id).should.include(1);
-      done();
     })
   });
 
-  it('should respect limit and offset', (done) => {
+  it('should respect limit and offset', () => {
     const limit = 0;
     const offset = 0;
-    service.listProfiles(false, limit, offset).then((users) => {
+    return service.listProfiles(false, limit, offset).then((users) => {
       users.should.have.length(0);
-      done();
     })
   })
 
@@ -62,51 +60,46 @@ describe('Handle users', function() {
     return knex('users').insert({id: 3, remote_id: -3, data: {
       name: 'Ökynomi'
     }, settings: {}, modified_at: moment()}).then(() => {
-      return service.listProfiles(false, undefined, undefined, {}, sort)
+      return service.listProfiles(true, undefined, undefined, {}, sort)
     })
   }
 
-  it('should sort by activity by default', (done) => {
-    insertAndList(undefined).then(users => {
+  it('should sort by activity by default', () => {
+    return insertAndList(undefined).then(users => {
       users.should.have.length(3);
       users[0].id.should.equal(3);
-      done();
     })
   });
 
-  it('should sort by activity when asked', (done) => {
-    insertAndList('recent').then(users => {
+  it('should sort by activity when asked', () => {
+    return insertAndList('recent').then(users => {
       users.should.have.length(3);
       users[0].id.should.equal(3);
-      done();
     })
   });
 
-  it('should sort by name descending', (done) => {
-    insertAndList('alphaDesc').then(users => {
+  it('should sort by name descending', () => {
+    return insertAndList('alphaDesc').then(users => {
       users.should.have.length(3);
       users[0].id.should.equal(3);
-      done();
     })
   });
 
-  it('should sort by name ascending', (done) => {
-    insertAndList('alphaAsc').then(users => {
+  it('should sort by name ascending', () => {
+    return insertAndList('alphaAsc').then(users => {
       users.should.have.length(3);
       users[2].id.should.equal(3);
-      done();
     })
   });
-  it('should filter by location', (done) => {
+  it('should filter by location', () => {
     MockDate.set(aDate);
-    knex('users').insert({id: 3, remote_id: -3, data: {
+    return knex('users').insert({id: 3, remote_id: -3, data: {
       location: 'siellätäällä'
     }, settings: {}, modified_at: moment()}).then(() => {
       return service.listProfiles(false, undefined, undefined, { location: 'siellätäällä' }, 'recent')
     }).then(users => {
       users.should.have.length(1);
       users[0].id.should.equal(3);
-      done();
     })
   });
 
@@ -133,8 +126,8 @@ describe('Handle contacts', function () {
       });
   });
 
-  it('should list contacts sent by others to logged in user', (done) => {
-    Promise.all([ util.userById(1), util.userById(2) ])
+  it('should list contacts sent by others to logged in user', () => {
+    return Promise.all([ util.userById(1), util.userById(2) ])
       .then(([ loggedInUser, otherUser]) => {
         service.addContact(loggedInUser, otherUser.id, 'intro text longer than 10 chars')
           .then(() => {
@@ -146,7 +139,6 @@ describe('Handle contacts', function () {
             contactsOfLoggedIn.should.have.length(0);
             contactsOfOther.should.have.length(1);
             contactsOfOther[0].user.id.should.equal(loggedInUser.id);
-            done();
           })
       })
   });

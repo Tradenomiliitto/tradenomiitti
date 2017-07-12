@@ -5,9 +5,9 @@
   }
 
   &__subsection-heading {
-    @include gotham-bold;
+    @include heading-font;
     text-transform: capitalize;
-    color: $pink;
+    color: $primary;
   }
 
   &__save {

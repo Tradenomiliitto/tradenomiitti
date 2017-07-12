@@ -8,7 +8,7 @@
   }
 
   &__level-text {
-    color: $pink;
+    color: $primary;
     font-weight: bold;
   }
 
@@ -44,26 +44,26 @@
       }
 
       &--filled {
-        background-color: $pink;
+        background-color: $primary;
       }
       &--unfilled {
-        background-color: #CCC;
+        background-color: $medium-grey;
       }
       &--active {
-        background-color: #CCC;
+        background-color: $medium-grey;
       }
     }
 
     &--filled {
-      background-color: $pink;
+      background-color: $primary;
       @include circle(16px);
     }
     &--unfilled {
-      background-color: #CCC;
+      background-color: $medium-grey;
       @include circle(16px);
     }
     &--active {
-      background-color: $pink;
+      background-color: $primary;
       @include circle(22px);
     }
   }
@@ -73,7 +73,7 @@
     top: 1em;
     text-align: center;
     &-icon {
-      color: $pink;
+      color: $primary;
       cursor: pointer;
     }
   }

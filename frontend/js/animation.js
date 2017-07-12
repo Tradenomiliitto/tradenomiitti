@@ -24,10 +24,10 @@ export default function initAnimation(port) {
     function init(canvas) {
       var context = canvas.getContext("2d");
 
-      const { navbarHeight, pink, green, white } = getStyleValues();
+      const { navbarHeight, primary, secondary, white } = getStyleValues();
 
       const offset = isSplashScreen ? 0 : navbarHeight
-      const color = isSplashScreen ? [ white, white ] : [pink, green];
+      const color = isSplashScreen ? [ white, white ] : [primary, secondary];
       const stk = color;
 
       canvas.onclick = create;
