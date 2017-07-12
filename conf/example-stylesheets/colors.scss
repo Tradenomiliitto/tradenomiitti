@@ -1,11 +1,5 @@
 // Individual color definitions
 
-$pink: #ff6889;
-
-$green:  #4a6161;
-
-$light-blue: #b2d7ff;
-
 $white: #fff;
 $lighter-grey: #fbfbfb;
 $light-grey: #f1f1f1;
@@ -14,12 +8,14 @@ $medium-dark-grey: #999;
 $dark-grey: #636363;
 $black: #000;
 
+$dropdown-selection: #b2d7ff;
+
 
 // Main color definitions
 // Define the 2-color theme here
 
-$primary: $pink;
-$secondary: $green;
+$primary: #ff6889;    // pink
+$secondary: #4a6161;  // green
 
 // Derived lighter colors
 

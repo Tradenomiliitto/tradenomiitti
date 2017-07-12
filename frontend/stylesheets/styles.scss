@@ -255,7 +255,7 @@ div#not-implemented {
   padding: 5px 4px 5px 20px;
 }
 .algolia-autocomplete .aa-dropdown-menu .aa-suggestion.aa-cursor {
-  background-color: $light-blue;
+  background-color: $dropdown-selection;
 }
 .aa-category {
   @include heading-font;

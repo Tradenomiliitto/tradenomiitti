@@ -7,6 +7,7 @@
     "preansible": "./conf/preinstall.sh",
     "serverinstallbase": "./conf/serverinstallbase.sh",
     "serverinstallpm2": "ansible-playbook conf/pm2install.yml -i conf/inventory.ini --limit ${ENV_TO_DEPLOY:-dev}",
+    "copyexamples": "cp -nv ../conf/example-assets ../conf/assets && cp -nv ../conf/example-elm/*.elm ./ && cp -nv ../conf/example-stylesheets/*.scss ./stylesheets/",
     "compilelocal": "cd frontend && mkdir -p static/images && elm-make --yes Main.elm --output static/elm.js && browserify -t babelify js/main.js --outfile static/main.js && node-sass --precision 8 --include-path ../node_modules/bootstrap-sass/assets/stylesheets -r stylesheets/styles.scss | postcss --use autoprefixer -o static/styles.css && cp assets/* ../node_modules/bootstrap-sass/assets/fonts/bootstrap/* ../node_modules/font-awesome/fonts/* ../conf/assets/* static/ && cp index.html static/",
     "start": "node server/index.js",
     "compilefrontend": "cd frontend && elm-make --yes Main.elm --output /srv/static/elm.js && browserify -t babelify js/main.js --outfile /srv/static/main.js",
