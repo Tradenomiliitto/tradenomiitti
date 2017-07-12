@@ -1,16 +1,13 @@
 language: node_js
 
-addons:
-  postgresql: "9.5"
-
 node_js:
   - "7.10"
 
-services:
-  - postgresql
+addons:
+  postgresql: "9.5"
 
-before_script:
-  - psql -c 'create database "tradenomiitti-test";' -U postgres
+env:
+  DISABLE_SEBACON=true db_user=postgres db_password=postgres environment=development ENABLE_EMAIL_SENDING=false
 
 cache:
   directories:
@@ -37,6 +34,9 @@ install:
   - pushd frontend && elm-package install -y && popd
   - pushd frontend/tests && elm-package install -y && popd
 
+before_script:
+  - psql -c 'create database "tradenomiitti-test";' -U postgres
+  - npm run seed-db
 script:
   - npm run test
   - npm run testFrontend
