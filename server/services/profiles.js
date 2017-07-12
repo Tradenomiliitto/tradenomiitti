@@ -63,11 +63,11 @@ module.exports = function initialize(params) {
     }
 
     if (order === "alphaDesc") {
-      query = query.orderByRaw("lower(users.data->>'name') desc")
+      query = query.orderByRaw("lower(users.data->>'name' COLLATE \"fi_FI\") desc")
     }
 
     if (order === "alphaAsc") {
-      query = query.orderByRaw("lower(users.data->>'name') asc")
+      query = query.orderByRaw("lower(users.data->>'name' COLLATE \"fi_FI\") asc")
     }
 
     return query
