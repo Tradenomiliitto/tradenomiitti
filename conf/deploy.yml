@@ -1,0 +1,13 @@
+---
+- hosts: [ dev, qa, prod ]
+  remote_user: ubuntu
+  tasks:
+    - name: upload static assets
+      copy: src={{ item }} dest=/srv/static/{{ item | basename}}
+      with_fileglob:
+        - "assets/*"
+
+    - name: deploy the project on {{ git_remote }}
+      local_action: shell git push {{ git_remote }} master
+      tags:
+        - deploy

@@ -12,7 +12,7 @@ over SSH with the user `ubuntu` and Python 2 installed on the server and
 symlinked to `python`. The server needs to have a public IP and a public domain
 pointing at it, or else Let's encrypt will fail.
 
-You can install servers by running (replace ENV with dev, qa, or prod)
+You can install servers by running (replace ENV with dev, qa, or prod - defaults to dev if ENV_TO_DEPLOY is not specified):
 
 ```sh
 npm install
@@ -38,7 +38,13 @@ git remote add ENV ubuntu@SERVER/srv/tradenomiitti.git
 To deploy:
 
 ```sh
-git push ENV master
+ENV_TO_DEPLOY=ENV npm run deploy
+```
+
+To upload static assets and deploy:
+
+```sh
+ENV_TO_DEPLOY=ENV npm run uploadanddeploy
 ```
 
 ### Local development
