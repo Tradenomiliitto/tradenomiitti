@@ -22,7 +22,6 @@
         - python-psycopg2
         - graphicsmagick
 
-
     - name: install nginx basic auth password file
       template: src=passwd dest=/etc/nginx/passwd
       notify:
@@ -48,7 +47,6 @@
     - name: ensure base services are running
       service: name={{item}} state=started enabled=yes
       with_items: [ nginx, postgresql ]
-
 
     # Set up deployment by git push env master
     - name: make base directories
@@ -79,12 +77,11 @@
     - name: static folder creation
       file: path=/srv/static/images state=directory mode=0755 owner=ubuntu
 
+    # upload all custom static assets (images, logos, json files etc.)
     - name: upload static assets
-      copy: src=assets/{{ item }} dest=/srv/static/{{ item }}
-      with_items:
-        - MundoSansStd.otf
-        - MundoSansStd-LightItalic.otf
-        - tral_person_image_square_1.jpg
+      copy: src={{ item }} dest=/srv/static/{{ item | basename}}
+      with_fileglob:
+        - "assets/*"
 
     - name: upload google analytics id
       template: src=google-analytics-id dest=/srv/static/google-analytics-id

@@ -314,7 +314,7 @@ tradenomiImage =
         [ A.class "col-md-6" ]
         [ H.img
             [ A.class "home__tradenomiitti--image"
-            , A.src "/static/tral_person_image_square_1.jpg"
+            , A.src "/static/home_image.jpg"
             ]
             []
         ]

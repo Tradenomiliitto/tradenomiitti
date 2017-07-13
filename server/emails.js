@@ -14,7 +14,7 @@ module.exports = function init(params) {
   const enableEmailGlobally = params.enableEmailGlobally;
 
   const logo = {
-    path: `${__dirname}/../frontend/assets/tradenomiitti-tunnus-email.png`, type: 'image/png',
+    path: `${__dirname}/../frontend/assets/email_logo.png`, type: 'image/png',
     headers: {"Content-ID":"<logo.png>"},
     name: 'logo.png'
   };

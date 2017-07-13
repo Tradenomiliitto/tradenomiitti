@@ -17,8 +17,8 @@ view routeToMsg userMaybe =
                 [ H.div
                     [ A.class "col-xs-12 col-sm-3" ]
                     [ H.img
-                        [ A.src "/static/tral-logo_white.png"
-                        , A.class "footer__tral-logo"
+                        [ A.src "/static/footer_logo.png"
+                        , A.class "footer__logo"
                         ]
                         []
                     ]

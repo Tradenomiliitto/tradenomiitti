@@ -9,6 +9,7 @@
         "NON_LOCAL": "true",
         "TEST_LOGIN": "{{ test_login }}",
         "COOKIE_SECRET": "{{ cookie_secret }}",
+        "DISABLE_SEBACON": "{{ disable_sebacon }}",
         "SEBACON_CUSTOMER": "{{ sebacon_customer }}",
         "SEBACON_USER": "{{ sebacon_user }}",
         "SEBACON_PASSWORD": "{{ sebacon_password }}",
