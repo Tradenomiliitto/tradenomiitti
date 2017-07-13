@@ -1,6 +1,5 @@
 module Nav exposing (..)
 
-import Constants
 import Navigation
 import UrlParser as U exposing ((</>), (<?>))
 import Window

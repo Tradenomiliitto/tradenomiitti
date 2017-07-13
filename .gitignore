@@ -8,6 +8,5 @@ frontend/static/
 
 # customization and theming
 frontend/index.html
-frontend/Constants.elm
 frontend/stylesheets/colors.scss
 frontend/stylesheets/fonts.scss
