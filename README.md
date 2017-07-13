@@ -1,4 +1,4 @@
-# Tradenomiitti
+# Tradenomiitti [![Build Status](https://travis-ci.org/Tradenomiliitto/tradenomiitti.svg?branch=master)](https://travis-ci.org/Tradenomiliitto/tradenomiitti)
 
 Tradenomiitti is a social web service for members of the trade union Tradenomiliitto. It is up and running at https://tradenomiitti.fi and you can read more about it in [the press release](https://www.sttinfo.fi/tiedote/tradenomien-uusi-palvelu-tarjoaa-rekrytointiapua-ja-mentorointia?publisherId=59695169&releaseId=59695181) (in Finnish) and more about why it's open source [the blog post](http://futurice.com/blog/open-sourcing-a-client-project)
 
@@ -12,7 +12,7 @@ over SSH with the user `ubuntu` and Python 2 installed on the server and
 symlinked to `python`. The server needs to have a public IP and a public domain
 pointing at it, or else Let's encrypt will fail.
 
-You can install servers by running (replace ENV with dev, qa, or prod)
+You can install servers by running (replace ENV with dev, qa, or prod - defaults to dev if ENV_TO_DEPLOY is not specified):
 
 ```sh
 npm install
@@ -38,7 +38,13 @@ git remote add ENV ubuntu@SERVER/srv/tradenomiitti.git
 To deploy:
 
 ```sh
-git push ENV master
+ENV_TO_DEPLOY=ENV npm run deploy
+```
+
+To upload static assets and deploy:
+
+```sh
+ENV_TO_DEPLOY=ENV npm run uploadanddeploy
 ```
 
 ### Local development
@@ -95,14 +101,14 @@ export DISABLE_SEBACON=true
 export db_user=
 export db_password=
 export environment=development
-export ENABLE_EMAIL_SENDING=false
+export TEST_LOGIN=true
 
 npm run seed-db
 
 npm start
 ```
 
-You can go with your browser to `http://localhost:3000/kirjaudu/1` or `http://localhost:3000/kirjaudu/2` to automatically log in as either of the seeded test users: no SSO or members registry API required. After you receive `Ok`, you can navigate to `http://localhost:3000/` and have a valid session in cookies.
+You can click "Kirjaudu" to login as *Tradenomi1* test user. You can also open `http://localhost:3000/kirjaudu/1` or `http://localhost:3000/kirjaudu/2` to use either of the two test user accounts: no SSO or members registry API required. 
 
 Run tests:
 

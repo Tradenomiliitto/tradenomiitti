@@ -151,10 +151,12 @@ routeParser =
 ssoUrl : String -> Maybe String -> String
 ssoUrl rootUrl maybePath =
     let
-        loginUrl =
-            rootUrl ++ "/kirjaudu" ++ (Maybe.map (\s -> "?path=" ++ s) maybePath |> Maybe.withDefault "")
+        loginBase =
+            Window.encodeURIComponent (rootUrl ++ "/kirjaudu")
 
-        returnParameter =
-            Window.encodeURIComponent loginUrl
+        redirectParam =
+            Maybe.map (\s -> "&path=" ++ Window.encodeURIComponent s) maybePath |> Maybe.withDefault ""
     in
-    Constants.ssoBaseUrl ++ returnParameter
+    "/kirjaudu?base="
+        ++ loginBase
+        ++ redirectParam

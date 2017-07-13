@@ -1,11 +1,6 @@
 module Constants exposing (..)
 
 
-ssoBaseUrl : String
-ssoBaseUrl =
-    "https://tunnistus.avoine.fi/sso-login/?service=tradenomiitti&return="
-
-
 footerSocialIcons : List { faIcon : String, url : String }
 footerSocialIcons =
     [ { url = "https://www.facebook.com/tradenomiliitto"

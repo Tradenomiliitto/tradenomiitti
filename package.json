@@ -14,6 +14,8 @@
     "compilefrontend": "cd frontend && elm-make --yes Main.elm --output /srv/static/elm.js && browserify -t babelify js/main.js --outfile /srv/static/main.js",
     "compilescss": "node-sass --precision 8 --include-path node_modules/bootstrap-sass/assets/stylesheets -r frontend/stylesheets/styles.scss | postcss --use autoprefixer -o /srv/static/styles.css",
     "compileassets": "cp frontend/assets/* node_modules/bootstrap-sass/assets/fonts/bootstrap/* node_modules/font-awesome/fonts/* /srv/static/ && ./conf/copy-index-with-ga.sh",
+    "deploy": "ansible-playbook conf/deploy.yml -i conf/inventory.ini --limit ${ENV_TO_DEPLOY:-dev} --tags 'deploy'", 
+    "uploadanddeploy": "ansible-playbook conf/deploy.yml -i conf/inventory.ini --limit ${ENV_TO_DEPLOY:-dev}", 
     "seed-db": "knex migrate:latest && knex seed:run",
     "test": "mocha server/**/*.js",
     "testFrontend": "cd frontend && elm-test"
