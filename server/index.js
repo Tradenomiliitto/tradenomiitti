@@ -64,7 +64,7 @@ const sebacon = require('./sebaconService')({
   customer: sebaconCustomer, user: sebaconUser,
   password: sebaconPassword, auth: sebaconAuth,
   disable: disableSebacon,
-  adminGroup
+  adminGroup, testLogin
 });
 
 const smtpHost = process.env.SMTP_HOST;
