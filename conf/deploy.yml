@@ -9,3 +9,5 @@
 
     - name: deploy the project on {{ git_remote }}
       local_action: shell git push {{ git_remote }} master
+      tags:
+        - deploy
