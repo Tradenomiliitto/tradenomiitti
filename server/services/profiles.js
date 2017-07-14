@@ -112,10 +112,12 @@ module.exports = function initialize(params) {
             from_user: loggedInUser.id,
             to_user: toUserId,
             intro_text: introductionText
-          }).then(_ => util.userById(toUserId))
-            .then(receiver => {
-              emails.sendNotificationForContact(receiver, loggedInUser, introductionText);
-            })
+          }, 'id')
+          .then((data) => knex('events').insert({type: 'add_contact', data: {contact_id: data[0]}}))
+          .then(_ => util.userById(toUserId))
+          .then(receiver => {
+            emails.sendNotificationForContact(receiver, loggedInUser, introductionText);
+          })
         }
         else {
           return Promise.reject("User has already given their business card to this user");
