@@ -114,7 +114,7 @@ if (testLogin) {
     req.session.id = `00000000-0000-0000-0000-00000000000${req.params.id}`;
     knex('events').insert({
       type: 'login_testuser',
-      data: {user_id: req.session.id}
+      data: {user_id: req.params.id, session_id: req.session.id}
     }).then(() => {
       res.redirect('/');
     })
