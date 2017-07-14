@@ -98,10 +98,16 @@ module.exports = function initialize(params) {
             }
           })
           .then((user) => {
-            return knex('sessions').insert({
-              id: sessionId,
-              user_id: user.id
-            }).then(() => {
+            return Promise.all([
+              knex('sessions').insert({
+                id: sessionId,
+                user_id: user.id
+              }), 
+              knex('events').insert({
+                type: 'login_success',
+                data: {user_id: user.id, session_id: sessionId}
+              })
+            ]).then(() => {
               req.session.id = sessionId;
               return res.redirect(req.query.path || '/');
             });
@@ -110,19 +116,31 @@ module.exports = function initialize(params) {
     });
   }
 
+  // Can be cleaned if no events needed for test user logouts
   function logout(req, res, next) {
     const sessionId = req.session.id;
     req.session = null;
-    if (!testLogin) {
-      if (sessionId) {
-        return knex('sessions').where({id: sessionId}).del()
-          .then(() => res.redirect('https://tunnistus.avoine.fi/sso-logout/'))
-          .catch(next);
+    if (sessionId) {
+      if (!testLogin) {
+        return Promise.all([
+          knex('sessions').where({id: sessionId}).del(),
+          knex('events').insert({type: 'logout_success', data: {session_id: sessionId}})
+        ]).then(() => res.redirect('https://tunnistus.avoine.fi/sso-logout/')
+        ).catch(next);
       } else {
-        res.redirect('https://tunnistus.avoine.fi/sso-logout/');
+        return knex('events').insert({type: 'logout_testuser', data: {session_id: sessionId}})
+        .then(() => {
+          res.redirect('/');
+        });
       }
     } else {
-      res.redirect('/');
+      return knex('events').insert({type: 'logout_failure', data: {message: 'no_session_id'}})
+      .then(() => {
+        if(!testLogin)
+          res.redirect('https://tunnistus.avoine.fi/sso-logout/');
+        else 
+          res.redirect('/')
+      });
     }
   }
 
