@@ -175,8 +175,10 @@ module.exports = function initialize(params) {
                   .concat(specialSkillPromises)
                   .concat(educationPromises)
               );
+            }).then(() => {
+              return trx('events').insert({type: 'profile_save', data: {user_id: user.id}})
             });
-        })
+        });
       }).then(resp => {
         res.sendStatus(200);
       }).catch(next)
