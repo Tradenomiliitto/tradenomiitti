@@ -15,7 +15,7 @@ module.exports = function initialize(params) {
           .select('users.remote_id')
           .select(knex.raw('users.data->>\'name\' as nickname'))
           .select(knex.raw('users.data->>\'profile_creation_consented\' as profile_created'))
-          .select(knex.raw('(select count(*) from events where (type = \'login_success\' or type = \'login_testuser\') and (events.data->>\'user_id\')::int = users.id) as login_count'))
+          .select(knex.raw('(select count(*) from events where type = \'login_success\' and (events.data->>\'user_id\')::int = users.id) as login_count'))
           .select(knex.raw('(select count(*) from contacts where contacts.from_user = users.id) as sent_business_cards'))
           .select(knex.raw('(select count(*) from contacts where contacts.to_user = users.id) as received_business_cards'))
           .select(knex.raw('(select count(*) from ads where ads.user_id = users.id) as ads'))
