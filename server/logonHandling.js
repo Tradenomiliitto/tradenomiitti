@@ -25,13 +25,20 @@ module.exports = function initialize(params) {
     }, (err, response, validationBody) => {
       if (err) {
         console.error(err);
-        return res.status(500).send('Jotain meni pieleen');
+        return knex('events').insert({type: 'login_failure', data: {error: err}})
+        .then(() => {
+          return res.status(500).send('Jotain meni pieleen');
+        });
+        
       }
 
       if (validationBody.error) {
         console.error(validationBody);
         req.session = null;
-        return res.status(400).send('Kirjautuminen epäonnistui');
+        return knex('events').insert({type: 'login_failure', data: {error: validationBody.error}})
+        .then(() => {
+          return res.status(400).send('Kirjautuminen epäonnistui');
+        });
       }
 
       request.post({
@@ -40,19 +47,28 @@ module.exports = function initialize(params) {
       }, (err, response, detailsBody) => {
         if (err) {
           console.error(err);
-          return res.status(500).send('Jotain meni pieleen');
+          return knex('events').insert({type: 'login_failure', data: {error: err}})
+          .then(() => {
+            return res.status(500).send('Jotain meni pieleen');
+          });
         }
 
         if (detailsBody.error) {
           console.error(detailsBody);
           req.session = null;
-          return res.status(400).send('Kirjautuminen epäonnistui');
+          return knex('events').insert({type: 'login_failure', data: {error: detailsBody.error}})
+          .then(() => {
+            return res.status(400).send('Kirjautuminen epäonnistui');
+          });
         }
 
         if (restrictToGroup && !detailsBody.result.groups.includes(restrictToGroup)) {
           console.log(detailsBody);
           req.session = null;
-          return res.status(403).send('Ei oikeutta käyttää palvelua')
+          return knex('events').insert({type: 'login_failure', data: {error: 'User not in restrictToGroup'}})
+          .then(() => {
+            return res.status(403).send('Ei oikeutta käyttää palvelua');
+          });
         }
 
         const sessionId = uuid.v4();
