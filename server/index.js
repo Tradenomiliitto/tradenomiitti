@@ -90,7 +90,7 @@ const restrictToGroup = process.env.RESTRICT_TO_GROUP; // can be empty
 const util = require('./util')({ knex });
 const emails = require('./emails')({ smtp, mailFrom, staticDir, serviceDomain, util, enableEmailGlobally });
 
-const logon = require('./logonHandling')({ communicationsKey, knex, sebacon, restrictToGroup, testLogin } );
+const logon = require('./logonHandling')({ communicationsKey, knex, sebacon, restrictToGroup, testLogin, util } );
 const profile = require('./profile')({ knex, sebacon, util, userImagesPath, emails});
 const ads = require('./ads')({ util, knex, emails, sebacon });
 const adNotifications = require('./adNotifications')({ emails, knex, util })
@@ -114,7 +114,7 @@ if (testLogin) {
     req.session.id = `00000000-0000-0000-0000-00000000000${req.params.id}`;
     knex('events').insert({
       type: 'login_testuser',
-      data: {user_id: req.params.id, session_id: req.session.id}
+      data: {user_id: parseInt(req.params.id), session_id: req.session.id}
     }).then(() => {
       res.redirect('/');
     })

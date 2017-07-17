@@ -3,7 +3,7 @@ const request = require('request');
 
 
 module.exports = function initialize(params) {
-  const {communicationsKey, knex, sebacon, restrictToGroup, testLogin} = params;
+  const {communicationsKey, knex, sebacon, restrictToGroup, testLogin, util} = params;
 
   function login(req, res, next) {
     const ssoId = req.body.ssoid;
@@ -118,18 +118,24 @@ module.exports = function initialize(params) {
 
   // Can be cleaned if no events needed for test user logouts
   function logout(req, res, next) {
-    const sessionId = req.session.id;
-    req.session = null;
-    if (sessionId) {
+    if (req.session.id) {
       if (!testLogin) {
-        return Promise.all([
-          knex('sessions').where({id: sessionId}).del(),
-          knex('events').insert({type: 'logout_success', data: {session_id: sessionId}})
-        ]).then(() => res.redirect('https://tunnistus.avoine.fi/sso-logout/')
+        util.userForSession(req)
+        .then((user) => {
+          return Promise.all([
+            knex('events').insert({type: 'logout_success', data: {session_id: req.session.id, user_id: user.id}}),
+            knex('sessions').where({id: req.session.id}).del()
+          ]);
+        }).then(() => {
+          req.session = null;
+          res.redirect('https://tunnistus.avoine.fi/sso-logout/')}
         ).catch(next);
       } else {
-        return knex('events').insert({type: 'logout_testuser', data: {session_id: sessionId}})
-        .then(() => {
+        util.userForSession(req)
+        .then((user) => {
+          return knex('events').insert({type: 'logout_testuser', data: {session_id: req.session.id, user_id: user.id}})
+        }).then(() => {
+          req.session = null;
           res.redirect('/');
         });
       }
