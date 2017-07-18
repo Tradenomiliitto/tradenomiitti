@@ -56,5 +56,8 @@ On the GitHub website, you can now open a pull request from your fork and branch
 
 ![Screenshot of the GitHub UI](doc/contributing-pr.png)
 
+Make a final check that the diffs look like what you'd expect, and submit the PR.
 
 ## Done!
+
+Great job, your pull request is now open for review! :tada:
