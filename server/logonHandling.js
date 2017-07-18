@@ -29,7 +29,6 @@ module.exports = function initialize(params) {
         .then(() => {
           return res.status(500).send('Jotain meni pieleen');
         });
-
       }
 
       if (validationBody.error) {
