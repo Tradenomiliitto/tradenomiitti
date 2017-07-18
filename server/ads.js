@@ -21,7 +21,7 @@ module.exports = function initialize(params) {
         return knex('events').insert({
             type: 'create_ad',
             data: {user_id: insertResp[0].user_id, ad_id: insertResp[0].id}
-          }, "data");
+          }, 'data');
       }).then(insertResp => {
         res.json(insertResp[0].ad_id)
       })
