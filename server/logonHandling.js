@@ -134,33 +134,29 @@ module.exports = function initialize(params) {
   // Can be cleaned if no events needed for test user logouts
   function logout(req, res, next) {
     if (req.session.id) {
-      if (!testLogin) {
-        util.userForSession(req)
-        .then((user) => {
-          return Promise.all([
-            knex('events').insert({type: 'logout_success', data: {session_id: req.session.id, user_id: user.id}}),
-            knex('sessions').where({id: req.session.id}).del()
-          ]);
-        }).then(() => {
-          req.session = null;
-          return res.redirect('https://tunnistus.avoine.fi/sso-logout/')}
-        ).catch(next);
-      } else {
-        util.userForSession(req)
-        .then((user) => {
-          return knex('events').insert({type: 'logout_testuser', data: {session_id: req.session.id, user_id: user.id}})
-        }).then(() => {
-          req.session = null;
+      util.userForSession(req)
+      .then((user) => {
+        let sessionId = req.session.id;
+        req.session = null;
+        return knex('events').insert({type: 'logout_success', data: {session_id: sessionId, user_id: user.id}});
+      }).then(() => {
+          if(!testLogin)
+            return knex('sessions').where({id: sessionId}).del();
+          else
+            return Promise.resolve(true);
+      }).then(() => {
+        if(!testLogin)
+          return res.redirect('https://tunnistus.avoine.fi/sso-logout/');
+        else
           return res.redirect('/');
-        });
-      }
+      }).catch(next);
     } else {
       return knex('events').insert({type: 'logout_failure', data: {message: 'no_session_id'}})
       .then(() => {
         if(!testLogin)
           return res.redirect('https://tunnistus.avoine.fi/sso-logout/');
         else
-          return res.redirect('/')
+          return res.redirect('/');
       });
     }
   }
