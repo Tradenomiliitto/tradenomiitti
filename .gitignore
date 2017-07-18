@@ -5,3 +5,8 @@ node_modules/
 elm-stuff/
 dev.sqlite3
 frontend/static/
+
+# customization and theming
+frontend/index.html
+frontend/stylesheets/colors.scss
+frontend/stylesheets/fonts.scss

@@ -55,11 +55,23 @@ ENV_TO_DEPLOY=ENV npm run uploadanddeploy
    * It's under that name in most package managers (Ubuntu, Arch, brew for macOS)
 * If you didn't already do it above, run `npm install` and copy assets to `conf/assets/`
 
+Copy example customization files to the project from `conf/example-*`.
+
+```sh
+npm run copyexamples
+```
+
+> Note: This **does not override** existing files, so it's safe to run it multiple times. If you do want to discard your customization files, please do that manually.
+
 Compile elm & scss
 
-```
+```sh
 npm run compilelocal
+
+# or run copyexamples and compilelocal together
+npm run compilewithexamples
 ```
+
 
 Run the server with full integrations:
 
@@ -68,8 +80,8 @@ export SEBACON_CUSTOMER=
 export SEBACON_USER=
 export SEBACON_PASSWORD=
 export SEBACON_AUTH=
-export db_user= 
-export db_password= 
+export db_user=
+export db_password=
 export environment=development
 export COMMUNICATIONS_KEY=
 export SMTP_HOST=

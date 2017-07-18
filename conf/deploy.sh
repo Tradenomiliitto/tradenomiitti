@@ -14,6 +14,8 @@ npm install
 cd frontend
 ../node_modules/.bin/elm-package install -y
 cd ..
+
+npm run copyexamples
 npm run compilefrontend
 npm run compilescss
 npm run compileassets
