@@ -17,7 +17,10 @@ const app = express();
 // knex
 const knex_config = require('../knexfile.js');
 const knex = require('knex')(knex_config[process.env.environment]);
-knex.migrate.latest(knex_config[process.env.environment]);
+
+if (process.env.environment != 'test') {
+  knex.migrate.latest(knex_config[process.env.environment]);
+}
 
 //serve static files if developing locally (this route is not reached on servers)
 app.use('/static', express.static(staticDir));
@@ -364,7 +367,7 @@ function logError(req, err) {
   return errorHash;
 }
 
-app.listen(3000, () => {
+module.exports = app.listen(3000, () => {
   console.log('Listening on 3000');
 });
 
