@@ -114,7 +114,7 @@ module.exports = function initialize(params) {
             intro_text: introductionText
           }, 'id')
           .then((data) => knex('events').insert({type: 'add_contact', data: {contact_id: data[0]}}))
-          .then(_ => util.userById(toUserId))
+          .then(() => util.userById(toUserId))
           .then(receiver => {
             emails.sendNotificationForContact(receiver, loggedInUser, introductionText);
           })

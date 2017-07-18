@@ -21,7 +21,7 @@ module.exports = function initialize(params) {
         return knex('events').insert({
             type: 'create_ad',
             data: {user_id: insertResp[0].user_id, ad_id: insertResp[0].id}
-          }, "data");
+          }, 'data');
       }).then(insertResp => {
         res.json(insertResp[0].ad_id)
       })
@@ -75,7 +75,7 @@ module.exports = function initialize(params) {
           user_id: user.id,
           ad_id,
           data: req.body
-        }, 'id'),
+        }, ['id', 'user_id']),
         util.userById(ad.user_id).then(dbUser => {
           emails.sendNotificationForAnswer(dbUser, ad);
         }).catch(e => {
@@ -84,7 +84,12 @@ module.exports = function initialize(params) {
         })
       ]);
     }).then(([ insertResp, emailResp ]) => {
-      res.json(`${insertResp[0]}`);
+      return knex('events').insert({
+        type: 'create_answer',
+        data: {answer_id: insertResp[0].id, user_id: insertResp[0].user_id}
+      }, 'data');
+    }).then((data) => {
+      res.json(`${data[0].answer_id}`);
     }).catch(next);
   }
 
