@@ -3,7 +3,7 @@ const request = require('request');
 
 
 module.exports = function initialize(params) {
-  const {communicationsKey, knex, sebacon, restrictToGroup, testLogin} = params;
+  const {communicationsKey, knex, sebacon, restrictToGroup, testLogin, util} = params;
 
   function login(req, res, next) {
     const ssoId = req.body.ssoid;
@@ -25,13 +25,19 @@ module.exports = function initialize(params) {
     }, (err, response, validationBody) => {
       if (err) {
         console.error(err);
-        return res.status(500).send('Jotain meni pieleen');
+        return knex('events').insert({type: 'login_failure', data: {error: err}})
+        .then(() => {
+          return res.status(500).send('Jotain meni pieleen');
+        });
       }
 
       if (validationBody.error) {
         console.error(validationBody);
         req.session = null;
-        return res.status(400).send('Kirjautuminen epäonnistui');
+        return knex('events').insert({type: 'login_failure', data: {error: validationBody.error}})
+        .then(() => {
+          return res.status(400).send('Kirjautuminen epäonnistui');
+        });
       }
 
       request.post({
@@ -40,19 +46,28 @@ module.exports = function initialize(params) {
       }, (err, response, detailsBody) => {
         if (err) {
           console.error(err);
-          return res.status(500).send('Jotain meni pieleen');
+          return knex('events').insert({type: 'login_failure', data: {error: err}})
+          .then(() => {
+            return res.status(500).send('Jotain meni pieleen');
+          });
         }
 
         if (detailsBody.error) {
           console.error(detailsBody);
           req.session = null;
-          return res.status(400).send('Kirjautuminen epäonnistui');
+          return knex('events').insert({type: 'login_failure', data: {error: detailsBody.error}})
+          .then(() => {
+            return res.status(400).send('Kirjautuminen epäonnistui');
+          });
         }
 
         if (restrictToGroup && !detailsBody.result.groups.includes(restrictToGroup)) {
           console.log(detailsBody);
           req.session = null;
-          return res.status(403).send('Ei oikeutta käyttää palvelua')
+          return knex('events').insert({type: 'login_failure', data: {error: 'User not in restrictToGroup'}})
+          .then(() => {
+            return res.status(403).send('Ei oikeutta käyttää palvelua');
+          });
         }
 
         const sessionId = uuid.v4();
@@ -98,10 +113,16 @@ module.exports = function initialize(params) {
             }
           })
           .then((user) => {
-            return knex('sessions').insert({
-              id: sessionId,
-              user_id: user.id
-            }).then(() => {
+            return Promise.all([
+              knex('sessions').insert({
+                id: sessionId,
+                user_id: user.id
+              }),
+              knex('events').insert({
+                type: 'login_success',
+                data: {user_id: user.id, session_id: sessionId}
+              })
+            ]).then(() => {
               req.session.id = sessionId;
               return res.redirect(req.query.path || '/');
             });
@@ -110,19 +131,33 @@ module.exports = function initialize(params) {
     });
   }
 
+  // Can be cleaned if no events needed for test user logouts
   function logout(req, res, next) {
-    const sessionId = req.session.id;
-    req.session = null;
-    if (!testLogin) {
-      if (sessionId) {
-        return knex('sessions').where({id: sessionId}).del()
-          .then(() => res.redirect('https://tunnistus.avoine.fi/sso-logout/'))
-          .catch(next);
-      } else {
-        res.redirect('https://tunnistus.avoine.fi/sso-logout/');
-      }
+    if (req.session.id) {
+      util.userForSession(req)
+      .then((user) => {
+        let sessionId = req.session.id;
+        req.session = null;
+        return knex('events').insert({type: 'logout_success', data: {session_id: sessionId, user_id: user.id}});
+      }).then(() => {
+          if(!testLogin)
+            return knex('sessions').where({id: sessionId}).del();
+          else
+            return Promise.resolve(true);
+      }).then(() => {
+        if(!testLogin)
+          return res.redirect('https://tunnistus.avoine.fi/sso-logout/');
+        else
+          return res.redirect('/');
+      }).catch(next);
     } else {
-      res.redirect('/');
+      return knex('events').insert({type: 'logout_failure', data: {message: 'no_session_id'}})
+      .then(() => {
+        if(!testLogin)
+          return res.redirect('https://tunnistus.avoine.fi/sso-logout/');
+        else
+          return res.redirect('/');
+      });
     }
   }
 

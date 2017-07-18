@@ -90,7 +90,7 @@ const restrictToGroup = process.env.RESTRICT_TO_GROUP; // can be empty
 const util = require('./util')({ knex });
 const emails = require('./emails')({ smtp, mailFrom, staticDir, serviceDomain, util, enableEmailGlobally });
 
-const logon = require('./logonHandling')({ communicationsKey, knex, sebacon, restrictToGroup, testLogin } );
+const logon = require('./logonHandling')({ communicationsKey, knex, sebacon, restrictToGroup, testLogin, util } );
 const profile = require('./profile')({ knex, sebacon, util, userImagesPath, emails});
 const ads = require('./ads')({ util, knex, emails, sebacon });
 const adNotifications = require('./adNotifications')({ emails, knex, util })
@@ -112,22 +112,27 @@ if (nonLocal) {
 if (testLogin) {
   app.get('/kirjaudu/:id', (req, res) => {
     req.session.id = `00000000-0000-0000-0000-00000000000${req.params.id}`;
-    res.redirect('/');
+    knex('events').insert({
+      type: 'login_success',
+      data: {user_id: parseInt(req.params.id), session_id: req.session.id}
+    }).then(() => {
+      res.redirect('/');
+    })
   });
 }
 
 // locally login as 'Tradenomi1' test user, in production redirect to Avoine's authentication
 app.get('/kirjaudu', (req, res) => {
   if (!testLogin) {
-    encodedParam = encodeURIComponent(req.query.base);
+    let encodedPath = '';
     if (req.query.path) {
-      encodedParam += encodeURIComponent('?path=' + req.query.path);
+      encodedPath = encodeURIComponent('?path=' + req.query.path);
     }
+    const encodedParam = encodeURIComponent(req.query.base) + encodedPath;
     const url = 'https://tunnistus.avoine.fi/sso-login/?service=tradenomiitti&return=' + encodedParam;
     res.redirect(url);
   } else {
-    req.session.id = `00000000-0000-0000-0000-000000000001`;
-    res.redirect(req.query.path);
+    res.redirect('/kirjaudu/1');
   }
 });
 
