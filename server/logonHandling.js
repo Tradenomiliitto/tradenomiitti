@@ -29,7 +29,7 @@ module.exports = function initialize(params) {
         .then(() => {
           return res.status(500).send('Jotain meni pieleen');
         });
-        
+
       }
 
       if (validationBody.error) {
@@ -118,7 +118,7 @@ module.exports = function initialize(params) {
               knex('sessions').insert({
                 id: sessionId,
                 user_id: user.id
-              }), 
+              }),
               knex('events').insert({
                 type: 'login_success',
                 data: {user_id: user.id, session_id: sessionId}
@@ -144,7 +144,7 @@ module.exports = function initialize(params) {
           ]);
         }).then(() => {
           req.session = null;
-          res.redirect('https://tunnistus.avoine.fi/sso-logout/')}
+          return res.redirect('https://tunnistus.avoine.fi/sso-logout/')}
         ).catch(next);
       } else {
         util.userForSession(req)
@@ -152,16 +152,16 @@ module.exports = function initialize(params) {
           return knex('events').insert({type: 'logout_testuser', data: {session_id: req.session.id, user_id: user.id}})
         }).then(() => {
           req.session = null;
-          res.redirect('/');
+          return res.redirect('/');
         });
       }
     } else {
       return knex('events').insert({type: 'logout_failure', data: {message: 'no_session_id'}})
       .then(() => {
         if(!testLogin)
-          res.redirect('https://tunnistus.avoine.fi/sso-logout/');
-        else 
-          res.redirect('/')
+          return res.redirect('https://tunnistus.avoine.fi/sso-logout/');
+        else
+          return res.redirect('/')
       });
     }
   }
