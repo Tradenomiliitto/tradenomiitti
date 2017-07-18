@@ -175,8 +175,10 @@ module.exports = function initialize(params) {
                   .concat(specialSkillPromises)
                   .concat(educationPromises)
               );
+            }).then(() => {
+              return trx('events').insert({type: 'profile_save', data: {user_id: user.id}})
             });
-        })
+        });
       }).then(resp => {
         res.sendStatus(200);
       }).catch(next)
@@ -225,9 +227,11 @@ module.exports = function initialize(params) {
 
         return writePromise(gm(buffer), fullPath)
           .then(() => fileName)
-      }).then(fileName => {
-        return res.send(fileName);
-      })
+      }).then((filename) => {
+        return knex('events').insert({type: 'image_upload', data: {filename: filename}}, 'data');
+      }).then(data => {
+        return res.send(data[0].filename);
+      });
   }
 
   function putImage(req, res, next) {

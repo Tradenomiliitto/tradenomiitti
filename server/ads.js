@@ -16,8 +16,15 @@ module.exports = function initialize(params) {
         return knex('ads').insert({
           user_id: user.id,
           data: req.body
-        }, 'id');
-      }).then(insertResp => res.json(insertResp[0]))
+        }, ['user_id', 'id']);
+      }).then((insertResp) => {
+        return knex('events').insert({
+            type: 'create_ad',
+            data: {user_id: insertResp[0].user_id, ad_id: insertResp[0].id}
+          }, 'data');
+      }).then(insertResp => {
+        res.json(insertResp[0].ad_id)
+      })
       .catch(next)
   }
 
@@ -68,7 +75,7 @@ module.exports = function initialize(params) {
           user_id: user.id,
           ad_id,
           data: req.body
-        }, 'id'),
+        }, ['id', 'user_id']),
         util.userById(ad.user_id).then(dbUser => {
           emails.sendNotificationForAnswer(dbUser, ad);
         }).catch(e => {
@@ -77,7 +84,12 @@ module.exports = function initialize(params) {
         })
       ]);
     }).then(([ insertResp, emailResp ]) => {
-      res.json(`${insertResp[0]}`);
+      return knex('events').insert({
+        type: 'create_answer',
+        data: {answer_id: insertResp[0].id, user_id: insertResp[0].user_id}
+      }, 'data');
+    }).then((data) => {
+      res.json(`${data[0].answer_id}`);
     }).catch(next);
   }
 
@@ -101,7 +113,13 @@ module.exports = function initialize(params) {
     findRowUserCanDelete(req, table)
       .then(rows => {
         if (rows.length === 1) {
-          return knex(table).where('id', rows[0].id).del();
+          return Promise.all([
+            knex(table).where('id', rows[0].id).del(),
+            knex('events').insert({
+              type: 'delete_content',
+              data: {table: table, id: rows[0].id, user_id: rows[0].user_id}
+            })
+            ]);
         } else {
           return Promise.reject(`Did not find row in ${table} to delete`);
         }

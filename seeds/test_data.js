@@ -63,6 +63,8 @@ exports.seed = function(knex, Promise) {
          ad_id: parseInt(id),
          created_at: new Date(2017, 4, 4)
        }); 
+    }).then(() => {
+      return knex('events').del();
     })
   ;
 };
