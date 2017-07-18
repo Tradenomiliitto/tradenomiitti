@@ -29,9 +29,8 @@ where ads.user_id = users.id\
       .then(rows => json2csv({ data: rows, del: ';' }))
       .then(csv => {
         res.contentType('text/csv');
-        res.send(csv);
-      })
-      .catch(next)
+        return res.send(csv);
+      }).catch(next)
   }
 
   return {
