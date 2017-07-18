@@ -1,11 +1,15 @@
 module.exports = function initialize(params) {
   const knex = params.knex;
 
+  const genericError = {
+    error: 'Server error',
+  };
+
   function userForSession(req) {
     if (!req.session.id) return Promise.reject('Request has no session id');
     return knex('sessions')
       .where({ id: req.session.id })
-      .then(resp => resp.length === 0 ? Promise.reject({ status: 403, msg: 'No session found' }) : resp[0].user_id)
+      .then(resp => (resp.length === 0 ? Promise.reject({ status: 403, msg: 'No session found' }) : resp[0].user_id))
       .then(id => knex('users').where({ id }))
       .then(resp => resp[0]);
   }
@@ -16,16 +20,16 @@ module.exports = function initialize(params) {
 
   function loggedIn(req) {
     return userForSession(req)
-      .then(_ => true)
-      .catch(_ => false);
+      .then(() => true)
+      .catch(() => false);
   }
 
-  //formats user as json. loggedIn parameter decides if users name is shown in the json
-  function formatUser(user, loggedIn) {
+  // formats user as json. isLoggedIn parameter decides if users name is shown in the json
+  function formatUser(user, isLoggedIn) {
     const formattedUser = {};
     formattedUser.id = user.id;
     const userData = user.data;
-    formattedUser.name = loggedIn ? (userData.name || '') : 'Tradenomi';
+    formattedUser.name = isLoggedIn ? (userData.name || '') : 'Tradenomi';
     formattedUser.description = userData.description || '';
     formattedUser.title = userData.title || 'Ei titteliä';
 
@@ -35,9 +39,9 @@ module.exports = function initialize(params) {
     formattedUser.special_skills = [];
     formattedUser.education = [];
 
-    formattedUser.location = userData.location || "";
+    formattedUser.location = userData.location || '';
     formattedUser.profile_creation_consented = userData.profile_creation_consented || false;
-    formattedUser.cropped_picture = loggedIn ? (userData.cropped_picture || '') : '';
+    formattedUser.cropped_picture = isLoggedIn ? (userData.cropped_picture || '') : '';
 
     return formattedUser;
   }
@@ -54,12 +58,13 @@ module.exports = function initialize(params) {
     return formatted;
   }
 
-  function formatAd(databaseAd, loggedIn) {
+  function formatAd(databaseAd, isLoggedIn) {
     return Promise.all([
-      knex('answers').where({ad_id: databaseAd.id})
-        .then(answers => Promise.all(answers.map(databaseAnswer => formatAnswer(databaseAnswer, loggedIn)))),
-      knex('users').where({id: databaseAd.user_id}).then(rows => rows[0])
-    ]).then(function ([answers, askingUser]) {
+      knex('answers').where({ ad_id: databaseAd.id })
+        .then(answers =>
+          Promise.all(answers.map(databaseAnswer => formatAnswer(databaseAnswer, isLoggedIn)))),
+      knex('users').where({ id: databaseAd.user_id }).then(rows => rows[0]),
+    ]).then(([answers, askingUser]) => {
       const ad = {};
       ad.id = databaseAd.id;
       ad.heading = databaseAd.data.heading || '';
@@ -67,31 +72,31 @@ module.exports = function initialize(params) {
       ad.domain = databaseAd.data.domain;
       ad.position = databaseAd.data.position;
       ad.location = databaseAd.data.location;
-      ad.created_by = formatUser(askingUser, loggedIn);
+      ad.created_by = formatUser(askingUser, isLoggedIn);
       ad.created_at = databaseAd.created_at;
-      ad.answers = loggedIn ? answers : answers.length;
+      ad.answers = isLoggedIn ? answers : answers.length;
       return ad;
-    })
+    });
   }
 
 
-  function formatAnswer(databaseAnswer, loggedIn) {
+  function formatAnswer(databaseAnswer, isLoggedIn) {
     return knex('users').where({ id: databaseAnswer.user_id })
       .then(rows => rows[0])
-      .then(function(user) {
+      .then(user => {
         const answer = {};
-        answer.created_by = formatUser(user, loggedIn);
+        answer.created_by = formatUser(user, isLoggedIn);
         answer.content = databaseAnswer.data.content || '';
         answer.id = databaseAnswer.id;
         answer.created_at = databaseAnswer.created_at;
         return answer;
-      })
+      });
   }
 
   function formatSettings(settingsIn) {
     const settings = {};
     const dbSettings = settingsIn || {};
-    const trueFallback = value => value === undefined ? true : value;
+    const trueFallback = value => (value === undefined ? true : value);
     settings.emails_for_answers = trueFallback(dbSettings.emails_for_answers);
     settings.emails_for_businesscards = trueFallback(dbSettings.emails_for_businesscards);
     settings.emails_for_new_ads = trueFallback(dbSettings.emails_for_new_ads);
@@ -100,14 +105,17 @@ module.exports = function initialize(params) {
   }
 
   function logValue(tag, value) {
-    if (arguments.length === 1) {
-      value = tag;
-      tag = 'LOG VALUE';
+    const loggedValue = (arguments.length === 1) ? tag : value;
+    if (loggedValue === tag) {
+      console.log('LOG VALUE', loggedValue);
+    } else {
+      console.log(tag, value);
     }
-    return console.log(tag, value) || value;
+    return loggedValue;
   }
 
   function patchSkillsToUser(user, skills) {
+    /* eslint-disable no-param-reassign */
     user.domains = skills
       .filter(s => s.type === 'domain')
       .map(s => ({ heading: s.heading, skill_level: s.level }));
@@ -115,9 +123,11 @@ module.exports = function initialize(params) {
     user.positions = skills
       .filter(s => s.type === 'position')
       .map(s => ({ heading: s.heading, skill_level: s.level }));
+    /* eslint-enable */
   }
 
-  return  {
+  return {
+    genericError,
     userForSession,
     userById,
     formatUser,
@@ -127,6 +137,6 @@ module.exports = function initialize(params) {
     formatSettings,
     loggedIn,
     logValue,
-    patchSkillsToUser
+    patchSkillsToUser,
   };
-}
+};
