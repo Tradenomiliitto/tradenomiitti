@@ -33,6 +33,7 @@ import State.Profile
 import State.Settings
 import State.User
 import StaticContent
+import Translation as T exposing (HasTranslations, Translations)
 import User
 import Util exposing (UpdateMessage(..), ViewMessage(..))
 
@@ -67,9 +68,14 @@ port closeMenu : Bool -> Cmd msg
 port showAlert : String -> Cmd msg
 
 
-main : Program Never Model Msg
+type alias Flags =
+    { translations : List ( String, String )
+    }
+
+
+main : Program Flags Model Msg
 main =
-    Navigation.program UrlChange
+    Navigation.programWithFlags UrlChange
         { init = init
         , view = view
         , update = update
@@ -77,11 +83,11 @@ main =
         }
 
 
-init : Navigation.Location -> ( Model, Cmd Msg )
-init location =
+init : Flags -> Navigation.Location -> ( Model, Cmd Msg )
+init { translations } location =
     let
         model =
-            initState location
+            initState translations location
 
         -- after the profile is loaded, an urlchange event is triggered
         profileCmd =
@@ -455,10 +461,13 @@ subscriptions model =
 view : Model -> H.Html Msg
 view model =
     let
+        t =
+            T.get model.translations
+
         splashScreen =
             H.div
                 [ A.class "splash-screen" ]
-                [ logoImage 400 ]
+                [ logoImage (t "navigation.logoAlt") (t "main.splashScreen.logoWidth") ]
 
         askConsent =
             H.div
@@ -466,8 +475,8 @@ view model =
                 [ H.canvas [ A.id "consent-needed-canvas", A.class "consent-needed__animation" ] []
                 , H.div
                     [ A.class "consent-needed col-xs-12 col-md-5" ]
-                    [ H.h1 [] [ H.text "Tervetuloa Tradenomiittiin!" ]
-                    , H.p [] [ H.text "Tehdäksemme palvelun käytöstä mahdollisimman vaivatonta hyödynnämme Tradenomiliiton olemassa olevia jäsentietoja (nimesi, työhistoriasi). Luomalla profiilin hyväksyt tietojesi käytön Tradenomiitti-palvelussa. Voit muokata tietojasi myöhemmin." ]
+                    [ H.h1 [] [ H.text (t "main.consentNeeded.heading") ]
+                    , H.p [] [ H.text (t "main.consentNeeded.content") ]
                     , H.div [ A.class "row consent-needed__actionable" ]
                         [ H.div
                             [ A.class "col-xs-12 col-sm-6" ]
@@ -480,13 +489,13 @@ view model =
                                     []
                                 , H.span
                                     [ A.class "consent-needed__read-terms" ]
-                                    [ H.text "Hyväksyn palvelun "
+                                    [ H.text (t "main.consentNeeded.accept")
                                     , H.a
                                         [ A.href "/kayttoehdot"
                                         , A.target "_blank"
                                         , A.class "consent-needed__read-terms-link"
                                         ]
-                                        [ H.text "käyttöehdot" ]
+                                        [ H.text (t "main.consentNeeded.terms") ]
                                     ]
                                 ]
                             ]
@@ -497,7 +506,7 @@ view model =
                                 , E.onClick AllowProfileCreation
                                 , A.disabled (not model.acceptsTerms)
                                 ]
-                                [ H.text "Luo profiili" ]
+                                [ H.text (t "main.consent.createProfile") ]
                             ]
                         ]
                     ]
@@ -533,6 +542,10 @@ view model =
 
 navigation : Model -> H.Html Msg
 navigation model =
+    let
+        t =
+            T.get model.translations
+    in
     H.nav
         [ A.class "navbar navbar-default navbar-fixed-top" ]
         [ H.div
@@ -542,12 +555,12 @@ navigation model =
                 , A.attribute "data-toggle" "collapse"
                 , A.attribute "data-target" "#navigation"
                 ]
-                [ H.span [ A.class "sr-only" ] [ H.text "Navigaation avaus" ]
+                [ H.span [ A.class "sr-only" ] [ H.text (t "navigation.sr_open") ]
                 , H.span [ A.class "icon-bar" ] []
                 , H.span [ A.class "icon-bar" ] []
                 , H.span [ A.class "icon-bar" ] []
                 ]
-            , logo
+            , logo t
             ]
         , H.div
             [ A.class "collapse navbar-collapse"
@@ -557,8 +570,8 @@ navigation model =
         ]
 
 
-logo : H.Html Msg
-logo =
+logo : (String -> String) -> H.Html Msg
+logo t =
     H.div
         [ A.class "navbar-brand" ]
         [ H.a
@@ -566,18 +579,18 @@ logo =
             , A.href "/"
             , Common.linkAction Home NewUrl
             ]
-            [ logoImage 163
+            [ logoImage (t "navigation.logoAlt") (t "navigation.logoWidth")
             ]
         ]
 
 
-logoImage : Int -> H.Html msg
-logoImage width =
+logoImage : String -> String -> H.Html msg
+logoImage alt width =
     H.img
-        [ A.alt "Tradenomiitti"
+        [ A.alt alt
         , A.src "/static/main_logo.svg"
         , A.class "logo-image"
-        , A.width width
+        , A.style [ ( "width", width ) ]
         ]
         []
 
@@ -714,7 +727,7 @@ viewPage model =
                     unpackViewMessage AdMessage <| Ad.view model.ad adId model.profile.user model.rootUrl
 
                 Home ->
-                    unpackViewMessage HomeMessage <| Home.view model.home model.profile.user
+                    unpackViewMessage HomeMessage <| Home.view model.translations model.home model.profile.user
 
                 ListUsers ->
                     unpackViewMessage ListUsersMessage <| ListUsers.view model.listUsers model.config (Maybe.isJust model.profile.user)

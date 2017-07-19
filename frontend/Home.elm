@@ -10,8 +10,8 @@ import Maybe.Extra as Maybe
 import Models.User exposing (User)
 import Nav
 import Removal
-import State.Config as Config
 import State.Home exposing (..)
+import Translation
 import Util exposing (UpdateMessage(..), ViewMessage(..))
 
 
@@ -23,9 +23,9 @@ type Msg
     | RemovalMessage Removal.Msg
 
 
-port scrollHomeBelowFold :
-    Bool
-    -> Cmd msg -- param is ignored
+{-| param is ignored
+-}
+port scrollHomeBelowFold : Bool -> Cmd msg
 
 
 update : Msg -> Model -> ( Model, Cmd (UpdateMessage Msg) )
@@ -67,11 +67,15 @@ initTasks model =
         ]
 
 
-view : Model -> Maybe User -> H.Html (ViewMessage Msg)
-view model loggedInUserMaybe =
+view : Translation.Translations -> Model -> Maybe User -> H.Html (ViewMessage Msg)
+view translations model loggedInUserMaybe =
+    let
+        t =
+            Translation.get translations
+    in
     H.div
         []
-        [ introScreen loggedInUserMaybe
+        [ introScreen t loggedInUserMaybe
         , listLatestAds loggedInUserMaybe model
         , listUsers model loggedInUserMaybe
         , tradenomiittiSection
@@ -82,11 +86,11 @@ view model loggedInUserMaybe =
 -- FIRST INFO SCREEN --
 
 
-introScreen : Maybe User -> H.Html (ViewMessage Msg)
-introScreen loggedInUserMaybe =
+introScreen : (String -> String) -> Maybe User -> H.Html (ViewMessage Msg)
+introScreen t loggedInUserMaybe =
     H.div
         [ A.class "home__intro-screen" ]
-        (introAnimation :: introBoxes loggedInUserMaybe)
+        (introAnimation :: introBoxes t loggedInUserMaybe)
 
 
 introAnimation : H.Html msg
@@ -98,8 +102,8 @@ introAnimation =
         []
 
 
-introBoxes : Maybe User -> List (H.Html (ViewMessage Msg))
-introBoxes loggedInUserMaybe =
+introBoxes : (String -> String) -> Maybe User -> List (H.Html (ViewMessage Msg))
+introBoxes t loggedInUserMaybe =
     let
         createProfile =
             case loggedInUserMaybe of
@@ -109,7 +113,7 @@ introBoxes loggedInUserMaybe =
                 Nothing ->
                     [ H.div
                         [ A.class "home__introbox home__introbox--button-container col-xs-11 col-sm-4 col-sm-offset-4" ]
-                        [ Link.button "Luo oma profiili"
+                        [ Link.button (t "home.introbox.createProfile")
                             "home__introbox--button btn btn-primary"
                             (Nav.LoginNeeded (Nav.Profile |> Nav.routeToPath |> Just))
                         ]
@@ -119,13 +123,13 @@ introBoxes loggedInUserMaybe =
         [ A.class "home__introbox col-xs-11 col-sm-6 col-sm-offset-3" ]
         [ H.h2
             [ A.class "home__introbox--heading" ]
-            [ H.text "Kohtaa tradenomi" ]
+            [ H.text (t "home.introbox.heading") ]
         ]
     , H.div
         [ A.class "home__introbox col-xs-11 col-sm-6 col-sm-offset-3" ]
         [ H.div
             [ A.class "home__introbox--content" ]
-            [ H.text "Tradenomiitti on tradenomien oma kohtaamispaikka, jossa jäsenet löytävät toisensa yhteisten aiheiden ympäriltä ja hyötyvät toistensa kokemuksista." ]
+            [ H.text (t "home.introbox.content") ]
         ]
     ]
         ++ createProfile
