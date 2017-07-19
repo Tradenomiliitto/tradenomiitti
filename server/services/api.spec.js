@@ -15,49 +15,43 @@ process.env.TEST_LOGIN = true;
 const server = require('../index');
 
 describe('Handle API requests', function() {
-  beforeEach(function(done) {
+  beforeEach(done => {
     knex.migrate.rollback()
-      .then(function() {
-        knex.migrate.latest()
-          .then(function() {
-            return knex.seed.run()
-              .then(function() {
-                done();
-              });
-          });
-      });
+      .then(() => knex.migrate.latest())
+      .then(() => knex.seed.run())
+      .then(() => done())
+      .catch(done);
   });
 
-  afterEach(function(done) {
+  afterEach(done => {
     knex.migrate.rollback()
-      .then(function() {
-        done();
-      });
+      .then(() => done())
+      .catch(done);
   });
 
   it('should be able to login, logout and see login_success and logout_success events', () => {
     let agent = chai.request.agent(server);
     return agent.get('/kirjaudu')
     .then(() => knex('events').select().where({type: 'login_success'}))
-    .then((events) => events.should.have.length(1))
+    .then(events => events.should.have.length(1))
     .then(() => agent.get('/uloskirjautuminen'))
     .then(() => knex('events').select().where({type: 'logout_success'}))
-    .then((events) => events.should.have.length(1));
+    .then(events => events.should.have.length(1));
   });
 
   it('should be able to login and add a new ad', () => {
     let agent = chai.request.agent(server);
     return agent.get('/kirjaudu')
     .then(() => agent.post('/api/ilmoitukset').send({heading: 'Otsikko', content: 'Sisältö'}))
-    .then((res) => knex('ads').where({id: res.body}))
-    .then((ad) => ad[0].data.heading.should.equal('Otsikko'))
+    .then(res => knex('ads').where({id: res.body}))
+    .then(ad => ad[0].data.heading.should.equal('Otsikko'))
     .then(() => knex('ads').select())
-    .then((ads) => ads.should.have.length(4));
+    .then(ads => ads.should.have.length(4));
   });
 
   it('should be able to list all ads from API', () => {
     return chai.request(server).get('/api/ilmoitukset')
-    .then((res) => res.body.should.have.length(3));
+    .then(res => res.body.should.have.length(3));
   });
 
   it('should not be able to get a non-existing ad from API', (done) => {
@@ -66,6 +60,15 @@ describe('Handle API requests', function() {
       expect(res).to.have.status(404);
       done();
     });
+  });
+
+  it('should be able to get an existing ad from API', () => {
+     chai.request(server).get('/api/ilmoitukset/1')
+     .then(res => {
+      res.should.have.status(200);
+      res.body.heading.should.equal('foo');
+      return res.should.be.json;
+     })
   });
 
   it('should not be able to get a report', (done) => {
@@ -80,7 +83,7 @@ describe('Handle API requests', function() {
     let agent = chai.request.agent(server);
     return agent.get('/kirjaudu')
     .then(() => agent.get('/api/raportti'))
-    .then((res) => {
+    .then(res => {
       expect(res).to.have.status(200);
       return expect(res).to.include.header('content-type', 'text/csv; charset=utf-8');
     });
