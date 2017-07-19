@@ -17,7 +17,6 @@ $ git log --oneline
 6a956fa #... (upstream)
 ```
 
-
 ## Step 2. Create a branch for your contribution
 
 ```sh
@@ -50,7 +49,11 @@ drop 3eb42a9 Update logo
 drop 9cf7d28 Change colors
 ```
 
-## Step 4. Open the pull request
+## Step 4. Make sure the tests and the linter pass
+
+Backend can be tested with `npm test`, frontend can be tested with `npm run testFrontend` and the linter can be run with `npm run lint`. These will be run in Travis when pushed to GitHub and they all must pass.
+
+## Step 5. Open the pull request
 
 If you had already pushed the branch to your remote, you need to do a `git push --force` to overwrite the history in that branch. Otherwise just push the branch as a new branch.
 

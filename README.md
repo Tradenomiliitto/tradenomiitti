@@ -107,6 +107,12 @@ npm test
 npm run testFrontend
 ```
 
+Run the linter:
+
+```
+npm run lint
+```
+
 ## License
 
 Copyright (C) 2017  Tradenomiliitto and others, see AUTHORS
