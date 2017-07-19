@@ -50,7 +50,10 @@ describe('Handle API requests', () => {
 
   it('should be able to list all ads from API', () =>
     chai.request(server).get('/api/ilmoitukset')
-      .then(res => res.body.should.have.length(3))
+      .then(res => {
+        res.body.should.have.length(3);
+        return res.should.be.json;
+      })
   );
 
   it('should not be able to get a non-existing ad from API', done => {
@@ -73,7 +76,7 @@ describe('Handle API requests', () => {
   it('should not be able to get a report', done => {
     chai.request(server).get('/api/raportti')
       .end((err, res) => {
-        expect(res).to.have.status(500);
+        res.should.have.status(500);
         done();
       });
   });
@@ -84,7 +87,7 @@ describe('Handle API requests', () => {
       .then(() => agent.get('/api/raportti'))
       .then(res => {
         expect(res).to.have.status(200);
-        return expect(res).to.include.header('content-type', 'text/csv; charset=utf-8');
+        return res.should.be.csv;
       });
   });
 });
