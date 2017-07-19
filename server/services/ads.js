@@ -4,9 +4,9 @@ module.exports = function initialize(params) {
 
   function listAds(loggedIn, limit, offset, domain, position, location, order) {
     let query = knex('ads');
-    let answers = knex('answers');
+    const answers = knex('answers');
 
-    switch(order) {
+    switch (order) {
       case 'created_at_asc':
         query.orderBy('created_at', 'asc');
         break;
@@ -34,16 +34,16 @@ module.exports = function initialize(params) {
     if (limit !== undefined) query.limit(limit);
     if (offset !== undefined) query.offset(offset);
     if (domain !== undefined) {
-      query.whereRaw("data->>'domain' = ?", [ domain ])
+      query.whereRaw("data->>'domain' = ?", [domain]);
     }
     if (position !== undefined) {
-      query.whereRaw("data->>'position' = ?", [ position ])
+      query.whereRaw("data->>'position' = ?", [position]);
     }
     if (location !== undefined) {
-      query.whereRaw("data->>'location' = ?", [ location ])
+      query.whereRaw("data->>'location' = ?", [location]);
     }
     return query
-      .then(rows => Promise.all(rows.map(ad => util.formatAd(ad, loggedIn))))
+      .then(rows => Promise.all(rows.map(ad => util.formatAd(ad, loggedIn))));
   }
 
   function latestFirst(a, b) {
@@ -54,6 +54,6 @@ module.exports = function initialize(params) {
 
   return {
     listAds,
-    latestFirst
+    latestFirst,
   };
-}
+};

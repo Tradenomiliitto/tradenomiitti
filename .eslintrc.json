@@ -1,0 +1,37 @@
+{
+  "extends": "airbnb-base",
+  "env": {
+    "es6": true,
+    "node": true,
+    "mocha": true
+  },
+  "parserOptions": {
+    "ecmaVersion": 6
+  },
+  "plugins": [
+    "promise"
+  ],
+  "rules": {
+    "arrow-parens": ["error", "as-needed"],
+    "comma-dangle": ["error", {
+      "arrays": "always-multiline",
+      "objects": "always-multiline",
+      "imports": "never",
+      "exports": "never",
+      "functions": "ignore"
+    }],
+    "new-cap": "off",
+    "object-shorthand": "off",
+    "camelcase": "off",
+    "no-console": "off",
+    "no-multi-str": "off",
+    "no-plusplus": "off",
+    "no-use-before-define": "off",
+    "global-require": "off",
+    "promise/always-return": "error",
+    "promise/no-return-wrap": "error",
+    "promise/param-names": "error",
+    "promise/catch-or-return": "error",
+    "promise/no-native": "off"
+  }
+}

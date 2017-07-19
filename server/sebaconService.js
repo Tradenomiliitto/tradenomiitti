@@ -2,8 +2,7 @@ const uuid = require('uuid');
 const request = require('request-promise-native');
 
 module.exports = function initialize(params) {
-
-  const {adminGroup, disable, testLogin} = params;
+  const { adminGroup, disable, testLogin } = params;
 
   function url() {
     return `https://voltage.sebacon.net/SebaconAPI/?auth=${params.auth}`;
@@ -14,14 +13,14 @@ module.exports = function initialize(params) {
       url: url(),
       auth: {
         user: `${params.customer}\\${params.user}`,
-        pass: `${params.password}`
+        pass: `${params.password}`,
       },
       json: {
         id: uuid.v4(),
         jsonrpc: '2.0',
         method: 'getApplicationObjectMeta',
-        params: [ meta ]
-      }
+        params: [meta],
+      },
     }).then(res => {
       const obj = {};
       res.result.forEach(o => {
@@ -31,7 +30,7 @@ module.exports = function initialize(params) {
           : str;
       });
       return obj;
-    })
+    });
   }
 
   function getPositionTitles() {
@@ -51,7 +50,7 @@ module.exports = function initialize(params) {
       url: url(),
       auth: {
         user: `${params.customer}\\${params.user}`,
-        pass: `${params.password}`
+        pass: `${params.password}`,
       },
       json: {
         id: uuid.v4(),
@@ -59,35 +58,33 @@ module.exports = function initialize(params) {
         method: 'getPersonObject',
         params: [
           id,
-          'tyosuhteet'
-        ]
-      }
+          'tyosuhteet',
+        ],
+      },
     });
   }
 
   function getUserEmploymentExtras(id) {
-    if (disable) return Promise.resolve({ domains: [], positions: []});
+    if (disable) return Promise.resolve({ domains: [], positions: [] });
 
     return Promise.all([
       getDomainTitles(),
       getPositionTitles(),
-      getUserEmploymentHistory(id)
-    ]).then(([ domainTitles, positionTitles, res ]) => {
+      getUserEmploymentHistory(id),
+    ]).then(([domainTitles, positionTitles, res]) => {
       const organisations = Promise.all(
-        res.result.map(o => getOrganisation(o.tyonantaja).then(o => o.result.name || 'Tuntematon')));
-      return Promise.all([ domainTitles, positionTitles, res, organisations ]);
-    }).then(([ domainTitles, positionTitles, res, organisations ]) => {
-      return {
-        domains: res.result
-          .map((o, i) => (domainTitles[o.sopimusala] || 'Tuntematon') +
-              ` (${organisations[i]})`
-              ),
-        positions: res.result
-          .map((o, i) => (positionTitles[o.tehtavanimike_val] || 'Tuntematon') +
-              ` (${organisations[i]})`
-              )
-      }
-    })
+        res.result.map(o =>
+          getOrganisation(o.tyonantaja)
+            .then(({ result }) => result.name || 'Tuntematon')
+        )
+      );
+      return Promise.all([domainTitles, positionTitles, res, organisations]);
+    }).then(([domainTitles, positionTitles, res, organisations]) => ({
+      domains: res.result
+        .map((o, i) => `${domainTitles[o.sopimusala] || 'Tuntematon'} (${organisations[i]})`),
+      positions: res.result
+        .map((o, i) => `${positionTitles[o.tehtavanimike_val] || 'Tuntematon'} (${organisations[i]})`),
+    }));
   }
 
   function getUser(id) {
@@ -99,8 +96,7 @@ module.exports = function initialize(params) {
   }
 
   function isAdmin(id) {
-    
-    // if sebacon is disabled or we don't have a known admin group, nobody is admin 
+    // if sebacon is disabled or we don't have a known admin group, nobody is admin
     // - expect the first test user if testLogin is enabled
     if (disable && testLogin && id === '-1') {
       return Promise.resolve(true);
@@ -117,16 +113,16 @@ module.exports = function initialize(params) {
       url: url(),
       auth: {
         user: `${params.customer}\\${params.user}`,
-        pass: `${params.password}`
+        pass: `${params.password}`,
       },
       json: {
         id: uuid.v4(),
         jsonrpc: '2.0',
         method,
         params: [
-          id
-        ]
-      }
+          id,
+        ],
+      },
     });
   }
 
@@ -170,8 +166,8 @@ module.exports = function initialize(params) {
 
     return Promise.all([
       getGeoAreas(),
-      getUser(id)
-    ]).then(([ titles, res ]) => titles[res.result.maakunta || ''] || '')
+      getUser(id),
+    ]).then(([titles, res]) => titles[res.result.maakunta || ''] || '');
   }
 
   return {
@@ -184,6 +180,6 @@ module.exports = function initialize(params) {
     getPositionTitles,
     getUserGeoArea,
     getDomainTitles,
-    isAdmin
-  }
-}
+    isAdmin,
+  };
+};

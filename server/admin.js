@@ -1,7 +1,7 @@
 const json2csv = require('json2csv');
 
 module.exports = function initialize(params) {
-  const {knex, util, sebacon} = params;
+  const { knex, util, sebacon } = params;
 
   function report(req, res, next) {
     util.userForSession(req)
@@ -10,8 +10,8 @@ module.exports = function initialize(params) {
         if (!isAdmin) return Promise.reject({ status: 403, msg: 'Non Admin tried to access report' });
         return null;
       })
-      .then(() => {
-        return knex('users')
+      .then(() =>
+        knex('users')
           .select('users.remote_id')
           .select(knex.raw('users.data->>\'name\' as nickname'))
           .select(knex.raw('users.data->>\'profile_creation_consented\' as profile_created'))
@@ -21,20 +21,20 @@ module.exports = function initialize(params) {
           .select(knex.raw('(select count(*) from ads where ads.user_id = users.id) as ads'))
           .select(knex.raw('(select count(*) from answers where answers.user_id = users.id) as answers'))
           .select(knex.raw('\
-(select sum((select count(answers.*) from answers where answers.ad_id = ads.id)) / count(ads.*) from ads \
-where ads.user_id = users.id\
-) as gotten_answers_per_ad\
-'));
-      })
+            (select sum((select count(answers.*) from answers where answers.ad_id = ads.id)) / count(ads.*) from ads \
+            where ads.user_id = users.id\
+            ) as gotten_answers_per_ad\
+          '))
+      )
       .then(rows => json2csv({ data: rows, del: ';' }))
       .then(csv => {
         res.contentType('text/csv');
-        res.send(csv);
+        return res.send(csv);
       })
-      .catch(next)
+      .catch(next);
   }
 
   return {
-    report
+    report,
   };
 };
