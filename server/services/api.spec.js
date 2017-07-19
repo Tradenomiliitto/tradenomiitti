@@ -76,7 +76,7 @@ describe('Handle API requests', () => {
   it('should not be able to get a report', done => {
     chai.request(server).get('/api/raportti')
       .end((err, res) => {
-        res.should.have.status(500);
+        res.should.have.status(403);
         done();
       });
   });

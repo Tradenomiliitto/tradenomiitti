@@ -2,7 +2,7 @@ module.exports = function initialize(params) {
   const knex = params.knex;
 
   function userForSession(req) {
-    if (!req.session.id) return Promise.reject('Request has no session id');
+    if (!req.session.id) return Promise.reject({ status: 403, msg: 'Request has no session id' });
     return knex('sessions')
       .where({ id: req.session.id })
       .then(resp => (resp.length === 0 ? Promise.reject({ status: 403, msg: 'No session found' }) : resp[0].user_id))
