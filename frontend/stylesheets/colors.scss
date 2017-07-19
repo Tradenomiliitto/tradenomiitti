@@ -1,7 +1,5 @@
 // Individual color definitions
 
-$light-blue: #b2d7ff;
-
 $white: #fff;
 $lighter-grey: #fbfbfb;
 $light-grey: #f1f1f1;
@@ -9,7 +7,6 @@ $medium-grey: #cfcfcf;
 $medium-dark-grey: #999;
 $dark-grey: #636363;
 $black: #000;
-
 
 // Main color definitions
 // Define the 2-color theme here
@@ -27,5 +24,4 @@ $main-text: #333;
 
 $light-primary: lighten($primary, 9%);
 $lighter-primary: lighten($primary, 15%);
-
 $light-secondary: lighten($secondary, 9%);
