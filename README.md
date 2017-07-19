@@ -2,7 +2,7 @@
 
 MiBit is a social web service for the members of [Mothers in Business MiB ry](http://www.mothersinbusiness.fi). MiBit is a fork of [Tradenomiitti](https://github.com/Tradenomiliitto/tradenomiitti), a free open source project made for Tradenomiliitto.
 
-*Note: Since both this fork and the upstream project is still under active development, some of the configuration related things (database names, test user names etc.) have not been changed to make merges from upstream easier. This will most likely change later.*
+*Note: Since both this fork and the upstream project is still under active development, some of the configuration related things (database names, test user names etc.) have not been changed to make merges from upstream easier. This might change later.*
 
 ## Deployment
 
