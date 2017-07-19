@@ -1,9 +1,5 @@
 // Individual color definitions
 
-$pink: #ff6889;
-
-$green:  #4a6161;
-
 $light-blue: #b2d7ff;
 
 $white: #fff;
@@ -18,8 +14,14 @@ $black: #000;
 // Main color definitions
 // Define the 2-color theme here
 
-$primary: $pink;
-$secondary: $green;
+$primary: #ff6889;
+$secondary: #4a6161;
+
+$autocomplete-bg: #b2d7ff;
+
+// Font colors
+
+$main-text: #333;
 
 // Derived lighter colors
 
