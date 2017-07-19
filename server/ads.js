@@ -36,7 +36,7 @@ module.exports = function initialize(params) {
       if (ads.length) {
         return util.formatAd(ads[0], loggedIn);
       } else {
-        throw new Error("No such message id!");
+        throw new Error("No such ad id!");
       }
     }).then(ad => res.send(ad))
     .catch(e => next({ status: 404, msg: e}));
