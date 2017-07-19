@@ -65,6 +65,7 @@
   },
   "devDependencies": {
     "chai": "^3.5.0",
+    "chai-http": "^3.0.0",
     "elm-test": "=0.18.7",
     "eslint": "^4.2.0",
     "eslint-config-airbnb-base": "^11.2.0",
