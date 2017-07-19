@@ -18,7 +18,7 @@
       "objects": "always-multiline",
       "imports": "never",
       "exports": "never",
-      "functions": "ignore"
+      "functions": "never"
     }],
     "new-cap": "off",
     "object-shorthand": "off",
