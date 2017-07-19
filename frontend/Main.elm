@@ -33,7 +33,7 @@ import State.Profile
 import State.Settings
 import State.User
 import StaticContent
-import Translation as T exposing (HasTranslations, Translations)
+import Translation as T exposing (HasTranslations, T, Translations)
 import User
 import Util exposing (UpdateMessage(..), ViewMessage(..))
 
@@ -129,6 +129,13 @@ type Msg
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
+    let
+        t =
+            T.get model.translations
+
+        tWith =
+            T.getWith model.translations
+    in
     case msg of
         NewUrl route ->
             { model | scrollTop = True }
@@ -386,36 +393,32 @@ update msg model =
                 cmd =
                     case err of
                         Http.BadUrl str ->
-                            sendError <| "BadUrl " ++ str
+                            sendError <| t "errors.badUrl" ++ str
 
                         Http.Timeout ->
-                            showAlert "Vastauksen saaminen kesti liian kauan, yritä myöhemmin uudelleen"
+                            showAlert <| t "errors.timeout"
 
                         Http.NetworkError ->
-                            showAlert "Yhteydessä on ongelma, yritä myöhemmin uudelleen"
+                            showAlert <| t "errors.networkError"
 
                         Http.BadPayload error { body } ->
-                            sendError <|
-                                "Jotain meni pieleen. Verkosta tuli\n\n"
-                                    ++ body
-                                    ++ "\n\nja virhe oli\n\n"
-                                    ++ error
+                            sendError <| tWith "errors.badPayload" [ body, error ]
 
                         Http.BadStatus { status, body } ->
                             case status.code of
                                 404 ->
-                                    showAlert <| "Haettua sisältöä ei löytynyt. Se on voitu poistaa tai osoitteessa voi olla virhe. Voit ottaa yhteyttä osoitteeseen " ++ supportEmail ++ " halutessasi. Ota silloin kuvakaappaus sivusta ja lähetä se viestin liitteenä. " ++ body
+                                    showAlert <| tWith "errors.badStatus" [ body ]
 
                                 _ ->
-                                    showAlert <| errorCodeToUserVisibleErrorMessage body
+                                    showAlert <| tWith "errors.codeToUserVisibleMessage" [ body ]
             in
             model ! [ cmd ]
 
         SendErrorResponse (Ok str) ->
-            model ! [ showAlert <| errorCodeToUserVisibleErrorMessage str ]
+            model ! [ showAlert <| tWith "errors.codeToUserVisibleMessage" [ str ] ]
 
         SendErrorResponse (Err err) ->
-            model ! [ showAlert <| toString err ++ "Järjestelmässä on jotain pahasti pielessä, tutkimme asiaa" ]
+            model ! [ showAlert <| tWith "errors.errorResponseFailure" [ toString err ] ]
 
         NoOp ->
             model ! []
@@ -570,7 +573,7 @@ navigation model =
         ]
 
 
-logo : (String -> String) -> H.Html Msg
+logo : T -> H.Html Msg
 logo t =
     H.div
         [ A.class "navbar-brand" ]
@@ -706,6 +709,9 @@ viewProfileLink model =
 viewPage : Model -> H.Html Msg
 viewPage model =
     let
+        t =
+            T.get model.translations
+
         content =
             case model.route of
                 User userId ->
@@ -727,7 +733,7 @@ viewPage model =
                     unpackViewMessage AdMessage <| Ad.view model.ad adId model.profile.user model.rootUrl
 
                 Home ->
-                    unpackViewMessage HomeMessage <| Home.view model.translations model.home model.profile.user
+                    unpackViewMessage HomeMessage <| Home.view t model.home model.profile.user
 
                 ListUsers ->
                     unpackViewMessage ListUsersMessage <| ListUsers.view model.listUsers model.config (Maybe.isJust model.profile.user)
@@ -797,13 +803,3 @@ sendError : String -> Cmd Msg
 sendError msg =
     Http.post "/api/virhe" (Http.stringBody "text/plain" msg) Json.string
         |> Http.send SendErrorResponse
-
-
-supportEmail : String
-supportEmail =
-    "tradenomiitti@tral.fi"
-
-
-errorCodeToUserVisibleErrorMessage : String -> String
-errorCodeToUserVisibleErrorMessage body =
-    "Jotain meni pieleen. Virheen tunnus on " ++ body ++ ". Meille olisi suuri apu, jos otat kuvakaappauksen koko sivusta ja lähetät sen osoitteeseen " ++ supportEmail ++ "."

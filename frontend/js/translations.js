@@ -1,4 +1,18 @@
+const supportEmail = 'tradenomiitti@tral.fi';
+
 const source = {
+  common: {
+    supportEmail,
+  },
+  errors: {
+    badUrl: 'BadUrl ',
+    timeout: 'Vastauksen saaminen kesti liian kauan, yritä myöhemmin uudelleen',
+    networkError: 'Yhteydessä on ongelma, yritä myöhemmin uudelleen',
+    badPayload: 'Jotain meni pieleen. Verkosta tuli\n\n{.}\n\nja virhe oli\n\n{.}',
+    badStatus: `Haettua sisältöä ei löytynyt. Se on voitu poistaa tai osoitteessa voi olla virhe. Voit ottaa yhteyttä osoitteeseen ${supportEmail} halutessasi. Ota silloin kuvakaappaus sivusta ja lähetä se viestin liitteenä. {.}`,
+    codeToUserVisibleMessage: `Jotain meni pieleen. Virheen tunnus on {.}. Meille olisi suuri apu, jos otat kuvakaappauksen koko sivusta ja lähetät sen osoitteeseen ${supportEmail}.`,
+    errorResponseFailure: '{.} Järjestelmässä on jotain pahasti pielessä, tutkimme asiaa',
+  },
   main: {
     consentNeeded: {
       heading: 'Tervetuloa Tradenomiittiin!',
@@ -21,6 +35,11 @@ const source = {
       heading: 'Kohtaa tradenomi',
       createProfile: 'Luo oma profiili',
       content: 'Tradenomiitti on tradenomien oma kohtaamispaikka, jossa jäsenet löytävät toisensa yhteisten aiheiden ympäriltä ja hyötyvät toistensa kokemuksista.',
+    },
+    listAds: {
+      heading: 'Uusimmat ilmoitukset',
+      buttonListAds: 'katso kaikki ilmoitukset',
+      buttonCreateAd: 'jätä ilmoitus',
     },
   },
 };

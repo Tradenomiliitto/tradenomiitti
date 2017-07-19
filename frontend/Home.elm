@@ -11,7 +11,7 @@ import Models.User exposing (User)
 import Nav
 import Removal
 import State.Home exposing (..)
-import Translation
+import Translation exposing (T)
 import Util exposing (UpdateMessage(..), ViewMessage(..))
 
 
@@ -67,16 +67,12 @@ initTasks model =
         ]
 
 
-view : Translation.Translations -> Model -> Maybe User -> H.Html (ViewMessage Msg)
-view translations model loggedInUserMaybe =
-    let
-        t =
-            Translation.get translations
-    in
+view : T -> Model -> Maybe User -> H.Html (ViewMessage Msg)
+view t model loggedInUserMaybe =
     H.div
         []
         [ introScreen t loggedInUserMaybe
-        , listLatestAds loggedInUserMaybe model
+        , listLatestAds t loggedInUserMaybe model
         , listUsers model loggedInUserMaybe
         , tradenomiittiSection
         ]
@@ -86,7 +82,7 @@ view translations model loggedInUserMaybe =
 -- FIRST INFO SCREEN --
 
 
-introScreen : (String -> String) -> Maybe User -> H.Html (ViewMessage Msg)
+introScreen : T -> Maybe User -> H.Html (ViewMessage Msg)
 introScreen t loggedInUserMaybe =
     H.div
         [ A.class "home__intro-screen" ]
@@ -102,7 +98,7 @@ introAnimation =
         []
 
 
-introBoxes : (String -> String) -> Maybe User -> List (H.Html (ViewMessage Msg))
+introBoxes : T -> Maybe User -> List (H.Html (ViewMessage Msg))
 introBoxes t loggedInUserMaybe =
     let
         createProfile =
@@ -145,37 +141,37 @@ introBoxes t loggedInUserMaybe =
 -- LIST LATEST ADS --
 
 
-listLatestAds : Maybe User -> Model -> H.Html (ViewMessage Msg)
-listLatestAds loggedInUserMaybe model =
+listLatestAds : T -> Maybe User -> Model -> H.Html (ViewMessage Msg)
+listLatestAds t loggedInUserMaybe model =
     H.div
         [ A.class "home__latest-ads" ]
         [ H.div
             [ A.class "home__section--container" ]
-            [ listAdsHeading
+            [ listAdsHeading t
             , listFourAds loggedInUserMaybe model
             ]
         ]
 
 
-listAdsHeading : H.Html (ViewMessage Msg)
-listAdsHeading =
+listAdsHeading : T -> H.Html (ViewMessage Msg)
+listAdsHeading t =
     H.div
         [ A.class "home__section--heading row" ]
-        [ sectionHeader "Uusimmat ilmoitukset"
-        , listAdsButtons
+        [ sectionHeader (t "home.listAds.heading")
+        , listAdsButtons t
         ]
 
 
-listAdsButtons : H.Html (ViewMessage Msg)
-listAdsButtons =
+listAdsButtons : T -> H.Html (ViewMessage Msg)
+listAdsButtons t =
     H.div
         [ A.class "home__section--heading--buttons col-sm-7" ]
         [ Link.button
-            "katso kaikki ilmoitukset"
+            (t "home.listAds.buttonListAds")
             "home__section--heading--buttons--inverse btn btn-primary"
             Nav.ListAds
         , Link.button
-            "jätä ilmoitus"
+            (t "home.listAds.buttonCreateAd")
             "home__section--heading--buttons--normal btn btn-primary"
             Nav.CreateAd
         ]
