@@ -1,10 +1,6 @@
 module.exports = function initialize(params) {
   const knex = params.knex;
 
-  const genericError = {
-    error: 'Server error',
-  };
-
   function userForSession(req) {
     if (!req.session.id) return Promise.reject('Request has no session id');
     return knex('sessions')
@@ -127,7 +123,6 @@ module.exports = function initialize(params) {
   }
 
   return {
-    genericError,
     userForSession,
     userById,
     formatUser,
