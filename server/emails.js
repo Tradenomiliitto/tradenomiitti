@@ -1,11 +1,10 @@
 const emailjs = require('emailjs');
 const scssToJson = require('scss-to-json');
 
-const colorsFilepath = __dirname + '/../frontend/stylesheets/colors.scss';
+const colorsFilepath = `${__dirname}/../frontend/stylesheets/colors.scss`;
 const scssVars = scssToJson(colorsFilepath);
 
 module.exports = function init(params) {
-
   const staticDir = params.staticDir;
   const smtp = params.smtp;
   const mailFrom = params.mailFrom;
@@ -14,22 +13,23 @@ module.exports = function init(params) {
   const enableEmailGlobally = params.enableEmailGlobally;
 
   const logo = {
-    path: `${__dirname}/../frontend/assets/email_logo.png`, type: 'image/png',
-    headers: {"Content-ID":"<logo.png>"},
-    name: 'logo.png'
+    path: `${__dirname}/../frontend/assets/email_logo.png`,
+    type: 'image/png',
+    headers: { 'Content-ID': '<logo.png>' },
+    name: 'logo.png',
   };
 
   function sendNotificationForAnswer(dbUser, ad) {
-
     const attachment = [
-        { data: answerNotificationHtml(ad), alternative: true,
-          related: [
-            logo
-          ]
-        },
-      ]
+      { data: answerNotificationHtml(ad),
+        alternative: true,
+        related: [
+          logo,
+        ],
+      },
+    ];
     const text = 'Kirjaudu Tradenomiittiin nähdäksesi vastauksen';
-    const subject = 'Ilmoitukseesi on vastattu'
+    const subject = 'Ilmoitukseesi on vastattu';
     const { email_address, emails_for_answers } = util.formatSettings(dbUser.settings);
     sendEmail(email_address, emails_for_answers, text, subject, attachment);
   }
@@ -40,12 +40,12 @@ module.exports = function init(params) {
         alternative: true,
         related: [
           logo,
-          imageAttachment(contactUser.data.cropped_picture, '<picture>')
-        ]
+          imageAttachment(contactUser.data.cropped_picture, '<picture>'),
+        ],
       },
     ];
-    const text = 'Kirjaudu Tradenomiittiin nähdäksesi kontaktin profiilin'
-    const subject = 'Olet saanut uuden kontaktin'
+    const text = 'Kirjaudu Tradenomiittiin nähdäksesi kontaktin profiilin';
+    const subject = 'Olet saanut uuden kontaktin';
 
     const { email_address, emails_for_businesscards } = util.formatSettings(receiver.settings);
     sendEmail(email_address, emails_for_businesscards, text, subject, attachment);
@@ -62,9 +62,9 @@ module.exports = function init(params) {
     return {
       path: `${staticDir}/${pic}`,
       type: imageType,
-      headers: {'Content-ID': cid },
-      name: pic
-    }
+      headers: { 'Content-ID': cid },
+      name: pic,
+    };
   }
 
   function userPicStyle(userPic) {
@@ -81,10 +81,10 @@ module.exports = function init(params) {
     const attachment = [
       { data: adNotificationHtml(ads),
         alternative: true,
-        related: [logo].concat(adImages)
-      }
+        related: [logo].concat(adImages),
+      },
     ];
-    const text = "Kirjaudu Tradenomiittiin nähdäksesi uusimman sisällön";
+    const text = 'Kirjaudu Tradenomiittiin nähdäksesi uusimman sisällön';
     const subject = 'Uusia ilmoituksia Tradenomiitissa';
 
     const { email_address, emails_for_new_ads } = util.formatSettings(user.settings);
@@ -92,11 +92,9 @@ module.exports = function init(params) {
   }
 
   function sendEmail(email_address, allow_sending, text, subject, attachment) {
-    if (!enableEmailGlobally)
-      return;
+    if (!enableEmailGlobally) { return; }
 
-    if (! (allow_sending && email_address && email_address.includes('@')))
-      return;
+    if (!(allow_sending && email_address && email_address.includes('@'))) { return; }
 
     const server = emailjs.server.connect(smtp);
     server.send({
@@ -104,9 +102,9 @@ module.exports = function init(params) {
       to: email_address,
       text: text,
       subject: subject,
-      attachment: attachment
-    }, (err, message) => {
-      if(err) {
+      attachment: attachment,
+    }, err => {
+      if (err) {
         console.log(err);
       }
     });
@@ -115,7 +113,7 @@ module.exports = function init(params) {
 
   function answerNotificationHtml(ad) {
     return (
-`
+      `
 <html>
   <head></head>
   <body style="text-align: center; width: 600px; font-family: Arial, sans-serif; margin-left: auto; margin-right: auto;">
@@ -139,7 +137,7 @@ module.exports = function init(params) {
 
   function contactNotificationHtml(user, message) {
     return (
-`
+      `
 <html>
   <head></head>
   <body style="text-align: center; width: 600px; font-family: Arial, sans-serif; margin-left: auto; margin-right: auto;">
@@ -175,21 +173,21 @@ module.exports = function init(params) {
 
   function makeBusinessCardLine(detailTitle, detailValue) {
     if (detailValue && detailValue.length > 0) {
-        return `
+      return `
     <p style="margin-top: 10px; margin-bottom: 10px;">
       <span style="font-weight: bold; margin-right: 5px;">${detailTitle}:</span>
       <span style="color: ${scssVars.$pink};">${detailValue}</span>
     </p>
-    <hr style="background-color: ${scssVars['$inactive-grey']}; height: 1px; border: 0;"></hr>`
+    <hr style="background-color: ${scssVars['$inactive-grey']}; height: 1px; border: 0;"></hr>`;
     }
     return '';
   }
 
   function singleAdHtml(ad, index) {
-    const categories = [ ad.domain, ad.position, ad.location ].filter(x => x);
+    const categories = [ad.domain, ad.position, ad.location].filter(x => x);
     const categoriesText = categories.length > 0 ? categories.join(', ') : 'Kaikki tradenomit';
     return (
-`
+      `
 <p style="margin-top: 45px; margin-bottom: 45px; font-weight: bold;">${categoriesText}</p>
 <div style="padding: 30px; background-color: ${scssVars['$light-grey-background']}; text-align: center;">
   <span style="width: 80px; height: 80px; border-radius: 40px; display: inline-block; overflow: hidden; background-color: ${scssVars.$pink};">
@@ -210,7 +208,7 @@ module.exports = function init(params) {
 
   function adNotificationHtml(ads) {
     return (
-`
+      `
 <html>
   <head></head>
   <body style="text-align: center; width: 600px; font-family: Arial, sans-serif; margin-left: auto; margin-right: auto;">
@@ -229,6 +227,6 @@ module.exports = function init(params) {
   return {
     sendNotificationForAnswer,
     sendNotificationForContact,
-    sendNotificationForAds
+    sendNotificationForAds,
   };
-}
+};
