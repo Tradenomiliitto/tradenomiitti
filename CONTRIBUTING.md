@@ -1,6 +1,8 @@
-# Contributing to Tradenomiitti
+# Contributing to MiBit
 
-You will likely want to do some customization to the look and feel of Tradenomiitti to make it your own. This guide tells you how to make contributing upstream straightforward, despite the look and feel changes you've made.
+If you wish to contribute to upstream, please go to [Tradenomiitti](https://github.com/Tradenomiliitto/tradenomiitti/blob/master/CONTRIBUTING.md). Otherwise follow the guide below:
+
+You will likely want to do some customization to the look and feel of MiBit to make it your own. This guide tells you how to make contributing straightforward, despite the look and feel changes you've made.
 
 
 ## Step 1. Make your customization commits separately

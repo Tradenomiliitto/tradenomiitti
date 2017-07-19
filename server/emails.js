@@ -28,7 +28,7 @@ module.exports = function init(params) {
         ],
       },
     ];
-    const text = 'Kirjaudu Tradenomiittiin nähdäksesi vastauksen';
+    const text = 'Kirjaudu MiBitiin nähdäksesi vastauksen';
     const subject = 'Ilmoitukseesi on vastattu';
     const { email_address, emails_for_answers } = util.formatSettings(dbUser.settings);
     sendEmail(email_address, emails_for_answers, text, subject, attachment);
@@ -44,7 +44,7 @@ module.exports = function init(params) {
         ],
       },
     ];
-    const text = 'Kirjaudu Tradenomiittiin nähdäksesi kontaktin profiilin';
+    const text = 'Kirjaudu MiBitiin nähdäksesi kontaktin profiilin';
     const subject = 'Olet saanut uuden kontaktin';
 
     const { email_address, emails_for_businesscards } = util.formatSettings(receiver.settings);
@@ -84,8 +84,8 @@ module.exports = function init(params) {
         related: [logo].concat(adImages),
       },
     ];
-    const text = 'Kirjaudu Tradenomiittiin nähdäksesi uusimman sisällön';
-    const subject = 'Uusia ilmoituksia Tradenomiitissa';
+    const text = 'Kirjaudu MiBitiin nähdäksesi uusimman sisällön';
+    const subject = 'Uusia ilmoituksia MiBitissä';
 
     const { email_address, emails_for_new_ads } = util.formatSettings(user.settings);
     sendEmail(email_address, emails_for_new_ads, text, subject, attachment);
@@ -118,8 +118,8 @@ module.exports = function init(params) {
   <head></head>
   <body style="text-align: center; width: 600px; font-family: Arial, sans-serif; margin-left: auto; margin-right: auto;">
     <img style="width: 45px;" src="cid:logo.png" alt="logo" />
-    <h1 style="margin-bottom: 50px; color: ${scssVars.$pink}">Tradenomi on vastannut ilmoitukseesi</h1>
-    <p>Ilmoitus voi tuoda mukanaan uusia arvokkaita kontakteja. Muista lähettää kiinnostaville tradenomeille yksityisviesti ja/tai käyntikortti.</p>
+    <h1 style="margin-bottom: 50px; color: ${scssVars.$pink}">Mibiläinen on vastannut ilmoitukseesi</h1>
+    <p>Ilmoitus voi tuoda mukanaan uusia arvokkaita kontakteja. Muista lähettää kiinnostaville mibiläisille yksityisviesti ja/tai käyntikortti.</p>
     <p style="margin-top: 80px;">
       <a style="font-weight: bold; text-transform: uppercase; background-color: ${scssVars.$pink}; padding-left: 45px; padding-right: 45px; padding-top: 25px; padding-bottom: 25px; color: ${scssVars.$white}; text-decoration: none;" href="https://${serviceDomain}/ilmoitukset/${ad.id}">Katso vastaus</a>
     </p>
@@ -143,7 +143,7 @@ module.exports = function init(params) {
   <body style="text-align: center; width: 600px; font-family: Arial, sans-serif; margin-left: auto; margin-right: auto;">
     <img style="width: 45px;" src="cid:logo.png" alt="logo" />
     <h1 style="margin-bottom: 50px; color: ${scssVars.$pink}">Olet saanut uuden kontaktin</h1>
-    <p>Toinen tradenomi on antanut sinulle käyntikorttinsa Tradenomiitti-palvelussa. Voitte nyt olla yhteydessä ja jakaa osaamistanne vaikka kasvotusten.</p>
+    <p>Toinen mibiläinen on antanut sinulle käyntikorttinsa MiBit-palvelussa. Voitte nyt olla yhteydessä ja jakaa osaamistanne vaikka kasvotusten.</p>
     <p>Profiilisivun kautta voit lähettää oman käyntikorttisi.</p>
     <p style="margin-top: 80px;">
       <a style="font-weight: bold; text-transform: uppercase; background-color: ${scssVars.$pink}; padding-left: 45px; padding-right: 45px; padding-top: 25px; padding-bottom: 25px; color: ${scssVars.$white}; text-decoration: none;" href="https://${serviceDomain}/tradenomit/${user.id}">Katso profiili</a>
@@ -185,7 +185,7 @@ module.exports = function init(params) {
 
   function singleAdHtml(ad, index) {
     const categories = [ad.domain, ad.position, ad.location].filter(x => x);
-    const categoriesText = categories.length > 0 ? categories.join(', ') : 'Kaikki tradenomit';
+    const categoriesText = categories.length > 0 ? categories.join(', ') : 'Kaikki mibiläiset';
     return (
       `
 <p style="margin-top: 45px; margin-bottom: 45px; font-weight: bold;">${categoriesText}</p>
@@ -214,7 +214,7 @@ module.exports = function init(params) {
   <body style="text-align: center; width: 600px; font-family: Arial, sans-serif; margin-left: auto; margin-right: auto;">
     <img style="width: 45px;" src="cid:logo.png" alt="logo" />
     <h1 style="margin-bottom: 50px; color: ${scssVars.$pink}; text-transform: uppercase; font-weight: bold;">Sinulta odotetaan vastausta</h1>
-    <p style="margin-bottom: 25px;">Toinen tradenomi on jättänyt ilmoituksen ja toivoo vastausta sinun kaltaiseltasi osaajalta. Auta vertaistasi jakamalla näkemyksesi.</p>
+    <p style="margin-bottom: 25px;">Toinen mibiläinen on jättänyt ilmoituksen ja toivoo vastausta sinun kaltaiseltasi osaajalta. Auta vertaistasi jakamalla näkemyksesi.</p>
     ${ads.map(singleAdHtml).join('')}
     <p style="margin-top: 50px;">Etkö halua enää sähköposteja? Voit muokata sähköpostiasetuksiasi <a href="https://${serviceDomain}/asetukset" style="text-decoration: none; color: inherit; font-weight: bold;">Käyttäjätilin asetuksista</a>.</p>
   </body>

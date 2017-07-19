@@ -25,7 +25,7 @@ module.exports = function initialize(params) {
     const formattedUser = {};
     formattedUser.id = user.id;
     const userData = user.data;
-    formattedUser.name = isLoggedIn ? (userData.name || '') : 'Tradenomi';
+    formattedUser.name = isLoggedIn ? (userData.name || '') : 'Mibiläinen';
     formattedUser.description = userData.description || '';
     formattedUser.title = userData.title || 'Ei titteliä';
 

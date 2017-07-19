@@ -1,16 +1,18 @@
-# Tradenomiitti [![Build Status](https://travis-ci.org/Tradenomiliitto/tradenomiitti.svg?branch=master)](https://travis-ci.org/Tradenomiliitto/tradenomiitti)
+# MiBit [![Build Status](https://travis-ci.org/futurice/mibit.svg?branch=master)](https://travis-ci.org/futurice/mibit)
 
-Tradenomiitti is a social web service for members of the trade union Tradenomiliitto. It is up and running at https://tradenomiitti.fi and you can read more about it in [the press release](https://www.sttinfo.fi/tiedote/tradenomien-uusi-palvelu-tarjoaa-rekrytointiapua-ja-mentorointia?publisherId=59695169&releaseId=59695181) (in Finnish) and more about why it's open source [the blog post](http://futurice.com/blog/open-sourcing-a-client-project)
+MiBit is a social web service for the members of [Mothers in Business MiB ry](http://www.mothersinbusiness.fi). MiBit is a fork of [Tradenomiitti](https://github.com/Tradenomiliitto/tradenomiitti), a free open source project made for Tradenomiliitto.
+
+*Note: Since both this fork and the upstream project is still under active development, some of the configuration related things (database names, test user names etc.) have not been changed to make merges from upstream easier. This will most likely change later.*
 
 ## Deployment
 
 ### Server installation
 
-Server installation for Tradenomiitti uses [Ansible](https://docs.ansible.com/).
+Server installation for MiBit uses [Ansible](https://docs.ansible.com/).
 The included install configuration assumes Ubuntu with passwordless sudo access
 over SSH with the user `ubuntu` and Python 2 installed on the server and
 symlinked to `python`. The server needs to have a public IP and a public domain
-pointing at it, or else Let's encrypt will fail.
+pointing at it, or else Let's Encrypt will fail.
 
 You can install servers by running (replace ENV with dev, qa, or prod - defaults to dev if ENV_TO_DEPLOY is not specified):
 
@@ -68,8 +70,8 @@ export SEBACON_CUSTOMER=
 export SEBACON_USER=
 export SEBACON_PASSWORD=
 export SEBACON_AUTH=
-export db_user= 
-export db_password= 
+export db_user=
+export db_password=
 export environment=development
 export COMMUNICATIONS_KEY=
 export SMTP_HOST=
@@ -96,7 +98,7 @@ npm run seed-db
 npm start
 ```
 
-You can click "Kirjaudu" to login as *Tradenomi1* test user. You can also open `http://localhost:3000/kirjaudu/1` or `http://localhost:3000/kirjaudu/2` to use either of the two test user accounts: no SSO or members registry API required. 
+You can click "Kirjaudu" to login as *Tradenomi1* test user. You can also open `http://localhost:3000/kirjaudu/1` or `http://localhost:3000/kirjaudu/2` to use either of the two test user accounts: no SSO or members registry API required.
 
 Run tests:
 
