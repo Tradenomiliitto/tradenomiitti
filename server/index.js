@@ -360,9 +360,10 @@ app.get('*', (req, res) => {
   res.sendFile('./index.html', { root: staticDir });
 });
 
-app.use((err, req, res) => {
+app.use((err, req, res, next) => {
   const errorHash = logError(req, err);
   res.status(err.status || 500).send(errorHash);
+  next();
 });
 
 function logError(req, err) {

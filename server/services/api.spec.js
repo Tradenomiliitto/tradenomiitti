@@ -53,13 +53,13 @@ describe('Handle API requests', () => {
       .then(res => res.body.should.have.length(3))
   );
 
-  it('should not be able to get a non-existing ad from API', done =>
+  it('should not be able to get a non-existing ad from API', done => {
     chai.request(server).get('/api/ilmoitukset/0')
       .end((err, res) => {
         expect(res).to.have.status(404);
         done();
-      })
-  );
+      });
+  });
 
   it('should be able to get an existing ad from API', () =>
     chai.request(server).get('/api/ilmoitukset/1')
@@ -70,13 +70,13 @@ describe('Handle API requests', () => {
       })
   );
 
-  it('should not be able to get a report', done =>
+  it('should not be able to get a report', done => {
     chai.request(server).get('/api/raportti')
       .end((err, res) => {
         expect(res).to.have.status(500);
         done();
-      })
-  );
+      });
+  });
 
   it('should be able to login and get a report', () => {
     const agent = chai.request.agent(server);
