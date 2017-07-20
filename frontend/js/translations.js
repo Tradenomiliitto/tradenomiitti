@@ -3,6 +3,7 @@ const supportEmail = 'tradenomiitti@tral.fi';
 const source = {
   common: {
     supportEmail,
+    readMore: 'lue lisää',
   },
   errors: {
     badUrl: 'BadUrl ',
@@ -36,10 +37,22 @@ const source = {
       createProfile: 'Luo oma profiili',
       content: 'Tradenomiitti on tradenomien oma kohtaamispaikka, jossa jäsenet löytävät toisensa yhteisten aiheiden ympäriltä ja hyötyvät toistensa kokemuksista.',
     },
+    tradenomiittiInfo: {
+      // \xad === &shy;, that is soft hyphen
+      heading: 'Ko\xADke\xADmuk\xADsel\xADla\xADsi on aina arvoa',
+      paragraph1: 'Tradenomiitti on tradenomien oma kohtaamispaikka, jossa yhdistyvät inspiroivat kohtaamiset ja itsensä kehittäminen. Tradenomiitti tuo tradenomien osaamisen esille - olit sitten opiskelija tai kokenut konkari. Juuri sinulla voi olla vastaus toisen tradenomin kysymykseen, tai ehkä uusi työnantajasi etsii sinua jo?',
+      paragraph2: 'Luomalla profiilin pääset alkuun, loput on itsestäsi kiinni.',
+    },
     listAds: {
       heading: 'Uusimmat ilmoitukset',
       buttonListAds: 'katso kaikki ilmoitukset',
       buttonCreateAd: 'jätä ilmoitus',
+    },
+    listUsers: {
+      heading: 'Löydä tradenomi',
+      buttonListUsers: 'Katso kaikki tradenomit',
+      buttonEditProfile: 'Muokkaa omaa profiilia',
+      buttonCreateProfile: 'Luo oma profiili',
     },
   },
 };

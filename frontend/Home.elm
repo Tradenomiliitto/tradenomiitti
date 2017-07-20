@@ -73,8 +73,8 @@ view t model loggedInUserMaybe =
         []
         [ introScreen t loggedInUserMaybe
         , listLatestAds t loggedInUserMaybe model
-        , listUsers model loggedInUserMaybe
-        , tradenomiittiSection
+        , listUsers t model loggedInUserMaybe
+        , tradenomiittiSection t
         ]
 
 
@@ -196,40 +196,40 @@ listFourAds loggedInUserMaybe model =
 -- LIST USERS --
 
 
-listUsers : Model -> Maybe User -> H.Html (ViewMessage msg)
-listUsers model loggedInUserMaybe =
+listUsers : T -> Model -> Maybe User -> H.Html (ViewMessage msg)
+listUsers t model loggedInUserMaybe =
     H.div
         [ A.class "home__list-users" ]
         [ H.div
             [ A.class "home__section--container" ]
-            [ listUsersHeading loggedInUserMaybe
+            [ listUsersHeading t loggedInUserMaybe
             , listThreeUsers model
             ]
         ]
 
 
-listUsersHeading : Maybe User -> H.Html (ViewMessage msg)
-listUsersHeading loggedInUserMaybe =
+listUsersHeading : T -> Maybe User -> H.Html (ViewMessage msg)
+listUsersHeading t loggedInUserMaybe =
     H.div
         [ A.class "home__section--heading row" ]
-        [ sectionHeader "Löydä tradenomi"
-        , listUsersButtons loggedInUserMaybe
+        [ sectionHeader <| t "home.listUsers.heading"
+        , listUsersButtons t loggedInUserMaybe
         ]
 
 
-listUsersButtons : Maybe User -> H.Html (ViewMessage msg)
-listUsersButtons loggedInUserMaybe =
+listUsersButtons : T -> Maybe User -> H.Html (ViewMessage msg)
+listUsersButtons t loggedInUserMaybe =
     H.div
         [ A.class "home__section--heading--buttons col-sm-7" ]
         [ Link.button
-            "Katso kaikki tradenomit"
+            (t "home.listUsers.buttonListUsers")
             "home__section--heading--buttons--inverse btn btn-primary"
             Nav.ListUsers
         , Link.button
             (if Maybe.isJust loggedInUserMaybe then
-                "Muokkaa omaa profiilia"
+                t "home.listUsers.buttonEditProfile"
              else
-                "Luo oma profiili"
+                t "home.listUsers.buttonCreateProfile"
             )
             "home__section--heading--buttons--normal btn btn-primary"
             (if Maybe.isJust loggedInUserMaybe then
@@ -250,60 +250,59 @@ listThreeUsers model =
 -- TRADENOMIITTI AD --
 
 
-tradenomiittiSection : H.Html (ViewMessage msg)
-tradenomiittiSection =
+tradenomiittiSection : T -> H.Html (ViewMessage msg)
+tradenomiittiSection t =
     H.div
         [ A.class "home__tradenomiitti--background" ]
         [ H.div
             [ A.class "home__tradenomiitti--container" ]
-            [ tradenomiittiRow ]
+            [ tradenomiittiRow t ]
         ]
 
 
-tradenomiittiRow : H.Html (ViewMessage msg)
-tradenomiittiRow =
+tradenomiittiRow : T -> H.Html (ViewMessage msg)
+tradenomiittiRow t =
     H.div
         [ A.class "row home__tradenomiitti-info-row" ]
-        [ H.div [ A.class "home__tradenomiitti-info-container  col-md-6" ] [ tradenomiittiInfo ]
+        [ H.div [ A.class "home__tradenomiitti-info-container  col-md-6" ] [ tradenomiittiInfo t ]
         , tradenomiImage
         ]
 
 
-tradenomiittiInfo : H.Html (ViewMessage msg)
-tradenomiittiInfo =
+tradenomiittiInfo : T -> H.Html (ViewMessage msg)
+tradenomiittiInfo t =
     H.div
         [ A.class "home__tradenomiitti-info" ]
-        [ tradenomiittiHeader
-        , tradenomiittiInfoText
-        , readMoreButton
+        [ tradenomiittiHeader t
+        , tradenomiittiInfoText t
+        , readMoreButton t
         ]
 
 
-tradenomiittiHeader : H.Html msg
-tradenomiittiHeader =
+tradenomiittiHeader : T -> H.Html msg
+tradenomiittiHeader t =
     H.h2
         [ A.class "home__tradenomiitti-info--header" ]
-        -- \xad === &shy;, that is soft hyphen
-        [ H.text "Ko\xADke\xADmuk\xADsel\xADla\xADsi on aina arvoa" ]
+        [ H.text <| t "home.tradenomiittiInfo.heading" ]
 
 
-tradenomiittiInfoText : H.Html msg
-tradenomiittiInfoText =
+tradenomiittiInfoText : T -> H.Html msg
+tradenomiittiInfoText t =
     H.div
         [ A.class "home__tradenomiitti-info-content" ]
         [ H.p
             [ A.class "home__tradenomiitti-info-text" ]
-            [ H.text "Tradenomiitti on tradenomien oma kohtaamispaikka, jossa yhdistyvät inspiroivat kohtaamiset ja itsensä kehittäminen. Tradenomiitti tuo tradenomien osaamisen esille - olit sitten opiskelija tai kokenut konkari. Juuri sinulla voi olla vastaus toisen tradenomin kysymykseen, tai ehkä uusi työnantajasi etsii sinua jo?" ]
+            [ H.text <| t "home.tradenomiittiInfo.paragraph1" ]
         , H.p
             [ A.class "home__tradenomiitti-info-text" ]
-            [ H.text "Luomalla profiilin pääset alkuun, loput on itsestäsi kiinni." ]
+            [ H.text <| t "home.tradenomiittiInfo.paragraph2" ]
         ]
 
 
-readMoreButton : H.Html (ViewMessage msg)
-readMoreButton =
+readMoreButton : T -> H.Html (ViewMessage msg)
+readMoreButton t =
     Link.link
-        "lue lisää"
+        (t "common.readMore")
         "home__tradenomiitti-info--read-more-button btn btn-primary"
         Nav.Info
 
