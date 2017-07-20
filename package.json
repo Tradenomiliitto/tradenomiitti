@@ -1,7 +1,7 @@
 {
-  "name": "tradenomiitti",
+  "name": "mibit",
   "version": "1.0.0",
-  "description": "Löydä elämäsi tradenomi",
+  "description": "Löydä elämäsi mibiläinen",
   "main": "index.js",
   "scripts": {
     "preansible": "./conf/preinstall.sh",
@@ -21,14 +21,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/futurice/tradenomiitti.git"
+    "url": "git+https://github.com/futurice/mibit.git"
   },
   "author": "",
   "license": "UNLICENSED",
   "bugs": {
-    "url": "https://github.com/futurice/tradenomiitti/issues"
+    "url": "https://github.com/futurice/mibit/issues"
   },
-  "homepage": "https://github.com/futurice/tradenomiitti#readme",
+  "homepage": "https://github.com/futurice/mibit#readme",
   "dependencies": {
     "autocomplete.js": "^0.28.1",
     "autoprefixer": "^6.7.7",
@@ -65,6 +65,7 @@
   },
   "devDependencies": {
     "chai": "^3.5.0",
+    "chai-http": "^3.0.0",
     "elm-test": "=0.18.7",
     "eslint": "^4.2.0",
     "eslint-config-airbnb-base": "^11.2.0",
