@@ -567,7 +567,7 @@ logo =
             , Common.linkAction Home NewUrl
             ]
             [ logoImage 44
-            , H.span [] [ H.text "MiBit" ]
+            , H.span [] [ H.text "MiBiT" ]
             ]
         ]
 

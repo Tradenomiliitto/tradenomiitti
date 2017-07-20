@@ -1,7 +1,8 @@
 #logo {
   color: $white;
   font-size: 40px;
-
+  font-weight: 700;
+  text-transform: none;
   &:hover {
     text-decoration: none;
   }
@@ -74,6 +75,7 @@ $navbar-element-height: 35px;
 
 .navbar {
   @include navbar-font;
+  text-transform: uppercase;
   font-size: 18px;
 
   @media (max-width: $screen-sm-max) {
