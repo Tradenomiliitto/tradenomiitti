@@ -131,7 +131,7 @@ view t loggedInUserMaybe model config =
                                         CreatedDesc
                                 )
                             ]
-                            [ H.text "Päivämäärä"
+                            [ H.text <| t "listAds.sort.date"
                             , H.i
                                 [ A.classList
                                     [ ( "fa", True )
@@ -157,7 +157,7 @@ view t loggedInUserMaybe model config =
                                         AnswerCountDesc
                                 )
                             ]
-                            [ H.text "Vastauksia"
+                            [ H.text <| t "listAds.sort.answerCount"
                             , H.i
                                 [ A.classList
                                     [ ( "fa", True )
@@ -176,7 +176,7 @@ view t loggedInUserMaybe model config =
                                     ]
                                 , E.onClick (ChangeSort NewestAnswerDesc)
                                 ]
-                                [ H.text "Uusin vastaus" ]
+                                [ H.text <| t "listAds.sort.newestAnswer" ]
                           else
                             H.text ""
                         ]
@@ -191,7 +191,7 @@ view t loggedInUserMaybe model config =
                     [ A.class "col-sm-12" ]
                     [ H.h1
                         [ A.class "list-ads__header" ]
-                        [ H.text "Selaa ilmoituksia" ]
+                        [ H.text <| t "listAds.heading" ]
                     ]
                 ]
             , H.div

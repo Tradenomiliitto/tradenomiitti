@@ -122,6 +122,14 @@ const source = {
       answer: 'Tämä poistaa vastauksen pysyvästi. Oletko varma?',
     },
   },
+  listAds: {
+    heading: 'Selaa ilmoituksia',
+    sort: {
+      date: 'Päivämäärä',
+      answerCount: 'Vastauksia',
+      newestAnswer: 'Uusin vastaus',
+    },
+  },
   footer: {
     link1: {
       url: 'http://tral.fi',
