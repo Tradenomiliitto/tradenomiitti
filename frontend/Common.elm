@@ -8,6 +8,7 @@ import Link
 import Models.User exposing (User)
 import Nav exposing (Route, routeToPath, routeToString)
 import SvgIcons
+import Translation exposing (T)
 import Util exposing (ViewMessage(..))
 
 
@@ -164,8 +165,8 @@ authorInfoWithLocation user =
         ]
 
 
-link : Route -> (Route -> msg) -> H.Html msg
-link route toMsg =
+link : T -> Route -> (Route -> msg) -> H.Html msg
+link t route toMsg =
     let
         action =
             linkAction route toMsg
@@ -174,7 +175,7 @@ link route toMsg =
         [ action
         , A.href (routeToPath route)
         ]
-        [ H.text (routeToString route) ]
+        [ H.text (routeToString t route) ]
 
 
 linkAction : Route -> (Route -> msg) -> H.Attribute msg

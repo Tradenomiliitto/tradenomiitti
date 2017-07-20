@@ -600,18 +600,22 @@ logoImage alt width =
 
 navigationList : Model -> List (H.Html Msg)
 navigationList model =
+    let
+        t =
+            T.get model.translations
+    in
     [ H.ul
         [ A.class "nav navbar-nav nav-center" ]
-        [ viewLink ListUsers
+        [ viewLink t ListUsers
         , verticalBar
-        , viewLink ListAds
-        , viewLinkInverse CreateAd
+        , viewLink t ListAds
+        , viewLinkInverse t CreateAd
         ]
     , H.ul
         [ A.class "nav navbar-nav navbar-right" ]
-        [ viewLink Info
+        [ viewLink t Info
         , verticalBar
-        , viewProfileLink model
+        , viewProfileLink t model
         ]
     ]
 
@@ -623,22 +627,22 @@ verticalBar =
         [ H.div [] [] ]
 
 
-viewLinkInverse : Route -> H.Html Msg
-viewLinkInverse route =
+viewLinkInverse : T -> Route -> H.Html Msg
+viewLinkInverse t route =
     H.li
         [ A.class "navbar__inverse-button" ]
-        [ Common.link route NewUrl ]
+        [ Common.link t route NewUrl ]
 
 
-viewLink : Route -> H.Html Msg
-viewLink route =
+viewLink : T -> Route -> H.Html Msg
+viewLink t route =
     H.li
         []
-        [ Common.link route NewUrl ]
+        [ Common.link t route NewUrl ]
 
 
-viewProfileLink : Model -> H.Html Msg
-viewProfileLink model =
+viewProfileLink : T -> Model -> H.Html Msg
+viewProfileLink t model =
     let
         loggedIn =
             Maybe.isJust model.profile.user
@@ -668,9 +672,9 @@ viewProfileLink model =
                         if u.profileCreated then
                             u.name
                         else
-                            "Profiili"
+                            t "main.profile"
                     )
-                |> Maybe.withDefault "Kirjaudu"
+                |> Maybe.withDefault (t "main.login")
 
         linkGraphic =
             model.profile.user
@@ -688,11 +692,7 @@ viewProfileLink model =
     in
     H.li
         []
-        [ H.a
-            (action
-                ++ [ A.href endpoint
-                   ]
-            )
+        [ H.a (action ++ [ A.href endpoint ])
             [ H.span
                 [ A.classList
                     [ ( "navbar__login-link", not loggedIn )
@@ -754,7 +754,7 @@ viewPage model =
                     unpackViewMessage identity <| Contacts.view model.contacts model.profile.user
 
                 NotFound ->
-                    notImplementedYet
+                    notImplementedYet t
     in
     H.div
         [ A.class "app-content" ]
@@ -792,11 +792,11 @@ unpackUpdateMessage mapper cmd =
         cmd
 
 
-notImplementedYet : H.Html Msg
-notImplementedYet =
+notImplementedYet : T -> H.Html Msg
+notImplementedYet t =
     H.div
         [ A.id "not-implemented" ]
-        [ H.text "Tätä ominaisuutta ei ole vielä toteutettu" ]
+        [ H.text <| t "main.notImplementedYet" ]
 
 
 sendError : String -> Cmd Msg

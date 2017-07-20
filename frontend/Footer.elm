@@ -26,8 +26,8 @@ view t routeToMsg userMaybe =
                 , H.div
                     [ A.class "col-xs-12 col-sm-3" ]
                   <|
-                    [ H.p [] [ Common.link Nav.Terms routeToMsg ]
-                    , H.p [] [ Common.link Nav.RegisterDescription routeToMsg ]
+                    [ H.p [] [ Common.link t Nav.Terms routeToMsg ]
+                    , H.p [] [ Common.link t Nav.RegisterDescription routeToMsg ]
                     , H.p [] [ H.a [ A.href <| t "footer.link1.url" ] [ H.text <| t "footer.link1.text" ] ]
                     , H.p [] [ H.a [ A.href <| t "footer.link2.url" ] [ H.text <| t "footer.link2.text" ] ]
                     , H.p [] [ H.a [ A.href <| t "footer.link3.url" ] [ H.text <| t "footer.link3.text" ] ]

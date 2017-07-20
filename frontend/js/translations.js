@@ -21,6 +21,9 @@ const source = {
       accept: 'Hyväksyn palvelun ',
       terms: 'käyttöehdot',
       createProfile: 'Luo profiili',
+      profile: 'Profiili',
+      login: 'Kirjaudu',
+      notImplementedYet: 'Tätä ominaisuutta ei ole vielä toteutettu',
     },
     splashScreen: {
       logoWidth: '400px',
