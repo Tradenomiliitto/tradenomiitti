@@ -1,28 +1,18 @@
 
 // Font definitions for the main content
-$font-family-sans-serif: mundoSansRegular, Helvetica, Arial, sans-serif;
+$font-family-sans-serif: 'PT Sans', Helvetica, Arial, sans-serif;
 $font-size-base: 14px;
 
-$italic-font: mundoSansLightItalic, Helvetica, Arial, sans-serif;
+$italic-font: 'PT Sans', Helvetica, Arial, sans-serif;
 
 // The font for various headings
 @mixin heading-font {
-  font-family: "Gotham A","Gotham B", Helvetica, Arial, sans-serif;
+  font-family: 'Dosis', Helvetica, Arial, sans-serif;
   font-weight: 700 !important;
 }
 
 // The font for normal navbar links
 @mixin navbar-font {
-    font-family: $font-family-sans-serif;
-}
-
-// Import custom fonts
-@font-face  {
-  font-family: mundoSansRegular;
-  src: url("/static/MundoSansStd.otf");
-}
-
-@font-face  {
-  font-family: mundoSansLightItalic;
-  src: url("/static/MundoSansStd-LightItalic.otf");
+    font-family: 'Dosis', Helvetica, Arial, sans-serif;
+    font-weight: 400 !important;
 }
