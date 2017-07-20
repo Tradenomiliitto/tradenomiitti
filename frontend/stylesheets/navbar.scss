@@ -1,5 +1,15 @@
-#logo > img {
-  margin-top: -5px;
+#logo {
+  color: $white;
+  font-size: 40px;
+
+  &:hover {
+    text-decoration: none;
+  }
+
+  & > img {
+    margin-top: -10px;
+    margin-right: 10px;
+  }
 }
 
 .navbar-right {

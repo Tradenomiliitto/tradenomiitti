@@ -566,7 +566,8 @@ logo =
             , A.href "/"
             , Common.linkAction Home NewUrl
             ]
-            [ logoImage 163
+            [ logoImage 44
+            , H.span [] [ H.text "MiBit" ]
             ]
         ]
 
@@ -575,7 +576,7 @@ logoImage : Int -> H.Html msg
 logoImage width =
     H.img
         [ A.alt "Tradenomiitti"
-        , A.src "/static/main_logo.svg"
+        , A.src "/static/main_logo.png"
         , A.class "logo-image"
         , A.width width
         ]
