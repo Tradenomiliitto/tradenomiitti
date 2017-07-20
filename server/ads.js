@@ -30,10 +30,14 @@ module.exports = function initialize(params) {
 
   function getAd(req, res, next) {
     return Promise.all([
-      knex('ads').where({ id: req.params.id }).first(),
+      knex('ads').where({ id: req.params.id }),
       util.loggedIn(req),
-    ]).then(([ad, loggedIn]) => util.formatAd(ad, loggedIn))
-      .then(ad => res.send(ad))
+    ]).then(([ads, loggedIn]) => {
+      if (ads.length) {
+        return util.formatAd(ads[0], loggedIn);
+      }
+      throw new Error('No such ad id!');
+    }).then(ad => res.send(ad))
       .catch(e => next({ status: 404, msg: e }));
   }
 
