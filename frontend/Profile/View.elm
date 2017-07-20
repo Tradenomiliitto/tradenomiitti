@@ -16,24 +16,25 @@ import State.Config as Config
 import State.Main as RootState
 import State.Profile exposing (Model)
 import SvgIcons
+import Translation exposing (T)
 import Util exposing (ViewMessage(..))
 
 
-view : Model -> RootState.Model -> H.Html (ViewMessage Msg)
-view model rootState =
+view : T -> Model -> RootState.Model -> H.Html (ViewMessage Msg)
+view t model rootState =
     case model.user of
         Just user ->
             if model.editing then
-                editProfileView model user rootState
+                editProfileView t model user rootState
             else
-                showProfileView model user rootState
+                showProfileView t model user rootState
 
         Nothing ->
             H.div [] []
 
 
-editProfileView : Model -> User -> RootState.Model -> H.Html (ViewMessage Msg)
-editProfileView model user rootState =
+editProfileView : T -> Model -> User -> RootState.Model -> H.Html (ViewMessage Msg)
+editProfileView t model user rootState =
     H.div
         []
         [ Common.profileTopRow user model.editing Common.ProfileTab (saveOrEdit user model.editing)
@@ -369,12 +370,12 @@ fieldToString field =
             "LinkedIn-linkki"
 
 
-showProfileView : Model -> User -> RootState.Model -> H.Html (ViewMessage Msg)
-showProfileView model user rootState =
+showProfileView : T -> Model -> User -> RootState.Model -> H.Html (ViewMessage Msg)
+showProfileView t model user rootState =
     H.div [ A.class "user-page" ] <|
         [ Common.profileTopRow user model.editing Common.ProfileTab (saveOrEdit user model.editing)
         ]
-            ++ viewOwnProfileMaybe model True rootState.config
+            ++ viewOwnProfileMaybe t model True rootState.config
 
 
 competences : Model -> Config.Model -> User -> H.Html Msg
@@ -417,10 +418,10 @@ userExpertise model user config =
     ]
 
 
-viewOwnProfileMaybe : Model -> Bool -> Config.Model -> List (H.Html (ViewMessage Msg))
-viewOwnProfileMaybe model ownProfile config =
+viewOwnProfileMaybe : T -> Model -> Bool -> Config.Model -> List (H.Html (ViewMessage Msg))
+viewOwnProfileMaybe t model ownProfile config =
     model.user
-        |> Maybe.map (viewUser model ownProfile (H.div [] []) config model.user)
+        |> Maybe.map (viewUser t model ownProfile (H.div [] []) config model.user)
         |> Maybe.withDefault
             [ H.div
                 [ A.class "container" ]
@@ -548,12 +549,12 @@ educationsEditing model config =
         []
 
 
-viewUser : Model -> Bool -> H.Html (ViewMessage Msg) -> Config.Model -> Maybe User -> User -> List (H.Html (ViewMessage Msg))
-viewUser model ownProfile contactUser config loggedInUserMaybe user =
+viewUser : T -> Model -> Bool -> H.Html (ViewMessage Msg) -> Config.Model -> Maybe User -> User -> List (H.Html (ViewMessage Msg))
+viewUser t model ownProfile contactUser config loggedInUserMaybe user =
     let
         viewAds =
             List.map (Util.localViewMap RemovalMessage) <|
-                ListAds.viewAds loggedInUserMaybe model.removal <|
+                ListAds.viewAds t loggedInUserMaybe model.removal <|
                     if model.viewAllAds then
                         model.ads
                     else
@@ -742,6 +743,7 @@ userDescription model user =
         ]
 
 
+userIdForAdmins : User -> H.Html msg
 userIdForAdmins user =
     user.memberId
         |> Maybe.map (\id -> H.p [] [ H.text <| "Jäsentunniste: " ++ toString id ])

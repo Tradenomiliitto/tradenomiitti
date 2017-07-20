@@ -715,10 +715,10 @@ viewPage model =
         content =
             case model.route of
                 User userId ->
-                    unpackViewMessage UserMessage <| User.view model.user model.profile.user model.config
+                    unpackViewMessage UserMessage <| User.view t model.user model.profile.user model.config
 
                 Profile ->
-                    unpackViewMessage ProfileMessage <| Profile.View.view model.profile model
+                    unpackViewMessage ProfileMessage <| Profile.View.view t model.profile model
 
                 LoginNeeded route ->
                     LoginNeeded.view <| ssoUrl model.rootUrl route
@@ -727,10 +727,10 @@ viewPage model =
                     H.map CreateAdMessage <| CreateAd.view model.config model.createAd
 
                 ListAds ->
-                    unpackViewMessage ListAdsMessage <| ListAds.view model.profile.user model.listAds model.config
+                    unpackViewMessage ListAdsMessage <| ListAds.view t model.profile.user model.listAds model.config
 
                 ShowAd adId ->
-                    unpackViewMessage AdMessage <| Ad.view model.ad adId model.profile.user model.rootUrl
+                    unpackViewMessage AdMessage <| Ad.view t model.ad adId model.profile.user model.rootUrl
 
                 Home ->
                     unpackViewMessage HomeMessage <| Home.view t model.home model.profile.user
@@ -751,7 +751,7 @@ viewPage model =
                     Info.view model.staticContent.info
 
                 Contacts ->
-                    unpackViewMessage identity <| Contacts.view model.contacts model.profile.user
+                    unpackViewMessage identity <| Contacts.view t model.contacts model.profile.user
 
                 NotFound ->
                     notImplementedYet t

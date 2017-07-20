@@ -148,7 +148,7 @@ listLatestAds t loggedInUserMaybe model =
         [ H.div
             [ A.class "home__section--container" ]
             [ listAdsHeading t
-            , listFourAds loggedInUserMaybe model
+            , listFourAds t loggedInUserMaybe model
             ]
         ]
 
@@ -184,12 +184,12 @@ sectionHeader title =
         [ H.text title ]
 
 
-listFourAds : Maybe User -> Model -> H.Html (ViewMessage Msg)
-listFourAds loggedInUserMaybe model =
+listFourAds : T -> Maybe User -> Model -> H.Html (ViewMessage Msg)
+listFourAds t loggedInUserMaybe model =
     Util.localViewMap RemovalMessage <|
         H.div
             []
-            (ListAds.viewAds loggedInUserMaybe model.removal (List.take 4 model.listAds.ads))
+            (ListAds.viewAds t loggedInUserMaybe model.removal (List.take 4 model.listAds.ads))
 
 
 

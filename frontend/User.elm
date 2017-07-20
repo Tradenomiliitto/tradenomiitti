@@ -18,6 +18,7 @@ import State.Config as Config
 import State.Profile
 import State.User exposing (..)
 import SvgIcons
+import Translation exposing (T)
 import Util exposing (UpdateMessage(..), ViewMessage(..))
 
 
@@ -123,8 +124,8 @@ addContact user str =
 -- VIEW
 
 
-view : Model -> Maybe User -> Config.Model -> H.Html (ViewMessage Msg)
-view model loggedInUser config =
+view : T -> Model -> Maybe User -> Config.Model -> H.Html (ViewMessage Msg)
+view t model loggedInUser config =
     let
         profileInit =
             State.Profile.init
@@ -140,7 +141,7 @@ view model loggedInUser config =
             model.user
                 |> Maybe.map
                     (\u ->
-                        List.map (Util.localViewMap ProfileMessage) <| Profile.View.viewUser profile False (contactUser model u loggedInUser) config loggedInUser u
+                        List.map (Util.localViewMap ProfileMessage) <| Profile.View.viewUser t profile False (contactUser model u loggedInUser) config loggedInUser u
                     )
                 |> Maybe.withDefault []
     in

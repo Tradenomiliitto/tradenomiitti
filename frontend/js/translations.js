@@ -3,7 +3,10 @@ const supportEmail = 'tradenomiitti@tral.fi';
 const source = {
   common: {
     supportEmail,
+    dateFormat: 'd.M.y',
     readMore: 'lue lisää',
+    login: 'Kirjaudu',
+    cancel: 'Peru',
   },
   errors: {
     badUrl: 'BadUrl ',
@@ -72,6 +75,51 @@ const source = {
       buttonListUsers: 'Katso kaikki tradenomit',
       buttonEditProfile: 'Muokkaa omaa profiilia',
       buttonCreateProfile: 'Luo oma profiili',
+    },
+  },
+  ad: {
+    requestFailed: 'Ilmoituksen haku epäonnistui',
+    noAnswersYet: 'Tällä ilmoituksella ei ole vielä yhtään vastausta',
+    noAnswersHint: 'Lisää omasi ylhäällä',
+    answerCount: {
+      0: {
+        heading: 'Tähän ilmoitukseen ei ole vastattu kertaakaan',
+        hint: 'Kirjaudu sisään ja ole ensimmäinen',
+      },
+      1: {
+        heading: 'Tällä ilmoituksella on yksi vastaus',
+        hint: 'Kirjaudu sisään nähdäksesesi sen ja lisää omasi',
+      },
+      n: {
+        heading: 'Tähän ilmoitukseen on vastattu {.} kertaa',
+        hint: 'Kirjaudu sisään nähdäksesi vastaukset ja lisää omasi',
+      },
+    },
+    leaveAnswerBox: {
+      placeholder: 'Kirjoita napakka vastaus',
+      submit: 'Jätä vastaus',
+    },
+    leaveAnswerPrompt: {
+      isAsker: 'Muut käyttäjät voivat vastata ilmoitukseesi tällä sivulla. Näet vastaukset alla kun niitä tulee.',
+      hasAnswered: 'Olet vastannut tähän ilmoitukseen. Kiitos kun autoit kanssatradenomiasi!',
+      hint: 'Kokemuksellasi on aina arvoa. Jaa näkemyksesi vastaamalla ilmoitukseen.',
+      answerTooltip: 'Voit vastata muiden esittämiin kysymyksiin kerran',
+      cannotAnswerTooltip: 'Et voi vastata tähän kysymykseen',
+      submit: 'Vastaa ilmoitukseen',
+    },
+  },
+  removal: {
+    removeYour: {
+      ad: 'Poista oma ilmoituksesi',
+      answer: 'Poista oma vastauksesi',
+    },
+    iWantToRemoveMy: {
+      ad: 'Haluan poistaa ilmoitukseni',
+      answer: 'Haluan poistaa vastaukseni',
+    },
+    confirmationText: {
+      ad: 'Tämä poistaa ilmoituksen ja kaikki siihen tulleet vastaukset pysyvästi. Oletko varma?',
+      answer: 'Tämä poistaa vastauksen pysyvästi. Oletko varma?',
     },
   },
   footer: {
