@@ -11,6 +11,16 @@ $italic-font: mundoSansLightItalic, Helvetica, Arial, sans-serif;
   font-weight: 700 !important;
 }
 
+// The font for normal navbar links
+@mixin navbar-font {
+    font-family: $font-family-sans-serif;
+    font-size: 18px;
+
+    @media (max-width: $screen-sm-max) {
+      font-size: 16px;
+    }
+}
+
 // Import custom fonts
 @font-face  {
   font-family: mundoSansRegular;
