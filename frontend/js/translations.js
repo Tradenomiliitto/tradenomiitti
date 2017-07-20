@@ -30,6 +30,22 @@ const source = {
     sr_open: 'Navigaation avaus',
     logoAlt: 'Tradenomiitti',
     logoWidth: '163px',
+    routeNames: {
+      user: 'Käyttäjä {.}',
+      profile: 'Oma Profiili',
+      home: 'Home',
+      info: 'Tietoa',
+      notFound: 'Ei löytynyt',
+      listUsers: 'Tradenomit',
+      listAds: 'Ilmoitukset',
+      createAd: 'Jätä ilmoitus',
+      showAd: 'Ilmoitus {.}',
+      loginNeeded: 'Kirjautuminen vaaditaan',
+      terms: 'Palvelun käyttöehdot',
+      registerDescription: 'Rekisteriseloste',
+      settings: 'Asetukset',
+      contacts: 'Käyntikortit',
+    },
   },
   home: {
     introbox: {

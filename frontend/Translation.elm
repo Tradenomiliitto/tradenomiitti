@@ -42,6 +42,11 @@ get dict key =
 getWith : Translations -> String -> List String -> String
 getWith translations key replacements =
     get translations key
-        |> String.split "{.}"
-        |> flip List.interweave replacements
-        |> String.join ""
+        |> replaceWith replacements
+
+
+replaceWith : List String -> String -> String
+replaceWith replacements =
+    String.split "{.}"
+        >> flip List.interweave replacements
+        >> String.join ""
