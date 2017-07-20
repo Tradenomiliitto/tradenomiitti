@@ -1,6 +1,8 @@
-# Contributing to Tradenomiitti
+# Contributing to MiBit
 
-You will likely want to do some customization to the look and feel of Tradenomiitti to make it your own. This guide tells you how to make contributing upstream straightforward, despite the look and feel changes you've made.
+If you wish to contribute to upstream, please go to [Tradenomiitti](https://github.com/Tradenomiliitto/tradenomiitti/blob/master/CONTRIBUTING.md). Otherwise follow the guide below:
+
+You will likely want to do some customization to the look and feel of MiBit to make it your own. This guide tells you how to make contributing straightforward, despite the look and feel changes you've made.
 
 
 ## Step 1. Make your customization commits separately
@@ -14,7 +16,6 @@ $ git log --oneline
 9cf7d28 Change colors
 6a956fa #... (upstream)
 ```
-
 
 ## Step 2. Create a branch for your contribution
 
@@ -48,7 +49,11 @@ drop 3eb42a9 Update logo
 drop 9cf7d28 Change colors
 ```
 
-## Step 4. Open the pull request
+## Step 4. Make sure the tests and the linter pass
+
+Backend can be tested with `npm test`, frontend can be tested with `npm run testFrontend` and the linter can be run with `npm run lint`. These will be run in Travis when pushed to GitHub and they all must pass.
+
+## Step 5. Open the pull request
 
 If you had already pushed the branch to your remote, you need to do a `git push --force` to overwrite the history in that branch. Otherwise just push the branch as a new branch.
 
