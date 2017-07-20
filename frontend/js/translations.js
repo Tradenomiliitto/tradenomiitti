@@ -55,6 +55,20 @@ const source = {
       buttonCreateProfile: 'Luo oma profiili',
     },
   },
+  footer: {
+    link1: {
+      url: 'http://tral.fi',
+      text: 'tral.fi',
+    },
+    link2: {
+      url: 'http://liity.tral.fi/#liity',
+      text: 'Liity jäseneksi',
+    },
+    link3: {
+      url: 'mailto:tradenomiitti@tral.fi',
+      text: 'Anna palautetta',
+    },
+  },
 };
 
 
@@ -77,10 +91,14 @@ function flatten(object) {
 const flatObject = flatten(source);
 
 // TODO: remove temporary visibility hack
+const matches = (key, str) => key.toLowerCase().indexOf(str) >= 0;
+function plaintext(key) {
+  return !(matches(key, 'width') || matches(key, 'url'));
+}
 const list = Object.keys(flatObject).map(key =>
-  ((key.indexOf('Width') >= 0)
-    ? [key, flatObject[key]]
-    : [key, `«${flatObject[key]}»`]
+  (plaintext(key)
+    ? [key, `«${flatObject[key]}»`]
+    : [key, flatObject[key]]
   )
 );
 

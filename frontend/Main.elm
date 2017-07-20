@@ -519,7 +519,7 @@ view model =
             H.div [ A.class "page-layout" ]
                 [ navigation model
                 , viewPage model
-                , Footer.view NewUrl model.profile.user
+                , Footer.view t NewUrl model.profile.user
                 ]
     in
     if model.initialLoading then

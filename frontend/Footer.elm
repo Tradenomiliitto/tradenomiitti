@@ -5,10 +5,11 @@ import Html as H
 import Html.Attributes as A
 import Models.User exposing (User)
 import Nav
+import Translation exposing (T)
 
 
-view : (Nav.Route -> msg) -> Maybe User -> H.Html msg
-view routeToMsg userMaybe =
+view : T -> (Nav.Route -> msg) -> Maybe User -> H.Html msg
+view t routeToMsg userMaybe =
     H.div
         [ A.class "footer" ]
         [ H.div
@@ -27,9 +28,9 @@ view routeToMsg userMaybe =
                   <|
                     [ H.p [] [ Common.link Nav.Terms routeToMsg ]
                     , H.p [] [ Common.link Nav.RegisterDescription routeToMsg ]
-                    , H.p [] [ H.a [ A.href "http://tral.fi" ] [ H.text "tral.fi" ] ]
-                    , H.p [] [ H.a [ A.href "http://liity.tral.fi/#liity" ] [ H.text "Liity jäseneksi" ] ]
-                    , H.p [] [ H.a [ A.href "mailto:tradenomiitti@tral.fi" ] [ H.text "Anna palautetta" ] ]
+                    , H.p [] [ H.a [ A.href <| t "footer.link1.url" ] [ H.text <| t "footer.link1.text" ] ]
+                    , H.p [] [ H.a [ A.href <| t "footer.link2.url" ] [ H.text <| t "footer.link2.text" ] ]
+                    , H.p [] [ H.a [ A.href <| t "footer.link3.url" ] [ H.text <| t "footer.link3.text" ] ]
                     ]
                         ++ (if Models.User.isAdmin userMaybe then
                                 [ H.p
