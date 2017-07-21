@@ -173,6 +173,13 @@ const source = {
       skill: 'Valitse taito',
     },
   },
+  loginNeeded: {
+    heading: 'Kirjaudu sisään',
+    info: 'Tradenomiitti on ainutlaatuinen kohtaamispaikka Tradenomiliiton jäsenille. Sinun tulee kirjautua sisään TRAL-tunnuksillasi, jotta voit luoda profiilin ja toimia Tradenomiitissa.',
+    joinHeading: 'Etkö ole vielä TRAL:n jäsen?',
+    joinUrl: 'http://tral.fi',
+    joinLink: 'Liity jäseneksi',
+  },
   footer: {
     link1: {
       url: 'http://tral.fi',
