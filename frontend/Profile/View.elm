@@ -37,17 +37,17 @@ editProfileView : T -> Model -> User -> RootState.Model -> H.Html (ViewMessage M
 editProfileView t model user rootState =
     H.div
         []
-        [ Common.profileTopRow t user model.editing Common.ProfileTab (saveOrEdit user model.editing)
-        , editProfileHeading
-        , membershipInfoEditing user
-        , H.map LocalViewMessage (publicInfoEditing model user)
+        [ Common.profileTopRow t user model.editing Common.ProfileTab (saveOrEdit t user model.editing)
+        , editProfileHeading t
+        , membershipInfoEditing t user
+        , H.map LocalViewMessage (publicInfoEditing t model user)
         , H.map LocalViewMessage (competences t model rootState.config user)
-        , H.map LocalViewMessage (educationEditing model rootState.config user)
+        , H.map LocalViewMessage (educationEditing t model rootState.config user)
         ]
 
 
-saveOrEdit : User -> Bool -> H.Html (ViewMessage Msg)
-saveOrEdit user editing =
+saveOrEdit : T -> User -> Bool -> H.Html (ViewMessage Msg)
+saveOrEdit t user editing =
     H.button
         [ A.class "btn btn-primary profile__top-row-edit-button"
         , E.onClick <|
@@ -58,53 +58,53 @@ saveOrEdit user editing =
         , A.disabled <| user.name == ""
         , A.title <|
             if user.name == "" then
-                "Kutsumanimi on pakollinen"
+                t "profile.editProfile.nickNameMandatory"
             else
                 ""
         ]
         [ H.text
             (if editing then
-                "Tallenna profiili"
+                t "profile.editProfile.buttonSave"
              else
-                "Muokkaa profiilia"
+                t "profile.editProfile.buttonEdit"
             )
         ]
 
 
-editProfileHeading : H.Html msg
-editProfileHeading =
+editProfileHeading : T -> H.Html msg
+editProfileHeading t =
     H.div [ A.class "container" ]
         [ H.div [ A.class "row" ]
             [ H.div
                 [ A.class "profile__editing--heading col-sm-6 col-sm-offset-3" ]
-                [ H.h2 [ A.class "profile__editing--heading--title" ] [ H.text "Muokkaa profiilia" ]
-                , H.p [ A.class "profile__editing--heading--content" ] [ H.text "Tehdäksemme Tradenomiitin käytöstä sinulle mahdollisimman vaivatonta, olemme luoneet sinulle profiilin TRAL:n jäsentietojen perusteella. Viimeistele profiilisi tarkastamalla jäsentietosi, muokkaamalla julkista profiiliasi ja täyttämällä henkilökohtainen käyntikorttisi." ]
+                [ H.h2 [ A.class "profile__editing--heading--title" ] [ H.text <| t "profile.editProfile.heading" ]
+                , H.p [ A.class "profile__editing--heading--content" ] [ H.text <| t "profile.editProfile.hint" ]
                 ]
             ]
         ]
 
 
-membershipInfoEditing : User -> H.Html msg
-membershipInfoEditing user =
+membershipInfoEditing : T -> User -> H.Html msg
+membershipInfoEditing t user =
     H.div
         [ A.class "profile__editing--membership container" ]
         [ H.div
             [ A.class "row" ]
-            [ membershipDataBoxEditing user
-            , membershipDataInfo
+            [ membershipDataBoxEditing t user
+            , membershipDataInfo t
             ]
         ]
 
 
-membershipDataInfo : H.Html msg
-membershipDataInfo =
+membershipDataInfo : T -> H.Html msg
+membershipDataInfo t =
     H.div
         [ A.class "profile__editing--membership--info col-md-6" ]
         [ H.p
             [ A.class "profile__editing--membership--info--text" ]
-            [ H.text "Profiilissa hyödynnetään liiton jäsentietoja. Tarkistathan, että tietosi ovat järjestelmässämme ajan tasalla. "
+            [ H.text <| t "profile.membershipInfo.profileUsesMembershipInfo"
             , H.span [ A.class "profile__editing--bold" ]
-                [ H.text "Jäsentiedot eivät näy sellaisenaan muille."
+                [ H.text <| t "profile.membershipInfo.notVisibleAsIs"
                 ]
             ]
         , H.a
@@ -113,57 +113,57 @@ membershipDataInfo =
             ]
             [ H.button
                 [ A.class "profile__editing--membership--info--button btn btn-primary" ]
-                [ H.text "päivitä jäsentiedot"
+                [ H.text <| t "profile.membershipInfo.buttonUpdateInfo"
                 ]
             ]
         ]
 
 
-publicInfoEditing : Model -> User -> H.Html Msg
-publicInfoEditing model user =
+publicInfoEditing : T -> Model -> User -> H.Html Msg
+publicInfoEditing t model user =
     H.div
         [ A.class "container-fluid" ]
         [ H.div
             [ A.class "container" ]
             [ H.div
                 [ A.class "profile__editing--public-info row" ]
-                [ publicInfo model user
-                , businessCard user
+                [ publicInfo t model user
+                , businessCard t user
                 ]
             ]
         ]
 
 
-publicInfo : Model -> User -> H.Html Msg
-publicInfo model user =
+publicInfo : T -> Model -> User -> H.Html Msg
+publicInfo t model user =
     H.div
         [ A.class "col-sm-6 profile__editing--public-info--box" ]
-        [ H.h3 [ A.class "profile__editing--public-info--header" ] [ H.text "Julkiset tiedot" ]
-        , H.p [ A.class "profile__editing--public-info--text" ] [ H.text "Valitse itsellesi käyttäjänimi (yleisimmin etunimi) ja kuvaava titteli. Esittele itsesi ja osaamisesi muille kuvaavalla tekstillä" ]
-        , userInfoBoxEditing model user
+        [ H.h3 [ A.class "profile__editing--public-info--header" ] [ H.text <| t "profile.publicInfo.heading" ]
+        , H.p [ A.class "profile__editing--public-info--text" ] [ H.text <| t "profile.publicInfo.hint" ]
+        , userInfoBoxEditing t model user
         ]
 
 
-businessCard : User -> H.Html Msg
-businessCard user =
+businessCard : T -> User -> H.Html Msg
+businessCard t user =
     H.div
         [ A.class "col-sm-6 profile__editing--public-info--box" ]
-        [ H.h3 [ A.class "profile__editing--public-info--header" ] [ H.text "käyntikortti" ]
+        [ H.h3 [ A.class "profile__editing--public-info--header" ] [ H.text <| t "profile.businessCard.heading" ]
         , H.p [ A.class "profile__editing--public-info--text" ]
-            [ H.text "Täydennä alle tiedot, jotka haluat lähettää käyntikortin mukana. "
-            , H.span [ A.class "profile__editing--bold" ] [ H.text "Tiedot näkyvät vain niille, joille olet lähettänyt kortin" ]
+            [ H.text <| t "profile.businessCard.hint"
+            , H.span [ A.class "profile__editing--bold" ] [ H.text <| t "profile.businessCard.visibleForRecipients" ]
             ]
         , case user.businessCard of
             Just businessCard ->
-                businessCardData user businessCard
+                businessCardData t user businessCard
 
             Nothing ->
-                H.div [] [ H.text "Käyntikorttia ei löytynyt" ]
+                H.div [] [ H.text <| t "profile.businessCard.notFound" ]
         ]
 
 
-businessCardData : User -> Models.User.BusinessCard -> H.Html Msg
-businessCardData user businessCard =
+businessCardData : T -> User -> Models.User.BusinessCard -> H.Html Msg
+businessCardData t user businessCard =
     H.div
         [ A.class "profile__business-card" ]
         [ H.div [ A.class "profile__business-card--container" ]
@@ -175,7 +175,7 @@ businessCardData user businessCard =
                     [ H.h4 []
                         [ H.input
                             [ A.class "profile__business-card--name-work--input"
-                            , A.placeholder "Koko nimi"
+                            , A.placeholder <| t "profile.businessCardFields.name"
                             , A.value businessCard.name
                             , E.onInput (UpdateBusinessCard Profile.Main.Name)
                             ]
@@ -184,7 +184,7 @@ businessCardData user businessCard =
                     , H.h5 []
                         [ H.input
                             [ A.class "profile__business-card--name-work--input"
-                            , A.placeholder "Titteli, Työpaikka"
+                            , A.placeholder <| t "profile.businessCardFields.title"
                             , A.value businessCard.title
                             , E.onInput (UpdateBusinessCard Profile.Main.Title)
                             ]
@@ -193,17 +193,17 @@ businessCardData user businessCard =
                     ]
                 ]
             , H.div [ A.class "profile__business-card--data--contact" ]
-                [ businessCardDataInput businessCard Location
-                , businessCardDataInput businessCard Phone
-                , businessCardDataInput businessCard Email
-                , businessCardDataInput businessCard LinkedIn
+                [ businessCardDataInput t businessCard Location
+                , businessCardDataInput t businessCard Phone
+                , businessCardDataInput t businessCard Email
+                , businessCardDataInput t businessCard LinkedIn
                 ]
             ]
         ]
 
 
-businessCardView : User -> Models.User.BusinessCard -> H.Html (ViewMessage msg)
-businessCardView user businessCard =
+businessCardView : T -> User -> Models.User.BusinessCard -> H.Html (ViewMessage msg)
+businessCardView t user businessCard =
     H.div
         [ A.class "profile__business-card profile__business-card-view" ]
         [ H.div
@@ -231,8 +231,8 @@ businessCardView user businessCard =
         ]
 
 
-businessCardDataInput : Models.User.BusinessCard -> BusinessCardField -> H.Html Msg
-businessCardDataInput card field =
+businessCardDataInput : T -> Models.User.BusinessCard -> BusinessCardField -> H.Html Msg
+businessCardDataInput t card field =
     let
         value =
             case field of
@@ -282,7 +282,7 @@ businessCardDataInput card field =
         [ class ]
         [ H.span [ class, A.class "profile__business-card--input-icon" ] icon
         , H.input
-            [ A.placeholder <| fieldToString field
+            [ A.placeholder <| fieldToString t field
             , A.value value
             , E.onInput (UpdateBusinessCard field)
             ]
@@ -348,32 +348,32 @@ businessCardDataView card field =
         H.span [] []
 
 
-fieldToString : BusinessCardField -> String
-fieldToString field =
+fieldToString : T -> BusinessCardField -> String
+fieldToString t field =
     case field of
         Name ->
-            "Koko nimi"
+            t "profile.businessCardFields.name"
 
         Title ->
-            "Titteli, Työpaikka"
+            t "profile.businessCardFields.title"
 
         Location ->
-            "Paikkakunta"
+            t "profile.businessCardFields.location"
 
         Phone ->
-            "Puhelinnumero"
+            t "profile.businessCardFields.phone"
 
         Email ->
-            "Sähköposti"
+            t "profile.businessCardFields.email"
 
         LinkedIn ->
-            "LinkedIn-linkki"
+            t "profile.businessCardFields.linkedIn"
 
 
 showProfileView : T -> Model -> User -> RootState.Model -> H.Html (ViewMessage Msg)
 showProfileView t model user rootState =
     H.div [ A.class "user-page" ] <|
-        [ Common.profileTopRow t user model.editing Common.ProfileTab (saveOrEdit user model.editing)
+        [ Common.profileTopRow t user model.editing Common.ProfileTab (saveOrEdit t user model.editing)
         ]
             ++ viewOwnProfileMaybe t model True rootState.config
 
@@ -390,11 +390,11 @@ competences t model config user =
                     [ A.class "profile__editing--competences--heading col-md-7" ]
                     [ H.h3
                         [ A.class "profile__editing--competences--heading--title" ]
-                        [ H.text "Muokkaa osaamistasi" ]
+                        [ H.text <| t "profile.competences.editHeading" ]
                     , H.p
                         [ A.class "profile__editing--competences--heading--text" ]
-                        [ H.text "Osaamisesi on esitäytetty jäsentietojemme perusteella. Muokkaa ja täydennä tehtäviä ja toimialoja, jotta Tradenomiitti voi palvella sinua paremmin ja jotta muut tradenomit löytäisivät sinut helpommin. "
-                        , H.span [ A.class "profile__editing--bold" ] [ H.text "Osaaminen näkyy kaikille käyttäjille." ]
+                        [ H.text <| t "profile.competences.hint"
+                        , H.span [ A.class "profile__editing--bold" ] [ H.text <| t "profile.competences.visibleForEveryone" ]
                         ]
                     ]
                 ]
@@ -405,9 +405,9 @@ competences t model config user =
         ]
 
 
-educationEditing : Model -> Config.Model -> User -> H.Html Msg
-educationEditing model config user =
-    viewEducations model config user
+educationEditing : T -> Model -> Config.Model -> User -> H.Html Msg
+educationEditing =
+    viewEducations
 
 
 userExpertise : T -> Model -> User -> Config.Model -> List (H.Html Msg)
@@ -426,13 +426,13 @@ viewOwnProfileMaybe t model ownProfile config =
             [ H.div
                 [ A.class "container" ]
                 [ H.div [ A.class "row user-page__section" ]
-                    [ H.text "Et ole kirjautunut" ]
+                    [ H.text <| t "profile.ownProfile.notLoggedIn" ]
                 ]
             ]
 
 
-viewEducations : Model -> Config.Model -> User -> H.Html Msg
-viewEducations model config user =
+viewEducations : T -> Model -> Config.Model -> User -> H.Html Msg
+viewEducations t model config user =
     let
         educations =
             user.education
@@ -462,7 +462,7 @@ viewEducations model config user =
                                 [ A.class "user-page__education-details" ]
                                 (List.concat
                                     [ [ H.tr [] <|
-                                            [ H.td [] [ H.text "Oppilaitos" ]
+                                            [ H.td [] [ H.text <| t "profile.educations.institute" ]
                                             , H.td [] [ H.text education.institute ]
                                             ]
                                                 ++ (if model.editing then
@@ -479,9 +479,9 @@ viewEducations model config user =
                                                         []
                                                    )
                                       ]
-                                    , rowMaybe "Tutkintonimike" education.degree
-                                    , rowMaybe "Koulutus" education.major
-                                    , rowMaybe "Suuntautuminen / pääaine" education.specialization
+                                    , rowMaybe (t "profile.educations.degree") education.degree
+                                    , rowMaybe (t "profile.educations.major") education.major
+                                    , rowMaybe (t "profile.educations.specialization") education.specialization
                                     ]
                                 )
                             ]
@@ -507,12 +507,12 @@ viewEducations model config user =
                 ]
             ]
                 ++ educations
-                ++ educationsEditing model config
+                ++ educationsEditing t model config
         ]
 
 
-educationsEditing : Model -> Config.Model -> List (H.Html Msg)
-educationsEditing model config =
+educationsEditing : T -> Model -> Config.Model -> List (H.Html Msg)
+educationsEditing t model config =
     if model.editing then
         [ H.div
             [ A.class "row" ]
@@ -570,7 +570,7 @@ viewUser t model ownProfile contactUser config loggedInUserMaybe user =
                     [ A.class "btn user-page__activity-show-more"
                     , E.onClick <| LocalViewMessage ShowAll
                     ]
-                    [ H.span [] [ H.text "Näytä kaikki aktiivisuus" ]
+                    [ H.span [] [ H.text <| t "profile.viewUser.showAllActivity" ]
                     , H.i [ A.class "fa fa-chevron-down" ] []
                     ]
                 ]
@@ -579,9 +579,9 @@ viewUser t model ownProfile contactUser config loggedInUserMaybe user =
         [ A.class "container" ]
         [ H.div
             [ A.class "row user-page__section user-page__first-block" ]
-            [ H.map LocalViewMessage (userInfoBox model user)
+            [ H.map LocalViewMessage (userInfoBox t model user)
             , if ownProfile then
-                H.map LocalViewMessage (editProfileBox user)
+                H.map LocalViewMessage (editProfileBox t user)
               else
                 contactUser
             ]
@@ -595,7 +595,7 @@ viewUser t model ownProfile contactUser config loggedInUserMaybe user =
                 [ A.class "row" ]
                 [ H.div
                     [ A.class "col-sm-12" ]
-                    [ H.h3 [ A.class "user-page__activity-header" ] [ H.text "Aktiivisuus" ]
+                    [ H.h3 [ A.class "user-page__activity-header" ] [ H.text <| t "profile.viewUser.activity" ]
                     ]
                 ]
             ]
@@ -609,25 +609,25 @@ viewUser t model ownProfile contactUser config loggedInUserMaybe user =
           <|
             List.map (H.map LocalViewMessage) (userExpertise t model user config)
         ]
-    , H.map LocalViewMessage <| viewEducations model config user
+    , H.map LocalViewMessage <| viewEducations t model config user
     ]
 
 
-editProfileBox : User -> H.Html Msg
-editProfileBox user =
+editProfileBox : T -> User -> H.Html Msg
+editProfileBox t user =
     H.div
         [ A.class "col-md-6 user-page__edit-or-contact-user" ]
-        [ H.p [] [ H.text "Onhan profiilisi ajan tasalla? Mielenkiintoinen ja aktiivinen profiili auttaa luomaan kontakteja" ]
+        [ H.p [] [ H.text <| t "profile.editProfileBox.hint" ]
         , H.button
             [ A.class "btn btn-primary profile__edit-button"
             , E.onClick Edit
             ]
-            [ H.text "Muokkaa profiilia" ]
+            [ H.text <| t "profile.editProfileBox.editProfile" ]
         ]
 
 
-userInfoBoxEditing2 : Model -> User -> List (H.Html Msg)
-userInfoBoxEditing2 model user =
+userInfoBoxEditing2 : T -> Model -> User -> List (H.Html Msg)
+userInfoBoxEditing2 t model user =
     [ H.div
         [ A.class "user-page__pic-container" ]
         [ H.span
@@ -646,7 +646,7 @@ userInfoBoxEditing2 model user =
         [ A.class "user-page__editing-name-details" ]
         [ H.h4 [ A.class "user-page__name" ]
             [ H.input
-                [ A.placeholder "Miksi kutsumme sinua?"
+                [ A.placeholder <| t "profile.userInfoBox.nickNamePlaceholder"
                 , A.value user.name
                 , E.onInput ChangeNickname
                 ]
@@ -657,7 +657,7 @@ userInfoBoxEditing2 model user =
             [ H.input
                 [ A.value user.title
                 , E.onInput ChangeTitle
-                , A.placeholder "Titteli"
+                , A.placeholder <| t "profile.userInfoBox.titlePlaceholder"
                 ]
                 []
             ]
@@ -666,22 +666,22 @@ userInfoBoxEditing2 model user =
     ]
 
 
-userInfoBoxEditing : Model -> User -> H.Html Msg
-userInfoBoxEditing model user =
+userInfoBoxEditing : T -> Model -> User -> H.Html Msg
+userInfoBoxEditing t model user =
     H.div
         []
         [ H.div
             [ A.class "row" ]
             [ H.div
                 [ A.class "col-xs-12 user-page__editing-pic-and-name" ]
-                (userInfoBoxEditing2 model user)
+                (userInfoBoxEditing2 t model user)
             ]
-        , userDescription model user
+        , userDescription t model user
         ]
 
 
-userInfoBox : Model -> User -> H.Html Msg
-userInfoBox model user =
+userInfoBox : T -> Model -> User -> H.Html Msg
+userInfoBox t model user =
     H.div
         [ A.class "col-md-6 user-page__user-info-box" ]
         [ H.div
@@ -696,7 +696,7 @@ userInfoBox model user =
                     [ H.h4 [ A.class "user-page__name" ]
                         [ if model.editing then
                             H.input
-                                [ A.placeholder "Miksi kutsumme sinua?"
+                                [ A.placeholder <| t "profile.userInfoBox.nickNamePlaceholder"
                                 , A.value user.name
                                 , E.onInput ChangeNickname
                                 ]
@@ -719,20 +719,20 @@ userInfoBox model user =
                     ]
                 ]
             ]
-        , userDescription model user
-        , userIdForAdmins user
+        , userDescription t model user
+        , userIdForAdmins t user
         ]
 
 
-userDescription : Model -> User -> H.Html Msg
-userDescription model user =
+userDescription : T -> Model -> User -> H.Html Msg
+userDescription t model user =
     H.div
         [ A.class "row user-page__description" ]
         [ H.p [ A.class "col-xs-12" ]
             [ if model.editing then
                 H.textarea
                     [ A.value user.description
-                    , A.placeholder "Kirjoita napakka kuvaus itsestäsi"
+                    , A.placeholder <| t "profile.userDescriptionPlaceholder"
                     , A.class "user-page__description-input"
                     , E.onInput ChangeDescription
                     ]
@@ -743,10 +743,10 @@ userDescription model user =
         ]
 
 
-userIdForAdmins : User -> H.Html msg
-userIdForAdmins user =
+userIdForAdmins : T -> User -> H.Html msg
+userIdForAdmins t user =
     user.memberId
-        |> Maybe.map (\id -> H.p [] [ H.text <| "Jäsentunniste: " ++ toString id ])
+        |> Maybe.map (\id -> H.p [] [ H.text <| t "profile.userIdForAdmins" ++ toString id ])
         |> Maybe.withDefault (H.div [] [])
 
 
@@ -779,10 +779,10 @@ userDomains t model user config =
     H.div
         [ A.class "col-xs-12 col-sm-6 col-md-4 last-row"
         ]
-        ([ H.h3 [ A.class "user-page__competences-header" ] [ H.text "Toimiala" ]
+        ([ H.h3 [ A.class "user-page__competences-header" ] [ H.text <| t "profile.userDomains.heading" ]
          ]
             ++ (if model.editing then
-                    [ H.p [ A.class "profile__editing--competences--text" ] [ H.text "Valitse toimialat, joista olet kiinnostunut tai sinulla on kokemusta" ] ]
+                    [ H.p [ A.class "profile__editing--competences--text" ] [ H.text <| t "profile.userDomains.question" ] ]
                 else
                     [ H.p [ A.class "profile__editing--competences--text" ] [] ]
                )
@@ -790,7 +790,10 @@ userDomains t model user config =
                 (\i x -> H.map (DomainSkillMessage i) <| Skill.view t model.editing x)
                 user.domains
             ++ (if model.editing then
-                    [ select config.domainOptions ChangeDomainSelect "Valitse toimiala" "Lisää toimiala, josta olet kiinnostunut tai sinulla on osaamista"
+                    [ select config.domainOptions
+                        ChangeDomainSelect
+                        (t "profile.userDomains.selectDomain")
+                        (t "profile.userDomains.selectDomainHint")
                     ]
                 else
                     []
@@ -804,10 +807,10 @@ userSkills t model user config =
         [ A.class "col-xs-12 col-sm-6 col-md-4 last-row"
         ]
     <|
-        [ H.h3 [ A.class "user-page__competences-header" ] [ H.text "Osaaminen" ]
+        [ H.h3 [ A.class "user-page__competences-header" ] [ H.text <| t "profile.userSkills.heading" ]
         ]
             ++ (if model.editing then
-                    [ H.p [ A.class "profile__editing--competences--text" ] [ H.text "Mitä taitoja sinulla on?" ] ]
+                    [ H.p [ A.class "profile__editing--competences--text" ] [ H.text <| t "profile.userSkills.question" ] ]
                 else
                     [ H.p [ A.class "profile__editing--competences--text" ] [] ]
                )
@@ -848,14 +851,14 @@ userSkills t model user config =
                         []
                         [ H.label
                             [ A.class "user-page__competence-select-label" ]
-                            [ H.text "Lisää taito" ]
+                            [ H.text <| t "profile.userSkills.addSkill" ]
                         , H.span
                             [ A.class "user-page__competence-select-container" ]
                             [ H.input
                                 [ A.type_ "text"
                                 , A.id "skills-input"
                                 , A.class "user-page__competence-select"
-                                , A.placeholder "Valitse taito"
+                                , A.placeholder <| t "profile.userSkills.selectSkill"
                                 ]
                                 []
                             ]
@@ -871,10 +874,12 @@ userPositions t model user config =
     H.div
         [ A.class "col-xs-12 col-sm-6 col-md-4 last-row"
         ]
-        ([ H.h3 [ A.class "user-page__competences-header" ] [ H.text "Tehtäväluokka" ]
+        ([ H.h3 [ A.class "user-page__competences-header" ] [ H.text <| t "profile.userPositions.heading" ]
          ]
             ++ (if model.editing then
-                    [ H.p [ A.class "profile__editing--competences--text" ] [ H.text "Missä tehtävissä olet toiminut tai haluaisit toimia?" ] ]
+                    [ H.p [ A.class "profile__editing--competences--text" ]
+                        [ H.text <| t "profile.userPositions.question" ]
+                    ]
                 else
                     [ H.p [ A.class "profile__editing--competences--text" ] [] ]
                )
@@ -882,7 +887,10 @@ userPositions t model user config =
                 (\i x -> H.map (PositionSkillMessage i) <| Skill.view t model.editing x)
                 user.positions
             ++ (if model.editing then
-                    [ select config.positionOptions ChangePositionSelect "Valitse tehtäväluokka" "Lisää tehtäväluokka, josta olet kiinnostunut tai sinulla on osaamista"
+                    [ select config.positionOptions
+                        ChangePositionSelect
+                        (t "profile.userPositions.selectPosition")
+                        (t "profile.userPositions.selectPositionHint")
                     ]
                 else
                     []
@@ -922,36 +930,36 @@ select options toEvent defaultOption heading =
         ]
 
 
-tralInfo : Models.User.Extra -> H.Html msg
-tralInfo extra =
+membershipRegisterInfo : T -> Models.User.Extra -> H.Html msg
+membershipRegisterInfo t extra =
     let
-        row title value =
+        row titleKey value =
             H.tr []
-                [ H.td [] [ H.text title ]
+                [ H.td [] [ H.text <| t ("profile.membershipRegisterInfo." ++ titleKey) ]
                 , H.td [] [ H.text value ]
                 ]
     in
     H.table
         [ A.class "user-page__membership-info-definitions" ]
-        [ row "Kutsumanimi" extra.nick_name
-        , row "Etunimi" extra.first_name
-        , row "Sukunimi" extra.last_name
-        , row "Tehtäväluokat" (String.join ", " extra.positions)
-        , row "Toimiala" (String.join ", " extra.domains)
-        , row "Sähköposti" extra.email
-        , row "Matkapuhelinnumero" extra.phone
-        , row "Maakunta" extra.geoArea
+        [ row "nickName" extra.nick_name
+        , row "firstName" extra.first_name
+        , row "lastName" extra.last_name
+        , row "positions" (String.join ", " extra.positions)
+        , row "domains" (String.join ", " extra.domains)
+        , row "email" extra.email
+        , row "phone" extra.phone
+        , row "location" extra.geoArea
         ]
 
 
-membershipDataBoxEditing : User -> H.Html msg
-membershipDataBoxEditing user =
+membershipDataBoxEditing : T -> User -> H.Html msg
+membershipDataBoxEditing t user =
     case user.extra of
         Just extra ->
             H.div
                 [ A.class "col-md-6 profile__editing--membership--databox" ]
                 [ H.h3 [ A.class "profile__editing--membership--databox--heading" ] [ H.text "TRAL:n  Jäsentiedot" ]
-                , tralInfo extra
+                , membershipRegisterInfo t extra
                 ]
 
         Nothing ->

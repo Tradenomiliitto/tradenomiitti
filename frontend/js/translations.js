@@ -180,6 +180,94 @@ const source = {
       contacts: 'Käyntikortit',
     },
   },
+  profile: {
+    editProfile: {
+      heading: 'Muokkaa profiilia',
+      hint: 'Tehdäksemme Tradenomiitin käytöstä sinulle mahdollisimman vaivatonta, olemme luoneet sinulle profiilin TRAL:n jäsentietojen perusteella. Viimeistele profiilisi tarkastamalla jäsentietosi, muokkaamalla julkista profiiliasi ja täyttämällä henkilökohtainen käyntikorttisi.',
+      nickNameMandatory: 'Kutsumanimi on pakollinen',
+      buttonSave: 'Tallenna profiili',
+      buttonEdit: 'Muokkaa profiilia',
+    },
+    membershipInfo: {
+      profileUsesMembershipInfo: 'Profiilissa hyödynnetään liiton jäsentietoja. Tarkistathan, että tietosi ovat järjestelmässämme ajan tasalla. ',
+      notVisibleAsIs: 'Jäsentiedot eivät näy sellaisenaan muille.',
+      buttonUpdateInfo: 'päivitä jäsentiedot',
+    },
+    publicInfo: {
+      heading: 'Julkiset tiedot',
+      hint: 'Valitse itsellesi käyttäjänimi (yleisimmin etunimi) ja kuvaava titteli. Esittele itsesi ja osaamisesi muille kuvaavalla tekstillä',
+    },
+    businessCard: {
+      heading: 'Käyntikortti',
+      hint: 'Täydennä alle tiedot, jotka haluat lähettää käyntikortin mukana. ',
+      visibleForRecipients: 'Tiedot näkyvät vain niille, joille olet lähettänyt kortin',
+      notFound: 'Käyntikorttia ei löytynyt',
+    },
+    businessCardFields: {
+      name: 'Koko nimi',
+      title: 'Titteli, Työpaikka',
+      location: 'Paikkakunta',
+      phone: 'Puhelinnumero',
+      email: 'Sähköposti',
+      linkedIn: 'LinkedIn-linkki',
+    },
+    competences: {
+      editHeading: 'Muokkaa osaamistasi',
+      hint: 'Osaamisesi on esitäytetty jäsentietojemme perusteella. Muokkaa ja täydennä tehtäviä ja toimialoja, jotta Tradenomiitti voi palvella sinua paremmin ja jotta muut tradenomit löytäisivät sinut helpommin. ',
+      visibleForEveryone: 'Osaaminen näkyy kaikille käyttäjille.',
+    },
+    ownProfile: {
+      notLoggedIn: 'Et ole kirjautunut',
+    },
+    educations: {
+      institute: 'Oppilaitos',
+      degree: 'Tutkintonimike',
+      major: 'Koulutus',
+      specialization: 'Suuntautuminen / pääaine',
+    },
+    viewUser: {
+      showAllActivity: 'Näytä kaikki aktiivisuus',
+      activity: 'Aktiivisuus',
+    },
+    editProfileBox: {
+      hint: 'Onhan profiilisi ajan tasalla? Mielenkiintoinen ja aktiivinen profiili auttaa luomaan kontakteja',
+      editProfile: 'Muokkaa profiilia',
+    },
+    userInfoBox: {
+      nickNamePlaceholder: 'Miksi kutsumme sinua?',
+      titlePlaceholder: 'Titteli',
+    },
+    userDescriptionPlaceholder: 'Kirjoita napakka kuvaus itsestäsi',
+    userIdForAdmins: 'Jäsentunniste: ',
+    userDomains: {
+      heading: 'Toimiala',
+      question: 'Valitse toimialat, joista olet kiinnostunut tai sinulla on kokemusta',
+      selectDomain: 'Valitse toimiala',
+      selectDomainHint: 'Lisää toimiala, josta olet kiinnostunut tai sinulla on osaamista',
+    },
+    userSkills: {
+      heading: 'Osaaminen',
+      question: 'Mitä taitoja sinulla on?',
+      addSkill: 'Lisää taito',
+      selectSkill: 'Valitse taito',
+    },
+    userPositions: {
+      heading: 'Tehtäväluokka',
+      question: 'Missä tehtävissä olet toiminut tai haluaisit toimia?',
+      selectPosition: 'Valitse tehtäväluokka',
+      selectPositionHint: 'Lisää tehtäväluokka, josta olet kiinnostunut tai sinulla on osaamista',
+    },
+    membershipRegisterInfo: {
+      nickName: 'Kutsumanimi',
+      firstName: 'Etunimi',
+      lastName: 'Sukunimi',
+      positions: 'Tehtäväluokat',
+      domains: 'Toimiala',
+      email: 'Sähköposti',
+      phone: 'Matkapuhelinnumero',
+      location: 'Maakunta',
+    },
+  },
   removal: {
     removeYour: {
       ad: 'Poista oma ilmoituksesi',
