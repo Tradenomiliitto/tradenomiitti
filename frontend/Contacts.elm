@@ -83,5 +83,5 @@ renderContact t contact =
         , H.p
             [ A.class "contacts__intro-text" ]
             [ H.text contact.introText ]
-        , Profile.View.businessCardView contact.user contact.businessCard
+        , Profile.View.businessCardView t contact.user contact.businessCard
         ]

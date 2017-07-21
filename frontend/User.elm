@@ -195,7 +195,7 @@ contactUser t model userToContact loggedInUser =
                                     [ H.text <| t_ "businessCardIsAttached" ]
                                 , H.div
                                     [ A.class "popover__content" ]
-                                    [ Profile.View.businessCardView user businessCard ]
+                                    [ Profile.View.businessCardView t user businessCard ]
                                 ]
                             ]
 
