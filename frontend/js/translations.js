@@ -207,6 +207,12 @@ const source = {
     success: 'Tallennus onnistui',
     error: 'Tallenuksessa meni jotain pieleen',
   },
+  skill: {
+    interested: 'Kiinnostunut',
+    beginner: 'Vasta-alkaja',
+    experienced: 'Osaaja',
+    pro: 'Konkari',
+  },
 };
 
 

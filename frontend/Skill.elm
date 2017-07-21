@@ -6,6 +6,7 @@ import Html.Events as E
 import Json.Decode as Json
 import Json.Decode.Pipeline as P
 import Json.Encode as JS
+import Translation exposing (T)
 
 
 type SkillLevel
@@ -91,22 +92,22 @@ skillToInt skillLevel =
             4
 
 
-view : Bool -> Model -> H.Html Msg
-view editing model =
+view : T -> Bool -> Model -> H.Html Msg
+view t editing model =
     let
         skillText =
             case model.skillLevel of
                 Interested ->
-                    "Kiinnostunut"
+                    t "skill.interested"
 
                 Beginner ->
-                    "Vasta-alkaja"
+                    t "skill.beginner"
 
                 Experienced ->
-                    "Osaaja"
+                    t "skill.experienced"
 
                 Pro ->
-                    "Konkari"
+                    t "skill.pro"
 
         skillNumber =
             skillToInt model.skillLevel

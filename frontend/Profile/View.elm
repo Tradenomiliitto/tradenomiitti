@@ -41,7 +41,7 @@ editProfileView t model user rootState =
         , editProfileHeading
         , membershipInfoEditing user
         , H.map LocalViewMessage (publicInfoEditing model user)
-        , H.map LocalViewMessage (competences model rootState.config user)
+        , H.map LocalViewMessage (competences t model rootState.config user)
         , H.map LocalViewMessage (educationEditing model rootState.config user)
         ]
 
@@ -378,8 +378,8 @@ showProfileView t model user rootState =
             ++ viewOwnProfileMaybe t model True rootState.config
 
 
-competences : Model -> Config.Model -> User -> H.Html Msg
-competences model config user =
+competences : T -> Model -> Config.Model -> User -> H.Html Msg
+competences t model config user =
     H.div
         [ A.class "container-fluid profile__editing--competences" ]
         [ H.div
@@ -400,7 +400,7 @@ competences model config user =
                 ]
             , H.div
                 [ A.class "profile__editing--competences--row row" ]
-                (userExpertise model user config)
+                (userExpertise t model user config)
             ]
         ]
 
@@ -410,11 +410,11 @@ educationEditing model config user =
     viewEducations model config user
 
 
-userExpertise : Model -> User -> Config.Model -> List (H.Html Msg)
-userExpertise model user config =
-    [ userDomains model user config
-    , userPositions model user config
-    , userSkills model user config
+userExpertise : T -> Model -> User -> Config.Model -> List (H.Html Msg)
+userExpertise t model user config =
+    [ userDomains t model user config
+    , userPositions t model user config
+    , userSkills t model user config
     ]
 
 
@@ -607,7 +607,7 @@ viewUser t model ownProfile contactUser config loggedInUserMaybe user =
         [ H.div
             [ A.class "row" ]
           <|
-            List.map (H.map LocalViewMessage) (userExpertise model user config)
+            List.map (H.map LocalViewMessage) (userExpertise t model user config)
         ]
     , H.map LocalViewMessage <| viewEducations model config user
     ]
@@ -774,8 +774,8 @@ optionPreselected default value =
         H.option [] [ H.text value ]
 
 
-userDomains : Model -> User -> Config.Model -> H.Html Msg
-userDomains model user config =
+userDomains : T -> Model -> User -> Config.Model -> H.Html Msg
+userDomains t model user config =
     H.div
         [ A.class "col-xs-12 col-sm-6 col-md-4 last-row"
         ]
@@ -787,10 +787,7 @@ userDomains model user config =
                     [ H.p [ A.class "profile__editing--competences--text" ] [] ]
                )
             ++ List.indexedMap
-                (\i x ->
-                    H.map (DomainSkillMessage i) <|
-                        Skill.view model.editing x
-                )
+                (\i x -> H.map (DomainSkillMessage i) <| Skill.view t model.editing x)
                 user.domains
             ++ (if model.editing then
                     [ select config.domainOptions ChangeDomainSelect "Valitse toimiala" "Lisää toimiala, josta olet kiinnostunut tai sinulla on osaamista"
@@ -801,8 +798,8 @@ userDomains model user config =
         )
 
 
-userSkills : Model -> User -> Config.Model -> H.Html Msg
-userSkills model user config =
+userSkills : T -> Model -> User -> Config.Model -> H.Html Msg
+userSkills t model user config =
     H.div
         [ A.class "col-xs-12 col-sm-6 col-md-4 last-row"
         ]
@@ -869,8 +866,8 @@ userSkills model user config =
                )
 
 
-userPositions : Model -> User -> Config.Model -> H.Html Msg
-userPositions model user config =
+userPositions : T -> Model -> User -> Config.Model -> H.Html Msg
+userPositions t model user config =
     H.div
         [ A.class "col-xs-12 col-sm-6 col-md-4 last-row"
         ]
@@ -882,7 +879,7 @@ userPositions model user config =
                     [ H.p [ A.class "profile__editing--competences--text" ] [] ]
                )
             ++ List.indexedMap
-                (\i x -> H.map (PositionSkillMessage i) <| Skill.view model.editing x)
+                (\i x -> H.map (PositionSkillMessage i) <| Skill.view t model.editing x)
                 user.positions
             ++ (if model.editing then
                     [ select config.positionOptions ChangePositionSelect "Valitse tehtäväluokka" "Lisää tehtäväluokka, josta olet kiinnostunut tai sinulla on osaamista"
