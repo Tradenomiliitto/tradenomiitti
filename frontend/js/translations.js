@@ -5,8 +5,24 @@ const source = {
     supportEmail,
     dateFormat: 'd.M.y',
     readMore: 'lue lisää',
-    login: 'Kirjaudu',
     cancel: 'Peru',
+    login: 'Kirjaudu',
+    logout: 'Kirjaudu ulos',
+    tabs: {
+      profile: 'Oma profiili',
+      settings: 'Asetukset',
+      contacts: 'Käyntikortit',
+    },
+    selectFilters: {
+      domain: 'Valitse toimiala',
+      position: 'Valitse tehtäväluokka',
+      location: 'Valitse maakunta',
+    },
+    lengthHint: {
+      needsNMoreChars: 'Vielä vähintään {.} merkkiä',
+      fitsAtMostNCharsMore: 'Enää korkeintaan {.} merkkiä',
+      tooLongByNChars: '{.} merkkiä liian pitkä',
+    },
   },
   errors: {
     badUrl: 'BadUrl ',

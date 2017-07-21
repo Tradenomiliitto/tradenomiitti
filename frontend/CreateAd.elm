@@ -11,6 +11,7 @@ import Nav
 import State.Config as Config
 import State.CreateAd exposing (..)
 import State.Util exposing (SendingStatus(..))
+import Translation exposing (T)
 import Util exposing (UpdateMessage(..))
 
 
@@ -85,8 +86,8 @@ maxHeading =
     90
 
 
-view : Config.Model -> Model -> H.Html Msg
-view config model =
+view : T -> Config.Model -> Model -> H.Html Msg
+view t config model =
     case model.sending of
         NotSending ->
             H.div
@@ -106,7 +107,7 @@ view config model =
                                 ]
                                 []
                             ]
-                        , Common.lengthHint "create-ad__heading-length-hint" model.heading minHeading maxHeading
+                        , Common.lengthHint t "create-ad__heading-length-hint" model.heading minHeading maxHeading
                         , H.textarea
                             [ A.placeholder "Kirjoita ytimekäs ilmoitus"
                             , A.class "create-ad__textcontent"
@@ -121,9 +122,9 @@ view config model =
                             [ A.class "create-ad__filters-heading" ]
                             [ H.text "Kenen toivot vastaavan?" ]
                         , H.p [] [ H.text "Valitsemalla toimialan tai tehtävän varmistat, että kysymyksesi löytää vastaajansa. Valittu kohderyhmä saa myös ilmoituksesi sähköpostina." ]
-                        , Common.select "create-ad" ChangeDomain Domain config.domainOptions model
-                        , Common.select "create-ad" ChangePosition Position config.positionOptions model
-                        , Common.select "create-ad" ChangeLocation Location Config.finnishRegions model
+                        , Common.select t "create-ad" ChangeDomain Domain config.domainOptions model
+                        , Common.select t "create-ad" ChangePosition Position config.positionOptions model
+                        , Common.select t "create-ad" ChangeLocation Location Config.finnishRegions model
                         , H.p
                             [ A.class "create-ad__submit-button" ]
                             [ H.button

@@ -15,6 +15,7 @@ import QueryString
 import QueryString.Extra as QueryString
 import State.Config as Config
 import State.ListUsers exposing (..)
+import Translation exposing (T)
 import Util exposing (UpdateMessage(..), ViewMessage(..))
 
 
@@ -172,8 +173,8 @@ update msg model =
             model ! []
 
 
-view : Model -> Config.Model -> Bool -> H.Html (ViewMessage Msg)
-view model config isLoggedIn =
+view : T -> Model -> Config.Model -> Bool -> H.Html (ViewMessage Msg)
+view t model config isLoggedIn =
     let
         usersHtml =
             List.map viewUser model.users
@@ -245,13 +246,13 @@ view model config isLoggedIn =
                 [ A.class "row list-users__filters" ]
                 [ H.div
                     [ A.class "col-xs-12 col-sm-4" ]
-                    [ Common.select "list-users" (LocalViewMessage << ChangeDomainFilter) Domain config.domainOptions model ]
+                    [ Common.select t "list-users" (LocalViewMessage << ChangeDomainFilter) Domain config.domainOptions model ]
                 , H.div
                     [ A.class "col-xs-12 col-sm-4" ]
-                    [ Common.select "list-users" (LocalViewMessage << ChangePositionFilter) Position config.positionOptions model ]
+                    [ Common.select t "list-users" (LocalViewMessage << ChangePositionFilter) Position config.positionOptions model ]
                 , H.div
                     [ A.class "col-xs-12 col-sm-4" ]
-                    [ Common.select "list-users" (LocalViewMessage << ChangeLocationFilter) Location Config.finnishRegions model ]
+                    [ Common.select t "list-users" (LocalViewMessage << ChangeLocationFilter) Location Config.finnishRegions model ]
                 ]
             , H.div
                 [ A.class "row list-users__filters" ]

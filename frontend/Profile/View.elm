@@ -37,7 +37,7 @@ editProfileView : T -> Model -> User -> RootState.Model -> H.Html (ViewMessage M
 editProfileView t model user rootState =
     H.div
         []
-        [ Common.profileTopRow user model.editing Common.ProfileTab (saveOrEdit user model.editing)
+        [ Common.profileTopRow t user model.editing Common.ProfileTab (saveOrEdit user model.editing)
         , editProfileHeading
         , membershipInfoEditing user
         , H.map LocalViewMessage (publicInfoEditing model user)
@@ -373,7 +373,7 @@ fieldToString field =
 showProfileView : T -> Model -> User -> RootState.Model -> H.Html (ViewMessage Msg)
 showProfileView t model user rootState =
     H.div [ A.class "user-page" ] <|
-        [ Common.profileTopRow user model.editing Common.ProfileTab (saveOrEdit user model.editing)
+        [ Common.profileTopRow t user model.editing Common.ProfileTab (saveOrEdit user model.editing)
         ]
             ++ viewOwnProfileMaybe t model True rootState.config
 

@@ -41,7 +41,7 @@ view t model userMaybe =
         Just user ->
             H.div
                 [ A.class "contacts" ]
-                [ Common.profileTopRow user False Common.ContactsTab (H.div [] [])
+                [ Common.profileTopRow t user False Common.ContactsTab (H.div [] [])
                 , H.div
                     [ A.class "container" ]
                     [ H.div

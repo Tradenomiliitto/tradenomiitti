@@ -296,7 +296,7 @@ leaveAnswerBox t sending text adId =
             , A.value text
             ]
             []
-        , Common.lengthHint "ad-page__leave-answer-hint" text 10 1000
+        , Common.lengthHint t "ad-page__leave-answer-hint" text 10 1000
         , if not sending then
             H.button
                 [ A.class "btn btn-primary ad-page__leave-answer-button"

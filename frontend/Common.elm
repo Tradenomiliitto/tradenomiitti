@@ -18,8 +18,8 @@ type ProfileTab
     | ContactsTab
 
 
-profileTopRow : User -> Bool -> ProfileTab -> H.Html (ViewMessage msg) -> H.Html (ViewMessage msg)
-profileTopRow user editing profileTab saveOrEdit =
+profileTopRow : T -> User -> Bool -> ProfileTab -> H.Html (ViewMessage msg) -> H.Html (ViewMessage msg)
+profileTopRow t user editing profileTab saveOrEdit =
     let
         logoutLink =
             H.a
@@ -31,7 +31,7 @@ profileTopRow user editing profileTab saveOrEdit =
                       )
                     ]
                 ]
-                [ H.text "Kirjaudu ulos" ]
+                [ H.text <| t "common.logout" ]
 
         tabToNav tab =
             case tab of
@@ -47,13 +47,13 @@ profileTopRow user editing profileTab saveOrEdit =
         tabToText tab =
             case tab of
                 ProfileTab ->
-                    "Oma profiili"
+                    t "common.tabs.profile"
 
                 SettingsTab ->
-                    "Asetukset"
+                    t "common.tabs.settings"
 
                 ContactsTab ->
-                    "Käyntikortit"
+                    t "common.tabs.contacts"
 
         button tab =
             H.h5
@@ -134,12 +134,7 @@ picElementForUser : User -> H.Html msg
 picElementForUser user =
     user.croppedPictureFileName
         |> Maybe.map
-            (\url ->
-                H.img
-                    [ A.src <| "/static/images/" ++ url
-                    ]
-                    []
-            )
+            (\url -> H.img [ A.src <| "/static/images/" ++ url ] [])
         |> Maybe.withDefault
             SvgIcons.userPicPlaceHolder
 
@@ -196,18 +191,23 @@ showLocation location =
         ]
 
 
-lengthHint : String -> String -> Int -> Int -> H.Html msg
-lengthHint class text minLength maxLength =
+lengthHint : T -> String -> String -> Int -> Int -> H.Html msg
+lengthHint t class text minLength maxLength =
+    let
+        ( key, n ) =
+            if String.length text < minLength then
+                ( "common.lengthHint.needsNMoreChars", minLength - String.length text )
+            else if String.length text <= maxLength then
+                ( "common.lengthHint.fitsAtMostNCharsMore", maxLength - String.length text )
+            else
+                ( "common.lengthHint.tooLongByNChars", String.length text - maxLength )
+
+        hint =
+            Translation.replaceWith [ toString n ] (t key)
+    in
     H.span
         [ A.class class ]
-        [ H.text <|
-            if String.length text < minLength then
-                "Vielä vähintään " ++ toString (minLength - String.length text) ++ " merkkiä"
-            else if String.length text <= maxLength then
-                "Enää korkeintaan " ++ toString (maxLength - String.length text) ++ " merkkiä"
-            else
-                toString (String.length text - maxLength) ++ " merkkiä liian pitkä"
-        ]
+        [ H.text hint ]
 
 
 type Filter
@@ -216,21 +216,22 @@ type Filter
     | Location
 
 
-prompt : Filter -> String
-prompt filter =
+prompt : T -> Filter -> String
+prompt t filter =
     case filter of
         Domain ->
-            "Valitse toimiala"
+            t "common.selectFilters.domain"
 
         Position ->
-            "Valitse tehtäväluokka"
+            t "common.selectFilters.position"
 
         Location ->
-            "Valitse maakunta"
+            t "common.selectFilters.location"
 
 
 select :
-    String
+    T
+    -> String
     -> (Maybe String -> msg)
     -> Filter
     -> List String
@@ -241,7 +242,7 @@ select :
             , selectedPosition : Maybe String
         }
     -> H.Html msg
-select class toMsg filter options model =
+select t class toMsg filter options model =
     let
         isSelected option filter =
             case filter of
@@ -262,7 +263,7 @@ select class toMsg filter options model =
                 (E.targetValue
                     |> Json.map
                         (\str ->
-                            if str == prompt filter then
+                            if str == prompt t filter then
                                 Nothing
                             else
                                 Just str
@@ -277,7 +278,7 @@ select class toMsg filter options model =
                         [ A.selected (isSelected o filter) ]
                         [ H.text o ]
                 )
-                (prompt filter :: options)
+                (prompt t filter :: options)
         ]
 
 

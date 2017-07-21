@@ -724,7 +724,7 @@ viewPage model =
                     LoginNeeded.view <| ssoUrl model.rootUrl route
 
                 CreateAd ->
-                    H.map CreateAdMessage <| CreateAd.view model.config model.createAd
+                    H.map CreateAdMessage <| CreateAd.view t model.config model.createAd
 
                 ListAds ->
                     unpackViewMessage ListAdsMessage <| ListAds.view t model.profile.user model.listAds model.config
@@ -736,7 +736,7 @@ viewPage model =
                     unpackViewMessage HomeMessage <| Home.view t model.home model.profile.user
 
                 ListUsers ->
-                    unpackViewMessage ListUsersMessage <| ListUsers.view model.listUsers model.config (Maybe.isJust model.profile.user)
+                    unpackViewMessage ListUsersMessage <| ListUsers.view t model.listUsers model.config (Maybe.isJust model.profile.user)
 
                 Terms ->
                     PreformattedText.view model.staticContent.terms
@@ -745,7 +745,7 @@ viewPage model =
                     PreformattedText.view model.staticContent.registerDescription
 
                 Settings ->
-                    unpackViewMessage SettingsMessage <| Settings.view model.settings model.profile.user
+                    unpackViewMessage SettingsMessage <| Settings.view t model.settings model.profile.user
 
                 Info ->
                     Info.view model.staticContent.info

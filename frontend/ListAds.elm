@@ -198,13 +198,13 @@ view t loggedInUserMaybe model config =
                 [ A.class "row list-users__filters" ]
                 [ H.div
                     [ A.class "col-xs-12 col-sm-4" ]
-                    [ Common.select "list-users" (LocalViewMessage << ChangeDomainFilter) Domain config.domainOptions model ]
+                    [ Common.select t "list-users" (LocalViewMessage << ChangeDomainFilter) Domain config.domainOptions model ]
                 , H.div
                     [ A.class "col-xs-12 col-sm-4" ]
-                    [ Common.select "list-users" (LocalViewMessage << ChangePositionFilter) Position config.positionOptions model ]
+                    [ Common.select t "list-users" (LocalViewMessage << ChangePositionFilter) Position config.positionOptions model ]
                 , H.div
                     [ A.class "col-xs-12 col-sm-4" ]
-                    [ Common.select "list-users" (LocalViewMessage << ChangeLocationFilter) Location Config.finnishRegions model ]
+                    [ Common.select t "list-users" (LocalViewMessage << ChangeLocationFilter) Location Config.finnishRegions model ]
                 ]
             ]
         , H.div

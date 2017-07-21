@@ -8,6 +8,7 @@ import Http
 import Models.User exposing (Settings, User)
 import State.Settings exposing (..)
 import State.Util exposing (SendingStatus(..))
+import Translation exposing (T)
 import Util exposing (UpdateMessage(..), ViewMessage(..))
 
 
@@ -98,32 +99,32 @@ update msg model =
             { model | sending = Sending } ! [ updateSettings settings ]
 
 
-view : Model -> Maybe User -> H.Html (ViewMessage Msg)
-view model userMaybe =
+view : T -> Model -> Maybe User -> H.Html (ViewMessage Msg)
+view t model userMaybe =
     case ( model.settings, userMaybe ) of
         ( Just settings, Just user ) ->
-            viewSettingsPage model settings user
+            viewSettingsPage t model settings user
 
         ( Nothing, Just user ) ->
             H.div
                 []
-                [ Common.profileTopRow user False Common.SettingsTab (H.div [] []) ]
+                [ Common.profileTopRow t user False Common.SettingsTab (H.div [] []) ]
 
         _ ->
             H.div [] []
 
 
-viewSettingsPage : Model -> Settings -> User -> H.Html (ViewMessage Msg)
-viewSettingsPage model settings user =
+viewSettingsPage : T -> Model -> Settings -> User -> H.Html (ViewMessage Msg)
+viewSettingsPage t model settings user =
     H.div
         []
-        [ Common.profileTopRow user False Common.SettingsTab (H.div [] [])
-        , H.map LocalViewMessage <| viewSettings model settings
+        [ Common.profileTopRow t user False Common.SettingsTab (H.div [] [])
+        , H.map LocalViewMessage <| viewSettings t model settings
         ]
 
 
-viewSettings : Model -> Settings -> H.Html Msg
-viewSettings model settings =
+viewSettings : T -> Model -> Settings -> H.Html Msg
+viewSettings t model settings =
     H.div
         [ A.class "container" ]
         [ H.div
@@ -209,14 +210,14 @@ viewSettings model settings =
                     [ H.text "Tallenna" ]
                 , H.p
                     []
-                    [ H.text <| sendingToText model.sending ]
+                    [ H.text <| sendingToText t model.sending ]
                 ]
             ]
         ]
 
 
-sendingToText : SendingStatus -> String
-sendingToText sending =
+sendingToText : T -> SendingStatus -> String
+sendingToText t sending =
     case sending of
         NotSending ->
             ""
