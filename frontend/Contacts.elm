@@ -48,7 +48,9 @@ view t model userMaybe =
                         [ A.class "row" ]
                         [ H.div
                             [ A.class "col-xs-12" ]
-                            [ H.h1 [ A.class "contacts__heading" ] [ H.text "Käyntikortit" ] ]
+                            [ H.h1 [ A.class "contacts__heading" ]
+                                [ H.text <| t "contacts.heading" ]
+                            ]
                         ]
                     ]
                 , H.div

@@ -24,6 +24,21 @@ const source = {
       tooLongByNChars: '{.} merkkiä liian pitkä',
     },
   },
+  contacts: {
+    heading: 'Käyntikortit',
+  },
+  createAd: {
+    headingInputPlaceholder: 'Otsikko',
+    adInputPlaceholder: 'Kirjoita ytimekäs ilmoitus',
+    filtersHeading: 'Kenen toivot vastaavan?',
+    filtersInfo: 'Valitsemalla toimialan tai tehtävän varmistat, että kysymyksesi löytää vastaajansa. Valittu kohderyhmä saa myös ilmoituksesi sähköpostina.',
+    submit: 'Julkaise ilmoitus',
+    successHeading: 'Lähetys onnistui',
+    successAdId: 'Ilmoituksen numero on: ',
+    successContinue: 'Paina selaimesi päivitä-nappulaa jatkaaksesi',
+    errorHeading: 'Jotain meni pieleen',
+    errorContinue: 'Ole hyvä ja lataa sivu uudelleen',
+  },
   errors: {
     badUrl: 'BadUrl ',
     timeout: 'Vastauksen saaminen kesti liian kauan, yritä myöhemmin uudelleen',
