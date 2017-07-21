@@ -492,7 +492,7 @@ view model =
                                     []
                                 , H.span
                                     [ A.class "consent-needed__read-terms" ]
-                                    [ H.text (t "main.consentNeeded.accept")
+                                    [ H.text (t "main.consentNeeded.iAcceptThe")
                                     , H.a
                                         [ A.href "/kayttoehdot"
                                         , A.target "_blank"
@@ -509,7 +509,7 @@ view model =
                                 , E.onClick AllowProfileCreation
                                 , A.disabled (not model.acceptsTerms)
                                 ]
-                                [ H.text (t "main.consent.createProfile") ]
+                                [ H.text (t "main.consentNeeded.createProfile") ]
                             ]
                         ]
                     ]

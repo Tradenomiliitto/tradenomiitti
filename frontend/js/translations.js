@@ -145,14 +145,14 @@ const source = {
     joinLink: 'Liity jäseneksi',
   },
   main: {
+    profile: 'Profiili',
+    login: 'Kirjaudu',
     consentNeeded: {
       heading: 'Tervetuloa Tradenomiittiin!',
       content: 'Tehdäksemme palvelun käytöstä mahdollisimman vaivatonta hyödynnämme Tradenomiliiton olemassa olevia jäsentietoja (nimesi, työhistoriasi). Luomalla profiilin hyväksyt tietojesi käytön Tradenomiitti-palvelussa. Voit muokata tietojasi myöhemmin.',
-      accept: 'Hyväksyn palvelun ',
+      iAcceptThe: 'Hyväksyn palvelun ',
       terms: 'käyttöehdot',
       createProfile: 'Luo profiili',
-      profile: 'Profiili',
-      login: 'Kirjaudu',
       notImplementedYet: 'Tätä ominaisuutta ei ole vielä toteutettu',
     },
     splashScreen: {
