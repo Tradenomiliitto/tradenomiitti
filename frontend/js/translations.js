@@ -161,6 +161,18 @@ const source = {
       newestAnswer: 'Uusin vastaus',
     },
   },
+  listUsers: {
+    heading: 'Selaa tradenomeja',
+    sort: {
+      activity: 'Aktiivisuus',
+      name: 'Nimi',
+    },
+    filters: {
+      institute: 'Valitse oppilaitos',
+      specialization: 'Valitse suuntautuminen / pääaine',
+      skill: 'Valitse taito',
+    },
+  },
   footer: {
     link1: {
       url: 'http://tral.fi',

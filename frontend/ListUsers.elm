@@ -199,7 +199,7 @@ view t model config isLoggedIn =
                                 ]
                             , E.onClick (ChangeSort Recent)
                             ]
-                            [ H.text "Aktiivisuus" ]
+                            [ H.text <| t "listUsers.activity" ]
                         , H.button
                             [ A.classList
                                 [ ( "btn", True )
@@ -216,7 +216,7 @@ view t model config isLoggedIn =
                                         AlphaAsc
                                 )
                             ]
-                            [ H.text "Nimi"
+                            [ H.text <| t "listUsers.name"
                             , H.i
                                 [ A.classList
                                     [ ( "fa", True )
@@ -239,7 +239,7 @@ view t model config isLoggedIn =
                     [ A.class "col-sm-12" ]
                     [ H.h1
                         [ A.class "list-users__header" ]
-                        [ H.text "Selaa tradenomeja" ]
+                        [ H.text <| t "listUsers.heading" ]
                     ]
                 ]
             , H.div
@@ -258,13 +258,13 @@ view t model config isLoggedIn =
                 [ A.class "row list-users__filters" ]
                 [ H.div
                     [ A.class "col-xs-12 col-sm-4" ]
-                    [ Common.typeaheadInput "list-users__" "Valitse oppilaitos" "education-institute" ]
+                    [ Common.typeaheadInput "list-users__" (t "listUsers.filters.institute") "education-institute" ]
                 , H.div
                     [ A.class "col-xs-12 col-sm-4" ]
-                    [ Common.typeaheadInput "list-users__" "Valitse suuntautuminen / pääaine" "education-specialization" ]
+                    [ Common.typeaheadInput "list-users__" (t "listUsers.filters.specialization") "education-specialization" ]
                 , H.div
                     [ A.class "col-xs-12 col-sm-4" ]
-                    [ Common.typeaheadInput "list-users__" "Valitse taito" "skills-input" ]
+                    [ Common.typeaheadInput "list-users__" (t "listUsers.filters.skill") "skills-input" ]
                 ]
             ]
         , H.div
