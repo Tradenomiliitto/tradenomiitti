@@ -89,7 +89,6 @@ $navbar-element-height: 35px;
 }
 
 .navbar {
-  line-height: 30px;
   @include navbar-font;
   text-transform: uppercase;
   font-size: 18px;
