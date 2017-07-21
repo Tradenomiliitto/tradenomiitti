@@ -57,7 +57,13 @@ $navbar-element-height: 35px;
   }
 }
 
-.navbar__profile-lock,
+.navbar__profile-lock, {
+  position: absolute;
+  top: 50%;
+  transform: translate(0, -65%);
+  margin-left: 10px;
+}
+
 .navbar__profile-pic {
   margin-left: 10px;
 }
@@ -74,9 +80,10 @@ $navbar-element-height: 35px;
   &-collapse {
     z-index: 8300;
   }
+
   &__login-link {
-    position: relative;
-    top: -2px;
+    position: relative !important;
+    padding-right: 40px !important;
   }
 }
 
