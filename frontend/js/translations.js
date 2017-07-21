@@ -24,6 +24,37 @@ const source = {
       tooLongByNChars: '{.} merkkiä liian pitkä',
     },
   },
+  ad: {
+    requestFailed: 'Ilmoituksen haku epäonnistui',
+    noAnswersYet: 'Tällä ilmoituksella ei ole vielä yhtään vastausta',
+    noAnswersHint: 'Lisää omasi ylhäällä',
+    answerCount: {
+      0: {
+        heading: 'Tähän ilmoitukseen ei ole vastattu kertaakaan',
+        hint: 'Kirjaudu sisään ja ole ensimmäinen',
+      },
+      1: {
+        heading: 'Tällä ilmoituksella on yksi vastaus',
+        hint: 'Kirjaudu sisään nähdäksesesi sen ja lisää omasi',
+      },
+      n: {
+        heading: 'Tähän ilmoitukseen on vastattu {.} kertaa',
+        hint: 'Kirjaudu sisään nähdäksesi vastaukset ja lisää omasi',
+      },
+    },
+    leaveAnswerBox: {
+      placeholder: 'Kirjoita napakka vastaus',
+      submit: 'Jätä vastaus',
+    },
+    leaveAnswerPrompt: {
+      isAsker: 'Muut käyttäjät voivat vastata ilmoitukseesi tällä sivulla. Näet vastaukset alla kun niitä tulee.',
+      hasAnswered: 'Olet vastannut tähän ilmoitukseen. Kiitos kun autoit kanssatradenomiasi!',
+      hint: 'Kokemuksellasi on aina arvoa. Jaa näkemyksesi vastaamalla ilmoitukseen.',
+      answerTooltip: 'Voit vastata muiden esittämiin kysymyksiin kerran',
+      cannotAnswerTooltip: 'Et voi vastata tähän kysymykseen',
+      submit: 'Vastaa ilmoitukseen',
+    },
+  },
   contacts: {
     heading: 'Käyntikortit',
   },
@@ -47,6 +78,71 @@ const source = {
     badStatus: `Haettua sisältöä ei löytynyt. Se on voitu poistaa tai osoitteessa voi olla virhe. Voit ottaa yhteyttä osoitteeseen ${supportEmail} halutessasi. Ota silloin kuvakaappaus sivusta ja lähetä se viestin liitteenä. {.}`,
     codeToUserVisibleMessage: `Jotain meni pieleen. Virheen tunnus on {.}. Meille olisi suuri apu, jos otat kuvakaappauksen koko sivusta ja lähetät sen osoitteeseen ${supportEmail}.`,
     errorResponseFailure: '{.} Järjestelmässä on jotain pahasti pielessä, tutkimme asiaa',
+  },
+  footer: {
+    link1: {
+      url: 'http://tral.fi',
+      text: 'tral.fi',
+    },
+    link2: {
+      url: 'http://liity.tral.fi/#liity',
+      text: 'Liity jäseneksi',
+    },
+    link3: {
+      url: 'mailto:tradenomiitti@tral.fi',
+      text: 'Anna palautetta',
+    },
+  },
+  home: {
+    introbox: {
+      heading: 'Kohtaa tradenomi',
+      createProfile: 'Luo oma profiili',
+      content: 'Tradenomiitti on tradenomien oma kohtaamispaikka, jossa jäsenet löytävät toisensa yhteisten aiheiden ympäriltä ja hyötyvät toistensa kokemuksista.',
+    },
+    tradenomiittiInfo: {
+      // \xad === &shy;, that is soft hyphen
+      heading: 'Ko\xADke\xADmuk\xADsel\xADla\xADsi on aina arvoa',
+      paragraph1: 'Tradenomiitti on tradenomien oma kohtaamispaikka, jossa yhdistyvät inspiroivat kohtaamiset ja itsensä kehittäminen. Tradenomiitti tuo tradenomien osaamisen esille - olit sitten opiskelija tai kokenut konkari. Juuri sinulla voi olla vastaus toisen tradenomin kysymykseen, tai ehkä uusi työnantajasi etsii sinua jo?',
+      paragraph2: 'Luomalla profiilin pääset alkuun, loput on itsestäsi kiinni.',
+    },
+    listAds: {
+      heading: 'Uusimmat ilmoitukset',
+      buttonListAds: 'katso kaikki ilmoitukset',
+      buttonCreateAd: 'jätä ilmoitus',
+    },
+    listUsers: {
+      heading: 'Löydä tradenomi',
+      buttonListUsers: 'Katso kaikki tradenomit',
+      buttonEditProfile: 'Muokkaa omaa profiilia',
+      buttonCreateProfile: 'Luo oma profiili',
+    },
+  },
+  listAds: {
+    heading: 'Selaa ilmoituksia',
+    sort: {
+      date: 'Päivämäärä',
+      answerCount: 'Vastauksia',
+      newestAnswer: 'Uusin vastaus',
+    },
+  },
+  listUsers: {
+    heading: 'Selaa tradenomeja',
+    sort: {
+      activity: 'Aktiivisuus',
+      name: 'Nimi',
+    },
+    filters: {
+      institute: 'Valitse oppilaitos',
+      specialization: 'Valitse suuntautuminen / pääaine',
+      skill: 'Valitse taito',
+    },
+  },
+  loginNeeded: {
+    heading: 'Kirjaudu sisään',
+    info: 'Tradenomiitti on ainutlaatuinen kohtaamispaikka Tradenomiliiton jäsenille. Sinun tulee kirjautua sisään TRAL-tunnuksillasi, jotta voit luoda profiilin ja toimia Tradenomiitissa.',
+    joinHeading: 'Etkö ole vielä TRAL:n jäsen?',
+    joinUrl: 'http://tral.fi',
+    joinLink: 'Liity jäseneksi',
   },
   main: {
     consentNeeded: {
@@ -84,61 +180,6 @@ const source = {
       contacts: 'Käyntikortit',
     },
   },
-  home: {
-    introbox: {
-      heading: 'Kohtaa tradenomi',
-      createProfile: 'Luo oma profiili',
-      content: 'Tradenomiitti on tradenomien oma kohtaamispaikka, jossa jäsenet löytävät toisensa yhteisten aiheiden ympäriltä ja hyötyvät toistensa kokemuksista.',
-    },
-    tradenomiittiInfo: {
-      // \xad === &shy;, that is soft hyphen
-      heading: 'Ko\xADke\xADmuk\xADsel\xADla\xADsi on aina arvoa',
-      paragraph1: 'Tradenomiitti on tradenomien oma kohtaamispaikka, jossa yhdistyvät inspiroivat kohtaamiset ja itsensä kehittäminen. Tradenomiitti tuo tradenomien osaamisen esille - olit sitten opiskelija tai kokenut konkari. Juuri sinulla voi olla vastaus toisen tradenomin kysymykseen, tai ehkä uusi työnantajasi etsii sinua jo?',
-      paragraph2: 'Luomalla profiilin pääset alkuun, loput on itsestäsi kiinni.',
-    },
-    listAds: {
-      heading: 'Uusimmat ilmoitukset',
-      buttonListAds: 'katso kaikki ilmoitukset',
-      buttonCreateAd: 'jätä ilmoitus',
-    },
-    listUsers: {
-      heading: 'Löydä tradenomi',
-      buttonListUsers: 'Katso kaikki tradenomit',
-      buttonEditProfile: 'Muokkaa omaa profiilia',
-      buttonCreateProfile: 'Luo oma profiili',
-    },
-  },
-  ad: {
-    requestFailed: 'Ilmoituksen haku epäonnistui',
-    noAnswersYet: 'Tällä ilmoituksella ei ole vielä yhtään vastausta',
-    noAnswersHint: 'Lisää omasi ylhäällä',
-    answerCount: {
-      0: {
-        heading: 'Tähän ilmoitukseen ei ole vastattu kertaakaan',
-        hint: 'Kirjaudu sisään ja ole ensimmäinen',
-      },
-      1: {
-        heading: 'Tällä ilmoituksella on yksi vastaus',
-        hint: 'Kirjaudu sisään nähdäksesesi sen ja lisää omasi',
-      },
-      n: {
-        heading: 'Tähän ilmoitukseen on vastattu {.} kertaa',
-        hint: 'Kirjaudu sisään nähdäksesi vastaukset ja lisää omasi',
-      },
-    },
-    leaveAnswerBox: {
-      placeholder: 'Kirjoita napakka vastaus',
-      submit: 'Jätä vastaus',
-    },
-    leaveAnswerPrompt: {
-      isAsker: 'Muut käyttäjät voivat vastata ilmoitukseesi tällä sivulla. Näet vastaukset alla kun niitä tulee.',
-      hasAnswered: 'Olet vastannut tähän ilmoitukseen. Kiitos kun autoit kanssatradenomiasi!',
-      hint: 'Kokemuksellasi on aina arvoa. Jaa näkemyksesi vastaamalla ilmoitukseen.',
-      answerTooltip: 'Voit vastata muiden esittämiin kysymyksiin kerran',
-      cannotAnswerTooltip: 'Et voi vastata tähän kysymykseen',
-      submit: 'Vastaa ilmoitukseen',
-    },
-  },
   removal: {
     removeYour: {
       ad: 'Poista oma ilmoituksesi',
@@ -153,46 +194,18 @@ const source = {
       answer: 'Tämä poistaa vastauksen pysyvästi. Oletko varma?',
     },
   },
-  listAds: {
-    heading: 'Selaa ilmoituksia',
-    sort: {
-      date: 'Päivämäärä',
-      answerCount: 'Vastauksia',
-      newestAnswer: 'Uusin vastaus',
-    },
-  },
-  listUsers: {
-    heading: 'Selaa tradenomeja',
-    sort: {
-      activity: 'Aktiivisuus',
-      name: 'Nimi',
-    },
-    filters: {
-      institute: 'Valitse oppilaitos',
-      specialization: 'Valitse suuntautuminen / pääaine',
-      skill: 'Valitse taito',
-    },
-  },
-  loginNeeded: {
-    heading: 'Kirjaudu sisään',
-    info: 'Tradenomiitti on ainutlaatuinen kohtaamispaikka Tradenomiliiton jäsenille. Sinun tulee kirjautua sisään TRAL-tunnuksillasi, jotta voit luoda profiilin ja toimia Tradenomiitissa.',
-    joinHeading: 'Etkö ole vielä TRAL:n jäsen?',
-    joinUrl: 'http://tral.fi',
-    joinLink: 'Liity jäseneksi',
-  },
-  footer: {
-    link1: {
-      url: 'http://tral.fi',
-      text: 'tral.fi',
-    },
-    link2: {
-      url: 'http://liity.tral.fi/#liity',
-      text: 'Liity jäseneksi',
-    },
-    link3: {
-      url: 'mailto:tradenomiitti@tral.fi',
-      text: 'Anna palautetta',
-    },
+  settings: {
+    heading: 'Asetukset',
+    emailsHeading: 'Sähköpostit',
+    emailsInfo: 'Voit itse valita missä tilanteissa Tradenomiitti lähettää sinulle viestin sähköpostitse. Sähköposti varmistaa sen, että saat tiedon uusista kontakteista, sinua koskevista ilmoituksista ja saamistasi vastauksista.',
+    emailAddress: 'Sähköpostiosoite',
+    emailsForBusinesscards: 'Ilmoitus uudesta kontaktista/käyntikortista',
+    emailsForAnswers: 'Ilmoitus uudesta vastauksesta jättämääsi kysymykseen',
+    emailsForNewAds: 'Kootut sinulle suunnatut ilmoitukset (viikottainen)',
+    buttonSave: 'Tallenna',
+    sending: 'Tallenetaan…',
+    success: 'Tallennus onnistui',
+    error: 'Tallenuksessa meni jotain pieleen',
   },
 };
 

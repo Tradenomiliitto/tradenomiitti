@@ -125,19 +125,23 @@ viewSettingsPage t model settings user =
 
 viewSettings : T -> Model -> Settings -> H.Html Msg
 viewSettings t model settings =
+    let
+        t_ key =
+            t ("settings." ++ key)
+    in
     H.div
         [ A.class "container" ]
         [ H.div
             [ A.class "row" ]
             [ H.div
                 [ A.class "col-xs-12" ]
-                [ H.h1 [ A.class "settings__heading" ] [ H.text "Asetukset" ] ]
+                [ H.h1 [ A.class "settings__heading" ] [ H.text <| t_ "heading" ] ]
             , H.form
                 []
                 [ H.div
                     [ A.class "col-xs-12 col-sm-6" ]
-                    [ H.h2 [ A.class "settings__subsection-heading" ] [ H.text "Sähköpostit" ]
-                    , H.p [] [ H.text "Voit itse valita missä tilanteissa Tradenomiitti lähettää sinulle viestin sähköpostitse. Sähköposti varmistaa sen, että saat tiedon uusista kontakteista, sinua koskevista ilmoituksista ja saamistasi vastauksista." ]
+                    [ H.h2 [ A.class "settings__subsection-heading" ] [ H.text <| t_ "emailsHeading" ]
+                    , H.p [] [ H.text <| t_ "emailsInfo" ]
                     ]
                 , H.div
                     [ A.class "col-xs-12 col-sm-6" ]
@@ -147,7 +151,7 @@ viewSettings t model settings =
                         [ H.label
                             [ A.for "email-address"
                             ]
-                            [ H.text "Sähköpostiosoite" ]
+                            [ H.text <| t_ "emailAddress" ]
                         , H.input
                             [ A.type_ "text"
                             , A.class "form-control"
@@ -167,7 +171,7 @@ viewSettings t model settings =
                                 , A.checked settings.emails_for_businesscards
                                 ]
                                 []
-                            , H.text "Ilmoitus uudesta kontaktista/käyntikortista"
+                            , H.text <| t_ "emailsForBusinesscards"
                             ]
                         ]
                     , H.div
@@ -180,7 +184,7 @@ viewSettings t model settings =
                                 , A.checked settings.emails_for_answers
                                 ]
                                 []
-                            , H.text "Ilmoitus uudesta vastauksesta jättämääsi kysymykseen"
+                            , H.text <| t_ "emailsForAnswers"
                             ]
                         ]
                     , H.div
@@ -193,7 +197,7 @@ viewSettings t model settings =
                                 , A.checked settings.emails_for_new_ads
                                 ]
                                 []
-                            , H.text "Kootut sinulle suunnatut ilmoitukset (viikottainen)"
+                            , H.text <| t_ "emailsForNewAds"
                             ]
                         ]
                     ]
@@ -207,7 +211,7 @@ viewSettings t model settings =
                     [ E.onClick (Save settings)
                     , A.class "btn btn-default"
                     ]
-                    [ H.text "Tallenna" ]
+                    [ H.text <| t_ "buttonSave" ]
                 , H.p
                     []
                     [ H.text <| sendingToText t model.sending ]
@@ -223,10 +227,10 @@ sendingToText t sending =
             ""
 
         Sending ->
-            "Tallenetaan…"
+            t "settings.sending"
 
         FinishedSuccess _ ->
-            "Tallennus onnistui"
+            t "settings.success"
 
         FinishedFail ->
-            "Tallenuksessa meni jotain pieleen"
+            t "settings.error"

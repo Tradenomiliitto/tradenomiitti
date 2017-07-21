@@ -721,7 +721,7 @@ viewPage model =
                     unpackViewMessage ProfileMessage <| Profile.View.view t model.profile model
 
                 LoginNeeded route ->
-                    LoginNeeded.view <| ssoUrl model.rootUrl route
+                    LoginNeeded.view t <| ssoUrl model.rootUrl route
 
                 CreateAd ->
                     H.map CreateAdMessage <| CreateAd.view t model.config model.createAd
