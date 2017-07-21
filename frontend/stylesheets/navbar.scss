@@ -1,6 +1,32 @@
-#logo > img {
-  margin-top: -5px;
+#logo {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex: 1;
+  margin-left: 20px;
+
+  &:hover {
+    text-decoration: none;
+  }
+
+  & > img {
+    margin-right: 10px;
+  }
+
+  & > span {
+    font-weight: 400;
+    text-transform: none;
+    color: $white;
+    font-size: 40px;
+    text-decoration: none;
+  }
 }
+
+.navbar-brand {
+  padding: 0px;
+  display: flex;
+}
+
 
 .navbar-right {
   padding-right: 40px;
@@ -64,6 +90,7 @@ $navbar-element-height: 35px;
 
 .navbar {
   @include navbar-font;
+  text-transform: uppercase;
   font-size: 18px;
 
   @media (max-width: $screen-sm-max) {
