@@ -213,6 +213,18 @@ const source = {
     experienced: 'Osaaja',
     pro: 'Konkari',
   },
+  user: {
+    contactUser: {
+      alreadySent: 'Olet lähettänyt käyntikortin tälle tradenomille.',
+      mustContainPhoneOrEmail: 'Käyntikortissasi täytyy olla vähintään puhelinnumero tai sähköpostiosoite, jotta voisit lähettää sen',
+      businessCardIsAttached: 'Viestin mukana lähetät käyntikortin',
+      editOrContactUserPrompt: 'Kirjoita napakka esittelyteksti',
+      contactUserPlaceholder: 'Vähintään 10 merkkiä',
+      hint: 'Voisiko {.} auttaa sinua? Jaa käyntikorttisi tästä. ',
+      contact: 'Ota yhteyttä',
+      submit: 'Lähetä',
+    },
+  },
 };
 
 
