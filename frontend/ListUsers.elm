@@ -199,7 +199,7 @@ view t model config isLoggedIn =
                                 ]
                             , E.onClick (ChangeSort Recent)
                             ]
-                            [ H.text <| t "listUsers.activity" ]
+                            [ H.text <| t "listUsers.sort.activity" ]
                         , H.button
                             [ A.classList
                                 [ ( "btn", True )
@@ -216,7 +216,7 @@ view t model config isLoggedIn =
                                         AlphaAsc
                                 )
                             ]
-                            [ H.text <| t "listUsers.name"
+                            [ H.text <| t "listUsers.sort.name"
                             , H.i
                                 [ A.classList
                                     [ ( "fa", True )
