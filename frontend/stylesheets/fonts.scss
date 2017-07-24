@@ -1,14 +1,19 @@
 
 // Font definitions for the main content
-$font-family-sans-serif: mundoSansRegular;
+$font-family-sans-serif: mundoSansRegular, Helvetica, Arial, sans-serif;
 $font-size-base: 14px;
 
-$italic-font: mundoSansLightItalic;
+$italic-font: mundoSansLightItalic, Helvetica, Arial, sans-serif;
 
 // The font for various headings
 @mixin heading-font {
   font-family: "Gotham A","Gotham B", Helvetica, Arial, sans-serif;
   font-weight: 700 !important;
+}
+
+// The font for normal navbar links
+@mixin navbar-font {
+    font-family: $font-family-sans-serif;
 }
 
 // Import custom fonts

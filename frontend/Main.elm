@@ -692,11 +692,15 @@ viewProfileLink t model =
     in
     H.li
         []
-        [ H.a (action ++ [ A.href endpoint ])
+        [ H.a
+            (action
+                ++ [ A.href endpoint
+                   , A.classList [ ( "navbar__login-link", not loggedIn ) ]
+                   ]
+            )
             [ H.span
                 [ A.classList
-                    [ ( "navbar__login-link", not loggedIn )
-                    , ( "navbar__profile-name", loggedIn )
+                    [ ( "navbar__profile-name", loggedIn )
                     ]
                 ]
                 [ H.text linkText
