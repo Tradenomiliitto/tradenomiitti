@@ -92,6 +92,9 @@ const source = {
       url: 'mailto:tradenomiitti@tral.fi',
       text: 'Anna palautetta',
     },
+    linkStats: {
+      text: 'Tilastoja',
+    },
   },
   home: {
     introbox: {
@@ -220,6 +223,7 @@ const source = {
       notLoggedIn: 'Et ole kirjautunut',
     },
     educations: {
+      heading: 'Koulutus',
       institute: 'Oppilaitos',
       degree: 'Tutkintonimike',
       major: 'Koulutus',
@@ -257,7 +261,17 @@ const source = {
       selectPosition: 'Valitse tehtäväluokka',
       selectPositionHint: 'Lisää tehtäväluokka, josta olet kiinnostunut tai sinulla on osaamista',
     },
+    educationsEditing: {
+      hint: 'Lisää koulutus. Valitse omaa koulutustasi parhaiten vastaavat vaihtoehdot. Mikäli oppilaitoksesi on vaihtanut nimeä, valitse nykyisen nimen mukainen oppilaitos. Mikäli valikoista ei löydy oikeaa vaihtoehtoa, voit lisätä sen itse.',
+      selectInstitute: 'Valitse oppilaitos',
+      selectDegree: 'Valitse tutkintonimike',
+      selectMajor: 'Valitse koulutusala / koulutusohjelma',
+      selectSpecialization: 'Valitse suuntautuminen / pääaine',
+      addEducation: 'Lisää koulutus',
+      instituteRequired: 'Oppilaitos on pakollinen tieto',
+    },
     membershipRegisterInfo: {
+      heading: 'TRAL:n Jäsentiedot',
       nickName: 'Kutsumanimi',
       firstName: 'Etunimi',
       lastName: 'Sukunimi',
@@ -266,6 +280,7 @@ const source = {
       email: 'Sähköposti',
       phone: 'Matkapuhelinnumero',
       location: 'Maakunta',
+      missingData: 'Jäsentiedot puuttuvat',
     },
   },
   removal: {

@@ -502,7 +502,7 @@ viewEducations t model config user =
                 [ A.class "row" ]
                 [ H.div
                     [ A.class "col-xs-12" ]
-                    [ H.h3 [ A.class "user-page__education-header" ] [ H.text "Koulutus" ]
+                    [ H.h3 [ A.class "user-page__education-header" ] [ H.text <| t "profile.educations.heading" ]
                     ]
                 ]
             ]
@@ -517,11 +517,11 @@ educationsEditing t model config =
         [ H.div
             [ A.class "row" ]
             [ H.div [ A.class "col-xs-5" ]
-                [ H.p [] [ H.text "Lisää koulutus. Valitse omaa koulutustasi parhaiten vastaavat vaihtoehdot. Mikäli oppilaitoksesi on vaihtanut nimeä, valitse nykyisen nimen mukainen oppilaitos. Mikäli valikoista ei löydy oikeaa vaihtoehtoa, voit lisätä sen itse." ]
-                , Common.typeaheadInput "user-page__education-details-" "Valitse oppilaitos" "education-institute"
-                , Common.typeaheadInput "user-page__education-details-" "Valitse tutkintonimike" "education-degree"
-                , Common.typeaheadInput "user-page__education-details-" "Valitse koulutusala / koulutusohjelma" "education-major"
-                , Common.typeaheadInput "user-page__education-details-" "Valitse suuntautuminen / pääaine" "education-specialization"
+                [ H.p [] [ H.text <| t "profile.educationsEditing.hint" ]
+                , Common.typeaheadInput "user-page__education-details-" (t "profile.educationsEditing.selectInstitute") "education-institute"
+                , Common.typeaheadInput "user-page__education-details-" (t "profile.educationsEditing.selectDegree") "education-degree"
+                , Common.typeaheadInput "user-page__education-details-" (t "profile.educationsEditing.selectMajor") "education-major"
+                , Common.typeaheadInput "user-page__education-details-" (t "profile.educationsEditing.selectSpecialization") "education-specialization"
                 , H.div
                     [ A.class "user-page__education-button-container" ]
                     [ model.selectedInstitute
@@ -531,15 +531,15 @@ educationsEditing t model config =
                                     [ A.class "btn btn-primary user-page__education-button"
                                     , E.onClick <| AddEducation institute
                                     ]
-                                    [ H.text "Lisää koulutus" ]
+                                    [ H.text <| t "profile.educationsEditing.addEducation" ]
                             )
                         |> Maybe.withDefault
                             (H.button
                                 [ A.class "btn btn-primary user-page__education-button"
                                 , A.disabled True
-                                , A.title "Oppilaitos on pakollinen tieto"
+                                , A.title <| t "profile.educationsEditing.instituteRequired"
                                 ]
-                                [ H.text "Lisää koulutus" ]
+                                [ H.text <| t "profile.educationsEditing.addEducation" ]
                             )
                     ]
                 ]
@@ -958,12 +958,12 @@ membershipDataBoxEditing t user =
         Just extra ->
             H.div
                 [ A.class "col-md-6 profile__editing--membership--databox" ]
-                [ H.h3 [ A.class "profile__editing--membership--databox--heading" ] [ H.text "TRAL:n  Jäsentiedot" ]
+                [ H.h3 [ A.class "profile__editing--membership--databox--heading" ] [ H.text <| t "profile.membershipRegisterInfo.heading" ]
                 , membershipRegisterInfo t extra
                 ]
 
         Nothing ->
             H.div
                 [ A.class "user-page__membership-info" ]
-                [ H.h3 [ A.class "user-page__membership-info-heading" ] [ H.text "Jäsentiedot puuttuvat" ]
+                [ H.h3 [ A.class "user-page__membership-info-heading" ] [ H.text <| t "profile.membershipRegisterInfo.missingData" ]
                 ]

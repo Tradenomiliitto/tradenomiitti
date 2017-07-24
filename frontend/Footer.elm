@@ -39,7 +39,7 @@ view t routeToMsg userMaybe =
                                         [ A.href "/api/raportti"
                                         , A.downloadAs "raportti.csv"
                                         ]
-                                        [ H.text "Tilastoja" ]
+                                        [ H.text <| t "footer.linkStats.text" ]
                                     ]
                                 ]
                             else
