@@ -18,6 +18,7 @@ import PlainTextFormat
 import Removal
 import State.Ad exposing (..)
 import State.Util exposing (SendingStatus(..))
+import Translation exposing (T)
 import Util exposing (UpdateMessage(..), ViewMessage(..))
 
 
@@ -81,15 +82,15 @@ update msg model =
             { model | removal = newRemoval } ! [ Util.localMap RemovalMessage cmd ]
 
 
-view : Model -> Int -> Maybe User -> String -> H.Html (ViewMessage Msg)
-view model adId user rootUrl =
+view : T -> Model -> Int -> Maybe User -> String -> H.Html (ViewMessage Msg)
+view t model adId user rootUrl =
     model.ad
-        |> Maybe.map (viewAd adId model user rootUrl)
-        |> Maybe.withDefault (H.div [] [ H.text "Ilmoituksen haku epäonnistui" ])
+        |> Maybe.map (viewAd t adId model user rootUrl)
+        |> Maybe.withDefault (H.div [] [ H.text <| t "ad.requestFailed" ])
 
 
-viewAd : Int -> Model -> Maybe User -> String -> Ad -> H.Html (ViewMessage Msg)
-viewAd adId model userMaybe rootUrl ad =
+viewAd : T -> Int -> Model -> Maybe User -> String -> Ad -> H.Html (ViewMessage Msg)
+viewAd t adId model userMaybe rootUrl ad =
     let
         loggedIn =
             Maybe.isJust userMaybe
@@ -152,7 +153,7 @@ viewAd adId model userMaybe rootUrl ad =
                 [ A.class "row ad-page__ad-container" ]
                 [ H.div
                     [ A.class "col-xs-12 col-sm-6 ad-page__ad" ]
-                    [ viewDate ad.createdAt
+                    [ viewDate t ad.createdAt
                     , H.h1 [ A.class "user-page__activity-item-heading" ] [ H.text ad.heading ]
                     , H.p [ A.class "user-page__activity-item-content" ] (PlainTextFormat.view ad.content)
                     , H.hr [] []
@@ -164,44 +165,44 @@ viewAd adId model userMaybe rootUrl ad =
                     ]
                 , leaveAnswer <|
                     if model.addingAnswer then
-                        List.map (H.map LocalViewMessage) <| leaveAnswerBox (model.sending == Sending) model.answerText adId
+                        List.map (H.map LocalViewMessage) <| leaveAnswerBox t (model.sending == Sending) model.answerText adId
                     else
-                        leaveAnswerPrompt canAnswer isAsker hasAnswered loggedIn adId
+                        leaveAnswerPrompt t canAnswer isAsker hasAnswered loggedIn adId
                 ]
             ]
         , H.hr [ A.class "full-width-ruler" ] []
         , H.div
             [ A.class "container last-row" ]
-            [ viewAnswers userMaybe model ad.answers adId rootUrl ]
+            [ viewAnswers t userMaybe model ad.answers adId rootUrl ]
         ]
 
 
-viewAnswers : Maybe User -> Model -> Answers -> Int -> String -> H.Html (ViewMessage Msg)
-viewAnswers userMaybe model answers adId rootUrl =
+viewAnswers : T -> Maybe User -> Model -> Answers -> Int -> String -> H.Html (ViewMessage Msg)
+viewAnswers t userMaybe model answers adId rootUrl =
     case answers of
         AnswerCount num ->
-            viewAnswerCount num adId rootUrl
+            viewAnswerCount t num adId rootUrl
 
         AnswerList (fst :: rst) ->
-            viewAnswerList userMaybe model (fst :: rst)
+            viewAnswerList t userMaybe model (fst :: rst)
 
         AnswerList _ ->
             H.div
                 [ A.class "ad-page__answers" ]
-                [ H.h1 [] [ H.text "Tällä ilmoituksella ei ole vielä yhtään vastausta" ]
-                , H.p [] [ H.text "Lisää omasi ylhäällä" ]
+                [ H.h1 [] [ H.text <| t "ad.noAnswersYet" ]
+                , H.p [] [ H.text <| t "ad.noAnswersHint" ]
                 ]
 
 
-viewAnswerList : Maybe User -> Model -> List Answer -> H.Html (ViewMessage Msg)
-viewAnswerList userMaybe model answers =
+viewAnswerList : T -> Maybe User -> Model -> List Answer -> H.Html (ViewMessage Msg)
+viewAnswerList t userMaybe model answers =
     H.div
         [ A.class "ad-page__answers" ]
-        (List.indexedMap (\i answer -> viewAnswer userMaybe model answer ((i + 1) % 2 == 0) i) answers)
+        (List.indexedMap (\i answer -> viewAnswer t userMaybe model answer ((i + 1) % 2 == 0) i) answers)
 
 
-viewAnswer : Maybe User -> Model -> Answer -> Bool -> Int -> H.Html (ViewMessage Msg)
-viewAnswer userMaybe model answer isEven zerobasedIndex =
+viewAnswer : T -> Maybe User -> Model -> Answer -> Bool -> Int -> H.Html (ViewMessage Msg)
+viewAnswer t userMaybe model answer isEven zerobasedIndex =
     H.div
         [ A.class "row ad-page__answers-row" ]
         [ H.div
@@ -222,7 +223,7 @@ viewAnswer userMaybe model answer isEven zerobasedIndex =
                     ]
                 ]
               <|
-                [ viewDate answer.createdAt
+                [ viewDate t answer.createdAt
                 , H.hr [] []
                 , H.p [] (PlainTextFormat.view answer.content)
                 , Common.authorInfo answer.createdBy
@@ -234,7 +235,7 @@ viewAnswer userMaybe model answer isEven zerobasedIndex =
                             , ( "ad-page__answers-delete--right", isEven )
                             ]
                         ]
-                        (Removal.view userMaybe zerobasedIndex answer model.removal)
+                        (Removal.view t userMaybe zerobasedIndex answer model.removal)
                 ]
             , H.span
                 [ A.classList
@@ -250,24 +251,25 @@ viewAnswer userMaybe model answer isEven zerobasedIndex =
         ]
 
 
-viewAnswerCount : Int -> Int -> String -> H.Html msg
-viewAnswerCount num adId rootUrl =
+viewAnswerCount : T -> Int -> Int -> String -> H.Html msg
+viewAnswerCount t num adId rootUrl =
     let
         ( heading, text ) =
             case num of
                 0 ->
-                    ( "Tähän ilmoitukseen ei ole vastattu kertaakaan"
-                    , "Kirjaudu sisään ja ole ensimmäinen"
+                    ( t "ad.answerCount.0.heading"
+                    , t "ad.answerCount.0.hint"
                     )
 
                 1 ->
-                    ( "Tällä ilmoituksella on yksi vastaus"
-                    , "Kirjaudu sisään nähdäksesesi sen ja lisää omasi"
+                    ( t "ad.answerCount.1.heading"
+                    , t "ad.answerCount.1.hint"
                     )
 
                 n ->
-                    ( "Tähän ilmoitukseen on vastattu " ++ toString n ++ " kertaa"
-                    , "Kirjaudu sisään nähdäksesi vastaukset ja lisää omasi"
+                    ( t "ad.answerCount.n.heading"
+                        |> Translation.replaceWith [ toString n ]
+                    , t "ad.answerCount.n.hint"
                     )
     in
     H.div
@@ -278,52 +280,52 @@ viewAnswerCount num adId rootUrl =
             [ A.class "btn btn-primary"
             , A.href (Nav.ssoUrl rootUrl (Nav.ShowAd adId |> Nav.routeToPath |> Just))
             ]
-            [ H.text "Kirjaudu" ]
+            [ H.text <| t "common.login" ]
         ]
 
 
-leaveAnswerBox : Bool -> String -> Int -> List (H.Html Msg)
-leaveAnswerBox sending text adId =
+leaveAnswerBox : T -> Bool -> String -> Int -> List (H.Html Msg)
+leaveAnswerBox t sending text adId =
     [ H.div
         [ A.class "ad-page__leave-answer-input-container" ]
         [ H.textarea
             [ A.class "ad-page__leave-answer-box"
-            , A.placeholder "Kirjoita napakka vastaus"
+            , A.placeholder <| t "ad.leaveAnswerBox.placeholder"
             , E.onInput ChangeAnswerText
             , A.disabled sending
             , A.value text
             ]
             []
-        , Common.lengthHint "ad-page__leave-answer-hint" text 10 1000
+        , Common.lengthHint t "ad-page__leave-answer-hint" text 10 1000
         , if not sending then
             H.button
                 [ A.class "btn btn-primary ad-page__leave-answer-button"
                 , E.onClick (SendAnswer adId)
                 , A.disabled (String.length text < 10 || String.length text > 1000)
                 ]
-                [ H.text "Jätä vastaus" ]
+                [ H.text <| t "ad.leaveAnswerBox.submit" ]
           else
             H.div [ A.class "ad-page__sending" ] []
         ]
     ]
 
 
-leaveAnswerPrompt : Bool -> Bool -> Bool -> Bool -> Int -> List (H.Html (ViewMessage Msg))
-leaveAnswerPrompt canAnswer isAsker hasAnswered loggedIn adId =
+leaveAnswerPrompt : T -> Bool -> Bool -> Bool -> Bool -> Int -> List (H.Html (ViewMessage Msg))
+leaveAnswerPrompt t canAnswer isAsker hasAnswered loggedIn adId =
     if isAsker then
         [ H.p
             [ A.class "ad-page__leave-answer-text" ]
-            [ H.text "Muut käyttäjät voivat vastata ilmoitukseesi tällä sivulla. Näet vastaukset alla kun niitä tulee." ]
+            [ H.text <| t "ad.leaveAnswerPrompt.isAsker" ]
         ]
     else if hasAnswered then
         [ H.p
             [ A.class "ad-page__leave-answer-text" ]
-            [ H.text "Olet vastannut tähän ilmoitukseen. Kiitos kun autoit kanssatradenomiasi!" ]
+            [ H.text <| t "ad.leaveAnswerPrompt.hasAnswered" ]
         ]
     else
         [ H.p
             [ A.class "ad-page__leave-answer-text" ]
-            [ H.text "Kokemuksellasi on aina arvoa. Jaa näkemyksesi vastaamalla ilmoitukseen." ]
+            [ H.text <| t "ad.leaveAnswerPrompt.hint" ]
         , H.button
             [ A.class "btn btn-primary btn-lg ad-page__leave-answer-button"
             , if loggedIn then
@@ -333,12 +335,12 @@ leaveAnswerPrompt canAnswer isAsker hasAnswered loggedIn adId =
             , A.disabled (not canAnswer && loggedIn)
             , A.title
                 (if canAnswer || not loggedIn then
-                    "Voit vastata muiden esittämiin kysymyksiin kerran"
+                    t "ad.leaveAnswerPrompt.answerTooltip"
                  else
-                    "Et voi vastata tähän kysymykseen"
+                    t "ad.leaveAnswerPrompt.cannotAnswerTooltip"
                 )
             ]
-            [ H.text "Vastaa ilmoitukseen" ]
+            [ H.text <| t "ad.leaveAnswerPrompt.submit" ]
         ]
 
 
@@ -349,6 +351,6 @@ leaveAnswer contents =
         contents
 
 
-viewDate : Date.Date -> H.Html msg
-viewDate date =
-    H.p [ A.class "ad-page__date" ] [ H.text (Date.toFormattedString "d.M.y" date) ]
+viewDate : T -> Date.Date -> H.Html msg
+viewDate t date =
+    H.p [ A.class "ad-page__date" ] [ H.text (Date.toFormattedString (t "common.dateFormat") date) ]

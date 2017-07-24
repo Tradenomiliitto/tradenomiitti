@@ -15,6 +15,7 @@ import QueryString
 import QueryString.Extra as QueryString
 import State.Config as Config
 import State.ListUsers exposing (..)
+import Translation exposing (T)
 import Util exposing (UpdateMessage(..), ViewMessage(..))
 
 
@@ -172,8 +173,8 @@ update msg model =
             model ! []
 
 
-view : Model -> Config.Model -> Bool -> H.Html (ViewMessage Msg)
-view model config isLoggedIn =
+view : T -> Model -> Config.Model -> Bool -> H.Html (ViewMessage Msg)
+view t model config isLoggedIn =
     let
         usersHtml =
             List.map viewUser model.users
@@ -198,7 +199,7 @@ view model config isLoggedIn =
                                 ]
                             , E.onClick (ChangeSort Recent)
                             ]
-                            [ H.text "Aktiivisuus" ]
+                            [ H.text <| t "listUsers.sort.activity" ]
                         , H.button
                             [ A.classList
                                 [ ( "btn", True )
@@ -215,7 +216,7 @@ view model config isLoggedIn =
                                         AlphaAsc
                                 )
                             ]
-                            [ H.text "Nimi"
+                            [ H.text <| t "listUsers.sort.name"
                             , H.i
                                 [ A.classList
                                     [ ( "fa", True )
@@ -238,32 +239,32 @@ view model config isLoggedIn =
                     [ A.class "col-sm-12" ]
                     [ H.h1
                         [ A.class "list-users__header" ]
-                        [ H.text "Selaa tradenomeja" ]
+                        [ H.text <| t "listUsers.heading" ]
                     ]
                 ]
             , H.div
                 [ A.class "row list-users__filters" ]
                 [ H.div
                     [ A.class "col-xs-12 col-sm-4" ]
-                    [ Common.select "list-users" (LocalViewMessage << ChangeDomainFilter) Domain config.domainOptions model ]
+                    [ Common.select t "list-users" (LocalViewMessage << ChangeDomainFilter) Domain config.domainOptions model ]
                 , H.div
                     [ A.class "col-xs-12 col-sm-4" ]
-                    [ Common.select "list-users" (LocalViewMessage << ChangePositionFilter) Position config.positionOptions model ]
+                    [ Common.select t "list-users" (LocalViewMessage << ChangePositionFilter) Position config.positionOptions model ]
                 , H.div
                     [ A.class "col-xs-12 col-sm-4" ]
-                    [ Common.select "list-users" (LocalViewMessage << ChangeLocationFilter) Location Config.finnishRegions model ]
+                    [ Common.select t "list-users" (LocalViewMessage << ChangeLocationFilter) Location Config.finnishRegions model ]
                 ]
             , H.div
                 [ A.class "row list-users__filters" ]
                 [ H.div
                     [ A.class "col-xs-12 col-sm-4" ]
-                    [ Common.typeaheadInput "list-users__" "Valitse oppilaitos" "education-institute" ]
+                    [ Common.typeaheadInput "list-users__" (t "listUsers.filters.institute") "education-institute" ]
                 , H.div
                     [ A.class "col-xs-12 col-sm-4" ]
-                    [ Common.typeaheadInput "list-users__" "Valitse suuntautuminen / pääaine" "education-specialization" ]
+                    [ Common.typeaheadInput "list-users__" (t "listUsers.filters.specialization") "education-specialization" ]
                 , H.div
                     [ A.class "col-xs-12 col-sm-4" ]
-                    [ Common.typeaheadInput "list-users__" "Valitse taito" "skills-input" ]
+                    [ Common.typeaheadInput "list-users__" (t "listUsers.filters.skill") "skills-input" ]
                 ]
             ]
         , H.div

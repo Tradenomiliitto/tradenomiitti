@@ -7,6 +7,7 @@ import List.Extra as List
 import Maybe.Extra as Maybe
 import Models.User exposing (User)
 import Navigation
+import Translation exposing (T)
 import Util exposing (UpdateMessage(..), ViewMessage(..))
 
 
@@ -85,24 +86,22 @@ type alias AdLike a =
     }
 
 
-view : Maybe User -> Int -> AdLike a -> Model -> List (H.Html (ViewMessage Msg))
-view userMaybe index ad model =
+view : T -> Maybe User -> Int -> AdLike a -> Model -> List (H.Html (ViewMessage Msg))
+view t userMaybe index ad model =
     let
-        targetSecondPersonPossessiveString =
+        ( removeYour, iWantToRemoveMy, confirmationText ) =
             case model.target of
                 Ad ->
-                    "ilmoituksesi"
+                    ( t "removal.removeYour.ad"
+                    , t "removal.iWantToRemoveMy.ad"
+                    , t "removal.confirmationText.ad"
+                    )
 
                 Answer ->
-                    "vastauksesi"
-
-        targetFirstPersonPossessiveString =
-            case model.target of
-                Ad ->
-                    "ilmoitukseni"
-
-                Answer ->
-                    "vastaukseni"
+                    ( t "removal.iWantToRemoveMy.answer"
+                    , t "removal.removeYour.answer"
+                    , t "removal.confirmationText.answer"
+                    )
 
         removals =
             model.removals
@@ -111,7 +110,7 @@ view userMaybe index ad model =
             H.img
                 [ A.class "removal__icon"
                 , A.src "/static/close.svg"
-                , A.title <| "Poista oma " ++ targetSecondPersonPossessiveString
+                , A.title <| removeYour
                 , E.onClick << LocalViewMessage <| InitiateRemove index ad.id
                 ]
                 []
@@ -120,14 +119,6 @@ view userMaybe index ad model =
             removals
                 |> List.find (\removal -> removal.index == index)
                 |> Maybe.isJust
-
-        confirmationText =
-            case model.target of
-                Ad ->
-                    "Tämä poistaa ilmoituksen ja kaikki siihen tulleet vastaukset pysyvästi. Oletko varma?"
-
-                Answer ->
-                    "Tämä poistaa vastauksen pysyvästi. Oletko varma?"
 
         confirmationBox =
             H.div
@@ -141,12 +132,12 @@ view userMaybe index ad model =
                         [ A.class "btn removal__confirmation-button-cancel"
                         , E.onClick << LocalViewMessage <| CancelRemoval index
                         ]
-                        [ H.text "Peru" ]
+                        [ H.text <| t "common.cancel" ]
                     , H.button
                         [ A.class "btn btn-primary removal__confirmation-button-confirm"
                         , E.onClick << LocalViewMessage <| ConfirmRemoval ad.id
                         ]
-                        [ H.text <| "Haluan poistaa " ++ targetFirstPersonPossessiveString ]
+                        [ H.text <| iWantToRemoveMy ]
                     ]
                 ]
     in

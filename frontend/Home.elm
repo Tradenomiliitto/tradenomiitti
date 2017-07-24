@@ -10,8 +10,8 @@ import Maybe.Extra as Maybe
 import Models.User exposing (User)
 import Nav
 import Removal
-import State.Config as Config
 import State.Home exposing (..)
+import Translation exposing (T)
 import Util exposing (UpdateMessage(..), ViewMessage(..))
 
 
@@ -23,9 +23,9 @@ type Msg
     | RemovalMessage Removal.Msg
 
 
-port scrollHomeBelowFold :
-    Bool
-    -> Cmd msg -- param is ignored
+{-| param is ignored
+-}
+port scrollHomeBelowFold : Bool -> Cmd msg
 
 
 update : Msg -> Model -> ( Model, Cmd (UpdateMessage Msg) )
@@ -67,14 +67,14 @@ initTasks model =
         ]
 
 
-view : Model -> Maybe User -> H.Html (ViewMessage Msg)
-view model loggedInUserMaybe =
+view : T -> Model -> Maybe User -> H.Html (ViewMessage Msg)
+view t model loggedInUserMaybe =
     H.div
         []
-        [ introScreen loggedInUserMaybe
-        , listLatestAds loggedInUserMaybe model
-        , listUsers model loggedInUserMaybe
-        , tradenomiittiSection
+        [ introScreen t loggedInUserMaybe
+        , listLatestAds t loggedInUserMaybe model
+        , listUsers t model loggedInUserMaybe
+        , tradenomiittiSection t
         ]
 
 
@@ -82,11 +82,11 @@ view model loggedInUserMaybe =
 -- FIRST INFO SCREEN --
 
 
-introScreen : Maybe User -> H.Html (ViewMessage Msg)
-introScreen loggedInUserMaybe =
+introScreen : T -> Maybe User -> H.Html (ViewMessage Msg)
+introScreen t loggedInUserMaybe =
     H.div
         [ A.class "home__intro-screen" ]
-        (introAnimation :: introBoxes loggedInUserMaybe)
+        (introAnimation :: introBoxes t loggedInUserMaybe)
 
 
 introAnimation : H.Html msg
@@ -98,8 +98,8 @@ introAnimation =
         []
 
 
-introBoxes : Maybe User -> List (H.Html (ViewMessage Msg))
-introBoxes loggedInUserMaybe =
+introBoxes : T -> Maybe User -> List (H.Html (ViewMessage Msg))
+introBoxes t loggedInUserMaybe =
     let
         createProfile =
             case loggedInUserMaybe of
@@ -109,7 +109,7 @@ introBoxes loggedInUserMaybe =
                 Nothing ->
                     [ H.div
                         [ A.class "home__introbox home__introbox--button-container col-xs-11 col-sm-4 col-sm-offset-4" ]
-                        [ Link.button "Luo oma profiili"
+                        [ Link.button (t "home.introbox.createProfile")
                             "home__introbox--button btn btn-primary"
                             (Nav.LoginNeeded (Nav.Profile |> Nav.routeToPath |> Just))
                         ]
@@ -119,13 +119,13 @@ introBoxes loggedInUserMaybe =
         [ A.class "home__introbox col-xs-11 col-sm-6 col-sm-offset-3" ]
         [ H.h2
             [ A.class "home__introbox--heading" ]
-            [ H.text "Kohtaa tradenomi" ]
+            [ H.text (t "home.introbox.heading") ]
         ]
     , H.div
         [ A.class "home__introbox col-xs-11 col-sm-6 col-sm-offset-3" ]
         [ H.div
             [ A.class "home__introbox--content" ]
-            [ H.text "Tradenomiitti on tradenomien oma kohtaamispaikka, jossa jäsenet löytävät toisensa yhteisten aiheiden ympäriltä ja hyötyvät toistensa kokemuksista." ]
+            [ H.text (t "home.introbox.content") ]
         ]
     ]
         ++ createProfile
@@ -141,37 +141,37 @@ introBoxes loggedInUserMaybe =
 -- LIST LATEST ADS --
 
 
-listLatestAds : Maybe User -> Model -> H.Html (ViewMessage Msg)
-listLatestAds loggedInUserMaybe model =
+listLatestAds : T -> Maybe User -> Model -> H.Html (ViewMessage Msg)
+listLatestAds t loggedInUserMaybe model =
     H.div
         [ A.class "home__latest-ads" ]
         [ H.div
             [ A.class "home__section--container" ]
-            [ listAdsHeading
-            , listFourAds loggedInUserMaybe model
+            [ listAdsHeading t
+            , listFourAds t loggedInUserMaybe model
             ]
         ]
 
 
-listAdsHeading : H.Html (ViewMessage Msg)
-listAdsHeading =
+listAdsHeading : T -> H.Html (ViewMessage Msg)
+listAdsHeading t =
     H.div
         [ A.class "home__section--heading row" ]
-        [ sectionHeader "Uusimmat ilmoitukset"
-        , listAdsButtons
+        [ sectionHeader (t "home.listAds.heading")
+        , listAdsButtons t
         ]
 
 
-listAdsButtons : H.Html (ViewMessage Msg)
-listAdsButtons =
+listAdsButtons : T -> H.Html (ViewMessage Msg)
+listAdsButtons t =
     H.div
         [ A.class "home__section--heading--buttons col-sm-7" ]
         [ Link.button
-            "katso kaikki ilmoitukset"
+            (t "home.listAds.buttonListAds")
             "home__section--heading--buttons--inverse btn btn-primary"
             Nav.ListAds
         , Link.button
-            "jätä ilmoitus"
+            (t "home.listAds.buttonCreateAd")
             "home__section--heading--buttons--normal btn btn-primary"
             Nav.CreateAd
         ]
@@ -184,52 +184,52 @@ sectionHeader title =
         [ H.text title ]
 
 
-listFourAds : Maybe User -> Model -> H.Html (ViewMessage Msg)
-listFourAds loggedInUserMaybe model =
+listFourAds : T -> Maybe User -> Model -> H.Html (ViewMessage Msg)
+listFourAds t loggedInUserMaybe model =
     Util.localViewMap RemovalMessage <|
         H.div
             []
-            (ListAds.viewAds loggedInUserMaybe model.removal (List.take 4 model.listAds.ads))
+            (ListAds.viewAds t loggedInUserMaybe model.removal (List.take 4 model.listAds.ads))
 
 
 
 -- LIST USERS --
 
 
-listUsers : Model -> Maybe User -> H.Html (ViewMessage msg)
-listUsers model loggedInUserMaybe =
+listUsers : T -> Model -> Maybe User -> H.Html (ViewMessage msg)
+listUsers t model loggedInUserMaybe =
     H.div
         [ A.class "home__list-users" ]
         [ H.div
             [ A.class "home__section--container" ]
-            [ listUsersHeading loggedInUserMaybe
+            [ listUsersHeading t loggedInUserMaybe
             , listThreeUsers model
             ]
         ]
 
 
-listUsersHeading : Maybe User -> H.Html (ViewMessage msg)
-listUsersHeading loggedInUserMaybe =
+listUsersHeading : T -> Maybe User -> H.Html (ViewMessage msg)
+listUsersHeading t loggedInUserMaybe =
     H.div
         [ A.class "home__section--heading row" ]
-        [ sectionHeader "Löydä tradenomi"
-        , listUsersButtons loggedInUserMaybe
+        [ sectionHeader <| t "home.listUsers.heading"
+        , listUsersButtons t loggedInUserMaybe
         ]
 
 
-listUsersButtons : Maybe User -> H.Html (ViewMessage msg)
-listUsersButtons loggedInUserMaybe =
+listUsersButtons : T -> Maybe User -> H.Html (ViewMessage msg)
+listUsersButtons t loggedInUserMaybe =
     H.div
         [ A.class "home__section--heading--buttons col-sm-7" ]
         [ Link.button
-            "Katso kaikki tradenomit"
+            (t "home.listUsers.buttonListUsers")
             "home__section--heading--buttons--inverse btn btn-primary"
             Nav.ListUsers
         , Link.button
             (if Maybe.isJust loggedInUserMaybe then
-                "Muokkaa omaa profiilia"
+                t "home.listUsers.buttonEditProfile"
              else
-                "Luo oma profiili"
+                t "home.listUsers.buttonCreateProfile"
             )
             "home__section--heading--buttons--normal btn btn-primary"
             (if Maybe.isJust loggedInUserMaybe then
@@ -250,60 +250,59 @@ listThreeUsers model =
 -- TRADENOMIITTI AD --
 
 
-tradenomiittiSection : H.Html (ViewMessage msg)
-tradenomiittiSection =
+tradenomiittiSection : T -> H.Html (ViewMessage msg)
+tradenomiittiSection t =
     H.div
         [ A.class "home__tradenomiitti--background" ]
         [ H.div
             [ A.class "home__tradenomiitti--container" ]
-            [ tradenomiittiRow ]
+            [ tradenomiittiRow t ]
         ]
 
 
-tradenomiittiRow : H.Html (ViewMessage msg)
-tradenomiittiRow =
+tradenomiittiRow : T -> H.Html (ViewMessage msg)
+tradenomiittiRow t =
     H.div
         [ A.class "row home__tradenomiitti-info-row" ]
-        [ H.div [ A.class "home__tradenomiitti-info-container  col-md-6" ] [ tradenomiittiInfo ]
+        [ H.div [ A.class "home__tradenomiitti-info-container  col-md-6" ] [ tradenomiittiInfo t ]
         , tradenomiImage
         ]
 
 
-tradenomiittiInfo : H.Html (ViewMessage msg)
-tradenomiittiInfo =
+tradenomiittiInfo : T -> H.Html (ViewMessage msg)
+tradenomiittiInfo t =
     H.div
         [ A.class "home__tradenomiitti-info" ]
-        [ tradenomiittiHeader
-        , tradenomiittiInfoText
-        , readMoreButton
+        [ tradenomiittiHeader t
+        , tradenomiittiInfoText t
+        , readMoreButton t
         ]
 
 
-tradenomiittiHeader : H.Html msg
-tradenomiittiHeader =
+tradenomiittiHeader : T -> H.Html msg
+tradenomiittiHeader t =
     H.h2
         [ A.class "home__tradenomiitti-info--header" ]
-        -- \xad === &shy;, that is soft hyphen
-        [ H.text "Ko\xADke\xADmuk\xADsel\xADla\xADsi on aina arvoa" ]
+        [ H.text <| t "home.tradenomiittiInfo.heading" ]
 
 
-tradenomiittiInfoText : H.Html msg
-tradenomiittiInfoText =
+tradenomiittiInfoText : T -> H.Html msg
+tradenomiittiInfoText t =
     H.div
         [ A.class "home__tradenomiitti-info-content" ]
         [ H.p
             [ A.class "home__tradenomiitti-info-text" ]
-            [ H.text "Tradenomiitti on tradenomien oma kohtaamispaikka, jossa yhdistyvät inspiroivat kohtaamiset ja itsensä kehittäminen. Tradenomiitti tuo tradenomien osaamisen esille - olit sitten opiskelija tai kokenut konkari. Juuri sinulla voi olla vastaus toisen tradenomin kysymykseen, tai ehkä uusi työnantajasi etsii sinua jo?" ]
+            [ H.text <| t "home.tradenomiittiInfo.paragraph1" ]
         , H.p
             [ A.class "home__tradenomiitti-info-text" ]
-            [ H.text "Luomalla profiilin pääset alkuun, loput on itsestäsi kiinni." ]
+            [ H.text <| t "home.tradenomiittiInfo.paragraph2" ]
         ]
 
 
-readMoreButton : H.Html (ViewMessage msg)
-readMoreButton =
+readMoreButton : T -> H.Html (ViewMessage msg)
+readMoreButton t =
     Link.link
-        "lue lisää"
+        (t "common.readMore")
         "home__tradenomiitti-info--read-more-button btn btn-primary"
         Nav.Info
 

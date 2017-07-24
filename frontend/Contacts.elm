@@ -9,6 +9,7 @@ import Json.Decode as Json
 import Models.User exposing (Contact, User)
 import Profile.View
 import State.Contacts exposing (..)
+import Translation exposing (T)
 import Util exposing (UpdateMessage, ViewMessage(..))
 
 
@@ -34,20 +35,22 @@ update msg model =
             { model | contacts = list } ! []
 
 
-view : Model -> Maybe User -> H.Html (ViewMessage msg)
-view model userMaybe =
+view : T -> Model -> Maybe User -> H.Html (ViewMessage msg)
+view t model userMaybe =
     case userMaybe of
         Just user ->
             H.div
                 [ A.class "contacts" ]
-                [ Common.profileTopRow user False Common.ContactsTab (H.div [] [])
+                [ Common.profileTopRow t user False Common.ContactsTab (H.div [] [])
                 , H.div
                     [ A.class "container" ]
                     [ H.div
                         [ A.class "row" ]
                         [ H.div
                             [ A.class "col-xs-12" ]
-                            [ H.h1 [ A.class "contacts__heading" ] [ H.text "Käyntikortit" ] ]
+                            [ H.h1 [ A.class "contacts__heading" ]
+                                [ H.text <| t "contacts.heading" ]
+                            ]
                         ]
                     ]
                 , H.div
@@ -63,7 +66,7 @@ view model userMaybe =
                                 ]
                                 row
                         )
-                        (Common.chunk2 (List.map renderContact model.contacts))
+                        (Common.chunk2 (List.map (renderContact t) model.contacts))
                     )
                 ]
 
@@ -71,14 +74,14 @@ view model userMaybe =
             H.div [] []
 
 
-renderContact : Contact -> H.Html (ViewMessage msg)
-renderContact contact =
+renderContact : T -> Contact -> H.Html (ViewMessage msg)
+renderContact t contact =
     H.div
         [ A.class "col-xs-12 col-sm-6 contacts__item-container"
         ]
-        [ Ad.viewDate contact.createdAt
+        [ Ad.viewDate t contact.createdAt
         , H.p
             [ A.class "contacts__intro-text" ]
             [ H.text contact.introText ]
-        , Profile.View.businessCardView contact.user contact.businessCard
+        , Profile.View.businessCardView t contact.user contact.businessCard
         ]

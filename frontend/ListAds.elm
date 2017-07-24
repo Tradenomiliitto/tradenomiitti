@@ -18,6 +18,7 @@ import Removal
 import State.Config as Config
 import State.ListAds exposing (..)
 import SvgIcons
+import Translation exposing (T)
 import Util exposing (UpdateMessage(..), ViewMessage(..))
 
 
@@ -105,8 +106,8 @@ getAds model =
     Util.errorHandlingSend (UpdateAds model.cursor) request
 
 
-view : Maybe User -> Model -> Config.Model -> H.Html (ViewMessage Msg)
-view loggedInUserMaybe model config =
+view : T -> Maybe User -> Model -> Config.Model -> H.Html (ViewMessage Msg)
+view t loggedInUserMaybe model config =
     let
         sorterRow =
             H.map LocalViewMessage <|
@@ -130,7 +131,7 @@ view loggedInUserMaybe model config =
                                         CreatedDesc
                                 )
                             ]
-                            [ H.text "Päivämäärä"
+                            [ H.text <| t "listAds.sort.date"
                             , H.i
                                 [ A.classList
                                     [ ( "fa", True )
@@ -156,7 +157,7 @@ view loggedInUserMaybe model config =
                                         AnswerCountDesc
                                 )
                             ]
-                            [ H.text "Vastauksia"
+                            [ H.text <| t "listAds.sort.answerCount"
                             , H.i
                                 [ A.classList
                                     [ ( "fa", True )
@@ -175,7 +176,7 @@ view loggedInUserMaybe model config =
                                     ]
                                 , E.onClick (ChangeSort NewestAnswerDesc)
                                 ]
-                                [ H.text "Uusin vastaus" ]
+                                [ H.text <| t "listAds.sort.newestAnswer" ]
                           else
                             H.text ""
                         ]
@@ -190,27 +191,27 @@ view loggedInUserMaybe model config =
                     [ A.class "col-sm-12" ]
                     [ H.h1
                         [ A.class "list-ads__header" ]
-                        [ H.text "Selaa ilmoituksia" ]
+                        [ H.text <| t "listAds.heading" ]
                     ]
                 ]
             , H.div
                 [ A.class "row list-users__filters" ]
                 [ H.div
                     [ A.class "col-xs-12 col-sm-4" ]
-                    [ Common.select "list-users" (LocalViewMessage << ChangeDomainFilter) Domain config.domainOptions model ]
+                    [ Common.select t "list-users" (LocalViewMessage << ChangeDomainFilter) Domain config.domainOptions model ]
                 , H.div
                     [ A.class "col-xs-12 col-sm-4" ]
-                    [ Common.select "list-users" (LocalViewMessage << ChangePositionFilter) Position config.positionOptions model ]
+                    [ Common.select t "list-users" (LocalViewMessage << ChangePositionFilter) Position config.positionOptions model ]
                 , H.div
                     [ A.class "col-xs-12 col-sm-4" ]
-                    [ Common.select "list-users" (LocalViewMessage << ChangeLocationFilter) Location Config.finnishRegions model ]
+                    [ Common.select t "list-users" (LocalViewMessage << ChangeLocationFilter) Location Config.finnishRegions model ]
                 ]
             ]
         , H.div
             [ A.class "list-ads__list-background" ]
             [ H.div
                 [ A.class "container last-row" ]
-                (sorterRow :: (List.map (Util.localViewMap RemovalMessage) <| viewAds loggedInUserMaybe model.removal model.ads))
+                (sorterRow :: (List.map (Util.localViewMap RemovalMessage) <| viewAds t loggedInUserMaybe model.removal model.ads))
             ]
         ]
 
@@ -234,11 +235,11 @@ sortToString sort =
             "newest_answer_desc"
 
 
-viewAds : Maybe User -> Removal.Model -> List Models.Ad.Ad -> List (H.Html (ViewMessage Removal.Msg))
-viewAds loggedInUserMaybe removal ads =
+viewAds : T -> Maybe User -> Removal.Model -> List Models.Ad.Ad -> List (H.Html (ViewMessage Removal.Msg))
+viewAds t loggedInUserMaybe removal ads =
     let
         adsHtml =
-            List.indexedMap (adListView loggedInUserMaybe removal) ads
+            List.indexedMap (adListView t loggedInUserMaybe removal) ads
 
         rows =
             Common.chunk2 adsHtml
@@ -256,8 +257,8 @@ row ads =
         ads
 
 
-adListView : Maybe User -> Removal.Model -> Int -> Models.Ad.Ad -> H.Html (ViewMessage Removal.Msg)
-adListView loggedInUserMaybe removal index ad =
+adListView : T -> Maybe User -> Removal.Model -> Int -> Models.Ad.Ad -> H.Html (ViewMessage Removal.Msg)
+adListView t loggedInUserMaybe removal index ad =
     H.div
         [ A.class "col-xs-12 col-sm-6 list-ads__item-container"
         ]
@@ -269,7 +270,7 @@ adListView loggedInUserMaybe removal index ad =
                 , Link.action (Nav.ShowAd ad.id)
                 , A.class "card-link list-ads__item-expanding-part"
                 ]
-                [ Ad.viewDate ad.createdAt
+                [ Ad.viewDate t ad.createdAt
                 , H.h3
                     [ A.class "list-ads__ad-preview-heading" ]
                     [ H.text ad.heading ]
@@ -291,5 +292,5 @@ adListView loggedInUserMaybe removal index ad =
                 , H.div [ A.class "list-ads__ad-preview-author-info" ] [ Common.authorInfo ad.createdBy ]
                 ]
             ]
-                ++ Removal.view loggedInUserMaybe index ad removal
+                ++ Removal.view t loggedInUserMaybe index ad removal
         ]

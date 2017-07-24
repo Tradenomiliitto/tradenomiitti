@@ -1,6 +1,7 @@
 module Nav exposing (..)
 
 import Navigation
+import Translation as T exposing (T)
 import UrlParser as U exposing ((</>), (<?>))
 import Window
 
@@ -20,6 +21,10 @@ type Route
     | RegisterDescription
     | Settings
     | Contacts
+
+
+
+-- TODO: Move URLs to translations
 
 
 routeToPath : Route -> String
@@ -68,50 +73,52 @@ routeToPath route =
             "/kayntikortit"
 
 
-routeToString : Route -> String
-routeToString route =
+routeToString : T -> Route -> String
+routeToString t route =
     case route of
         User userId ->
-            "Käyttäjä " ++ toString userId
+            t "navigation.routeNames.user"
+                |> T.replaceWith [ toString userId ]
 
         Profile ->
-            "Oma Profiili"
+            t "navigation.routeNames.profile"
 
         Home ->
-            "Home"
+            t "navigation.routeNames.home"
 
         Info ->
-            "Tietoa"
+            t "navigation.routeNames.info"
 
         NotFound ->
-            "Ei löytynyt"
+            t "navigation.routeNames.notFound"
 
         ListUsers ->
-            "Tradenomit"
+            t "navigation.routeNames.listUsers"
 
         ListAds ->
-            "Ilmoitukset"
+            t "navigation.routeNames.listAds"
 
         CreateAd ->
-            "Jätä ilmoitus"
+            t "navigation.routeNames.createAd"
 
         ShowAd adId ->
-            "Ilmoitus " ++ toString adId
+            t "navigation.routeNames.showAd"
+                |> T.replaceWith [ toString adId ]
 
         LoginNeeded _ ->
-            "Kirjautuminen vaaditaan"
+            t "navigation.routeNames.loginNeeded"
 
         Terms ->
-            "Palvelun käyttöehdot"
+            t "navigation.routeNames.terms"
 
         RegisterDescription ->
-            "Rekisteriseloste"
+            t "navigation.routeNames.registerDescription"
 
         Settings ->
-            "Asetukset"
+            t "navigation.routeNames.settings"
 
         Contacts ->
-            "Käyntikortit"
+            t "navigation.routeNames.contacts"
 
 
 parseLocation : Navigation.Location -> Route

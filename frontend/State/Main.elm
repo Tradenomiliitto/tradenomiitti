@@ -13,6 +13,7 @@ import State.Profile as ProfileState
 import State.Settings
 import State.StaticContent
 import State.User
+import Translation exposing (Translations)
 
 
 type alias Model =
@@ -33,11 +34,12 @@ type alias Model =
     , config : State.Config.Model
     , contacts : State.Contacts.Model
     , staticContent : State.StaticContent.Model
+    , translations : Translations
     }
 
 
-initState : Navigation.Location -> Model
-initState location =
+initState : List ( String, String ) -> Navigation.Location -> Model
+initState translations location =
     { route = parseLocation location
     , rootUrl = location.origin
     , scrollTop = True -- initially start at top and init
@@ -55,4 +57,5 @@ initState location =
     , config = State.Config.init
     , contacts = State.Contacts.init
     , staticContent = State.StaticContent.init
+    , translations = Translation.fromList translations
     }

@@ -33,6 +33,7 @@ import State.Profile
 import State.Settings
 import State.User
 import StaticContent
+import Translation as T exposing (HasTranslations, T, Translations)
 import User
 import Util exposing (UpdateMessage(..), ViewMessage(..))
 
@@ -67,9 +68,14 @@ port closeMenu : Bool -> Cmd msg
 port showAlert : String -> Cmd msg
 
 
-main : Program Never Model Msg
+type alias Flags =
+    { translations : List ( String, String )
+    }
+
+
+main : Program Flags Model Msg
 main =
-    Navigation.program UrlChange
+    Navigation.programWithFlags UrlChange
         { init = init
         , view = view
         , update = update
@@ -77,11 +83,11 @@ main =
         }
 
 
-init : Navigation.Location -> ( Model, Cmd Msg )
-init location =
+init : Flags -> Navigation.Location -> ( Model, Cmd Msg )
+init { translations } location =
     let
         model =
-            initState location
+            initState translations location
 
         -- after the profile is loaded, an urlchange event is triggered
         profileCmd =
@@ -123,6 +129,13 @@ type Msg
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
+    let
+        t =
+            T.get model.translations
+
+        tWith =
+            T.getWith model.translations
+    in
     case msg of
         NewUrl route ->
             { model | scrollTop = True }
@@ -380,36 +393,32 @@ update msg model =
                 cmd =
                     case err of
                         Http.BadUrl str ->
-                            sendError <| "BadUrl " ++ str
+                            sendError <| t "errors.badUrl" ++ str
 
                         Http.Timeout ->
-                            showAlert "Vastauksen saaminen kesti liian kauan, yritä myöhemmin uudelleen"
+                            showAlert <| t "errors.timeout"
 
                         Http.NetworkError ->
-                            showAlert "Yhteydessä on ongelma, yritä myöhemmin uudelleen"
+                            showAlert <| t "errors.networkError"
 
                         Http.BadPayload error { body } ->
-                            sendError <|
-                                "Jotain meni pieleen. Verkosta tuli\n\n"
-                                    ++ body
-                                    ++ "\n\nja virhe oli\n\n"
-                                    ++ error
+                            sendError <| tWith "errors.badPayload" [ body, error ]
 
                         Http.BadStatus { status, body } ->
                             case status.code of
                                 404 ->
-                                    showAlert <| "Haettua sisältöä ei löytynyt. Se on voitu poistaa tai osoitteessa voi olla virhe. Voit ottaa yhteyttä osoitteeseen " ++ supportEmail ++ " halutessasi. Ota silloin kuvakaappaus sivusta ja lähetä se viestin liitteenä. " ++ body
+                                    showAlert <| tWith "errors.badStatus" [ body ]
 
                                 _ ->
-                                    showAlert <| errorCodeToUserVisibleErrorMessage body
+                                    showAlert <| tWith "errors.codeToUserVisibleMessage" [ body ]
             in
             model ! [ cmd ]
 
         SendErrorResponse (Ok str) ->
-            model ! [ showAlert <| errorCodeToUserVisibleErrorMessage str ]
+            model ! [ showAlert <| tWith "errors.codeToUserVisibleMessage" [ str ] ]
 
         SendErrorResponse (Err err) ->
-            model ! [ showAlert <| toString err ++ "Järjestelmässä on jotain pahasti pielessä, tutkimme asiaa" ]
+            model ! [ showAlert <| tWith "errors.errorResponseFailure" [ toString err ] ]
 
         NoOp ->
             model ! []
@@ -455,10 +464,13 @@ subscriptions model =
 view : Model -> H.Html Msg
 view model =
     let
+        t =
+            T.get model.translations
+
         splashScreen =
             H.div
                 [ A.class "splash-screen" ]
-                [ logoImage 400 ]
+                [ logoImage (t "navigation.logoAlt") (t "main.splashScreen.logoWidth") ]
 
         askConsent =
             H.div
@@ -466,8 +478,8 @@ view model =
                 [ H.canvas [ A.id "consent-needed-canvas", A.class "consent-needed__animation" ] []
                 , H.div
                     [ A.class "consent-needed col-xs-12 col-md-5" ]
-                    [ H.h1 [] [ H.text "Tervetuloa Tradenomiittiin!" ]
-                    , H.p [] [ H.text "Tehdäksemme palvelun käytöstä mahdollisimman vaivatonta hyödynnämme Tradenomiliiton olemassa olevia jäsentietoja (nimesi, työhistoriasi). Luomalla profiilin hyväksyt tietojesi käytön Tradenomiitti-palvelussa. Voit muokata tietojasi myöhemmin." ]
+                    [ H.h1 [] [ H.text (t "main.consentNeeded.heading") ]
+                    , H.p [] [ H.text (t "main.consentNeeded.content") ]
                     , H.div [ A.class "row consent-needed__actionable" ]
                         [ H.div
                             [ A.class "col-xs-12 col-sm-6" ]
@@ -480,13 +492,13 @@ view model =
                                     []
                                 , H.span
                                     [ A.class "consent-needed__read-terms" ]
-                                    [ H.text "Hyväksyn palvelun "
+                                    [ H.text (t "main.consentNeeded.iAcceptThe")
                                     , H.a
                                         [ A.href "/kayttoehdot"
                                         , A.target "_blank"
                                         , A.class "consent-needed__read-terms-link"
                                         ]
-                                        [ H.text "käyttöehdot" ]
+                                        [ H.text (t "main.consentNeeded.terms") ]
                                     ]
                                 ]
                             ]
@@ -497,7 +509,7 @@ view model =
                                 , E.onClick AllowProfileCreation
                                 , A.disabled (not model.acceptsTerms)
                                 ]
-                                [ H.text "Luo profiili" ]
+                                [ H.text (t "main.consentNeeded.createProfile") ]
                             ]
                         ]
                     ]
@@ -507,7 +519,7 @@ view model =
             H.div [ A.class "page-layout" ]
                 [ navigation model
                 , viewPage model
-                , Footer.view NewUrl model.profile.user
+                , Footer.view t NewUrl model.profile.user
                 ]
     in
     if model.initialLoading then
@@ -533,6 +545,10 @@ view model =
 
 navigation : Model -> H.Html Msg
 navigation model =
+    let
+        t =
+            T.get model.translations
+    in
     H.nav
         [ A.class "navbar navbar-default navbar-fixed-top" ]
         [ H.div
@@ -542,12 +558,12 @@ navigation model =
                 , A.attribute "data-toggle" "collapse"
                 , A.attribute "data-target" "#navigation"
                 ]
-                [ H.span [ A.class "sr-only" ] [ H.text "Navigaation avaus" ]
+                [ H.span [ A.class "sr-only" ] [ H.text (t "navigation.sr_open") ]
                 , H.span [ A.class "icon-bar" ] []
                 , H.span [ A.class "icon-bar" ] []
                 , H.span [ A.class "icon-bar" ] []
                 ]
-            , logo
+            , logo t
             ]
         , H.div
             [ A.class "collapse navbar-collapse"
@@ -557,8 +573,8 @@ navigation model =
         ]
 
 
-logo : H.Html Msg
-logo =
+logo : T -> H.Html Msg
+logo t =
     H.div
         [ A.class "navbar-brand" ]
         [ H.a
@@ -566,36 +582,40 @@ logo =
             , A.href "/"
             , Common.linkAction Home NewUrl
             ]
-            [ logoImage 163
+            [ logoImage (t "navigation.logoAlt") (t "navigation.logoWidth")
             ]
         ]
 
 
-logoImage : Int -> H.Html msg
-logoImage width =
+logoImage : String -> String -> H.Html msg
+logoImage alt width =
     H.img
-        [ A.alt "Tradenomiitti"
+        [ A.alt alt
         , A.src "/static/main_logo.svg"
         , A.class "logo-image"
-        , A.width width
+        , A.style [ ( "width", width ) ]
         ]
         []
 
 
 navigationList : Model -> List (H.Html Msg)
 navigationList model =
+    let
+        t =
+            T.get model.translations
+    in
     [ H.ul
         [ A.class "nav navbar-nav nav-center" ]
-        [ viewLink ListUsers
+        [ viewLink t ListUsers
         , verticalBar
-        , viewLink ListAds
-        , viewLinkInverse CreateAd
+        , viewLink t ListAds
+        , viewLinkInverse t CreateAd
         ]
     , H.ul
         [ A.class "nav navbar-nav navbar-right" ]
-        [ viewLink Info
+        [ viewLink t Info
         , verticalBar
-        , viewProfileLink model
+        , viewProfileLink t model
         ]
     ]
 
@@ -607,22 +627,22 @@ verticalBar =
         [ H.div [] [] ]
 
 
-viewLinkInverse : Route -> H.Html Msg
-viewLinkInverse route =
+viewLinkInverse : T -> Route -> H.Html Msg
+viewLinkInverse t route =
     H.li
         [ A.class "navbar__inverse-button" ]
-        [ Common.link route NewUrl ]
+        [ Common.link t route NewUrl ]
 
 
-viewLink : Route -> H.Html Msg
-viewLink route =
+viewLink : T -> Route -> H.Html Msg
+viewLink t route =
     H.li
         []
-        [ Common.link route NewUrl ]
+        [ Common.link t route NewUrl ]
 
 
-viewProfileLink : Model -> H.Html Msg
-viewProfileLink model =
+viewProfileLink : T -> Model -> H.Html Msg
+viewProfileLink t model =
     let
         loggedIn =
             Maybe.isJust model.profile.user
@@ -652,9 +672,9 @@ viewProfileLink model =
                         if u.profileCreated then
                             u.name
                         else
-                            "Profiili"
+                            t "main.profile"
                     )
-                |> Maybe.withDefault "Kirjaudu"
+                |> Maybe.withDefault (t "main.login")
 
         linkGraphic =
             model.profile.user
@@ -693,31 +713,34 @@ viewProfileLink model =
 viewPage : Model -> H.Html Msg
 viewPage model =
     let
+        t =
+            T.get model.translations
+
         content =
             case model.route of
                 User userId ->
-                    unpackViewMessage UserMessage <| User.view model.user model.profile.user model.config
+                    unpackViewMessage UserMessage <| User.view t model.user model.profile.user model.config
 
                 Profile ->
-                    unpackViewMessage ProfileMessage <| Profile.View.view model.profile model
+                    unpackViewMessage ProfileMessage <| Profile.View.view t model.profile model
 
                 LoginNeeded route ->
-                    LoginNeeded.view <| ssoUrl model.rootUrl route
+                    LoginNeeded.view t <| ssoUrl model.rootUrl route
 
                 CreateAd ->
-                    H.map CreateAdMessage <| CreateAd.view model.config model.createAd
+                    H.map CreateAdMessage <| CreateAd.view t model.config model.createAd
 
                 ListAds ->
-                    unpackViewMessage ListAdsMessage <| ListAds.view model.profile.user model.listAds model.config
+                    unpackViewMessage ListAdsMessage <| ListAds.view t model.profile.user model.listAds model.config
 
                 ShowAd adId ->
-                    unpackViewMessage AdMessage <| Ad.view model.ad adId model.profile.user model.rootUrl
+                    unpackViewMessage AdMessage <| Ad.view t model.ad adId model.profile.user model.rootUrl
 
                 Home ->
-                    unpackViewMessage HomeMessage <| Home.view model.home model.profile.user
+                    unpackViewMessage HomeMessage <| Home.view t model.home model.profile.user
 
                 ListUsers ->
-                    unpackViewMessage ListUsersMessage <| ListUsers.view model.listUsers model.config (Maybe.isJust model.profile.user)
+                    unpackViewMessage ListUsersMessage <| ListUsers.view t model.listUsers model.config (Maybe.isJust model.profile.user)
 
                 Terms ->
                     PreformattedText.view model.staticContent.terms
@@ -726,16 +749,16 @@ viewPage model =
                     PreformattedText.view model.staticContent.registerDescription
 
                 Settings ->
-                    unpackViewMessage SettingsMessage <| Settings.view model.settings model.profile.user
+                    unpackViewMessage SettingsMessage <| Settings.view t model.settings model.profile.user
 
                 Info ->
                     Info.view model.staticContent.info
 
                 Contacts ->
-                    unpackViewMessage identity <| Contacts.view model.contacts model.profile.user
+                    unpackViewMessage identity <| Contacts.view t model.contacts model.profile.user
 
                 NotFound ->
-                    notImplementedYet
+                    notImplementedYet t
     in
     H.div
         [ A.class "app-content" ]
@@ -773,24 +796,14 @@ unpackUpdateMessage mapper cmd =
         cmd
 
 
-notImplementedYet : H.Html Msg
-notImplementedYet =
+notImplementedYet : T -> H.Html Msg
+notImplementedYet t =
     H.div
         [ A.id "not-implemented" ]
-        [ H.text "Tätä ominaisuutta ei ole vielä toteutettu" ]
+        [ H.text <| t "main.notImplementedYet" ]
 
 
 sendError : String -> Cmd Msg
 sendError msg =
     Http.post "/api/virhe" (Http.stringBody "text/plain" msg) Json.string
         |> Http.send SendErrorResponse
-
-
-supportEmail : String
-supportEmail =
-    "tradenomiitti@tral.fi"
-
-
-errorCodeToUserVisibleErrorMessage : String -> String
-errorCodeToUserVisibleErrorMessage body =
-    "Jotain meni pieleen. Virheen tunnus on " ++ body ++ ". Meille olisi suuri apu, jos otat kuvakaappauksen koko sivusta ja lähetät sen osoitteeseen " ++ supportEmail ++ "."

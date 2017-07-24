@@ -18,6 +18,7 @@ import State.Config as Config
 import State.Profile
 import State.User exposing (..)
 import SvgIcons
+import Translation exposing (T)
 import Util exposing (UpdateMessage(..), ViewMessage(..))
 
 
@@ -123,8 +124,8 @@ addContact user str =
 -- VIEW
 
 
-view : Model -> Maybe User -> Config.Model -> H.Html (ViewMessage Msg)
-view model loggedInUser config =
+view : T -> Model -> Maybe User -> Config.Model -> H.Html (ViewMessage Msg)
+view t model loggedInUser config =
     let
         profileInit =
             State.Profile.init
@@ -140,19 +141,27 @@ view model loggedInUser config =
             model.user
                 |> Maybe.map
                     (\u ->
-                        List.map (Util.localViewMap ProfileMessage) <| Profile.View.viewUser profile False (contactUser model u loggedInUser) config loggedInUser u
+                        List.map (Util.localViewMap ProfileMessage) <| Profile.View.viewUser t profile False (contactUser t model u loggedInUser) config loggedInUser u
                     )
                 |> Maybe.withDefault []
     in
     H.div [] views
 
 
-contactUser : Model -> User -> Maybe User -> H.Html (ViewMessage Profile.Msg)
-contactUser model userToContact loggedInUser =
+contactUser : T -> Model -> User -> Maybe User -> H.Html (ViewMessage Profile.Msg)
+contactUser t model userToContact loggedInUser =
+    let
+        t_ key =
+            t ("user.contactUser." ++ key)
+
+        t_With key replacements =
+            t_ key
+                |> Translation.replaceWith replacements
+    in
     if userToContact.contacted then
         H.div
             [ A.class "col-md-6 user-page__edit-or-contact-user" ]
-            [ H.p [] [ H.text "Olet lähettänyt käyntikortin tälle tradenomille." ]
+            [ H.p [] [ H.text <| t_ "alreadySent" ]
             ]
     else if model.addingContact then
         let
@@ -161,18 +170,17 @@ contactUser model userToContact loggedInUser =
                     ([ E.onClick (Profile.AddContact userToContact)
                      , A.class "btn btn-primary user-page__contact-send"
                      , A.disabled
-                        (String.length model.addContactText
-                            < 10
+                        ((String.length model.addContactText < 10)
                             || not (maybeUserCanSendBusinessCard loggedInUser)
                         )
                      ]
                         ++ (if maybeUserCanSendBusinessCard loggedInUser then
                                 []
                             else
-                                [ A.title "Käyntikortissasi täytyy olla vähintään puhelinnumero tai sähköpostiosoite, jotta voisit lähettää sen" ]
+                                [ A.title <| t_ "mustContainPhoneOrEmail" ]
                            )
                     )
-                    [ H.text "Lähetä" ]
+                    [ H.text <| t_ "submit" ]
 
             popover =
                 case ( loggedInUser, Maybe.andThen .businessCard loggedInUser ) of
@@ -184,10 +192,10 @@ contactUser model userToContact loggedInUser =
                                 [ H.span [ A.class "user-page__businesscard-icon" ]
                                     [ SvgIcons.businessCard ]
                                 , H.span [ A.class "user-page__businesscard-text" ]
-                                    [ H.text "Viestin mukana lähetät käyntikortin" ]
+                                    [ H.text <| t_ "businessCardIsAttached" ]
                                 , H.div
                                     [ A.class "popover__content" ]
-                                    [ Profile.View.businessCardView user businessCard ]
+                                    [ Profile.View.businessCardView t user businessCard ]
                                 ]
                             ]
 
@@ -196,10 +204,10 @@ contactUser model userToContact loggedInUser =
         in
         H.div
             [ A.class "col-md-6 user-page__edit-or-contact-user" ]
-            [ H.p [ A.class "user-apge__edit-or-contact-user-prompt" ] [ H.text "Kirjoita napakka esittelyteksti" ]
+            [ H.p [ A.class "user-apge__edit-or-contact-user-prompt" ] [ H.text <| t_ "editOrContactUserPrompt" ]
             , H.map LocalViewMessage <|
                 H.textarea
-                    [ A.placeholder "Vähintään 10 merkkiä"
+                    [ A.placeholder <| t_ "contactUserPlaceholder"
                     , A.class "user-page__add-contact-textcontent"
                     , E.onInput Profile.ChangeContactAddingText
                     , A.value model.addContactText
@@ -214,7 +222,7 @@ contactUser model userToContact loggedInUser =
     else
         H.div
             [ A.class "col-md-6 user-page__edit-or-contact-user" ]
-            [ H.p [] [ H.text ("Voisiko " ++ userToContact.name ++ " auttaa sinua? Jaa käyntikorttisi tästä. ") ]
+            [ H.p [] [ H.text <| t_With "hint" [ userToContact.name ] ]
             , H.button
                 [ if Maybe.isJust loggedInUser then
                     E.onClick <| LocalViewMessage Profile.StartAddContact
@@ -222,7 +230,7 @@ contactUser model userToContact loggedInUser =
                     Link.action (Nav.LoginNeeded (Nav.User userToContact.id |> Nav.routeToPath |> Just))
                 , A.class "btn btn-primary"
                 ]
-                [ H.text "Ota yhteyttä" ]
+                [ H.text <| t_ "contact" ]
             ]
 
 

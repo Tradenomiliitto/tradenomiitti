@@ -11,6 +11,7 @@ import Nav
 import State.Config as Config
 import State.CreateAd exposing (..)
 import State.Util exposing (SendingStatus(..))
+import Translation exposing (T)
 import Util exposing (UpdateMessage(..))
 
 
@@ -85,8 +86,8 @@ maxHeading =
     90
 
 
-view : Config.Model -> Model -> H.Html Msg
-view config model =
+view : T -> Config.Model -> Model -> H.Html Msg
+view t config model =
     case model.sending of
         NotSending ->
             H.div
@@ -98,7 +99,7 @@ view config model =
                         [ H.h3
                             [ A.class "create-ad__heading-input" ]
                             [ H.textarea
-                                [ A.placeholder "Otsikko"
+                                [ A.placeholder <| t "createAd.headingInputPlaceholder"
                                 , E.onInput ChangeHeading
                                 , A.value model.heading
                                 , A.wrap "soft"
@@ -106,9 +107,9 @@ view config model =
                                 ]
                                 []
                             ]
-                        , Common.lengthHint "create-ad__heading-length-hint" model.heading minHeading maxHeading
+                        , Common.lengthHint t "create-ad__heading-length-hint" model.heading minHeading maxHeading
                         , H.textarea
-                            [ A.placeholder "Kirjoita ytimekäs ilmoitus"
+                            [ A.placeholder <| t "createAd.adInputPlaceholder"
                             , A.class "create-ad__textcontent"
                             , E.onInput ChangeContent
                             , A.value model.content
@@ -119,11 +120,11 @@ view config model =
                         [ A.class "col-xs-12 col-sm-5 create-ad__filters-submit" ]
                         [ H.h3
                             [ A.class "create-ad__filters-heading" ]
-                            [ H.text "Kenen toivot vastaavan?" ]
-                        , H.p [] [ H.text "Valitsemalla toimialan tai tehtävän varmistat, että kysymyksesi löytää vastaajansa. Valittu kohderyhmä saa myös ilmoituksesi sähköpostina." ]
-                        , Common.select "create-ad" ChangeDomain Domain config.domainOptions model
-                        , Common.select "create-ad" ChangePosition Position config.positionOptions model
-                        , Common.select "create-ad" ChangeLocation Location Config.finnishRegions model
+                            [ H.text <| t "createAd.filtersHeading" ]
+                        , H.p [] [ H.text <| t "createAd.filtersInfo" ]
+                        , Common.select t "create-ad" ChangeDomain Domain config.domainOptions model
+                        , Common.select t "create-ad" ChangePosition Position config.positionOptions model
+                        , Common.select t "create-ad" ChangeLocation Location Config.finnishRegions model
                         , H.p
                             [ A.class "create-ad__submit-button" ]
                             [ H.button
@@ -131,7 +132,7 @@ view config model =
                                 , E.onClick Send
                                 , A.disabled (String.length model.heading < minHeading || String.length model.heading > maxHeading)
                                 ]
-                                [ H.text "Julkaise ilmoitus" ]
+                                [ H.text <| t "createAd.submit" ]
                             ]
                         ]
                     ]
@@ -149,9 +150,9 @@ view config model =
             H.div
                 [ A.class "splash-screen " ]
                 [ H.div [ A.class "create-ad__success" ]
-                    [ H.h1 [] [ H.text "Lähetys onnistui" ]
-                    , H.p [] [ H.text <| "Ilmoituksen numero on: " ++ id ]
-                    , H.p [] [ H.text "Paina selaimesi päivitä-nappulaa jatkaaksesi" ]
+                    [ H.h1 [] [ H.text <| t "createAd.successHeading" ]
+                    , H.p [] [ H.text <| t "createAd.successAdId" ++ id ]
+                    , H.p [] [ H.text <| t "createAd.successContinue" ]
                     ]
                 ]
 
@@ -159,7 +160,7 @@ view config model =
             H.div
                 [ A.class "splash-screen" ]
                 [ H.div [ A.class "create-ad__fail" ]
-                    [ H.h1 [] [ H.text "Jotain meni pieleen" ]
-                    , H.p [] [ H.text "Ole hyvä ja lataa sivu uudelleen" ]
+                    [ H.h1 [] [ H.text <| t "createAd.errorHeading" ]
+                    , H.p [] [ H.text <| t "createAd.errorContinue" ]
                     ]
                 ]
