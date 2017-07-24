@@ -2,10 +2,11 @@ module LoginNeeded exposing (view)
 
 import Html as H
 import Html.Attributes as A
+import Translation exposing (T)
 
 
-view : String -> H.Html msg
-view loginUrl =
+view : T -> String -> H.Html msg
+view t loginUrl =
     H.div
         [ A.class "login-needed__container"
         ]
@@ -14,12 +15,16 @@ view loginUrl =
             , A.class "login-needed__animation"
             ]
             []
-        , viewLoginBox loginUrl
+        , viewLoginBox t loginUrl
         ]
 
 
-viewLoginBox : String -> H.Html msg
-viewLoginBox loginUrl =
+viewLoginBox : T -> String -> H.Html msg
+viewLoginBox t loginUrl =
+    let
+        t_ key =
+            t ("loginNeeded." ++ key)
+    in
     H.div
         [ A.class "container"
         ]
@@ -27,15 +32,15 @@ viewLoginBox loginUrl =
             [ A.class "row login-needed" ]
             [ H.div
                 [ A.class "col-xs-11 col-sm-7 center-block login-needed__box" ]
-                [ H.h1 [] [ H.text "Kirjaudu sisään" ]
-                , H.p [] [ H.text "Tradenomiitti on ainutlaatuinen kohtaamispaikka Tradenomiliiton jäsenille. Sinun tulee kirjautua sisään TRAL-tunnuksillasi, jotta voit luoda profiilin ja toimia Tradenomiitissa." ]
+                [ H.h1 [] [ H.text <| t_ "heading" ]
+                , H.p [] [ H.text <| t_ "info" ]
                 , H.div
                     [ A.class "login-needed__actionable-items" ]
                     [ H.div [ A.class "login-needed__actionable-items-join" ]
-                        [ H.span [] [ H.text "Etkö ole vielä TRAL:n jäsen?" ]
+                        [ H.span [] [ H.text <| t_ "joinHeading" ]
                         , H.span
                             [ A.class "login-needed__actionable-items-join-link" ]
-                            [ H.a [ A.href "http://tral.fi" ] [ H.text "Liity jäseneksi" ] ]
+                            [ H.a [ A.href <| t_ "joinUrl" ] [ H.text <| t_ "joinLink" ] ]
                         ]
                     , H.div
                         [ A.class "login-needed__actionable-items-login"
@@ -44,7 +49,7 @@ viewLoginBox loginUrl =
                             [ A.class "btn btn-primary btn-lg login-needed__actionable-items-login-button"
                             , A.href loginUrl
                             ]
-                            [ H.text "Kirjaudu" ]
+                            [ H.text <| t "common.login" ]
                         ]
                     ]
                 ]

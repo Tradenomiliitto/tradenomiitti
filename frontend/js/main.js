@@ -1,4 +1,6 @@
 /* global Elm */
+import 'babel-polyfill';
+
 import initAnimation from './animation';
 import { initScrollingToTop, initHomeScrolling } from './scrolling';
 import initGoogleAnalytics from './google-analytics';
@@ -7,10 +9,10 @@ import initFooterVisibleListener from './footer-visible';
 import initCloseMobileMenu from './mobile-menu';
 import initShowAlerts from './show-alerts';
 import initTypeahead from './typeahead';
+import translations from './translations';
 
-import 'babel-polyfill';
 
-const app = Elm.Main.embed(document.getElementById('app'));
+const app = Elm.Main.embed(document.getElementById('app'), { translations });
 
 initAnimation(app.ports.animation);
 initScrollingToTop(app.ports.scrollTop);
@@ -21,4 +23,3 @@ initFooterVisibleListener(app.ports.footerAppeared);
 initCloseMobileMenu(app.ports.closeMenu);
 initShowAlerts(app.ports.showAlert);
 initTypeahead(app.ports.typeahead, app.ports.typeaheadResult);
-

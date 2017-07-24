@@ -8,6 +8,7 @@ import Http
 import Models.User exposing (Settings, User)
 import State.Settings exposing (..)
 import State.Util exposing (SendingStatus(..))
+import Translation exposing (T)
 import Util exposing (UpdateMessage(..), ViewMessage(..))
 
 
@@ -98,45 +99,49 @@ update msg model =
             { model | sending = Sending } ! [ updateSettings settings ]
 
 
-view : Model -> Maybe User -> H.Html (ViewMessage Msg)
-view model userMaybe =
+view : T -> Model -> Maybe User -> H.Html (ViewMessage Msg)
+view t model userMaybe =
     case ( model.settings, userMaybe ) of
         ( Just settings, Just user ) ->
-            viewSettingsPage model settings user
+            viewSettingsPage t model settings user
 
         ( Nothing, Just user ) ->
             H.div
                 []
-                [ Common.profileTopRow user False Common.SettingsTab (H.div [] []) ]
+                [ Common.profileTopRow t user False Common.SettingsTab (H.div [] []) ]
 
         _ ->
             H.div [] []
 
 
-viewSettingsPage : Model -> Settings -> User -> H.Html (ViewMessage Msg)
-viewSettingsPage model settings user =
+viewSettingsPage : T -> Model -> Settings -> User -> H.Html (ViewMessage Msg)
+viewSettingsPage t model settings user =
     H.div
         []
-        [ Common.profileTopRow user False Common.SettingsTab (H.div [] [])
-        , H.map LocalViewMessage <| viewSettings model settings
+        [ Common.profileTopRow t user False Common.SettingsTab (H.div [] [])
+        , H.map LocalViewMessage <| viewSettings t model settings
         ]
 
 
-viewSettings : Model -> Settings -> H.Html Msg
-viewSettings model settings =
+viewSettings : T -> Model -> Settings -> H.Html Msg
+viewSettings t model settings =
+    let
+        t_ key =
+            t ("settings." ++ key)
+    in
     H.div
         [ A.class "container" ]
         [ H.div
             [ A.class "row" ]
             [ H.div
                 [ A.class "col-xs-12" ]
-                [ H.h1 [ A.class "settings__heading" ] [ H.text "Asetukset" ] ]
+                [ H.h1 [ A.class "settings__heading" ] [ H.text <| t_ "heading" ] ]
             , H.form
                 []
                 [ H.div
                     [ A.class "col-xs-12 col-sm-6" ]
-                    [ H.h2 [ A.class "settings__subsection-heading" ] [ H.text "Sähköpostit" ]
-                    , H.p [] [ H.text "Voit itse valita missä tilanteissa Tradenomiitti lähettää sinulle viestin sähköpostitse. Sähköposti varmistaa sen, että saat tiedon uusista kontakteista, sinua koskevista ilmoituksista ja saamistasi vastauksista." ]
+                    [ H.h2 [ A.class "settings__subsection-heading" ] [ H.text <| t_ "emailsHeading" ]
+                    , H.p [] [ H.text <| t_ "emailsInfo" ]
                     ]
                 , H.div
                     [ A.class "col-xs-12 col-sm-6" ]
@@ -146,7 +151,7 @@ viewSettings model settings =
                         [ H.label
                             [ A.for "email-address"
                             ]
-                            [ H.text "Sähköpostiosoite" ]
+                            [ H.text <| t_ "emailAddress" ]
                         , H.input
                             [ A.type_ "text"
                             , A.class "form-control"
@@ -166,7 +171,7 @@ viewSettings model settings =
                                 , A.checked settings.emails_for_businesscards
                                 ]
                                 []
-                            , H.text "Ilmoitus uudesta kontaktista/käyntikortista"
+                            , H.text <| t_ "emailsForBusinesscards"
                             ]
                         ]
                     , H.div
@@ -179,7 +184,7 @@ viewSettings model settings =
                                 , A.checked settings.emails_for_answers
                                 ]
                                 []
-                            , H.text "Ilmoitus uudesta vastauksesta jättämääsi kysymykseen"
+                            , H.text <| t_ "emailsForAnswers"
                             ]
                         ]
                     , H.div
@@ -192,7 +197,7 @@ viewSettings model settings =
                                 , A.checked settings.emails_for_new_ads
                                 ]
                                 []
-                            , H.text "Kootut sinulle suunnatut ilmoitukset (viikottainen)"
+                            , H.text <| t_ "emailsForNewAds"
                             ]
                         ]
                     ]
@@ -206,26 +211,26 @@ viewSettings model settings =
                     [ E.onClick (Save settings)
                     , A.class "btn btn-default"
                     ]
-                    [ H.text "Tallenna" ]
+                    [ H.text <| t_ "buttonSave" ]
                 , H.p
                     []
-                    [ H.text <| sendingToText model.sending ]
+                    [ H.text <| sendingToText t model.sending ]
                 ]
             ]
         ]
 
 
-sendingToText : SendingStatus -> String
-sendingToText sending =
+sendingToText : T -> SendingStatus -> String
+sendingToText t sending =
     case sending of
         NotSending ->
             ""
 
         Sending ->
-            "Tallenetaan…"
+            t "settings.sending"
 
         FinishedSuccess _ ->
-            "Tallennus onnistui"
+            t "settings.success"
 
         FinishedFail ->
-            "Tallenuksessa meni jotain pieleen"
+            t "settings.error"
