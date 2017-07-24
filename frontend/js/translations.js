@@ -1,4 +1,4 @@
-const supportEmail = 'tradenomiitti@tral.fi';
+const supportEmail = 'info@mothersinbusiness.fi';
 
 const source = {
   common: {
@@ -48,7 +48,7 @@ const source = {
     },
     leaveAnswerPrompt: {
       isAsker: 'Muut käyttäjät voivat vastata ilmoitukseesi tällä sivulla. Näet vastaukset alla kun niitä tulee.',
-      hasAnswered: 'Olet vastannut tähän ilmoitukseen. Kiitos kun autoit kanssatradenomiasi!',
+      hasAnswered: 'Olet vastannut tähän ilmoitukseen. Kiitos kun autoit kanssamibiläistäsi!',
       hint: 'Kokemuksellasi on aina arvoa. Jaa näkemyksesi vastaamalla ilmoitukseen.',
       answerTooltip: 'Voit vastata muiden esittämiin kysymyksiin kerran',
       cannotAnswerTooltip: 'Et voi vastata tähän kysymykseen',
@@ -81,16 +81,16 @@ const source = {
   },
   footer: {
     link1: {
-      url: 'http://tral.fi',
-      text: 'tral.fi',
+      url: 'http://www.mothersinbusiness.fi',
+      text: 'Mothers in Business MiB ry',
     },
     link2: {
-      url: 'http://liity.tral.fi/#liity',
+      url: 'http://www.mothersinbusiness.fi/jaseneksi/',
       text: 'Liity jäseneksi',
     },
     link3: {
-      url: 'mailto:tradenomiitti@tral.fi',
-      text: 'Anna palautetta',
+      url: 'http://www.mothersinbusiness.fi/yhteys/',
+      text: 'Ota yhteyttä',
     },
     linkStats: {
       text: 'Tilastoja',
@@ -98,14 +98,14 @@ const source = {
   },
   home: {
     introbox: {
-      heading: 'Kohtaa tradenomi',
+      heading: 'Löydä mibiläinen',
       createProfile: 'Luo oma profiili',
-      content: 'Tradenomiitti on tradenomien oma kohtaamispaikka, jossa jäsenet löytävät toisensa yhteisten aiheiden ympäriltä ja hyötyvät toistensa kokemuksista.',
+      content: 'MiBiT on mibiläisten oma kohtaamispaikka, jossa yhdistyvät inspiroivat kohtaamiset, vertaistuki ja itsensä kehittäminen. Voit löytää etsimäsi MiB-kontaktin tai tulla itse löydetyksi juuri sinunkaltaistasi henkilöä etsivälle.',
     },
     tradenomiittiInfo: {
       // \xad === &shy;, that is soft hyphen
       heading: 'Ko\xADke\xADmuk\xADsel\xADla\xADsi on aina arvoa',
-      paragraph1: 'Tradenomiitti on tradenomien oma kohtaamispaikka, jossa yhdistyvät inspiroivat kohtaamiset ja itsensä kehittäminen. Tradenomiitti tuo tradenomien osaamisen esille - olit sitten opiskelija tai kokenut konkari. Juuri sinulla voi olla vastaus toisen tradenomin kysymykseen, tai ehkä uusi työnantajasi etsii sinua jo?',
+      paragraph1: 'MiB in Touch eli MiBiT on mibiläisten oma kohtaamispaikka, joka yhdistää MiB ry:n jäsenet ympäri Suomen. Kaipaatko vertaistukea, haluatko tutustua samalla alalla oleviin muihin äiteihin vai löytää samanhenkistä seuraa tietyltä alueelta? MiBiT yhdistää! Voit huhuilla kahvitteluseuraa perhevapaiden aikana, sopia lähialueen Minglejä, etsiä vertaistukea ruuhkavuosiin tai vaikka mentoria uudelle urallesi. Tule mukaan voimaannuttavaan verkostoon!',
       paragraph2: 'Luomalla profiilin pääset alkuun, loput on itsestäsi kiinni.',
     },
     listAds: {
@@ -114,8 +114,8 @@ const source = {
       buttonCreateAd: 'jätä ilmoitus',
     },
     listUsers: {
-      heading: 'Löydä tradenomi',
-      buttonListUsers: 'Katso kaikki tradenomit',
+      heading: 'Löydä mibiläinen',
+      buttonListUsers: 'Katso kaikki mibiläiset',
       buttonEditProfile: 'Muokkaa omaa profiilia',
       buttonCreateProfile: 'Luo oma profiili',
     },
@@ -129,7 +129,7 @@ const source = {
     },
   },
   listUsers: {
-    heading: 'Selaa tradenomeja',
+    heading: 'Selaa mibiläisiä',
     sort: {
       activity: 'Aktiivisuus',
       name: 'Nimi',
@@ -140,19 +140,20 @@ const source = {
       skill: 'Valitse taito',
     },
   },
+  // TODO: Ei pidä vielä paikkaansa
   loginNeeded: {
     heading: 'Kirjaudu sisään',
-    info: 'Tradenomiitti on ainutlaatuinen kohtaamispaikka Tradenomiliiton jäsenille. Sinun tulee kirjautua sisään TRAL-tunnuksillasi, jotta voit luoda profiilin ja toimia Tradenomiitissa.',
-    joinHeading: 'Etkö ole vielä TRAL:n jäsen?',
-    joinUrl: 'http://tral.fi',
+    info: 'MiB in Touch on ainutlaatuinen kohtaamispaikka Mothers in Business MiB ry:n jäsenille. Sinun tulee kirjautua sisään MiB-tunnuksillasi, jotta voit luoda profiilin ja toimia MiB in Touch -palvelussa.',
+    joinHeading: 'Etkö ole vielä Mothers in Business MiB ry:n jäsen?',
+    joinUrl: 'http://www.mothersinbusiness.fi/jaseneksi/',
     joinLink: 'Liity jäseneksi',
   },
   main: {
     profile: 'Profiili',
     login: 'Kirjaudu',
     consentNeeded: {
-      heading: 'Tervetuloa Tradenomiittiin!',
-      content: 'Tehdäksemme palvelun käytöstä mahdollisimman vaivatonta hyödynnämme Tradenomiliiton olemassa olevia jäsentietoja (nimesi, työhistoriasi). Luomalla profiilin hyväksyt tietojesi käytön Tradenomiitti-palvelussa. Voit muokata tietojasi myöhemmin.',
+      heading: 'Tervetuloa MiBiTiin!',
+      content: 'Tehdäksemme palvelun käytöstä mahdollisimman vaivatonta hyödynnämme Mothers in Business MiB ry:n olemassa olevia jäsentietoja (nimesi). Luomalla profiilin hyväksyt tietojesi käytön MiB in Touch -palvelussa. Voit muokata tietojasi myöhemmin.',
       iAcceptThe: 'Hyväksyn palvelun ',
       terms: 'käyttöehdot',
       createProfile: 'Luo profiili',
@@ -172,7 +173,7 @@ const source = {
       home: 'Home',
       info: 'Tietoa',
       notFound: 'Ei löytynyt',
-      listUsers: 'Tradenomit',
+      listUsers: 'Mibiläiset',
       listAds: 'Ilmoitukset',
       createAd: 'Jätä ilmoitus',
       showAd: 'Ilmoitus {.}',
@@ -186,7 +187,7 @@ const source = {
   profile: {
     editProfile: {
       heading: 'Muokkaa profiilia',
-      hint: 'Tehdäksemme Tradenomiitin käytöstä sinulle mahdollisimman vaivatonta, olemme luoneet sinulle profiilin TRAL:n jäsentietojen perusteella. Viimeistele profiilisi tarkastamalla jäsentietosi, muokkaamalla julkista profiiliasi ja täyttämällä henkilökohtainen käyntikorttisi.',
+      hint: 'Tehdäksemme MiB in Touch -palvelun käytöstä sinulle mahdollisimman vaivatonta, olemme luoneet sinulle profiilin Mothers in Business MiB ry:n jäsentietojen perusteella. Viimeistele profiilisi tarkastamalla jäsentietosi, muokkaamalla julkista profiiliasi ja täyttämällä henkilökohtainen käyntikorttisi.',
       nickNameMandatory: 'Kutsumanimi on pakollinen',
       buttonSave: 'Tallenna profiili',
       buttonEdit: 'Muokkaa profiilia',
@@ -216,7 +217,7 @@ const source = {
     },
     competences: {
       editHeading: 'Muokkaa osaamistasi',
-      hint: 'Osaamisesi on esitäytetty jäsentietojemme perusteella. Muokkaa ja täydennä tehtäviä ja toimialoja, jotta Tradenomiitti voi palvella sinua paremmin ja jotta muut tradenomit löytäisivät sinut helpommin. ',
+      hint: 'Kerro osaamisestasi valitsemalla toimiala, tehtäväluokka ja taitosi. Näin MiBiT voi palvellla sinua paremmin ja jotta muut mibiläiset löytävät sinut helpommin. Osaaminen näkyy kaikille käyttäjille.',
       visibleForEveryone: 'Osaaminen näkyy kaikille käyttäjille.',
     },
     ownProfile: {
@@ -271,7 +272,7 @@ const source = {
       instituteRequired: 'Oppilaitos on pakollinen tieto',
     },
     membershipRegisterInfo: {
-      heading: 'TRAL:n Jäsentiedot',
+      heading: 'MiB:n jäsentiedot',
       nickName: 'Kutsumanimi',
       firstName: 'Etunimi',
       lastName: 'Sukunimi',
@@ -300,7 +301,7 @@ const source = {
   settings: {
     heading: 'Asetukset',
     emailsHeading: 'Sähköpostit',
-    emailsInfo: 'Voit itse valita missä tilanteissa Tradenomiitti lähettää sinulle viestin sähköpostitse. Sähköposti varmistaa sen, että saat tiedon uusista kontakteista, sinua koskevista ilmoituksista ja saamistasi vastauksista.',
+    emailsInfo: 'Voit itse valita missä tilanteissa MiB in Touch lähettää sinulle viestin sähköpostitse. Sähköposti varmistaa sen, että saat tiedon uusista kontakteista, sinua koskevista ilmoituksista ja saamistasi vastauksista.',
     emailAddress: 'Sähköpostiosoite',
     emailsForBusinesscards: 'Ilmoitus uudesta kontaktista/käyntikortista',
     emailsForAnswers: 'Ilmoitus uudesta vastauksesta jättämääsi kysymykseen',
@@ -318,7 +319,7 @@ const source = {
   },
   user: {
     contactUser: {
-      alreadySent: 'Olet lähettänyt käyntikortin tälle tradenomille.',
+      alreadySent: 'Olet lähettänyt käyntikortin tälle mibiläiselle.',
       mustContainPhoneOrEmail: 'Käyntikortissasi täytyy olla vähintään puhelinnumero tai sähköpostiosoite, jotta voisit lähettää sen',
       businessCardIsAttached: 'Viestin mukana lähetät käyntikortin',
       editOrContactUserPrompt: 'Kirjoita napakka esittelyteksti',
