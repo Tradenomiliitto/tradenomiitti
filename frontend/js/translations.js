@@ -333,17 +333,6 @@ function flatten(object) {
 }
 
 const flatObject = flatten(source);
-
-// TODO: remove temporary visibility hack
-const matches = (key, str) => key.toLowerCase().indexOf(str) >= 0;
-function plaintext(key) {
-  return !(matches(key, 'width') || matches(key, 'url'));
-}
-const list = Object.keys(flatObject).map(key =>
-  (plaintext(key)
-    ? [key, `«${flatObject[key]}»`]
-    : [key, flatObject[key]]
-  )
-);
+const list = Object.keys(flatObject).map(key => [key, flatObject[key]]);
 
 export default list;
