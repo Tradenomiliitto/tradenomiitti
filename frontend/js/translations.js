@@ -156,11 +156,11 @@ const source = {
       iAcceptThe: 'Hyväksyn palvelun ',
       terms: 'käyttöehdot',
       createProfile: 'Luo profiili',
-      notImplementedYet: 'Tätä ominaisuutta ei ole vielä toteutettu',
     },
     splashScreen: {
       logoWidth: '400px',
     },
+    notImplementedYet: 'Tätä ominaisuutta ei ole vielä toteutettu',
   },
   navigation: {
     sr_open: 'Navigaation avaus',
