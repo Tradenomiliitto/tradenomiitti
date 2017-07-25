@@ -150,7 +150,7 @@ const source = {
   // TODO: Ei pidä vielä paikkaansa
   loginNeeded: {
     heading: 'Kirjaudu sisään',
-    info: 'MiB in Touch on ainutlaatuinen kohtaamispaikka Mothers in Business MiB ry:n jäsenille. Sinun tulee kirjautua sisään MiB-tunnuksillasi, jotta voit luoda profiilin ja toimia MiB in Touch -palvelussa.',
+    info: 'MiBiT on ainutlaatuinen kohtaamispaikka Mothers in Business MiB ry:n jäsenille. Sinun tulee kirjautua sisään MiB-tunnuksillasi, jotta voit luoda profiilin ja toimia MiBiTissä.',
     joinHeading: 'Etkö ole vielä Mothers in Business MiB ry:n jäsen?',
     joinUrl: 'http://www.mothersinbusiness.fi/jaseneksi/',
     joinLink: 'Liity jäseneksi',
@@ -160,7 +160,7 @@ const source = {
     login: 'Kirjaudu',
     consentNeeded: {
       heading: 'Tervetuloa MiBiTiin!',
-      content: 'Tehdäksemme palvelun käytöstä mahdollisimman vaivatonta hyödynnämme Mothers in Business MiB ry:n olemassa olevia jäsentietoja (nimesi). Luomalla profiilin hyväksyt tietojesi käytön MiB in Touch -palvelussa. Voit muokata tietojasi myöhemmin.',
+      content: 'Tehdäksemme palvelun käytöstä mahdollisimman vaivatonta hyödynnämme Mothers in Business MiB ry:n olemassa olevia jäsentietoja (nimesi). Luomalla profiilin hyväksyt tietojesi käytön MiBiTissä. Voit muokata tietojasi myöhemmin.',
       iAcceptThe: 'Hyväksyn palvelun ',
       terms: 'käyttöehdot',
       createProfile: 'Luo profiili',
@@ -194,7 +194,7 @@ const source = {
   profile: {
     editProfile: {
       heading: 'Muokkaa profiilia',
-      hint: 'Tehdäksemme MiB in Touch -palvelun käytöstä sinulle mahdollisimman vaivatonta, olemme luoneet sinulle profiilin Mothers in Business MiB ry:n jäsentietojen perusteella. Viimeistele profiilisi tarkastamalla jäsentietosi, muokkaamalla julkista profiiliasi ja täyttämällä henkilökohtainen käyntikorttisi.',
+      hint: 'Tehdäksemme MiBiTin käytöstä sinulle mahdollisimman vaivatonta, olemme luoneet sinulle profiilin Mothers in Business MiB ry:n jäsentietojen perusteella. Viimeistele profiilisi tarkastamalla jäsentietosi, muokkaamalla julkista profiiliasi ja täyttämällä henkilökohtainen käyntikorttisi.',
       nickNameMandatory: 'Kutsumanimi on pakollinen',
       buttonSave: 'Tallenna profiili',
       buttonEdit: 'Muokkaa profiilia',
@@ -308,7 +308,7 @@ const source = {
   settings: {
     heading: 'Asetukset',
     emailsHeading: 'Sähköpostit',
-    emailsInfo: 'Voit itse valita missä tilanteissa MiB in Touch lähettää sinulle viestin sähköpostitse. Sähköposti varmistaa sen, että saat tiedon uusista kontakteista, sinua koskevista ilmoituksista ja saamistasi vastauksista.',
+    emailsInfo: 'Voit itse valita missä tilanteissa MiBiT lähettää sinulle viestin sähköpostitse. Sähköposti varmistaa sen, että saat tiedon uusista kontakteista, sinua koskevista ilmoituksista ja saamistasi vastauksista.',
     emailAddress: 'Sähköpostiosoite',
     emailsForBusinesscards: 'Ilmoitus uudesta kontaktista/käyntikortista',
     emailsForAnswers: 'Ilmoitus uudesta vastauksesta jättämääsi kysymykseen',
