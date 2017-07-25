@@ -95,6 +95,13 @@ const source = {
     linkStats: {
       text: 'Tilastoja',
     },
+    socialButton: {
+      facebookUrl: 'https://www.facebook.com/tradenomiliitto',
+      twitterUrl: 'https://twitter.com/Tradenomiliitto',
+      instagramUrl: 'https://www.instagram.com/tradenomiliitto/',
+      linkedinUrl: 'http://www.linkedin.com/groups/Tradenomiliitto-TRAL-ry-2854058/about',
+      githubUrl: 'https://github.com/tradenomiliitto/tradenomiitti',
+    },
   },
   home: {
     introbox: {
