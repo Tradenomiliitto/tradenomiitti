@@ -98,7 +98,7 @@ npm run seed-db
 npm start
 ```
 
-You can click "Kirjaudu" to login as *Anni* test user. You can also open `http://localhost:3000/kirjaudu/1` or `http://localhost:3000/kirjaudu/2` to use either of the two test user accounts: no SSO or members registry API required.
+You can click "Kirjaudu" to login as *Aino* test user. You can also open `http://localhost:3000/kirjaudu/1` or `http://localhost:3000/kirjaudu/2` to use either of the two test user accounts: no SSO or members registry API required.
 
 Run tests:
 
