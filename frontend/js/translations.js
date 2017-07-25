@@ -96,11 +96,11 @@ const source = {
       text: 'Tilastoja',
     },
     socialButton: {
-      facebookUrl: 'https://www.facebook.com/tradenomiliitto',
-      twitterUrl: 'https://twitter.com/Tradenomiliitto',
-      instagramUrl: 'https://www.instagram.com/tradenomiliitto/',
-      linkedinUrl: 'http://www.linkedin.com/groups/Tradenomiliitto-TRAL-ry-2854058/about',
-      githubUrl: 'https://github.com/tradenomiliitto/tradenomiitti',
+      facebookUrl: 'https://www.facebook.com/mibsuomi',
+      twitterUrl: 'https://twitter.com/MiB_ry',
+      instagramUrl: 'https://www.instagram.com/',
+      linkedinUrl: 'https://www.linkedin.com/company/mothers-in-business-mib-ry',
+      githubUrl: 'https://github.com/futurice/mibit',
     },
   },
   home: {
