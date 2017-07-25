@@ -147,7 +147,6 @@ const source = {
       skill: 'Valitse taito',
     },
   },
-  // TODO: Ei pidä vielä paikkaansa
   loginNeeded: {
     heading: 'Kirjaudu sisään',
     info: 'MiBiT on ainutlaatuinen kohtaamispaikka Mothers in Business MiB ry:n jäsenille. Sinun tulee kirjautua sisään MiB-tunnuksillasi, jotta voit luoda profiilin ja toimia MiBiTissä.',
