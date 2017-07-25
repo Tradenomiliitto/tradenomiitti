@@ -2,7 +2,7 @@
 
 MiBit is a social web service for the members of [Mothers in Business MiB ry](http://www.mothersinbusiness.fi). MiBit is a fork of [Tradenomiitti](https://github.com/Tradenomiliitto/tradenomiitti), a free open source project made for Tradenomiliitto.
 
-*Note: Since both this fork and the upstream project is still under active development, some of the configuration related things (database names, test user names etc.) have not been changed to make merges from upstream easier. This might change later.*
+*Note: Since both this fork and the upstream project is still under active development, some of the configuration related things (database names, deployment repository name etc.) have not been changed to make merges from upstream easier. This might change later.*
 
 ## Deployment
 
@@ -98,7 +98,7 @@ npm run seed-db
 npm start
 ```
 
-You can click "Kirjaudu" to login as *Tradenomi1* test user. You can also open `http://localhost:3000/kirjaudu/1` or `http://localhost:3000/kirjaudu/2` to use either of the two test user accounts: no SSO or members registry API required.
+You can click "Kirjaudu" to login as *Anni* test user. You can also open `http://localhost:3000/kirjaudu/1` or `http://localhost:3000/kirjaudu/2` to use either of the two test user accounts: no SSO or members registry API required.
 
 Run tests:
 
