@@ -1,11 +1,13 @@
 module Models.User exposing (..)
 
 import Date
+import FamilyStatus exposing (FamilyStatus)
 import Json.Decode as Json
 import Json.Decode.Extra exposing (date)
 import Json.Decode.Pipeline as P
 import Json.Encode as JS
 import Skill
+import WorkStatus exposing (WorkStatus)
 
 
 -- data in Extra comes from the api
@@ -66,6 +68,8 @@ type alias User =
     , education : List Education
     , isAdmin : Bool
     , memberId : Maybe Int
+    , familyStatus : List FamilyStatus
+    , workStatus : Maybe WorkStatus
     }
 
 
@@ -116,6 +120,8 @@ userDecoder =
         |> P.required "education" (Json.list educationDecoder)
         |> P.optional "is_admin" Json.bool False
         |> P.optional "member_id" (Json.map Just Json.int) Nothing
+        |> P.optional "family_status" FamilyStatus.listDecoder []
+        |> P.optional "work_status" (Json.map Just WorkStatus.decoder) Nothing
 
 
 encode : User -> JS.Value

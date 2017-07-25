@@ -1,5 +1,6 @@
 module Util exposing (..)
 
+import Char
 import Html as H
 import Http
 import Json.Encode as JS
@@ -139,3 +140,13 @@ takeNChars n word ( accumulator, canAddMore ) =
         ( accumulator ++ word ++ " ", canAddMore )
     else
         ( accumulator, False )
+
+
+capitalize : String -> String
+capitalize string =
+    case String.uncons string of
+        Just ( first, rest ) ->
+            String.cons (Char.toUpper first) rest
+
+        Nothing ->
+            ""
