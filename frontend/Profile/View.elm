@@ -1,6 +1,7 @@
 module Profile.View exposing (..)
 
 import Common
+import FamilyStatus
 import Html as H
 import Html.Attributes as A
 import Html.Events as E
@@ -18,6 +19,7 @@ import State.Profile exposing (Model)
 import SvgIcons
 import Translation exposing (T)
 import Util exposing (ViewMessage(..))
+import WorkStatus
 
 
 view : T -> Model -> RootState.Model -> H.Html (ViewMessage Msg)
@@ -716,6 +718,7 @@ userInfoBox t model user =
                             H.text user.title
                         ]
                     , location model user
+                    , familyStatus t user
                     ]
                 ]
             ]
@@ -763,6 +766,22 @@ location model user =
             locationSelect user
           else
             H.span [ A.class "profile__location--text" ] [ H.text user.location ]
+        ]
+
+
+familyStatus : T -> User -> H.Html Msg
+familyStatus t user =
+    let
+        workStatus =
+            case user.workStatus of
+                Just status ->
+                    [ H.text <| WorkStatus.toString t status ++ ". " ]
+
+                Nothing ->
+                    []
+    in
+    H.div [ A.class "profile__family-status" ]
+        [ H.p [] <| workStatus ++ [ H.text <| FamilyStatus.toString t user.familyStatus ]
         ]
 
 

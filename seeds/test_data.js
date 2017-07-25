@@ -3,8 +3,10 @@ function dataForName(name) {
     name,
     business_card: {
       name,
-      phone: '123456789'
-    }
+      phone: '123456789',
+    },
+    family_status: name === 'Aino' ? ['pregnant', 'toddler'] : ['toddler', 'schoolkid'],
+    work_status: 'working',
   }
 }
 
@@ -16,7 +18,7 @@ exports.seed = function(knex, Promise) {
         id: 1,
         remote_id: -1,
         settings: {},
-        data: dataForName('Tradenomi1')
+        data: dataForName('Aino')
 
       });
     }).then(() => {
@@ -24,7 +26,7 @@ exports.seed = function(knex, Promise) {
         id: 2,
         remote_id: -2,
         settings: {},
-        data: dataForName('Tradenomi2')
+        data: dataForName('Sinituuli')
       });
     }).then(() => {
       return knex('sessions').insert([
@@ -62,7 +64,7 @@ exports.seed = function(knex, Promise) {
          user_id: 2,
          ad_id: parseInt(id),
          created_at: new Date(2017, 4, 4)
-       }); 
+       });
     }).then(() => {
       return knex('events').del();
     })
