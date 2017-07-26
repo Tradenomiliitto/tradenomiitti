@@ -109,7 +109,9 @@
     &-info-row {
       @include shadow;
       background-color: $white;
-      @include equal-height-columns;
+      @media (min-width: $screen-sm-min) {
+        display: flex;
+      }
     }
     &--background {
       background-color: $light-grey;
@@ -124,11 +126,10 @@
       padding: 30px;
     }
     &--image {
-      width: calc(100% + 15px);
-      height: 100%;
-      @media (max-width: $screen-xs-max) {
-        width: calc(100% + 30px);
-        margin-left: -15px;
+      background: url("/static/home_image.jpg");
+      background-size: cover;
+      @media (max-width: $screen-sm-min) {
+        padding-top: 66%;
       }
     }
     &-info {
@@ -152,4 +153,4 @@
       }
     }
   }
-} 
+}

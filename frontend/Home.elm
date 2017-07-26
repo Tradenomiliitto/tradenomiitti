@@ -264,7 +264,7 @@ tradenomiittiRow : T -> H.Html (ViewMessage msg)
 tradenomiittiRow t =
     H.div
         [ A.class "row home__tradenomiitti-info-row" ]
-        [ H.div [ A.class "home__tradenomiitti-info-container  col-md-6" ] [ tradenomiittiInfo t ]
+        [ H.div [ A.class "home__tradenomiitti-info-container  col-sm-6" ] [ tradenomiittiInfo t ]
         , tradenomiImage
         ]
 
@@ -310,10 +310,5 @@ readMoreButton t =
 tradenomiImage : H.Html msg
 tradenomiImage =
     H.div
-        [ A.class "col-md-6" ]
-        [ H.img
-            [ A.class "home__tradenomiitti--image"
-            , A.src "/static/home_image.jpg"
-            ]
-            []
-        ]
+        [ A.class "col-sm-6 home__tradenomiitti--image" ]
+        []
