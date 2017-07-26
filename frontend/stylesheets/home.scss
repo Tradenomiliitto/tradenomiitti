@@ -109,7 +109,7 @@
     &-info-row {
       @include shadow;
       background-color: $white;
-      @media (min-width: $screen-sm-min) {
+      @media (min-width: $screen-md-min) {
         display: flex;
       }
     }
@@ -128,7 +128,7 @@
     &--image {
       background: url("/static/home_image.jpg");
       background-size: cover;
-      @media (max-width: $screen-sm-min) {
+      @media (max-width: $screen-md-min) {
         padding-top: 66%;
       }
     }
