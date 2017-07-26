@@ -174,8 +174,10 @@ div#not-implemented {
   }
 
   &__logo {
-    height: 66px;
+    height: 130px;
     margin-bottom: 20px;
+    filter: drop-shadow(15px 15px 40px #111);
+    -webkit-filter: drop-shadow(15px 15px 40px #111);
   }
 
   &__admin-link {
