@@ -310,5 +310,5 @@ readMoreButton t =
 tradenomiImage : H.Html msg
 tradenomiImage =
     H.div
-        [ A.class "col-md-6 home__tradenomiitti--image" ]
+        [ A.class "home__tradenomiitti--image col-md-6" ]
         []
