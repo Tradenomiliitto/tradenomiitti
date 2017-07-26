@@ -49,7 +49,6 @@ view t routeToMsg userMaybe =
                     [ A.class "col-xs-12 col-sm-6 footer__social-icons" ]
                     [ H.a [ A.href <| t "footer.socialButton.facebookUrl" ] [ H.i [ A.class "fa fa-facebook" ] [] ]
                     , H.a [ A.href <| t "footer.socialButton.twitterUrl" ] [ H.i [ A.class "fa fa-twitter" ] [] ]
-                    , H.a [ A.href <| t "footer.socialButton.instagramUrl" ] [ H.i [ A.class "fa fa-instagram" ] [] ]
                     , H.a [ A.href <| t "footer.socialButton.linkedinUrl" ] [ H.i [ A.class "fa fa-linkedin" ] [] ]
                     , H.a [ A.href <| t "footer.socialButton.githubUrl" ] [ H.i [ A.class "fa fa-github" ] [] ]
                     ]
