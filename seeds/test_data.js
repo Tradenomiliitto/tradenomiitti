@@ -5,9 +5,14 @@ function dataForName(name) {
       name,
       phone: '123456789',
     },
-    family_status: name === 'Aino' ? ['pregnant', 'toddler'] : ['toddler', 'schoolkid'],
-    work_status: 'working',
-  }
+    family_status: {
+      children:
+        name === 'Aino'
+          ? [{ year: 2014, month: 4 }]
+          : [{ year: 2017, month: 6 }, { year: 2015, month: 3 }],
+      work_status: name === 'Aino' ? 'working' : 'on_leave',
+    },
+  };
 }
 
 exports.seed = function(knex, Promise) {

@@ -19,7 +19,6 @@ import State.Profile exposing (Model)
 import SvgIcons
 import Translation exposing (T)
 import Util exposing (ViewMessage(..))
-import WorkStatus
 
 
 view : T -> Model -> RootState.Model -> H.Html (ViewMessage Msg)
@@ -770,19 +769,14 @@ location model user =
 
 
 familyStatus : T -> User -> H.Html Msg
-familyStatus t user =
-    let
-        workStatus =
-            case user.workStatus of
-                Just status ->
-                    [ H.text <| WorkStatus.toString t status ++ ". " ]
+familyStatus t { familyStatus } =
+    case familyStatus of
+        Just status ->
+            H.div [ A.class "profile__family-status" ]
+                [ H.p [] [ H.text <| FamilyStatus.asText t status ] ]
 
-                Nothing ->
-                    []
-    in
-    H.div [ A.class "profile__family-status" ]
-        [ H.p [] <| workStatus ++ [ H.text <| FamilyStatus.toString t user.familyStatus ]
-        ]
+        Nothing ->
+            H.text ""
 
 
 optionPreselected : String -> String -> H.Html msg

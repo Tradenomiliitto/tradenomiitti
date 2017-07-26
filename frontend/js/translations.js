@@ -2,6 +2,7 @@ const supportEmail = 'info@mothersinbusiness.fi';
 
 const source = {
   common: {
+    and: 'ja',
     supportEmail,
     dateFormat: 'd.M.y',
     readMore: 'lue lisää',

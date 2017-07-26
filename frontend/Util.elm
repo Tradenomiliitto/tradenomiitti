@@ -6,6 +6,7 @@ import Http
 import Json.Encode as JS
 import Nav exposing (Route)
 import Task
+import Translation exposing (T)
 
 
 type ViewMessage msg
@@ -142,11 +143,30 @@ takeNChars n word ( accumulator, canAddMore ) =
         ( accumulator, False )
 
 
-capitalize : String -> String
-capitalize string =
+toSentence : String -> String
+toSentence string =
     case String.uncons string of
         Just ( first, rest ) ->
-            String.cons (Char.toUpper first) rest
+            String.cons (Char.toUpper first) rest ++ "."
 
         Nothing ->
             ""
+
+
+humanizeStringList : T -> List String -> String
+humanizeStringList t stringList =
+    let
+        lastIndex =
+            List.length stringList - 1
+    in
+    stringList
+        |> List.indexedMap
+            (\index a ->
+                if index == lastIndex then
+                    a
+                else if index == lastIndex - 1 then
+                    a ++ " " ++ t "common.and" ++ " "
+                else
+                    a ++ ", "
+            )
+        |> String.join ""
