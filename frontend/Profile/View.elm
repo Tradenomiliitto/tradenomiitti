@@ -1,6 +1,7 @@
 module Profile.View exposing (..)
 
 import Common
+import Date
 import FamilyStatus
 import Html as H
 import Html.Attributes as A
@@ -717,7 +718,7 @@ userInfoBox t model user =
                             H.text user.title
                         ]
                     , location model user
-                    , familyStatus t user
+                    , familyStatus t model.currentDate user
                     ]
                 ]
             ]
@@ -768,12 +769,12 @@ location model user =
         ]
 
 
-familyStatus : T -> User -> H.Html Msg
-familyStatus t { familyStatus } =
+familyStatus : T -> Maybe Date.Date -> User -> H.Html Msg
+familyStatus t currentDate { familyStatus } =
     case familyStatus of
         Just status ->
             H.div [ A.class "profile__family-status" ]
-                [ H.p [] [ H.text <| FamilyStatus.asText t status ] ]
+                [ H.p [] [ H.text <| FamilyStatus.asText t currentDate status ] ]
 
         Nothing ->
             H.text ""

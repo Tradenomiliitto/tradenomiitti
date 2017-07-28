@@ -22,7 +22,7 @@ type alias Birthdate =
 
 
 type ChildAgeCategory
-    = Pregnant
+    = Unborn
     | Baby
     | Toddler
     | PlayAge
@@ -45,12 +45,9 @@ decoder =
         |> P.required "work_status" WorkStatus.decoder
 
 
-asText : T -> FamilyStatus -> String
-asText t familyStatus =
+asText : T -> Maybe Date.Date -> FamilyStatus -> String
+asText t maybeCurrentDate familyStatus =
     let
-        currentDate =
-            Date.fromParts 2017 Date.Jul 26 0 0 0 0
-
         workStatus =
             WorkStatus.toString t familyStatus.workStatus
 
@@ -62,79 +59,98 @@ asText t familyStatus =
                     )
                 |> Util.humanizeStringList t
 
-        ageCategories =
+        ageCategories currentDate =
             familyStatus.children
                 |> List.filterMap (toAgeCategory currentDate)
-                |> ageToString t
+                |> List.map (translate t)
+                |> Util.humanizeStringList t
+                |> Util.toSentence
+
+        ages currentDate =
+            familyStatus.children
+                |> List.filterMap (toAge currentDate)
+                |> List.map (\age -> toString age ++ "v")
+                |> Util.humanizeStringList t
+                |> Util.toSentence
 
         textWithDates =
-            workStatus ++ ". Äidiksi " ++ dates ++ "."
+            t "familyStatus.becameMother" ++ " " ++ dates ++ "."
+
+        childCount =
+            List.length familyStatus.children
+
+        textWithAges currentDate =
+            if childCount == 1 then
+                t "familyStatus.child" ++ " " ++ ages currentDate
+            else if childCount > 1 then
+                t "familyStatus.children" ++ " " ++ ages currentDate
+            else
+                ""
 
         textWithCategories =
-            workStatus ++ ". " ++ ageCategories
+            ageCategories
     in
-    -- textWithCategories
-    textWithDates
+    case maybeCurrentDate of
+        Just currentDate ->
+            workStatus ++ ". " ++ textWithAges currentDate
 
-
-ageToString : T -> List ChildAgeCategory -> String
-ageToString t =
-    List.map (translate t)
-        >> Util.humanizeStringList t
-        >> Util.toSentence
+        Nothing ->
+            workStatus ++ ". " ++ textWithDates
 
 
 translate : T -> ChildAgeCategory -> String
 translate t familyStatus =
     case familyStatus of
-        Pregnant ->
-            "odottaa"
+        Unborn ->
+            t "familyStatus.ageCategories.unborn"
 
         Baby ->
-            "vauva"
+            t "familyStatus.ageCategories.baby"
 
         Toddler ->
-            "taapero"
+            t "familyStatus.ageCategories.toddler"
 
         PlayAge ->
-            "leikki-ikäinen"
+            t "familyStatus.ageCategories.playAge"
 
         Schoolkid ->
-            "kouluikäinen"
+            t "familyStatus.ageCategories.schoolkid"
 
         Teenager ->
-            "teini-ikäinen"
+            t "familyStatus.ageCategories.teenager"
 
         GrownUpChildren ->
-            "aikuinen lapsi"
+            t "familyStatus.ageCategories.grownUpChildren"
 
 
-toAgeCategory : Date.Date -> Birthdate -> Maybe ChildAgeCategory
-toAgeCategory currentDate birthdate =
-    let
-        yearsToCategory years =
-            if years < 0 then
-                Pregnant
-            else if years < 1 then
-                Baby
-            else if years < 3 then
-                Toddler
-            else if years < 7 then
-                PlayAge
-            else if years < 12 then
-                Schoolkid
-            else if years < 19 then
-                Teenager
-            else
-                GrownUpChildren
-    in
+yearsToCategory : Int -> ChildAgeCategory
+yearsToCategory years =
+    if years < 0 then
+        Unborn
+    else if years < 1 then
+        Baby
+    else if years < 3 then
+        Toddler
+    else if years < 7 then
+        PlayAge
+    else if years < 12 then
+        Schoolkid
+    else if years < 19 then
+        Teenager
+    else
+        GrownUpChildren
+
+
+toAge : Date.Date -> Birthdate -> Maybe Int
+toAge currentDate birthdate =
     [ birthdate.year, birthdate.month, 1 ]
         |> List.map (String.padLeft 2 '0' << toString)
         |> String.join "-"
         |> Date.fromIsoString
-        |> Maybe.map
-            (\date ->
-                Date.diff Date.Year date currentDate
-                    |> Debug.log ("diff: " ++ toString date ++ ", " ++ toString currentDate)
-                    |> yearsToCategory
-            )
+        |> Maybe.map (\date -> Date.diff Date.Year date currentDate)
+
+
+toAgeCategory : Date.Date -> Birthdate -> Maybe ChildAgeCategory
+toAgeCategory currentDate birthdate =
+    toAge currentDate birthdate
+        |> Maybe.map yearsToCategory

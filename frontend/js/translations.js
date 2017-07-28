@@ -80,6 +80,19 @@ const source = {
     codeToUserVisibleMessage: `Jotain meni pieleen. Virheen tunnus on {.}. Meille olisi suuri apu, jos otat kuvakaappauksen koko sivusta ja lähetät sen osoitteeseen ${supportEmail}.`,
     errorResponseFailure: '{.} Järjestelmässä on jotain pahasti pielessä, tutkimme asiaa',
   },
+  familyStatus: {
+    becameMother: 'Äidiksi',
+    child: 'Lapsi',
+    children: 'Lapset',
+    ageCategories: {
+      unborn: 'odottaa',
+      baby: 'vauva',
+      playAge: 'leikki-ikäinen',
+      schoolkid: 'kouluikäinen',
+      teenager: 'teini-ikäinen',
+      grownUpChildren: 'aikuinen lapsi',
+    },
+  },
   footer: {
     link1: {
       url: 'http://www.mothersinbusiness.fi',

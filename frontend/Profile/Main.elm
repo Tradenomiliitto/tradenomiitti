@@ -1,5 +1,6 @@
 port module Profile.Main exposing (..)
 
+import Date
 import Http
 import Json.Decode as Json
 import Json.Encode as JS
@@ -10,6 +11,7 @@ import Removal
 import Skill
 import State.Config as Config
 import State.Profile exposing (Model)
+import Task
 import Util exposing (UpdateMessage(..))
 
 
@@ -27,6 +29,7 @@ type Msg
     | ChangeTitle String
     | ChangeNickname String
     | ChangeDescription String
+    | UpdateDate Date.Date
     | UpdateUser ()
     | UpdateConsent
     | UpdateBusinessCard BusinessCardField String
@@ -126,9 +129,15 @@ getAds u =
         |> Util.errorHandlingSend GetAds
 
 
+getDate : Cmd (UpdateMessage Msg)
+getDate =
+    Date.now
+        |> Task.perform (LocalUpdateMessage << UpdateDate)
+
+
 initTasks : Cmd (UpdateMessage Msg)
 initTasks =
-    Cmd.batch [ getMe ]
+    Cmd.batch [ getMe, getDate ]
 
 
 updateMe : User -> Cmd (UpdateMessage Msg)
@@ -325,6 +334,9 @@ update msg model config =
 
         ChangeImage user ->
             model ! [ imageUpload user.pictureEditingDetails ]
+
+        UpdateDate date ->
+            { model | currentDate = Just date } ! []
 
         ImageDetailsUpdate ( cropped, editingDetails ) ->
             updateUser

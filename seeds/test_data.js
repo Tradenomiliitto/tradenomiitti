@@ -9,7 +9,7 @@ function dataForName(name) {
       children:
         name === 'Aino'
           ? [{ year: 2014, month: 4 }]
-          : [{ year: 2017, month: 6 }, { year: 2015, month: 3 }],
+          : [{ year: 2017, month: 6 }, { year: 2015, month: 3 }, { year: 2014, month: 1 }],
       work_status: name === 'Aino' ? 'working' : 'on_leave',
     },
   };
