@@ -157,9 +157,9 @@ module.exports = function init(params) {
         <h5 style="color: ${scssVars.$primary}; margin-top: 0;">${user.data.business_card.title}</h3>
       </span>
       <div style="clear: left;">
-        ${makeBusinessCardLine('Sijainti', user.data.business_card.location)}
-        ${makeBusinessCardLine('Puhelinnumero', user.data.business_card.phone)}
-        ${makeBusinessCardLine('Sähköpostiosoite', user.data.business_card.email)}
+        ${makeBusinessCardLine(t.detailTitle1, user.data.business_card.location)}
+        ${makeBusinessCardLine(t.detailTitle2, user.data.business_card.phone)}
+        ${makeBusinessCardLine(t.detailTitle3, user.data.business_card.email)}
       </div>
     </div>
     <p style="margin-top: 50px;">${t.p3} <a href="https://${serviceDomain}/asetukset" style="text-decoration: none; color: inherit; font-weight: bold;">${t.a2}</a>.</p>
