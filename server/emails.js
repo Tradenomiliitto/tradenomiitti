@@ -21,6 +21,7 @@ module.exports = function init(params) {
   };
 
   function sendNotificationForAnswer(dbUser, ad) {
+    const t = email_translations.sendNotificationForAnswer;
     const attachment = [
       { data: answerNotificationHtml(ad),
         alternative: true,
@@ -29,13 +30,12 @@ module.exports = function init(params) {
         ],
       },
     ];
-    const text = email_translations.sendNotificationForAnswer.text;
-    const subject = email_translations.sendNotificationForAnswer.subject;
     const { email_address, emails_for_answers } = util.formatSettings(dbUser.settings);
-    sendEmail(email_address, emails_for_answers, text, subject, attachment);
+    sendEmail(email_address, emails_for_answers, t.text, t.subject, attachment);
   }
 
   function sendNotificationForContact(receiver, contactUser, introductionText) {
+    const t = email_translations.sendNotificationForContact;
     const attachment = [
       { data: contactNotificationHtml(contactUser, introductionText),
         alternative: true,
@@ -45,10 +45,8 @@ module.exports = function init(params) {
         ],
       },
     ];
-    const text = email_translations.sendNotificationForContact.text;
-    const subject = email_translations.sendNotificationForContact.subject;
     const { email_address, emails_for_businesscards } = util.formatSettings(receiver.settings);
-    sendEmail(email_address, emails_for_businesscards, text, subject, attachment);
+    sendEmail(email_address, emails_for_businesscards, t.text, t.subject, attachment);
   }
 
   function isUserPic(userPic) {
@@ -74,6 +72,7 @@ module.exports = function init(params) {
   }
 
   function sendNotificationForAds(user, ads) {
+    const t = email_translations.sendNotificationForAds;
     function makeImage(ad, index) {
       return imageAttachment(ad.created_by.cropped_picture, `<picture${index}>`);
     }
@@ -84,10 +83,8 @@ module.exports = function init(params) {
         related: [logo].concat(adImages),
       },
     ];
-    const text = email_translations.sendNotificationForAds.text;
-    const subject = email_translations.sendNotificationForAds.subject;
     const { email_address, emails_for_new_ads } = util.formatSettings(user.settings);
-    sendEmail(email_address, emails_for_new_ads, text, subject, attachment);
+    sendEmail(email_address, emails_for_new_ads, t.text, t.subject, attachment);
   }
 
   function sendEmail(email_address, allow_sending, text, subject, attachment) {
