@@ -112,7 +112,6 @@ const source = {
     socialButton: {
       facebookUrl: 'https://www.facebook.com/mibsuomi',
       twitterUrl: 'https://twitter.com/MiB_ry',
-      instagramUrl: 'https://www.instagram.com/',
       linkedinUrl: 'https://www.linkedin.com/company/mothers-in-business-mib-ry',
       githubUrl: 'https://github.com/futurice/mibit',
     },

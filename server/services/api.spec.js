@@ -68,7 +68,7 @@ describe('Handle API requests', () => {
     chai.request(server).get('/api/ilmoitukset/1')
       .then(res => {
         res.should.have.status(200);
-        res.body.heading.should.equal('foo');
+        res.body.heading.should.equal('Chew foot');
         return res.should.be.json;
       })
   );

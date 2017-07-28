@@ -592,7 +592,7 @@ logoImage : String -> String -> H.Html msg
 logoImage alt width =
     H.img
         [ A.alt alt
-        , A.src "/static/main_logo.png"
+        , A.src "/static/main_logo_duo.png"
         , A.class "logo-image"
         , A.style [ ( "width", width ) ]
         ]
