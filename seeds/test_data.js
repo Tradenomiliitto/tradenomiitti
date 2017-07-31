@@ -8,10 +8,11 @@ const aino_data = {
   family_status: ['pregnant', 'toddler'],
   location: 'Helsinki',
   work_status: 'working',
+  contribution: 'Haluan opettaa tennistä',
 };
 
 const sinituuli_data = {
-  name: 'Sinituuli',
+  name: 'Sinituulia',
   business_card: {
     name: 'Sinituuli',
     phone: '123456789',
@@ -19,6 +20,7 @@ const sinituuli_data = {
   description: 'I guess it\'s better to be lucky than good. Your shields were failing, sir. Besides, you look good in a dress.',
   family_status: ['toddler', 'schoolkid'],
   work_status: 'working',
+  contribution: '',
 };
 
 exports.seed = function(knex, Promise) {

@@ -30,6 +30,7 @@ module.exports = function initialize(params) {
     formattedUser.title = userData.title || 'Ei titteliä';
     formattedUser.family_status = userData.family_status;
     formattedUser.work_status = userData.work_status;
+    formattedUser.contribution = userData.contribution;
 
     // only get these when getting detailed profile
     formattedUser.domains = [];

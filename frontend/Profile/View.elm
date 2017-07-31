@@ -719,6 +719,7 @@ userInfoBox t model user =
                         ]
                     , location model user
                     , familyStatus t user
+                    , H.div [ A.class "profile__detail" ] <| contributionStatus t user
                     ]
                 ]
             ]
@@ -755,18 +756,35 @@ userIdForAdmins t user =
 
 location : Model -> User -> H.Html Msg
 location model user =
-    H.div
-        [ A.classList
-            [ ( "profile__location", True )
-            , ( "user-page__editing-location", model.editing )
+    if (model.editing == False) && (user.location == "") then
+        H.text ""
+    else
+        H.div
+            [ A.classList
+                [ ( "profile__detail", True )
+                , ( "user-page__editing-location", model.editing )
+                ]
             ]
-        ]
-        [ H.img [ A.class "profile__location--marker", A.src "/static/lokaatio.svg" ] []
-        , if model.editing then
-            locationSelect user
-          else
-            H.span [ A.class "profile__location--text" ] [ H.text user.location ]
-        ]
+            [ H.div [ A.class "profile__marker" ]
+                [ H.i [ A.class "fa fa-map-marker" ] [] ]
+            , if model.editing then
+                locationSelect user
+              else
+                H.span [ A.class "profile__location--text" ] [ H.text user.location ]
+            ]
+
+
+contributionStatus : T -> User -> List (H.Html Msg)
+contributionStatus t user =
+    case user.contributionStatus of
+        Just string ->
+            [ H.div [ A.class "profile__marker" ]
+                [ H.i [ A.class "fa fa-book" ] [] ]
+            , H.span [] [ H.text string ]
+            ]
+
+        Nothing ->
+            [ H.text "" ]
 
 
 familyStatus : T -> User -> H.Html Msg
@@ -780,9 +798,12 @@ familyStatus t user =
                 Nothing ->
                     []
     in
-    H.div [ A.class "profile__family-status" ]
-        [ H.p [] <| workStatus ++ [ H.text <| FamilyStatus.toString t user.familyStatus ]
+    H.div [ A.class "profile__detail" ] <|
+        [ H.div [ A.class "profile__marker" ]
+            [ H.i [ A.class "fa fa-home" ] [] ]
         ]
+            ++ workStatus
+            ++ [ H.text <| FamilyStatus.toString t user.familyStatus ]
 
 
 optionPreselected : String -> String -> H.Html msg

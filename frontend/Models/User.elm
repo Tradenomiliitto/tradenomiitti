@@ -70,6 +70,7 @@ type alias User =
     , memberId : Maybe Int
     , familyStatus : List FamilyStatus
     , workStatus : Maybe WorkStatus
+    , contributionStatus : Maybe String
     }
 
 
@@ -91,6 +92,18 @@ type alias BusinessCard =
     }
 
 
+maybeString : Json.Decoder (Maybe String)
+maybeString =
+    Json.string
+        |> Json.map
+            (\str ->
+                if String.length str == 0 then
+                    Nothing
+                else
+                    Just str
+            )
+
+
 userDecoder : Json.Decoder User
 userDecoder =
     P.decode User
@@ -103,16 +116,7 @@ userDecoder =
         |> P.required "special_skills" (Json.list Json.string)
         |> P.required "profile_creation_consented" Json.bool
         |> P.required "location" Json.string
-        |> P.required "cropped_picture"
-            (Json.string
-                |> Json.map
-                    (\str ->
-                        if String.length str == 0 then
-                            Nothing
-                        else
-                            Just str
-                    )
-            )
+        |> P.required "cropped_picture" maybeString
         |> P.optional "picture_editing" (Json.map Just pictureEditingDecoder) Nothing
         |> P.optional "extra" (Json.map Just userExtraDecoder) Nothing
         |> P.optional "business_card" (Json.map Just businessCardDecoder) Nothing
@@ -122,6 +126,7 @@ userDecoder =
         |> P.optional "member_id" (Json.map Just Json.int) Nothing
         |> P.optional "family_status" FamilyStatus.listDecoder []
         |> P.optional "work_status" (Json.map Just WorkStatus.decoder) Nothing
+        |> P.optional "contribution" maybeString Nothing
 
 
 encode : User -> JS.Value

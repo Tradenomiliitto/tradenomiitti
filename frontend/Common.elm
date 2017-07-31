@@ -185,10 +185,14 @@ linkAction route toMsg =
 
 showLocation : String -> H.Html msg
 showLocation location =
-    H.div [ A.class "profile__location" ]
-        [ H.img [ A.class "profile__location--marker", A.src "/static/lokaatio.svg" ] []
-        , H.span [ A.class "profile__location--text" ] [ H.text location ]
-        ]
+    if location == "" then
+        H.text ""
+    else
+        H.div [ A.class "profile__location" ]
+            [ H.div [ A.class "profile__marker" ]
+                [ H.i [ A.class "fa fa-map-marker" ] [] ]
+            , H.span [ A.class "profile__location--text" ] [ H.text location ]
+            ]
 
 
 lengthHint : T -> String -> String -> Int -> Int -> H.Html msg
