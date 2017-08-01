@@ -246,6 +246,7 @@ const source = {
     userInfoBox: {
       nickNamePlaceholder: 'Miksi kutsumme sinua?',
       titlePlaceholder: 'Titteli',
+      contributionPlaceholder: 'Mitä haluaisit opettaa muille?',
     },
     userDescriptionPlaceholder: 'Kirjoita napakka kuvaus itsestäsi',
     userIdForAdmins: 'Jäsentunniste: ',

@@ -664,6 +664,17 @@ userInfoBoxEditing2 t model user =
                 []
             ]
         , location model user
+        , H.p
+            [ A.class "user-page__work-details" ]
+            [ H.div [ A.class "profile__marker" ]
+                [ H.i [ A.class "fa fa-book" ] [] ]
+            , H.input
+                [ A.value user.contributionStatus
+                , E.onInput ChangeContributionStatus
+                , A.placeholder <| t "profile.userInfoBox.contributionPlaceholder"
+                ]
+                []
+            ]
         ]
     ]
 
@@ -777,14 +788,14 @@ location model user =
 contributionStatus : T -> User -> List (H.Html Msg)
 contributionStatus t user =
     case user.contributionStatus of
-        Just string ->
+        "" ->
+            [ H.text "" ]
+
+        _ ->
             [ H.div [ A.class "profile__marker" ]
                 [ H.i [ A.class "fa fa-book" ] [] ]
-            , H.span [] [ H.text string ]
+            , H.span [] [ H.text user.contributionStatus ]
             ]
-
-        Nothing ->
-            [ H.text "" ]
 
 
 familyStatus : T -> User -> H.Html Msg

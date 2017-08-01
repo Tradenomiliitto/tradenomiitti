@@ -70,7 +70,7 @@ type alias User =
     , memberId : Maybe Int
     , familyStatus : List FamilyStatus
     , workStatus : Maybe WorkStatus
-    , contributionStatus : Maybe String
+    , contributionStatus : String
     }
 
 
@@ -126,7 +126,7 @@ userDecoder =
         |> P.optional "member_id" (Json.map Just Json.int) Nothing
         |> P.optional "family_status" FamilyStatus.listDecoder []
         |> P.optional "work_status" (Json.map Just WorkStatus.decoder) Nothing
-        |> P.optional "contribution" maybeString Nothing
+        |> P.optional "contribution" Json.string ""
 
 
 encode : User -> JS.Value
@@ -138,6 +138,7 @@ encode user =
         , ( "domains", JS.list (List.map Skill.encode user.domains) )
         , ( "positions", JS.list (List.map Skill.encode user.positions) )
         , ( "location", JS.string user.location )
+        , ( "contribution", JS.string user.contributionStatus )
         , ( "cropped_picture", JS.string (user.croppedPictureFileName |> Maybe.withDefault "") )
         , ( "special_skills", JS.list (List.map JS.string user.skills) )
         , ( "education", educationEncode user.education )

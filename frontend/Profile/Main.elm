@@ -25,6 +25,7 @@ type Msg
     | ChangePositionSelect String
     | ChangeLocation String
     | ChangeTitle String
+    | ChangeContributionStatus String
     | ChangeNickname String
     | ChangeDescription String
     | UpdateUser ()
@@ -259,6 +260,9 @@ update msg model config =
 
         ChangeTitle str ->
             updateUser (\u -> { u | title = String.slice 0 70 str }) model ! []
+
+        ChangeContributionStatus str ->
+            updateUser (\u -> { u | contributionStatus = String.slice 0 70 str }) model ! []
 
         ChangeNickname str ->
             updateUser (\u -> { u | name = str }) model ! []
