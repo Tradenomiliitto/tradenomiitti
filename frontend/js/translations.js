@@ -106,7 +106,7 @@ const source = {
     introbox: {
       heading: 'Löydä mibiläinen',
       createProfile: 'Luo oma profiili',
-      content: 'MiBiT on mibiläisten oma kohtaamispaikka, jossa yhdistyvät inspiroivat kohtaamiset, vertaistuki ja itsensä kehittäminen. Voit löytää etsimäsi MiB-kontaktin tai tulla itse löydetyksi juuri sinunkaltaistasi henkilöä etsivälle.',
+      content: 'MiBiT on mibiläisten oma kohtaamispaikka, jossa yhdistyvät inspiroivat kohtaamiset, vertaistuki ja itsensä kehittäminen. Voit löytää etsimäsi mibiläisen tai tulla itse löydetyksi juuri sinunkaltaistasi henkilöä etsivälle.',
     },
     tradenomiittiInfo: {
       // \xad === &shy;, that is soft hyphen
