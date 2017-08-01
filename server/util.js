@@ -28,9 +28,9 @@ module.exports = function initialize(params) {
     formattedUser.name = isLoggedIn ? (userData.name || '') : 'Mibiläinen';
     formattedUser.description = userData.description || '';
     formattedUser.title = userData.title || 'Ei titteliä';
-    formattedUser.family_status = userData.family_status;
-    formattedUser.work_status = userData.work_status;
-    formattedUser.contribution = userData.contribution;
+    formattedUser.family_status = isLoggedIn ? userData.family_status : null;
+    formattedUser.work_status = isLoggedIn ? userData.work_status : null;
+    formattedUser.contribution = isLoggedIn ? userData.contribution : null;
 
     // only get these when getting detailed profile
     formattedUser.domains = [];
