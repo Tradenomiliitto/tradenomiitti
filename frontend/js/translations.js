@@ -16,7 +16,7 @@ const source = {
     selectFilters: {
       domain: 'Valitse toimiala',
       position: 'Valitse tehtäväluokka',
-      location: 'Valitse maakunta',
+      location: 'Valitse alue',
     },
     lengthHint: {
       needsNMoreChars: 'Vielä vähintään {.} merkkiä',
@@ -285,7 +285,7 @@ const source = {
       domains: 'Toimiala',
       email: 'Sähköposti',
       phone: 'Matkapuhelinnumero',
-      location: 'Maakunta',
+      location: 'Alue',
       missingData: 'Jäsentiedot puuttuvat',
     },
   },
