@@ -729,7 +729,7 @@ userInfoBox t model user =
                             H.text user.title
                         ]
                     , location model user
-                    , familyStatus t user
+                    , workFamilyStatus t user
                     , H.div [ A.class "profile__detail" ] <| contributionStatus t user
                     ]
                 ]
@@ -798,8 +798,8 @@ contributionStatus t user =
             ]
 
 
-familyStatus : T -> User -> H.Html Msg
-familyStatus t user =
+workFamilyStatus : T -> User -> H.Html Msg
+workFamilyStatus t user =
     let
         workStatus =
             case user.workStatus of
@@ -808,13 +808,25 @@ familyStatus t user =
 
                 Nothing ->
                     []
+
+        familyStatus =
+            case user.familyStatus of
+                [] ->
+                    []
+
+                status ->
+                    [ H.text <| FamilyStatus.toString t status ]
     in
-    H.div [ A.class "profile__detail" ] <|
-        [ H.div [ A.class "profile__marker" ]
-            [ H.i [ A.class "fa fa-home" ] [] ]
-        ]
-            ++ workStatus
-            ++ [ H.text <| FamilyStatus.toString t user.familyStatus ]
+    case workStatus ++ familyStatus of
+        [] ->
+            H.text ""
+
+        status ->
+            H.div [ A.class "profile__detail" ] <|
+                [ H.div [ A.class "profile__marker" ]
+                    [ H.i [ A.class "fa fa-home" ] [] ]
+                ]
+                    ++ status
 
 
 optionPreselected : String -> String -> H.Html msg
