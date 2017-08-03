@@ -2,9 +2,9 @@ const parse = require('csv-parse/lib/sync');
 const fs = require('fs');
 
 function formatData(data) {
-  let newData = [];
+  const newData = [];
   data.forEach(item => {
-    let newItem = {
+    const newItem = {
       data: {},
       settings: {},
     };
