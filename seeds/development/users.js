@@ -1,5 +1,6 @@
 const parse = require('csv-parse/lib/sync');
 const fs = require('fs');
+const bcrypt = require('bcryptjs');
 
 function formatData(data) {
   const newData = [];
@@ -17,6 +18,11 @@ function formatData(data) {
     if (item.Paikallisjaosto) {
       newItem.data.location = item.Paikallisjaosto;
     }
+
+    if (item.Salasana) {
+      newItem.pw_hash = bcrypt.hashSync(item.Salasana, 8);
+    }
+
     newData.push(newItem);
   });
   return newData;

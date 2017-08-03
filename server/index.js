@@ -91,12 +91,13 @@ const smtp =
 
 const enableEmailGlobally = process.env.ENABLE_EMAIL_SENDING === 'true';
 
-const restrictToGroup = process.env.RESTRICT_TO_GROUP; // can be empty
+// const restrictToGroup = process.env.RESTRICT_TO_GROUP; // can be empty
 
 const util = require('./util')({ knex });
 const emails = require('./emails')({ smtp, mailFrom, staticDir, serviceDomain, util, enableEmailGlobally });
 
-const logon = require('./logonHandling')({ communicationsKey, knex, sebacon, restrictToGroup, testLogin, util });
+// const logon = require('./logonHandling')({ communicationsKey, knex, sebacon, restrictToGroup, testLogin, util });
+const logon = require('./localLogonHandling')({ knex, util });
 const profile = require('./profile')({ knex, sebacon, util, userImagesPath, emails });
 const ads = require('./ads')({ util, knex, emails, sebacon });
 const adNotifications = require('./adNotifications')({ emails, knex, util });
@@ -129,19 +130,20 @@ if (testLogin) {
 }
 
 // locally login as 'Tradenomi1' test user, in production redirect to Avoine's authentication
-app.get('/kirjaudu', (req, res) => {
-  if (!testLogin) {
-    let encodedPath = '';
-    if (req.query.path) {
-      encodedPath = encodeURIComponent(`?path=${req.query.path}`);
-    }
-    const encodedParam = encodeURIComponent(req.query.base) + encodedPath;
-    const url = `https://tunnistus.avoine.fi/sso-login/?service=tradenomiitti&return=${encodedParam}`;
-    res.redirect(url);
-  } else {
-    res.redirect('/kirjaudu/1');
-  }
-});
+// app.get('/kirjaudu', (req, res) => {
+//   if (!testLogin) {
+//     let encodedPath = '';
+//     if (req.query.path) {
+//       encodedPath = encodeURIComponent(`?path=${req.query.path}`);
+//     }
+//     const encodedParam = encodeURIComponent(req.query.base) + encodedPath;
+//     const url = `https://tunnistus.avoine.fi/sso-login/?service=tradenomiitti&return=${encodedParam}`;
+//     res.redirect(url);
+//   } else {
+//     res.redirect('/kirjaudu/1');
+//   }
+// });
+app.get('/kirjaudu', logon.login);
 
 app.post('/kirjaudu', urlEncoded, logon.login);
 app.get('/uloskirjautuminen', logon.logout);
