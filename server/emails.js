@@ -3,6 +3,7 @@ const scssToJson = require('scss-to-json');
 
 const colorsFilepath = `${__dirname}/../frontend/stylesheets/colors.scss`;
 const scssVars = scssToJson(colorsFilepath);
+const email_translations = require('./email_translations');
 
 module.exports = function init(params) {
   const staticDir = params.staticDir;
@@ -20,6 +21,7 @@ module.exports = function init(params) {
   };
 
   function sendNotificationForAnswer(dbUser, ad) {
+    const t = email_translations.sendNotificationForAnswer;
     const attachment = [
       { data: answerNotificationHtml(ad),
         alternative: true,
@@ -28,13 +30,12 @@ module.exports = function init(params) {
         ],
       },
     ];
-    const text = 'Kirjaudu Tradenomiittiin nähdäksesi vastauksen';
-    const subject = 'Ilmoitukseesi on vastattu';
     const { email_address, emails_for_answers } = util.formatSettings(dbUser.settings);
-    sendEmail(email_address, emails_for_answers, text, subject, attachment);
+    sendEmail(email_address, emails_for_answers, t.text, t.subject, attachment);
   }
 
   function sendNotificationForContact(receiver, contactUser, introductionText) {
+    const t = email_translations.sendNotificationForContact;
     const attachment = [
       { data: contactNotificationHtml(contactUser, introductionText),
         alternative: true,
@@ -44,11 +45,8 @@ module.exports = function init(params) {
         ],
       },
     ];
-    const text = 'Kirjaudu Tradenomiittiin nähdäksesi kontaktin profiilin';
-    const subject = 'Olet saanut uuden kontaktin';
-
     const { email_address, emails_for_businesscards } = util.formatSettings(receiver.settings);
-    sendEmail(email_address, emails_for_businesscards, text, subject, attachment);
+    sendEmail(email_address, emails_for_businesscards, t.text, t.subject, attachment);
   }
 
   function isUserPic(userPic) {
@@ -74,6 +72,7 @@ module.exports = function init(params) {
   }
 
   function sendNotificationForAds(user, ads) {
+    const t = email_translations.sendNotificationForAds;
     function makeImage(ad, index) {
       return imageAttachment(ad.created_by.cropped_picture, `<picture${index}>`);
     }
@@ -84,11 +83,8 @@ module.exports = function init(params) {
         related: [logo].concat(adImages),
       },
     ];
-    const text = 'Kirjaudu Tradenomiittiin nähdäksesi uusimman sisällön';
-    const subject = 'Uusia ilmoituksia Tradenomiitissa';
-
     const { email_address, emails_for_new_ads } = util.formatSettings(user.settings);
-    sendEmail(email_address, emails_for_new_ads, text, subject, attachment);
+    sendEmail(email_address, emails_for_new_ads, t.text, t.subject, attachment);
   }
 
   function sendEmail(email_address, allow_sending, text, subject, attachment) {
@@ -112,23 +108,24 @@ module.exports = function init(params) {
 
 
   function answerNotificationHtml(ad) {
+    const t = email_translations.answerNotificationHtml;
     return (
       `
 <html>
   <head></head>
   <body style="text-align: center; width: 600px; font-family: Arial, sans-serif; margin-left: auto; margin-right: auto;">
     <img style="width: 45px;" src="cid:logo.png" alt="logo" />
-    <h1 style="margin-bottom: 50px; color: ${scssVars.$pink}">Tradenomi on vastannut ilmoitukseesi</h1>
-    <p>Ilmoitus voi tuoda mukanaan uusia arvokkaita kontakteja. Muista lähettää kiinnostaville tradenomeille yksityisviesti ja/tai käyntikortti.</p>
+    <h1 style="margin-bottom: 50px; color: ${scssVars.$primary}">${t.h1}</h1>
+    <p>${t.p1}</p>
     <p style="margin-top: 80px;">
-      <a style="font-weight: bold; text-transform: uppercase; background-color: ${scssVars.$pink}; padding-left: 45px; padding-right: 45px; padding-top: 25px; padding-bottom: 25px; color: ${scssVars.$white}; text-decoration: none;" href="https://${serviceDomain}/ilmoitukset/${ad.id}">Katso vastaus</a>
+      <a style="font-weight: bold; text-transform: uppercase; background-color: ${scssVars.$primary}; padding-left: 45px; padding-right: 45px; padding-top: 25px; padding-bottom: 25px; color: ${scssVars.$white}; text-decoration: none;" href="https://${serviceDomain}/ilmoitukset/${ad.id}">${t.a1}</a>
     </p>
-    <h4 style="font-weight: bold; text-transform: uppercase; margin-top: 100px;">Ilmoituksesi</h4>
-    <div style="width: 80%; background-color: ${scssVars['$light-grey-background']}; border-color: ${scssVars['$medium-grey']}; border-style: solid; border-width: 1px; padding: 30px; margin-left: auto; margin-right: auto;">
-      <h2 style="color: ${scssVars.$pink};">${ad.data.heading}</h2>
+    <h4 style="font-weight: bold; text-transform: uppercase; margin-top: 100px;">${t.h4}</h4>
+    <div style="width: 80%; background-color: ${scssVars['$lighter-grey']}; border-color: ${scssVars['$medium-grey']}; border-style: solid; border-width: 1px; padding: 30px; margin-left: auto; margin-right: auto;">
+      <h2 style="color: ${scssVars.$primary};">${ad.data.heading}</h2>
       <p>${ad.data.content}</p>
     </div>
-    <p style="margin-top: 50px;">Etkö halua enää sähköposteja? Voit muokata sähköpostiasetuksiasi <a href="https://${serviceDomain}/asetukset" style="text-decoration: none; color: inherit; font-weight: bold;">Käyttäjätilin asetuksista</a>.</p>
+    <p style="margin-top: 50px;">${t.p2} <a href="https://${serviceDomain}/asetukset" style="text-decoration: none; color: inherit; font-weight: bold;">${t.a2}</a>.</p>
   </body>
 </html>
 `
@@ -136,35 +133,36 @@ module.exports = function init(params) {
   }
 
   function contactNotificationHtml(user, message) {
+    const t = email_translations.contactNotificationHtml;
     return (
       `
 <html>
   <head></head>
   <body style="text-align: center; width: 600px; font-family: Arial, sans-serif; margin-left: auto; margin-right: auto;">
     <img style="width: 45px;" src="cid:logo.png" alt="logo" />
-    <h1 style="margin-bottom: 50px; color: ${scssVars.$pink}">Olet saanut uuden kontaktin</h1>
-    <p>Toinen tradenomi on antanut sinulle käyntikorttinsa Tradenomiitti-palvelussa. Voitte nyt olla yhteydessä ja jakaa osaamistanne vaikka kasvotusten.</p>
-    <p>Profiilisivun kautta voit lähettää oman käyntikorttisi.</p>
+    <h1 style="margin-bottom: 50px; color: ${scssVars.$primary}">${t.h1}</h1>
+    <p>${t.p1}</p>
+    <p>${t.p2}</p>
     <p style="margin-top: 80px;">
-      <a style="font-weight: bold; text-transform: uppercase; background-color: ${scssVars.$pink}; padding-left: 45px; padding-right: 45px; padding-top: 25px; padding-bottom: 25px; color: ${scssVars.$white}; text-decoration: none;" href="https://${serviceDomain}/tradenomit/${user.id}">Katso profiili</a>
+      <a style="font-weight: bold; text-transform: uppercase; background-color: ${scssVars.$primary}; padding-left: 45px; padding-right: 45px; padding-top: 25px; padding-bottom: 25px; color: ${scssVars.$white}; text-decoration: none;" href="https://${serviceDomain}/tradenomit/${user.id}">${t.a1}</a>
     </p>
     <p style="margin-top: 75px;margin-bottom: 50px;font-weight: bold;">“${message}”</p>
-    <div style="padding: 30px; background-color: ${scssVars['$light-grey-background']}; text-align: left;">
-      <span style="width: 80px; height: 80px; border-radius: 40px; display: inline-block; overflow: hidden; background-color: ${scssVars.$pink}; float: left; margin-bottom: 25px; margin-right: 10px;">
+    <div style="padding: 30px; background-color: ${scssVars['$lighter-grey']}; text-align: left;">
+      <span style="width: 80px; height: 80px; border-radius: 40px; display: inline-block; overflow: hidden; background-color: ${scssVars.$primary}; float: left; margin-bottom: 25px; margin-right: 10px;">
         <img src="cid:picture" style="${userPicStyle(user.data.cropped_picture)}">
         </img>
       </span>
       <span style="float: left;">
         <h3 style="margin-bottom: 5px;">${user.data.business_card.name}</h2>
-        <h5 style="color: ${scssVars.$pink}; margin-top: 0;">${user.data.business_card.title}</h3>
+        <h5 style="color: ${scssVars.$primary}; margin-top: 0;">${user.data.business_card.title}</h3>
       </span>
       <div style="clear: left;">
-        ${makeBusinessCardLine('Sijainti', user.data.business_card.location)}
-        ${makeBusinessCardLine('Puhelinnumero', user.data.business_card.phone)}
-        ${makeBusinessCardLine('Sähköpostiosoite', user.data.business_card.email)}
+        ${makeBusinessCardLine(t.detailTitle1, user.data.business_card.location)}
+        ${makeBusinessCardLine(t.detailTitle2, user.data.business_card.phone)}
+        ${makeBusinessCardLine(t.detailTitle3, user.data.business_card.email)}
       </div>
     </div>
-    <p style="margin-top: 50px;">Etkö halua enää sähköposteja? Voit muokata sähköpostiasetuksiasi <a href="https://${serviceDomain}/asetukset" style="text-decoration: none; color: inherit; font-weight: bold;">Käyttäjätilin asetuksista</a>.</p>
+    <p style="margin-top: 50px;">${t.p3} <a href="https://${serviceDomain}/asetukset" style="text-decoration: none; color: inherit; font-weight: bold;">${t.a2}</a>.</p>
   </body>
 </html>
 `
@@ -176,30 +174,31 @@ module.exports = function init(params) {
       return `
     <p style="margin-top: 10px; margin-bottom: 10px;">
       <span style="font-weight: bold; margin-right: 5px;">${detailTitle}:</span>
-      <span style="color: ${scssVars.$pink};">${detailValue}</span>
+      <span style="color: ${scssVars.$primary};">${detailValue}</span>
     </p>
-    <hr style="background-color: ${scssVars['$inactive-grey']}; height: 1px; border: 0;"></hr>`;
+    <hr style="background-color: ${scssVars['$medium-grey']}; height: 1px; border: 0;"></hr>`;
     }
     return '';
   }
 
   function singleAdHtml(ad, index) {
+    const t = email_translations.singleAdHtml;
     const categories = [ad.domain, ad.position, ad.location].filter(x => x);
-    const categoriesText = categories.length > 0 ? categories.join(', ') : 'Kaikki tradenomit';
+    const categoriesText = categories.length > 0 ? categories.join(', ') : `${t.categoriesText}`;
     return (
       `
 <p style="margin-top: 45px; margin-bottom: 45px; font-weight: bold;">${categoriesText}</p>
-<div style="padding: 30px; background-color: ${scssVars['$light-grey-background']}; text-align: center;">
-  <span style="width: 80px; height: 80px; border-radius: 40px; display: inline-block; overflow: hidden; background-color: ${scssVars.$pink};">
+<div style="padding: 30px; background-color: ${scssVars['$lighter-grey']}; text-align: center;">
+  <span style="width: 80px; height: 80px; border-radius: 40px; display: inline-block; overflow: hidden; background-color: ${scssVars.$primary};">
     <img src="cid:picture${index}" style="${userPicStyle(ad.created_by.cropped_picture)}">
     </img>
   </span>
   <h3 style="margin-bottom: 5px;">${ad.created_by.name}</h2>
-  <h5 style="color: ${scssVars.$pink}; margin-top: 0;">${ad.created_by.title}</h3>
-  <h2 style="color: ${scssVars.$pink}; margin-top: 30px;">${ad.heading}</h2>
+  <h5 style="color: ${scssVars.$primary}; margin-top: 0;">${ad.created_by.title}</h3>
+  <h2 style="color: ${scssVars.$primary}; margin-top: 30px;">${ad.heading}</h2>
   <p>${ad.content}</p>
   <p style="margin-top: 50px; margin-bottom: 70px;">
-    <a style="font-weight: bold; text-transform: uppercase; background-color: ${scssVars.$pink}; padding-left: 45px; padding-right: 45px; padding-top: 25px; padding-bottom: 25px; color: ${scssVars.$white}; text-decoration: none;" href="https://${serviceDomain}/ilmoitukset/${ad.id}">Vastaa ilmoitukseen</a>
+    <a style="font-weight: bold; text-transform: uppercase; background-color: ${scssVars.$primary}; padding-left: 45px; padding-right: 45px; padding-top: 25px; padding-bottom: 25px; color: ${scssVars.$white}; text-decoration: none;" href="https://${serviceDomain}/ilmoitukset/${ad.id}">${t.a}</a>
   </p>
 </div>
 `
@@ -207,16 +206,17 @@ module.exports = function init(params) {
   }
 
   function adNotificationHtml(ads) {
+    const t = email_translations.adNotificationHtml;
     return (
       `
 <html>
   <head></head>
   <body style="text-align: center; width: 600px; font-family: Arial, sans-serif; margin-left: auto; margin-right: auto;">
     <img style="width: 45px;" src="cid:logo.png" alt="logo" />
-    <h1 style="margin-bottom: 50px; color: ${scssVars.$pink}; text-transform: uppercase; font-weight: bold;">Sinulta odotetaan vastausta</h1>
-    <p style="margin-bottom: 25px;">Toinen tradenomi on jättänyt ilmoituksen ja toivoo vastausta sinun kaltaiseltasi osaajalta. Auta vertaistasi jakamalla näkemyksesi.</p>
+    <h1 style="margin-bottom: 50px; color: ${scssVars.$primary}; text-transform: uppercase; font-weight: bold;">${t.h1}</h1>
+    <p style="margin-bottom: 25px;">${t.p1}</p>
     ${ads.map(singleAdHtml).join('')}
-    <p style="margin-top: 50px;">Etkö halua enää sähköposteja? Voit muokata sähköpostiasetuksiasi <a href="https://${serviceDomain}/asetukset" style="text-decoration: none; color: inherit; font-weight: bold;">Käyttäjätilin asetuksista</a>.</p>
+    <p style="margin-top: 50px;">${t.p2} <a href="https://${serviceDomain}/asetukset" style="text-decoration: none; color: inherit; font-weight: bold;">${t.a}</a>.</p>
   </body>
 </html>
 `
