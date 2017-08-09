@@ -785,7 +785,7 @@ viewPage model =
                     unpackViewMessage identity <| Contacts.view t model.contacts model.profile.user
 
                 ChangePassword ->
-                    H.map ChangePasswordMessage <| ChangePassword.view t model.changePassword
+                    H.map ChangePasswordMessage <| ChangePassword.view t model.changePassword model.profile.user
 
                 NotFound ->
                     notImplementedYet t
