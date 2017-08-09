@@ -64,26 +64,34 @@ module.exports = function initialize(params) {
 
   function changePassword(req, res, next) {
     let sessionId;
-    console.log(req.body);
     const oldPassword = req.body.oldPassword;
     const newPassword = req.body.newPassword;
     const newPassword2 = req.body.newPassword2;
+    let user;
 
     if (req.session.id) {
       sessionId = req.session.id;
       return util.userForSession(req)
-        .then(user => {
-          console.log(user);
-          const pw_hash = user.pw_hash;
+        .then(item => {
+          user = item;
+          const pw_hash = item.pw_hash;
           return bcrypt.compare(oldPassword, pw_hash);
           // return knex('events').insert({ type: 'logout_success', data: { session_id: sessionId, user_id: user.id } });
         })
         .then(isValid => {
-          if (isValid && newPassword === newPassword2) {
-            // oldPassword matches, let's change it to new
-            return res.status(200).json({ status: 'Ok' });
+          if (isValid) {
+            if (newPassword === newPassword2) {
+              // Change password here
+              const newHash = bcrypt.hashSync(newPassword);
+              return knex('users').where({ id: user.id }).update({ pw_hash: newHash })
+                .then(() => knex('events').insert({ type: 'change_password_success', data: { user_id: user.id } }))
+                .then(() => res.status(200).json({ status: 'Ok' }));
+            }
+            return knex('events').insert({ type: 'change_password_failure', data: { message: 'No match', user_id: user.id } })
+              .then(() => res.status(500).json({ status: 'Passwords don\'t match' }));
           }
-          return res.status(403).json({ status: 'Not authorized' });
+          return knex('events').insert({ type: 'change_password_failure', data: { message: 'Wrong old password', user_id: user.id } })
+            .then(() => res.status(403).json({ status: 'Wrong old password' }));
         })
         .catch(next);
     }
