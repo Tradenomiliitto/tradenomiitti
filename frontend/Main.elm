@@ -15,6 +15,7 @@ import Info
 import Json.Decode as Json
 import ListAds
 import ListUsers
+import Login
 import LoginNeeded
 import Maybe.Extra as Maybe
 import Nav exposing (..)
@@ -114,6 +115,7 @@ type Msg
     | UserMessage User.Msg
     | ProfileMessage Profile.Msg
     | CreateAdMessage CreateAd.Msg
+    | LoginMessage Login.Msg
     | ListAdsMessage ListAds.Msg
     | ListUsersMessage ListUsers.Msg
     | AdMessage Ad.Msg
@@ -331,6 +333,14 @@ update msg model =
             in
             { model | createAd = createAdModel }
                 ! [ unpackUpdateMessage CreateAdMessage cmd ]
+
+        LoginMessage msg ->
+            let
+                ( loginModel, cmd ) =
+                    Login.update msg model.login
+            in
+            { model | login = loginModel }
+                ! [ unpackUpdateMessage LoginMessage cmd ]
 
         ListAdsMessage msg ->
             let
@@ -739,6 +749,9 @@ viewPage model =
 
                 Home ->
                     unpackViewMessage HomeMessage <| Home.view t model.home model.profile.user
+
+                Login ->
+                    H.map LoginMessage <| Login.view t model.login
 
                 ListUsers ->
                     unpackViewMessage ListUsersMessage <| ListUsers.view t model.listUsers model.config (Maybe.isJust model.profile.user)

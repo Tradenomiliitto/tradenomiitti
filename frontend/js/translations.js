@@ -153,6 +153,11 @@ const source = {
     joinUrl: 'http://www.mothersinbusiness.fi/jaseneksi/',
     joinLink: 'Liity jäseneksi',
   },
+  login: {
+    title: 'Kirjaudu sisään',
+    usernamePlaceholder: 'Käyttäjätunnus',
+    passwordPlaceholder: 'Salasana',
+  },
   main: {
     profile: 'Profiili',
     login: 'Kirjaudu',
@@ -182,6 +187,7 @@ const source = {
       listAds: 'Ilmoitukset',
       createAd: 'Jätä ilmoitus',
       showAd: 'Ilmoitus {.}',
+      login: 'Kirjaudu',
       loginNeeded: 'Kirjautuminen vaaditaan',
       terms: 'Palvelun käyttöehdot',
       registerDescription: 'Rekisteriseloste',

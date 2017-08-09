@@ -39,7 +39,8 @@ module.exports = function initialize(params) {
         return Promise.reject(new Error('Invalid login'));
       })
       .catch(err => knex('events').insert({ type: 'login_failure', data: { error: err.message, username } })
-        .then(() => res.status(500).send('Jotain meni pieleen'))
+        // .then(() => res.status(500).send('Jotain meni pieleen'))
+        .then(() => res.status(403).send('Jotain meni pieleen'))
       );
   }
 

@@ -9,6 +9,7 @@ import State.CreateAd
 import State.Home
 import State.ListAds
 import State.ListUsers
+import State.Login
 import State.Profile as ProfileState
 import State.Settings
 import State.StaticContent
@@ -22,6 +23,7 @@ type alias Model =
     , scrollTop : Bool
     , listUsers : State.ListUsers.Model
     , user : State.User.Model
+    , login : State.Login.Model
     , profile : ProfileState.Model
     , initialLoading : Bool
     , needsConsent : Bool
@@ -44,6 +46,7 @@ initState translations location =
     , rootUrl = location.origin
     , scrollTop = True -- initially start at top and init
     , user = State.User.init
+    , login = State.Login.init
     , listUsers = State.ListUsers.init
     , profile = ProfileState.init
     , initialLoading = True

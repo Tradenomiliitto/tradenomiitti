@@ -16,6 +16,7 @@ type Route
     | NotFound
     | Profile
     | User Int
+    | Login
     | LoginNeeded (Maybe String)
     | Terms
     | RegisterDescription
@@ -56,6 +57,9 @@ routeToPath route =
 
         User userId ->
             "/tradenomit/" ++ toString userId
+
+        Login ->
+            "/kirjaudu"
 
         LoginNeeded pathMaybe ->
             "/kirjautuminen-tarvitaan/" ++ (pathMaybe |> Maybe.map (\s -> "?seuraava=" ++ s) |> Maybe.withDefault "")
@@ -105,6 +109,9 @@ routeToString t route =
             t "navigation.routeNames.showAd"
                 |> T.replaceWith [ toString adId ]
 
+        Login ->
+            t "navigation.routeNames.login"
+
         LoginNeeded _ ->
             t "navigation.routeNames.loginNeeded"
 
@@ -146,6 +153,7 @@ routeParser =
         , U.map Info (U.s "tietoa")
         , U.map Profile (U.s "profiili")
         , U.map User (U.s "tradenomit" </> U.int)
+        , U.map Login (U.s "kirjaudu")
         , U.map LoginNeeded (U.s "kirjautuminen-tarvitaan" <?> U.stringParam "seuraava")
         , U.map Terms (U.s "kayttoehdot")
         , U.map RegisterDescription (U.s "rekisteriseloste")
@@ -163,6 +171,10 @@ ssoUrl rootUrl maybePath =
         redirectParam =
             Maybe.map (\s -> "&path=" ++ Window.encodeURIComponent s) maybePath |> Maybe.withDefault ""
     in
-    "/kirjaudu?base="
-        ++ loginBase
-        ++ redirectParam
+    "/kirjaudu"
+
+
+
+--"/kirjaudu?base="
+--    ++ loginBase
+--    ++ redirectParam

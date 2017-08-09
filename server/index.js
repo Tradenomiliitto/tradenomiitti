@@ -143,7 +143,7 @@ if (testLogin) {
 //     res.redirect('/kirjaudu/1');
 //   }
 // });
-app.get('/kirjaudu', logon.login);
+// app.get('/kirjaudu', logon.login);
 
 app.post('/kirjaudu', urlEncoded, logon.login);
 app.get('/uloskirjautuminen', logon.logout);
