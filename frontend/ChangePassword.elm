@@ -33,7 +33,7 @@ submit model =
             Json.Encode.object <|
                 [ ( "oldPassword", Json.Encode.string model.oldPassword )
                 , ( "newPassword", Json.Encode.string model.newPassword )
-                , ( "newPassword", Json.Encode.string model.newPassword2 )
+                , ( "newPassword2", Json.Encode.string model.newPassword2 )
                 ]
     in
     Http.post "/vaihdasalasana" (Http.jsonBody encoded) decodeResponse
