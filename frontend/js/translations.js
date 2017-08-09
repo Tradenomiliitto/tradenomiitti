@@ -12,6 +12,7 @@ const source = {
       profile: 'Oma profiili',
       settings: 'Asetukset',
       contacts: 'Käyntikortit',
+      changePassword: 'Vaihda salasana',
     },
     selectFilters: {
       domain: 'Valitse toimiala',
@@ -54,6 +55,13 @@ const source = {
       cannotAnswerTooltip: 'Et voi vastata tähän kysymykseen',
       submit: 'Vastaa ilmoitukseen',
     },
+  },
+  changePassword: {
+    title: 'Vaihda salasanasi',
+    oldPasswordPlaceholder: 'Vanha salasana',
+    newPasswordPlaceholder: 'Uusi salasana',
+    newPasswordPlaceholder2: 'Uusi alasana uudelleen',
+    submit: 'Lähetä',
   },
   contacts: {
     heading: 'Käyntikortit',
@@ -193,6 +201,7 @@ const source = {
       registerDescription: 'Rekisteriseloste',
       settings: 'Asetukset',
       contacts: 'Käyntikortit',
+      changePassword: 'Vaihda salasana',
     },
   },
   profile: {

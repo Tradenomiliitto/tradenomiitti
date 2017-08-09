@@ -1,6 +1,7 @@
 port module Main exposing (..)
 
 import Ad
+import ChangePassword
 import Common
 import Config
 import Contacts
@@ -115,6 +116,7 @@ type Msg
     | UserMessage User.Msg
     | ProfileMessage Profile.Msg
     | CreateAdMessage CreateAd.Msg
+    | ChangePasswordMessage ChangePassword.Msg
     | LoginMessage Login.Msg
     | ListAdsMessage ListAds.Msg
     | ListUsersMessage ListUsers.Msg
@@ -390,6 +392,13 @@ update msg model =
                     Contacts.update msg model.contacts
             in
             { model | contacts = contactsModel } ! [ cmd ]
+
+        ChangePasswordMessage msg ->
+            let
+                ( changePasswordModel, cmd ) =
+                    ChangePassword.update msg model.changePassword
+            in
+            { model | changePassword = changePasswordModel } ! [ unpackUpdateMessage ChangePasswordMessage cmd ]
 
         StaticContentMessage msg ->
             let
@@ -770,6 +779,9 @@ viewPage model =
 
                 Contacts ->
                     unpackViewMessage identity <| Contacts.view t model.contacts model.profile.user
+
+                ChangePassword ->
+                    H.map ChangePasswordMessage <| ChangePassword.view t model.changePassword
 
                 NotFound ->
                     notImplementedYet t

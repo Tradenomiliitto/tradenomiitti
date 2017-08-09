@@ -3,6 +3,7 @@ module State.Main exposing (..)
 import Nav exposing (..)
 import Navigation
 import State.Ad
+import State.ChangePassword
 import State.Config
 import State.Contacts
 import State.CreateAd
@@ -24,6 +25,7 @@ type alias Model =
     , listUsers : State.ListUsers.Model
     , user : State.User.Model
     , login : State.Login.Model
+    , changePassword : State.ChangePassword.Model
     , profile : ProfileState.Model
     , initialLoading : Bool
     , needsConsent : Bool
@@ -47,6 +49,7 @@ initState translations location =
     , scrollTop = True -- initially start at top and init
     , user = State.User.init
     , login = State.Login.init
+    , changePassword = State.ChangePassword.init
     , listUsers = State.ListUsers.init
     , profile = ProfileState.init
     , initialLoading = True
