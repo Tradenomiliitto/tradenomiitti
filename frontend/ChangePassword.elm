@@ -62,7 +62,7 @@ update msg model =
             model ! []
 
         SendResponse (Ok response) ->
-            model ! [ Util.reroute Nav.Home ]
+            { model | status = Success } ! []
 
         Submitted ->
             model ! [ Cmd.map LocalUpdateMessage <| submit model ]
@@ -70,44 +70,61 @@ update msg model =
 
 view : T -> Model -> H.Html Msg
 view t model =
-    H.div
-        [ A.class "container last-row" ]
-        [ H.div
-            [ A.class "row login col-sm-6 col-sm-offset-3" ]
-            [ H.form
-                --[ A.class "login__container"
-                --, A.action "/changepassword"
-                --, A.method "post"
-                --]
-                [ A.class "login__container"
-                , onWithOptions "submit"
-                    { preventDefault = True, stopPropagation = False }
-                    (Json.Decode.succeed Submitted)
-                ]
-                [ H.h1
-                    [ A.class "login__heading" ]
-                    [ H.text <| t "changePassword.title" ]
-                , H.h3
-                    [ A.class "login__input" ]
-                    [ H.input [ A.name "oldpassword", A.type_ "password", A.placeholder <| t "changePassword.oldPasswordPlaceholder", onInput OldPassword ] []
-                    ]
-                , H.h3
-                    [ A.class "login__input" ]
-                    [ H.input [ A.name "newpassword", A.type_ "password", A.placeholder <| t "changePassword.newPasswordPlaceholder", onInput NewPassword ] []
-                    ]
-                , H.h3
-                    [ A.class "login__input" ]
-                    [ H.input [ A.name "newpassword2", A.type_ "password", A.placeholder <| t "changePassword.newPasswordPlaceholder2", onInput NewPassword2 ] []
-                    ]
-                , H.p
-                    [ A.class "login__submit-button" ]
-                    [ H.button
-                        [ A.type_ "submit"
-                        , A.class "btn btn-primary"
-                        , A.disabled ((String.length model.oldPassword == 0 || String.length model.newPassword == 0) || (model.newPassword /= model.newPassword2))
+    case model.status of
+        NotLoaded ->
+            H.div
+                [ A.class "container last-row" ]
+                [ H.div
+                    [ A.class "row login col-sm-6 col-sm-offset-3" ]
+                    [ H.form
+                        --[ A.class "login__container"
+                        --, A.action "/changepassword"
+                        --, A.method "post"
+                        --]
+                        [ A.class "login__container"
+                        , onWithOptions "submit"
+                            { preventDefault = True, stopPropagation = False }
+                            (Json.Decode.succeed Submitted)
                         ]
-                        [ H.text <| t "changePassword.submit" ]
+                        [ H.h1
+                            [ A.class "login__heading" ]
+                            [ H.text <| t "changePassword.title" ]
+                        , H.h3
+                            [ A.class "login__input" ]
+                            [ H.input [ A.name "oldpassword", A.type_ "password", A.placeholder <| t "changePassword.oldPasswordPlaceholder", onInput OldPassword ] []
+                            ]
+                        , H.h3
+                            [ A.class "login__input" ]
+                            [ H.input [ A.name "newpassword", A.type_ "password", A.placeholder <| t "changePassword.newPasswordPlaceholder", onInput NewPassword ] []
+                            ]
+                        , H.h3
+                            [ A.class "login__input" ]
+                            [ H.input [ A.name "newpassword2", A.type_ "password", A.placeholder <| t "changePassword.newPasswordPlaceholder2", onInput NewPassword2 ] []
+                            ]
+                        , H.p
+                            [ A.class "login__submit-button" ]
+                            [ H.button
+                                [ A.type_ "submit"
+                                , A.class "btn btn-primary"
+                                , A.disabled ((String.length model.oldPassword == 0 || String.length model.newPassword == 0) || (model.newPassword /= model.newPassword2))
+                                ]
+                                [ H.text <| t "changePassword.submit" ]
+                            ]
+                        ]
                     ]
                 ]
-            ]
-        ]
+
+        Success ->
+            H.div
+                [ A.class "container last-row" ]
+                [ H.div
+                    [ A.class "row login col-sm-6 col-sm-offset-3" ]
+                    [ H.div
+                        [ A.class "login__container"
+                        ]
+                        [ H.h1
+                            [ A.class "login__heading" ]
+                            [ H.text <| t "changePassword.success" ]
+                        ]
+                    ]
+                ]

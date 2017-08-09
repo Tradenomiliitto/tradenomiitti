@@ -26,6 +26,7 @@ import Profile.Main as Profile
 import Profile.View
 import Settings
 import State.Ad
+import State.ChangePassword
 import State.Contacts
 import State.Home
 import State.ListAds
@@ -236,6 +237,9 @@ update msg model =
 
                         Contacts ->
                             initWithUpdateMessage { modelWithRoute | contacts = State.Contacts.init } ContactsMessage Contacts.initTasks
+
+                        ChangePassword ->
+                            initWithUpdateMessage { modelWithRoute | changePassword = State.ChangePassword.init } ChangePasswordMessage Cmd.none
 
                         newRoute ->
                             ( modelWithRoute, Cmd.none )

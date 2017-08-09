@@ -62,6 +62,7 @@ const source = {
     newPasswordPlaceholder: 'Uusi salasana',
     newPasswordPlaceholder2: 'Uusi alasana uudelleen',
     submit: 'Lähetä',
+    success: 'Salasana vaihdettu!',
   },
   contacts: {
     heading: 'Käyntikortit',

@@ -147,6 +147,7 @@ if (testLogin) {
 
 app.post('/kirjaudu', urlEncoded, logon.login);
 app.get('/uloskirjautuminen', logon.logout);
+app.post('/vaihdasalasana', jsonParser, logon.changePassword);
 
 app.get('/api/profiilit/oma', profile.getMe);
 app.put('/api/profiilit/oma', jsonParser, profile.putMe);
