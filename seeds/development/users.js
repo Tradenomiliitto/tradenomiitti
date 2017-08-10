@@ -5,6 +5,7 @@ const bcrypt = require('bcryptjs');
 function formatData(data) {
   const newData = [];
   data.forEach(item => {
+    console.log(item);
     const newItem = {
       data: {},
       settings: {},
@@ -18,6 +19,9 @@ function formatData(data) {
     if (item.Paikallisjaosto) {
       newItem.data.location = item.Paikallisjaosto;
     }
+
+    newItem.settings.isAdmin = item['Pääkäyttäjät'] === 'X';
+    newItem.remote_id = item['jäsennumero'];
 
     newItem.pw_hash = bcrypt.hashSync('mibit');
 

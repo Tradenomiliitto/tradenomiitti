@@ -71,6 +71,7 @@ const sebacon = require('./sebaconService')({
   disable: disableSebacon,
   adminGroup,
   testLogin,
+  knex,
 });
 
 const smtpHost = process.env.SMTP_HOST;

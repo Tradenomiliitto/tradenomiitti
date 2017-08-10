@@ -2,7 +2,7 @@ const uuid = require('uuid');
 const request = require('request-promise-native');
 
 module.exports = function initialize(params) {
-  const { adminGroup, disable, testLogin } = params;
+  const { disable, knex } = params;
 
   function url() {
     return `https://voltage.sebacon.net/SebaconAPI/?auth=${params.auth}`;
@@ -96,16 +96,24 @@ module.exports = function initialize(params) {
   }
 
   function isAdmin(id) {
+    return knex('users').where({ remote_id: id }).first()
+      .then(user => {
+        if (user) {
+          return Promise.resolve(user.settings.isAdmin);
+        }
+        return Promise.resolve(false);
+      });
+
     // if sebacon is disabled or we don't have a known admin group, nobody is admin
     // - expect the first test user if testLogin is enabled
-    if (disable && testLogin && id === '-1') {
-      return Promise.resolve(true);
-    } else if (disable || !adminGroup) {
-      return Promise.resolve(false);
-    }
+    // if (disable && testLogin && id === '-1') {
+    //   return Promise.resolve(true);
+    // } else if (disable || !adminGroup) {
+    //   return Promise.resolve(false);
+    // }
 
-    return getObject(id, 'getData')
-      .then(o => o.result.groups.includes(adminGroup));
+    // return getObject(id, 'getData')
+    //   .then(o => o.result.groups.includes(adminGroup));
   }
 
   function getObject(id, method) {
