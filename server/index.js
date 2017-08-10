@@ -96,7 +96,6 @@ const enableEmailGlobally = process.env.ENABLE_EMAIL_SENDING === 'true';
 const util = require('./util')({ knex });
 const emails = require('./emails')({ smtp, mailFrom, staticDir, serviceDomain, util, enableEmailGlobally });
 
-// const logon = require('./logonHandling')({ communicationsKey, knex, sebacon, restrictToGroup, testLogin, util });
 const logon = require('./localLogonHandling')({ knex, util });
 const profile = require('./profile')({ knex, sebacon, util, userImagesPath, emails });
 const ads = require('./ads')({ util, knex, emails, sebacon });

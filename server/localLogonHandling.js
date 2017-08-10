@@ -1,11 +1,11 @@
 const uuid = require('uuid');
-const request = require('request');
 const bcrypt = require('bcryptjs');
 
 module.exports = function initialize(params) {
   const { knex, util } = params;
 
-  function login(req, res, next) {
+  // function login(req, res, next) {
+  function login(req, res) {
     const sessionId = uuid.v4();
     let user = null;
     const email = req.body.email;
@@ -63,14 +63,12 @@ module.exports = function initialize(params) {
   }
 
   function changePassword(req, res, next) {
-    let sessionId;
     const oldPassword = req.body.oldPassword;
     const newPassword = req.body.newPassword;
     const newPassword2 = req.body.newPassword2;
     let user;
 
     if (req.session.id) {
-      sessionId = req.session.id;
       return util.userForSession(req)
         .then(item => {
           user = item;
