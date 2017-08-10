@@ -8,10 +8,10 @@ module.exports = function initialize(params) {
   function login(req, res, next) {
     const sessionId = uuid.v4();
     let user = null;
+    const email = req.body.email;
     const password = req.body.password;
-    const username = req.body.username;
 
-    return knex('users').whereRaw('data->>\'name\' = ?', [username]).first()
+    return knex('users').whereRaw('settings->>\'email_address\' = ?', [email]).first()
       .then(item => {
         if (item) {
           user = item;
@@ -38,7 +38,7 @@ module.exports = function initialize(params) {
         }
         return Promise.reject(new Error('Invalid login'));
       })
-      .catch(err => knex('events').insert({ type: 'login_failure', data: { error: err.message, username } })
+      .catch(err => knex('events').insert({ type: 'login_failure', data: { error: err.message, email } })
         // .then(() => res.status(500).send('Jotain meni pieleen'))
         .then(() => res.status(403).send('Jotain meni pieleen'))
       );
@@ -76,7 +76,6 @@ module.exports = function initialize(params) {
           user = item;
           const pw_hash = item.pw_hash;
           return bcrypt.compare(oldPassword, pw_hash);
-          // return knex('events').insert({ type: 'logout_success', data: { session_id: sessionId, user_id: user.id } });
         })
         .then(isValid => {
           if (isValid) {

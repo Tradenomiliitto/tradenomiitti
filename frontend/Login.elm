@@ -15,7 +15,7 @@ import Util exposing (UpdateMessage(..))
 
 
 type Msg
-    = Name String
+    = Email String
     | Password String
 
 
@@ -44,8 +44,8 @@ type Msg
 update : Msg -> Model -> ( Model, Cmd (UpdateMessage Msg) )
 update msg model =
     case msg of
-        Name username ->
-            { model | username = username } ! []
+        Email email ->
+            { model | email = email } ! []
 
         Password password ->
             { model | password = password } ! []
@@ -73,7 +73,7 @@ view t model =
                     [ H.text <| t "login.title" ]
                 , H.h3
                     [ A.class "login__input" ]
-                    [ H.input [ A.name "username", A.type_ "text", A.placeholder <| t "login.usernamePlaceholder", onInput Name ] []
+                    [ H.input [ A.name "email", A.type_ "text", A.placeholder <| t "login.emailPlaceholder", onInput Email ] []
                     ]
                 , H.h3
                     [ A.class "login__input" ]
@@ -84,7 +84,7 @@ view t model =
                     [ H.button
                         [ A.type_ "submit"
                         , A.class "btn btn-primary"
-                        , A.disabled (String.length model.username == 0 || String.length model.password == 0)
+                        , A.disabled (String.length model.email == 0 || String.length model.password == 0)
                         ]
                         [ H.text <| t "common.login" ]
                     ]

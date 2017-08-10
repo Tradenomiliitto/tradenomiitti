@@ -164,7 +164,7 @@ const source = {
   },
   login: {
     title: 'Kirjaudu sisään',
-    usernamePlaceholder: 'Käyttäjätunnus',
+    emailPlaceholder: 'Sähköpostiosoite',
     passwordPlaceholder: 'Salasana',
   },
   main: {

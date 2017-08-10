@@ -2,13 +2,13 @@ module State.Login exposing (..)
 
 
 type alias Model =
-    { username : String
+    { email : String
     , password : String
     }
 
 
 init : Model
 init =
-    { username = ""
+    { email = ""
     , password = ""
     }

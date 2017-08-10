@@ -19,9 +19,7 @@ function formatData(data) {
       newItem.data.location = item.Paikallisjaosto;
     }
 
-    if (item.Salasana) {
-      newItem.pw_hash = bcrypt.hashSync(item.Salasana, 8);
-    }
+    newItem.pw_hash = bcrypt.hashSync('mibit');
 
     newData.push(newItem);
   });
