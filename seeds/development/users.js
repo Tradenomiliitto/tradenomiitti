@@ -5,7 +5,6 @@ const bcrypt = require('bcryptjs');
 function formatData(data) {
   const newData = [];
   data.forEach(item => {
-    console.log(item);
     const newItem = {
       data: {},
       settings: {},
@@ -21,20 +20,24 @@ function formatData(data) {
     }
 
     newItem.settings.isAdmin = item['Pääkäyttäjät'] === 'X';
-    newItem.remote_id = item['jäsennumero'];
+    newItem.remote_id = item['Jäsennumero'];
 
     newItem.pw_hash = bcrypt.hashSync('mibit');
+    newItem.data = JSON.stringify(newItem.data);
+    newItem.settings = JSON.stringify(newItem.settings);
 
     newData.push(newItem);
   });
   return newData;
 }
 
-exports.seed = function(knex, Promise) {
+// Update the users table
+// Add all new rows based on remote_id
+// Update the email of the existing rows
+exports.seed = function (knex, Promise) {
   const input = fs.readFileSync('conf/assets/users.csv', 'utf8');
   const data = parse(input, { columns: true });
   const formattedData = formatData(data);
-  return knex('users').del()
-    .then(() =>
-      knex('users').insert(formattedData));
+  const query = knex('users').insert(formattedData).toQuery() + ' ON CONFLICT (remote_id) DO UPDATE SET settings = jsonb_set(users.settings, \'{email_address}\', EXCLUDED.settings->\'email_address\')';
+  return knex.raw(query);
 };
