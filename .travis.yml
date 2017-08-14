@@ -18,6 +18,7 @@ cache:
   directories:
     - frontend/elm-stuff/build-artifacts
     - sysconfcpus
+    - node_modules
 
 before_install:
   - sudo apt-get install language-pack-fi

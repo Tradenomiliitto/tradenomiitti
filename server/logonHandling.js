@@ -120,14 +120,14 @@ module.exports = function initialize(params) {
 
   // Can be cleaned if no events needed for test user logouts
   function logout(req, res, next) {
-    if (req.session.id) {
+    const sessionId = req.session.id;
+    if (sessionId) {
       return util.userForSession(req)
         .then(user => {
-          const sessionId = req.session.id;
           req.session = null;
           return knex('events').insert({ type: 'logout_success', data: { session_id: sessionId, user_id: user.id } });
         }).then(() => {
-          if (!testLogin) { return knex('sessions').del(); }
+          if (!testLogin) { return knex('sessions').where({ id: sessionId }).del(); }
           return Promise.resolve(true);
         }).then(() => {
           if (!testLogin) { return res.redirect('https://tunnistus.avoine.fi/sso-logout/'); }

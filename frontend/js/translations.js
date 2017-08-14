@@ -17,7 +17,7 @@ const source = {
     selectFilters: {
       domain: 'Valitse toimiala',
       position: 'Valitse tehtäväluokka',
-      location: 'Valitse maakunta',
+      location: 'Valitse alue',
     },
     lengthHint: {
       needsNMoreChars: 'Vielä vähintään {.} merkkiä',
@@ -120,7 +120,7 @@ const source = {
     introbox: {
       heading: 'Löydä mibiläinen',
       createProfile: 'Luo oma profiili',
-      content: 'MiBiT on mibiläisten oma kohtaamispaikka, jossa yhdistyvät inspiroivat kohtaamiset, vertaistuki ja itsensä kehittäminen. Voit löytää etsimäsi MiB-kontaktin tai tulla itse löydetyksi juuri sinunkaltaistasi henkilöä etsivälle.',
+      content: 'MiBiT on mibiläisten oma kohtaamispaikka, jossa yhdistyvät inspiroivat kohtaamiset, vertaistuki ja itsensä kehittäminen. Voit löytää etsimäsi mibiläisen tai tulla itse löydetyksi juuri sinunkaltaistasi henkilöä etsivälle.',
     },
     tradenomiittiInfo: {
       // \xad === &shy;, that is soft hyphen
@@ -299,7 +299,7 @@ const source = {
       domains: 'Toimiala',
       email: 'Sähköposti',
       phone: 'Matkapuhelinnumero',
-      location: 'Maakunta',
+      location: 'Alue',
       missingData: 'Jäsentiedot puuttuvat',
     },
   },
