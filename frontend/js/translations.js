@@ -2,6 +2,7 @@ const supportEmail = 'info@mothersinbusiness.fi';
 
 const source = {
   common: {
+    and: 'ja',
     supportEmail,
     dateFormat: 'd.M.y',
     readMore: 'lue lisää',
@@ -78,6 +79,19 @@ const source = {
     badStatus: `Haettua sisältöä ei löytynyt. Se on voitu poistaa tai osoitteessa voi olla virhe. Voit ottaa yhteyttä osoitteeseen ${supportEmail} halutessasi. Ota silloin kuvakaappaus sivusta ja lähetä se viestin liitteenä. {.}`,
     codeToUserVisibleMessage: `Jotain meni pieleen. Virheen tunnus on {.}. Meille olisi suuri apu, jos otat kuvakaappauksen koko sivusta ja lähetät sen osoitteeseen ${supportEmail}.`,
     errorResponseFailure: '{.} Järjestelmässä on jotain pahasti pielessä, tutkimme asiaa',
+  },
+  familyStatus: {
+    becameMother: 'Äidiksi',
+    child: 'Lapsi',
+    children: 'Lapset',
+    ageCategories: {
+      unborn: 'odottaa',
+      baby: 'vauva',
+      playAge: 'leikki-ikäinen',
+      schoolkid: 'kouluikäinen',
+      teenager: 'teini-ikäinen',
+      grownUpChildren: 'aikuinen lapsi',
+    },
   },
   footer: {
     link1: {

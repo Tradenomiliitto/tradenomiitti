@@ -5,9 +5,11 @@ const aino_data = {
     phone: '123456789',
   },
   description: 'Meow all night having their mate disturbing sleeping humans put toy mouse in food bowl run out of litter box at full speed intrigued by the shower and sometimes switches in french and say "miaou" just because well why not but stares at human while pushing stuff off a table.',
-  family_status: ['pregnant', 'toddler'],
+  family_status: {
+    children: [{ year: 2014, month: 4 }],
+    work_status: 'working',
+  },
   location: 'Helsinki',
-  work_status: 'working',
 };
 
 const sinituuli_data = {
@@ -17,8 +19,10 @@ const sinituuli_data = {
     phone: '123456789',
   },
   description: 'I guess it\'s better to be lucky than good. Your shields were failing, sir. Besides, you look good in a dress.',
-  family_status: ['toddler', 'schoolkid'],
-  work_status: 'working',
+  family_status: {
+    children: [{ year: 2017, month: 6 }, { year: 2015, month: 3 }, { year: 2014, month: 1 }],
+    work_status: 'on_leave',
+  },
 };
 
 exports.seed = function(knex, Promise) {
