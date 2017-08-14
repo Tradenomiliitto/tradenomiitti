@@ -138,6 +138,11 @@ encode user =
         , ( "domains", JS.list (List.map Skill.encode user.domains) )
         , ( "positions", JS.list (List.map Skill.encode user.positions) )
         , ( "location", JS.string user.location )
+        , ( "work_status"
+          , user.workStatus
+                |> Maybe.map (JS.string << WorkStatus.toApiString)
+                |> Maybe.withDefault JS.null
+          )
         , ( "contribution", JS.string user.contributionStatus )
         , ( "cropped_picture", JS.string (user.croppedPictureFileName |> Maybe.withDefault "") )
         , ( "special_skills", JS.list (List.map JS.string user.skills) )

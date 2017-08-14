@@ -11,6 +11,7 @@ import Skill
 import State.Config as Config
 import State.Profile exposing (Model)
 import Util exposing (UpdateMessage(..))
+import WorkStatus
 
 
 type Msg
@@ -25,6 +26,7 @@ type Msg
     | ChangePositionSelect String
     | ChangeLocation String
     | ChangeTitle String
+    | ChangeWorkStatus (Maybe WorkStatus.WorkStatus)
     | ChangeContributionStatus String
     | ChangeNickname String
     | ChangeDescription String
@@ -257,6 +259,9 @@ update msg model config =
 
         ChangeLocation str ->
             updateUser (\u -> { u | location = str }) model ! []
+
+        ChangeWorkStatus maybeWorkStatus ->
+            updateUser (\u -> { u | workStatus = maybeWorkStatus }) model ! []
 
         ChangeTitle str ->
             updateUser (\u -> { u | title = String.slice 0 70 str }) model ! []

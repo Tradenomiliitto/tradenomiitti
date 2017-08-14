@@ -96,3 +96,10 @@ finnishRegions =
     , "Turku"
     , "Vaasa"
     ]
+
+
+workStatuses : List String
+workStatuses =
+    [ "Työelämässä"
+    , "Vapaalla"
+    ]

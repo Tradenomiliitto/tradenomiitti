@@ -664,6 +664,7 @@ userInfoBoxEditing2 t model user =
                 []
             ]
         , location model user
+        , editWorkStatus model t user
         , H.p
             [ A.class "user-page__work-details" ]
             [ H.div [ A.class "profile__marker" ]
@@ -783,6 +784,32 @@ location model user =
               else
                 H.span [ A.class "profile__location--text" ] [ H.text user.location ]
             ]
+
+
+editWorkStatus : Model -> T -> User -> H.Html Msg
+editWorkStatus model t user =
+    H.div
+        [ A.classList
+            [ ( "profile__detail", True )
+            , ( "user-page__editing-location", model.editing )
+            ]
+        ]
+        [ H.div [ A.class "profile__marker" ]
+            [ H.i [ A.class "fa fa-home" ] [] ]
+        , workStatusSelect t user
+        ]
+
+
+workStatusSelect : T -> User -> H.Html Msg
+workStatusSelect t user =
+    H.span
+        [ A.class "user-page__location-select-container" ]
+        [ H.select
+            [ E.on "change" (Json.map (ChangeWorkStatus << WorkStatus.fromString) E.targetValue)
+            , A.class "user-page__location-select"
+            ]
+            (List.map (optionPreselected (user.workStatus |> Maybe.map (WorkStatus.toString t) |> Maybe.withDefault "")) ("" :: Config.workStatuses))
+        ]
 
 
 contributionStatus : T -> User -> List (H.Html Msg)
