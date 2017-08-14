@@ -11,7 +11,6 @@ import Removal
 import Skill
 import State.Config as Config
 import State.Profile exposing (Model)
-import Task
 import Util exposing (UpdateMessage(..))
 
 
@@ -129,15 +128,12 @@ getAds u =
         |> Util.errorHandlingSend GetAds
 
 
-getDate : Cmd (UpdateMessage Msg)
-getDate =
-    Date.now
-        |> Task.perform (LocalUpdateMessage << UpdateDate)
-
-
 initTasks : Cmd (UpdateMessage Msg)
 initTasks =
-    Cmd.batch [ getMe, getDate ]
+    Cmd.batch
+        [ getMe
+        , Util.getDate UpdateDate
+        ]
 
 
 updateMe : User -> Cmd (UpdateMessage Msg)

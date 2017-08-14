@@ -1,6 +1,7 @@
 module Util exposing (..)
 
 import Char
+import Date
 import Html as H
 import Http
 import Json.Encode as JS
@@ -79,6 +80,11 @@ errorHandlingSend happyPath request =
                     ApiError err
     in
     Http.send handler request
+
+
+getDate : (Date.Date -> msg) -> Cmd (UpdateMessage msg)
+getDate tagger =
+    Task.perform (LocalUpdateMessage << tagger) Date.now
 
 
 put : String -> JS.Value -> Http.Request ()
