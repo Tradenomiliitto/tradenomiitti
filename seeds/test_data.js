@@ -12,7 +12,7 @@ const aino_data = {
 };
 
 const sinituuli_data = {
-  name: 'Sinituulia',
+  name: 'Sinituuli',
   business_card: {
     name: 'Sinituuli',
     phone: '123456789',
