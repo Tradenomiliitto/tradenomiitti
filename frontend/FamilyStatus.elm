@@ -6,13 +6,10 @@ import Json.Decode as Json
 import Json.Decode.Pipeline as P
 import Translation exposing (T)
 import Util
-import WorkStatus exposing (WorkStatus)
 
 
 type alias FamilyStatus =
-    { children : List Birthdate
-    , workStatus : WorkStatus
-    }
+    List Birthdate
 
 
 type alias Birthdate =
@@ -40,19 +37,14 @@ decoder =
                 |> P.required "year" Json.int
                 |> P.required "month" Json.int
     in
-    P.decode FamilyStatus
-        |> P.required "children" (Json.list birthdateDecoder)
-        |> P.required "work_status" WorkStatus.decoder
+    Json.list birthdateDecoder
 
 
 asText : T -> Maybe Date.Date -> FamilyStatus -> String
 asText t maybeCurrentDate familyStatus =
     let
-        workStatus =
-            WorkStatus.toString t familyStatus.workStatus
-
         dates =
-            familyStatus.children
+            familyStatus
                 |> List.map
                     (\{ year, month } ->
                         String.padLeft 2 '0' (toString month) ++ "/" ++ toString year
@@ -60,14 +52,14 @@ asText t maybeCurrentDate familyStatus =
                 |> Util.humanizeStringList t
 
         ageCategories currentDate =
-            familyStatus.children
+            familyStatus
                 |> List.filterMap (toAgeCategory currentDate)
                 |> List.map (translate t)
                 |> Util.humanizeStringList t
                 |> Util.toSentence
 
         ages currentDate =
-            familyStatus.children
+            familyStatus
                 |> List.filterMap (toAge currentDate)
                 |> List.map (\age -> toString age ++ "v")
                 |> Util.humanizeStringList t
@@ -77,7 +69,7 @@ asText t maybeCurrentDate familyStatus =
             t "familyStatus.becameMother" ++ " " ++ dates ++ "."
 
         childCount =
-            List.length familyStatus.children
+            List.length familyStatus
 
         textWithAges currentDate =
             if childCount == 1 then
@@ -92,10 +84,10 @@ asText t maybeCurrentDate familyStatus =
     in
     case maybeCurrentDate of
         Just currentDate ->
-            workStatus ++ ". " ++ textWithAges currentDate
+            textWithAges currentDate
 
         Nothing ->
-            workStatus ++ ". " ++ textWithDates
+            textWithDates
 
 
 translate : T -> ChildAgeCategory -> String

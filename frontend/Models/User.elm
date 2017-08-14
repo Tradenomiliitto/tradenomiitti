@@ -7,6 +7,7 @@ import Json.Decode.Extra exposing (date)
 import Json.Decode.Pipeline as P
 import Json.Encode as JS
 import Skill
+import WorkStatus exposing (WorkStatus)
 
 
 -- data in Extra comes from the api
@@ -67,7 +68,9 @@ type alias User =
     , education : List Education
     , isAdmin : Bool
     , memberId : Maybe Int
-    , familyStatus : Maybe FamilyStatus
+    , familyStatus : FamilyStatus
+    , workStatus : Maybe WorkStatus
+    , contributionStatus : String
     }
 
 
@@ -89,6 +92,18 @@ type alias BusinessCard =
     }
 
 
+maybeString : Json.Decoder (Maybe String)
+maybeString =
+    Json.string
+        |> Json.map
+            (\str ->
+                if String.length str == 0 then
+                    Nothing
+                else
+                    Just str
+            )
+
+
 userDecoder : Json.Decoder User
 userDecoder =
     P.decode User
@@ -101,16 +116,7 @@ userDecoder =
         |> P.required "special_skills" (Json.list Json.string)
         |> P.required "profile_creation_consented" Json.bool
         |> P.required "location" Json.string
-        |> P.required "cropped_picture"
-            (Json.string
-                |> Json.map
-                    (\str ->
-                        if String.length str == 0 then
-                            Nothing
-                        else
-                            Just str
-                    )
-            )
+        |> P.required "cropped_picture" maybeString
         |> P.optional "picture_editing" (Json.map Just pictureEditingDecoder) Nothing
         |> P.optional "extra" (Json.map Just userExtraDecoder) Nothing
         |> P.optional "business_card" (Json.map Just businessCardDecoder) Nothing
@@ -118,7 +124,9 @@ userDecoder =
         |> P.required "education" (Json.list educationDecoder)
         |> P.optional "is_admin" Json.bool False
         |> P.optional "member_id" (Json.map Just Json.int) Nothing
-        |> P.optional "family_status" (Json.map Just FamilyStatus.decoder) Nothing
+        |> P.optional "family_status" FamilyStatus.decoder []
+        |> P.optional "work_status" (Json.map Just WorkStatus.decoder) Nothing
+        |> P.optional "contribution" Json.string ""
 
 
 encode : User -> JS.Value
@@ -130,6 +138,12 @@ encode user =
         , ( "domains", JS.list (List.map Skill.encode user.domains) )
         , ( "positions", JS.list (List.map Skill.encode user.positions) )
         , ( "location", JS.string user.location )
+        , ( "work_status"
+          , user.workStatus
+                |> Maybe.map (JS.string << WorkStatus.toApiString)
+                |> Maybe.withDefault JS.null
+          )
+        , ( "contribution", JS.string user.contributionStatus )
         , ( "cropped_picture", JS.string (user.croppedPictureFileName |> Maybe.withDefault "") )
         , ( "special_skills", JS.list (List.map JS.string user.skills) )
         , ( "education", educationEncode user.education )

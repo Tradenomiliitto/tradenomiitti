@@ -20,6 +20,7 @@ import State.Profile exposing (Model)
 import SvgIcons
 import Translation exposing (T)
 import Util exposing (ViewMessage(..))
+import WorkStatus
 
 
 view : T -> Model -> RootState.Model -> H.Html (ViewMessage Msg)
@@ -664,6 +665,18 @@ userInfoBoxEditing2 t model user =
                 []
             ]
         , location model user
+        , editWorkStatus model t user
+        , H.p
+            [ A.class "user-page__work-details" ]
+            [ H.div [ A.class "profile__marker" ]
+                [ H.i [ A.class "fa fa-book" ] [] ]
+            , H.input
+                [ A.value user.contributionStatus
+                , E.onInput ChangeContributionStatus
+                , A.placeholder <| t "profile.userInfoBox.contributionPlaceholder"
+                ]
+                []
+            ]
         ]
     ]
 
@@ -718,7 +731,8 @@ userInfoBox t model user =
                             H.text user.title
                         ]
                     , location model user
-                    , familyStatus t model.currentDate user
+                    , workFamilyStatus t model.currentDate user
+                    , H.div [ A.class "profile__detail" ] <| contributionStatus t user
                     ]
                 ]
             ]
@@ -755,29 +769,92 @@ userIdForAdmins t user =
 
 location : Model -> User -> H.Html Msg
 location model user =
+    if (model.editing == False) && (user.location == "") then
+        H.text ""
+    else
+        H.div
+            [ A.classList
+                [ ( "profile__detail", True )
+                , ( "user-page__editing-location", model.editing )
+                ]
+            ]
+            [ H.div [ A.class "profile__marker" ]
+                [ H.i [ A.class "fa fa-map-marker" ] [] ]
+            , if model.editing then
+                locationSelect user
+              else
+                H.span [ A.class "profile__location--text" ] [ H.text user.location ]
+            ]
+
+
+editWorkStatus : Model -> T -> User -> H.Html Msg
+editWorkStatus model t user =
     H.div
         [ A.classList
-            [ ( "profile__location", True )
+            [ ( "profile__detail", True )
             , ( "user-page__editing-location", model.editing )
             ]
         ]
-        [ H.img [ A.class "profile__location--marker", A.src "/static/lokaatio.svg" ] []
-        , if model.editing then
-            locationSelect user
-          else
-            H.span [ A.class "profile__location--text" ] [ H.text user.location ]
+        [ H.div [ A.class "profile__marker" ]
+            [ H.i [ A.class "fa fa-home" ] [] ]
+        , workStatusSelect t user
         ]
 
 
-familyStatus : T -> Maybe Date.Date -> User -> H.Html Msg
-familyStatus t currentDate { familyStatus } =
-    case familyStatus of
-        Just status ->
-            H.div [ A.class "profile__family-status" ]
-                [ H.p [] [ H.text <| FamilyStatus.asText t currentDate status ] ]
+workStatusSelect : T -> User -> H.Html Msg
+workStatusSelect t user =
+    H.span
+        [ A.class "user-page__location-select-container" ]
+        [ H.select
+            [ E.on "change" (Json.map (ChangeWorkStatus << WorkStatus.fromString) E.targetValue)
+            , A.class "user-page__location-select"
+            ]
+            (List.map (optionPreselected (user.workStatus |> Maybe.map (WorkStatus.toString t) |> Maybe.withDefault "")) ("" :: Config.workStatuses))
+        ]
 
-        Nothing ->
+
+contributionStatus : T -> User -> List (H.Html Msg)
+contributionStatus t user =
+    case user.contributionStatus of
+        "" ->
+            [ H.text "" ]
+
+        _ ->
+            [ H.div [ A.class "profile__marker" ]
+                [ H.i [ A.class "fa fa-book" ] [] ]
+            , H.span [] [ H.text user.contributionStatus ]
+            ]
+
+
+workFamilyStatus : T -> Maybe Date.Date -> User -> H.Html Msg
+workFamilyStatus t currentDate user =
+    let
+        workStatus =
+            case user.workStatus of
+                Just status ->
+                    [ H.text <| WorkStatus.toString t status ++ ". " ]
+
+                Nothing ->
+                    []
+
+        familyStatus =
+            case user.familyStatus of
+                [] ->
+                    []
+
+                status ->
+                    [ H.text <| FamilyStatus.asText t currentDate status ]
+    in
+    case workStatus ++ familyStatus of
+        [] ->
             H.text ""
+
+        status ->
+            H.div [ A.class "profile__detail" ] <|
+                [ H.div [ A.class "profile__marker" ]
+                    [ H.i [ A.class "fa fa-home" ] [] ]
+                ]
+                    ++ status
 
 
 optionPreselected : String -> String -> H.Html msg

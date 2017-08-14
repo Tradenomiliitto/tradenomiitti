@@ -19,6 +19,29 @@ toString t workStatus =
             "Vapaalla"
 
 
+toApiString : WorkStatus -> String
+toApiString workStatus =
+    case workStatus of
+        Working ->
+            "working"
+
+        OnLeave ->
+            "on_leave"
+
+
+fromString : String -> Maybe WorkStatus
+fromString str =
+    case str of
+        "Työelämässä" ->
+            Just Working
+
+        "Vapaalla" ->
+            Just OnLeave
+
+        _ ->
+            Nothing
+
+
 decoder : Decoder WorkStatus
 decoder =
     let
