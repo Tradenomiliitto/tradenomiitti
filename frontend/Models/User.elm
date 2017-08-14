@@ -68,7 +68,7 @@ type alias User =
     , education : List Education
     , isAdmin : Bool
     , memberId : Maybe Int
-    , familyStatus : List FamilyStatus
+    , familyStatus : FamilyStatus
     , workStatus : Maybe WorkStatus
     , contributionStatus : String
     }
@@ -124,7 +124,7 @@ userDecoder =
         |> P.required "education" (Json.list educationDecoder)
         |> P.optional "is_admin" Json.bool False
         |> P.optional "member_id" (Json.map Just Json.int) Nothing
-        |> P.optional "family_status" FamilyStatus.listDecoder []
+        |> P.optional "family_status" FamilyStatus.decoder []
         |> P.optional "work_status" (Json.map Just WorkStatus.decoder) Nothing
         |> P.optional "contribution" Json.string ""
 

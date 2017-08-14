@@ -1,6 +1,7 @@
 module Profile.View exposing (..)
 
 import Common
+import Date
 import FamilyStatus
 import Html as H
 import Html.Attributes as A
@@ -730,7 +731,7 @@ userInfoBox t model user =
                             H.text user.title
                         ]
                     , location model user
-                    , workFamilyStatus t user
+                    , workFamilyStatus t model.currentDate user
                     , H.div [ A.class "profile__detail" ] <| contributionStatus t user
                     ]
                 ]
@@ -825,8 +826,8 @@ contributionStatus t user =
             ]
 
 
-workFamilyStatus : T -> User -> H.Html Msg
-workFamilyStatus t user =
+workFamilyStatus : T -> Maybe Date.Date -> User -> H.Html Msg
+workFamilyStatus t currentDate user =
     let
         workStatus =
             case user.workStatus of
@@ -842,7 +843,7 @@ workFamilyStatus t user =
                     []
 
                 status ->
-                    [ H.text <| FamilyStatus.toString t status ]
+                    [ H.text <| FamilyStatus.asText t currentDate status ]
     in
     case workStatus ++ familyStatus of
         [] ->

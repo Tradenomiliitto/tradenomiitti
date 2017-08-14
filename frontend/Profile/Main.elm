@@ -1,5 +1,6 @@
 port module Profile.Main exposing (..)
 
+import Date
 import Http
 import Json.Decode as Json
 import Json.Encode as JS
@@ -30,6 +31,7 @@ type Msg
     | ChangeContributionStatus String
     | ChangeNickname String
     | ChangeDescription String
+    | UpdateDate Date.Date
     | UpdateUser ()
     | UpdateConsent
     | UpdateBusinessCard BusinessCardField String
@@ -131,7 +133,10 @@ getAds u =
 
 initTasks : Cmd (UpdateMessage Msg)
 initTasks =
-    Cmd.batch [ getMe ]
+    Cmd.batch
+        [ getMe
+        , Util.getDate UpdateDate
+        ]
 
 
 updateMe : User -> Cmd (UpdateMessage Msg)
@@ -334,6 +339,9 @@ update msg model config =
 
         ChangeImage user ->
             model ! [ imageUpload user.pictureEditingDetails ]
+
+        UpdateDate date ->
+            { model | currentDate = Just date } ! []
 
         ImageDetailsUpdate ( cropped, editingDetails ) ->
             updateUser

@@ -2,6 +2,7 @@ const supportEmail = 'info@mothersinbusiness.fi';
 
 const source = {
   common: {
+    and: 'ja',
     supportEmail,
     dateFormat: 'd.M.y',
     readMore: 'lue lisää',
@@ -16,7 +17,7 @@ const source = {
     selectFilters: {
       domain: 'Valitse toimiala',
       position: 'Valitse tehtäväluokka',
-      location: 'Valitse maakunta',
+      location: 'Valitse alue',
     },
     lengthHint: {
       needsNMoreChars: 'Vielä vähintään {.} merkkiä',
@@ -79,6 +80,19 @@ const source = {
     codeToUserVisibleMessage: `Jotain meni pieleen. Virheen tunnus on {.}. Meille olisi suuri apu, jos otat kuvakaappauksen koko sivusta ja lähetät sen osoitteeseen ${supportEmail}.`,
     errorResponseFailure: '{.} Järjestelmässä on jotain pahasti pielessä, tutkimme asiaa',
   },
+  familyStatus: {
+    becameMother: 'Äidiksi',
+    child: 'Lapsi',
+    children: 'Lapset',
+    ageCategories: {
+      unborn: 'odottaa',
+      baby: 'vauva',
+      playAge: 'leikki-ikäinen',
+      schoolkid: 'kouluikäinen',
+      teenager: 'teini-ikäinen',
+      grownUpChildren: 'aikuinen lapsi',
+    },
+  },
   footer: {
     link1: {
       url: 'http://www.mothersinbusiness.fi',
@@ -106,7 +120,7 @@ const source = {
     introbox: {
       heading: 'Löydä mibiläinen',
       createProfile: 'Luo oma profiili',
-      content: 'MiBiT on mibiläisten oma kohtaamispaikka, jossa yhdistyvät inspiroivat kohtaamiset, vertaistuki ja itsensä kehittäminen. Voit löytää etsimäsi MiB-kontaktin tai tulla itse löydetyksi juuri sinunkaltaistasi henkilöä etsivälle.',
+      content: 'MiBiT on mibiläisten oma kohtaamispaikka, jossa yhdistyvät inspiroivat kohtaamiset, vertaistuki ja itsensä kehittäminen. Voit löytää etsimäsi mibiläisen tai tulla itse löydetyksi juuri sinunkaltaistasi henkilöä etsivälle.',
     },
     tradenomiittiInfo: {
       // \xad === &shy;, that is soft hyphen
@@ -286,7 +300,7 @@ const source = {
       domains: 'Toimiala',
       email: 'Sähköposti',
       phone: 'Matkapuhelinnumero',
-      location: 'Maakunta',
+      location: 'Alue',
       missingData: 'Jäsentiedot puuttuvat',
     },
   },
