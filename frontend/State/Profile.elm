@@ -16,6 +16,8 @@ type alias Model =
     , selectedDegree : Maybe String
     , selectedMajor : Maybe String
     , selectedSpecialization : Maybe String
+    , birthMonth : String
+    , birthYear : String
     , removal : Removal.Model
     , currentDate : Maybe Date.Date
     }
@@ -32,6 +34,8 @@ init =
     , selectedDegree = Nothing
     , selectedMajor = Nothing
     , selectedSpecialization = Nothing
+    , birthMonth = ""
+    , birthYear = ""
     , removal = Removal.init Removal.Ad
     , currentDate = Nothing
     }

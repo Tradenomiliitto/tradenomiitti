@@ -665,7 +665,7 @@ userInfoBoxEditing2 t model user =
                 []
             ]
         , location model user
-        , editWorkStatus model t user
+        , editWorkFamilyStatus model t user
         , H.p
             [ A.class "user-page__work-details" ]
             [ H.div [ A.class "profile__marker" ]
@@ -787,8 +787,8 @@ location model user =
             ]
 
 
-editWorkStatus : Model -> T -> User -> H.Html Msg
-editWorkStatus model t user =
+editWorkFamilyStatus : Model -> T -> User -> H.Html Msg
+editWorkFamilyStatus model t user =
     H.div
         [ A.classList
             [ ( "profile__detail", True )
@@ -797,19 +797,58 @@ editWorkStatus model t user =
         ]
         [ H.div [ A.class "profile__marker" ]
             [ H.i [ A.class "fa fa-home" ] [] ]
-        , workStatusSelect t user
+        , H.div []
+            [ workStatusSelect t user
+            , editFamilyStatus t model user
+            ]
         ]
 
 
 workStatusSelect : T -> User -> H.Html Msg
 workStatusSelect t user =
+    let
+        makeOption =
+            optionPreselected (user.workStatus |> Maybe.map (WorkStatus.toString t) |> Maybe.withDefault "")
+    in
     H.span
         [ A.class "user-page__location-select-container" ]
         [ H.select
             [ E.on "change" (Json.map (ChangeWorkStatus << WorkStatus.fromString) E.targetValue)
             , A.class "user-page__location-select"
             ]
-            (List.map (optionPreselected (user.workStatus |> Maybe.map (WorkStatus.toString t) |> Maybe.withDefault "")) ("" :: Config.workStatuses))
+            (List.map makeOption ("" :: Config.workStatuses))
+        ]
+
+
+editFamilyStatus : T -> Model -> User -> H.Html Msg
+editFamilyStatus t model user =
+    H.div
+        [ A.class "user-page__editing-familystatus" ]
+        [ H.p [] [ H.text <| t "profile.familyStatusEditing.hint" ]
+        , H.p [] [ H.text <| FamilyStatus.asText t Nothing user.familyStatus ]
+        , H.input
+            [ A.placeholder <| t "profile.familyStatusEditing.placeholder.month"
+            , A.value model.birthMonth
+            , A.size 2
+            , A.type_ "number"
+            , A.maxlength 2
+            , A.style [ ( "width", "auto" ) ]
+            , E.onInput ChangeBirthMonth
+            ]
+            []
+        , H.input
+            [ A.placeholder <| t "profile.familyStatusEditing.placeholder.year"
+            , A.value model.birthYear
+            , A.size 4
+            , A.type_ "number"
+            , A.maxlength 4
+            , A.style [ ( "width", "auto" ) ]
+            , E.onInput ChangeBirthYear
+            ]
+            []
+        , H.button
+            [ E.onClick AddChild ]
+            [ H.text <| t "profile.familyStatusEditing.buttonAdd" ]
         ]
 
 

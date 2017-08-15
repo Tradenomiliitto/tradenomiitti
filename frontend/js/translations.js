@@ -291,6 +291,14 @@ const source = {
       addEducation: 'Lisää koulutus',
       instituteRequired: 'Oppilaitos on pakollinen tieto',
     },
+    familyStatusEditing: {
+      hint: 'Kirjoita lapsesi syntymäkuukausi ja -vuosi (esim. "09" ja "2016") ja lisää hänet tietoihisi painamalla Lisää.',
+      placeholder: {
+        month: 'KK',
+        year: 'VVVV',
+      },
+      buttonAdd: 'Lisää',
+    },
     membershipRegisterInfo: {
       heading: 'MiB:n jäsentiedot',
       nickName: 'Kutsumanimi',
