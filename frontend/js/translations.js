@@ -349,6 +349,10 @@ const source = {
       submit: 'Lähetä',
     },
   },
+  workStatus: {
+    on_leave: 'Vapaalla',
+    working: 'Työelämässä',
+  },
 };
 
 

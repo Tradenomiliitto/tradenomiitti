@@ -4,6 +4,8 @@ import Dict exposing (Dict)
 import Json.Decode as Json
 import Json.Decode.Pipeline as P
 import Json.Encode as JS
+import Translation exposing (T)
+import WorkStatus
 
 
 type alias Model =
@@ -98,8 +100,8 @@ finnishRegions =
     ]
 
 
-workStatuses : List String
+workStatuses : List WorkStatus.WorkStatus
 workStatuses =
-    [ "Työelämässä"
-    , "Vapaalla"
+    [ WorkStatus.Working
+    , WorkStatus.OnLeave
     ]
