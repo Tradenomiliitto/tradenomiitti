@@ -379,8 +379,8 @@ update msg model config =
             let
                 birthdate =
                     Result.map2 FamilyStatus.Birthdate
-                        (String.toInt model.birthMonth)
                         (String.toInt model.birthYear)
+                        (String.toInt model.birthMonth)
             in
             case birthdate of
                 Ok date ->
