@@ -57,19 +57,9 @@ educationOptions type_ =
         >> Maybe.withDefault []
 
 
-institutes : Model -> CategoriedOptions
-institutes =
-    educationOptions "institute"
-
-
 degrees : Model -> CategoriedOptions
 degrees =
     educationOptions "degree"
-
-
-majors : Model -> CategoriedOptions
-majors =
-    educationOptions "major"
 
 
 specializations : Model -> CategoriedOptions

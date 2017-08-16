@@ -155,7 +155,7 @@ const source = {
       name: 'Nimi',
     },
     filters: {
-      institute: 'Valitse oppilaitos',
+      // institute: 'Valitse oppilaitos',
       specialization: 'Valitse suuntautuminen / pääaine',
       skill: 'Valitse taito',
     },
@@ -244,9 +244,9 @@ const source = {
     },
     educations: {
       heading: 'Koulutus',
-      institute: 'Oppilaitos',
+      // institute: 'Oppilaitos',
       degree: 'Tutkintonimike',
-      major: 'Koulutus',
+      // major: 'Koulutus',
       specialization: 'Suuntautuminen / pääaine',
     },
     viewUser: {
@@ -284,12 +284,12 @@ const source = {
     },
     educationsEditing: {
       hint: 'Lisää koulutus. Valitse omaa koulutustasi parhaiten vastaavat vaihtoehdot. Mikäli oppilaitoksesi on vaihtanut nimeä, valitse nykyisen nimen mukainen oppilaitos. Mikäli valikoista ei löydy oikeaa vaihtoehtoa, voit lisätä sen itse.',
-      selectInstitute: 'Valitse oppilaitos',
+      // selectInstitute: 'Valitse oppilaitos',
       selectDegree: 'Valitse tutkintonimike',
-      selectMajor: 'Valitse koulutusala / koulutusohjelma',
+      // selectMajor: 'Valitse koulutusala / koulutusohjelma',
       selectSpecialization: 'Valitse suuntautuminen / pääaine',
       addEducation: 'Lisää koulutus',
-      instituteRequired: 'Oppilaitos on pakollinen tieto',
+      degreeRequired: 'Tutkintonimike on pakollinen tieto',
     },
     membershipRegisterInfo: {
       heading: 'MiB:n jäsentiedot',
