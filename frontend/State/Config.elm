@@ -4,6 +4,7 @@ import Dict exposing (Dict)
 import Json.Decode as Json
 import Json.Decode.Pipeline as P
 import Json.Encode as JS
+import Translation exposing (T)
 
 
 type alias Model =
@@ -98,8 +99,8 @@ finnishRegions =
     ]
 
 
-workStatuses : List String
-workStatuses =
-    [ "Työelämässä"
-    , "Vapaalla"
+workStatuses : T -> List String
+workStatuses t =
+    [ t "workStatus.working"
+    , t "workStatus.on_leave"
     ]

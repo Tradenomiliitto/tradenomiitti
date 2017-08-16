@@ -806,10 +806,10 @@ workStatusSelect t user =
     H.span
         [ A.class "user-page__location-select-container" ]
         [ H.select
-            [ E.on "change" (Json.map (ChangeWorkStatus << WorkStatus.fromString) E.targetValue)
+            [ E.on "change" (Json.map (ChangeWorkStatus << WorkStatus.fromString t) E.targetValue)
             , A.class "user-page__location-select"
             ]
-            (List.map (optionPreselected (user.workStatus |> Maybe.map (WorkStatus.toString t) |> Maybe.withDefault "")) ("" :: Config.workStatuses))
+            (List.map (optionPreselected (user.workStatus |> Maybe.map (WorkStatus.toString t) |> Maybe.withDefault "")) ("" :: Config.workStatuses t))
         ]
 
 
