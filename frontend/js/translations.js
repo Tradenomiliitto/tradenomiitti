@@ -1,4 +1,4 @@
-const supportEmail = 'info@mothersinbusiness.fi';
+const supportEmail = 'mibit@mib.fi';
 
 const source = {
   common: {
