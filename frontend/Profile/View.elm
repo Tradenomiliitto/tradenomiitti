@@ -809,7 +809,7 @@ workStatusSelect t user =
             [ E.on "change" (Json.map (ChangeWorkStatus << WorkStatus.fromString t) E.targetValue)
             , A.class "user-page__location-select"
             ]
-            (List.map (optionPreselected (user.workStatus |> Maybe.map (WorkStatus.toString t) |> Maybe.withDefault "")) ("" :: Config.workStatuses t))
+            (List.map (optionPreselected (user.workStatus |> Maybe.map (WorkStatus.toString t) |> Maybe.withDefault "")) ("" :: List.map (WorkStatus.toString t) Config.workStatuses))
         ]
 
 

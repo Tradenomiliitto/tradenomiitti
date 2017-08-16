@@ -5,6 +5,7 @@ import Json.Decode as Json
 import Json.Decode.Pipeline as P
 import Json.Encode as JS
 import Translation exposing (T)
+import WorkStatus
 
 
 type alias Model =
@@ -99,8 +100,8 @@ finnishRegions =
     ]
 
 
-workStatuses : T -> List String
-workStatuses t =
-    [ t "workStatus.working"
-    , t "workStatus.on_leave"
+workStatuses : List WorkStatus.WorkStatus
+workStatuses =
+    [ WorkStatus.Working
+    , WorkStatus.OnLeave
     ]
