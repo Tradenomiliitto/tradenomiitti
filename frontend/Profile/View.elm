@@ -465,8 +465,8 @@ viewEducations t model config user =
                                 [ A.class "user-page__education-details" ]
                                 (List.concat
                                     [ [ H.tr [] <|
-                                            [ H.td [] [ H.text <| t "profile.educations.institute" ]
-                                            , H.td [] [ H.text education.institute ]
+                                            [ H.td [] [ H.text <| t "profile.educations.degree" ]
+                                            , H.td [] [ H.text education.degree ]
                                             ]
                                                 ++ (if model.editing then
                                                         [ H.td
@@ -482,8 +482,6 @@ viewEducations t model config user =
                                                         []
                                                    )
                                       ]
-                                    , rowMaybe (t "profile.educations.degree") education.degree
-                                    , rowMaybe (t "profile.educations.major") education.major
                                     , rowMaybe (t "profile.educations.specialization") education.specialization
                                     ]
                                 )
@@ -521,18 +519,16 @@ educationsEditing t model config =
             [ A.class "row" ]
             [ H.div [ A.class "col-xs-5" ]
                 [ H.p [] [ H.text <| t "profile.educationsEditing.hint" ]
-                , Common.typeaheadInput "user-page__education-details-" (t "profile.educationsEditing.selectInstitute") "education-institute"
                 , Common.typeaheadInput "user-page__education-details-" (t "profile.educationsEditing.selectDegree") "education-degree"
-                , Common.typeaheadInput "user-page__education-details-" (t "profile.educationsEditing.selectMajor") "education-major"
                 , Common.typeaheadInput "user-page__education-details-" (t "profile.educationsEditing.selectSpecialization") "education-specialization"
                 , H.div
                     [ A.class "user-page__education-button-container" ]
-                    [ model.selectedInstitute
+                    [ model.selectedDegree
                         |> Maybe.map
-                            (\institute ->
+                            (\degree ->
                                 H.button
                                     [ A.class "btn btn-primary user-page__education-button"
-                                    , E.onClick <| AddEducation institute
+                                    , E.onClick <| AddEducation degree
                                     ]
                                     [ H.text <| t "profile.educationsEditing.addEducation" ]
                             )
@@ -540,7 +536,7 @@ educationsEditing t model config =
                             (H.button
                                 [ A.class "btn btn-primary user-page__education-button"
                                 , A.disabled True
-                                , A.title <| t "profile.educationsEditing.instituteRequired"
+                                , A.title <| t "profile.educationsEditing.degreeRequired"
                                 ]
                                 [ H.text <| t "profile.educationsEditing.addEducation" ]
                             )

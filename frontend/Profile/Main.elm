@@ -45,9 +45,7 @@ type Msg
     | ShowAll
     | SkillSelected String
     | DeleteSkill String
-    | InstituteSelected String
     | DegreeSelected String
-    | MajorSelected String
     | SpecializationSelected String
     | AddEducation String
     | DeleteEducation Int
@@ -79,9 +77,7 @@ typeaheads : Config.Model -> Cmd msg
 typeaheads config =
     Cmd.batch
         [ typeahead ( "skills-input", Config.categoriedOptionsEncode config.specialSkillOptions, True, True, "" )
-        , typeahead ( "education-institute", Config.categoriedOptionsEncode << Config.institutes <| config, False, False, "" )
         , typeahead ( "education-degree", Config.categoriedOptionsEncode << Config.degrees <| config, False, True, "" )
-        , typeahead ( "education-major", Config.categoriedOptionsEncode << Config.majors <| config, False, True, "" )
         , typeahead ( "education-specialization", Config.categoriedOptionsEncode << Config.specializations <| config, False, True, "" )
         ]
 
@@ -92,14 +88,8 @@ typeAheadToMsg ( typeAheadResultStr, id ) =
         "skills-input" ->
             SkillSelected typeAheadResultStr
 
-        "education-institute" ->
-            InstituteSelected typeAheadResultStr
-
         "education-degree" ->
             DegreeSelected typeAheadResultStr
-
-        "education-major" ->
-            MajorSelected typeAheadResultStr
 
         "education-specialization" ->
             SpecializationSelected typeAheadResultStr
@@ -288,32 +278,22 @@ update msg model config =
             updateUser (\u -> { u | skills = List.filter (\skill -> skill /= str) u.skills }) model
                 ! [ typeaheads config ]
 
-        InstituteSelected str ->
-            { model | selectedInstitute = Just str } ! []
-
         DegreeSelected str ->
             { model | selectedDegree = Just str } ! []
-
-        MajorSelected str ->
-            { model | selectedMajor = Just str } ! []
 
         SpecializationSelected str ->
             { model | selectedSpecialization = Just str } ! []
 
-        AddEducation institute ->
+        AddEducation degree ->
             let
                 newEducation =
-                    { institute = institute
-                    , degree = model.selectedDegree
-                    , major = model.selectedMajor
+                    { degree = degree
                     , specialization = model.selectedSpecialization
                     }
             in
             updateUser (\u -> { u | education = u.education ++ [ newEducation ] })
                 { model
-                    | selectedInstitute = Nothing
-                    , selectedDegree = Nothing
-                    , selectedMajor = Nothing
+                    | selectedDegree = Nothing
                     , selectedSpecialization = Nothing
                 }
                 ! [ typeaheads config ]

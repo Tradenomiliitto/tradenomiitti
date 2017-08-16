@@ -28,7 +28,6 @@ exports.up = function(knex, Promise) {
       return Promise.all(userPromises);
     }).then(() => {
       return Promise.all([
-        knex.schema.raw("CREATE INDEX education_institute_index ON user_educations((data->>'institute'));"),
         knex.schema.raw("CREATE INDEX education_specialization_index ON user_educations((data->>'specialization'));"),
       ]);
     });

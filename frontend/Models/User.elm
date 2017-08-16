@@ -75,9 +75,7 @@ type alias User =
 
 
 type alias Education =
-    { institute : String
-    , degree : Maybe String
-    , major : Maybe String
+    { degree : String
     , specialization : Maybe String
     }
 
@@ -169,12 +167,10 @@ educationEncode educationList =
     let
         encodeOne education =
             JS.object <|
-                [ ( "institute", JS.string education.institute )
+                [ ( "degree", JS.string education.degree )
                 ]
                     ++ List.filterMap identity
-                        [ Maybe.map (\value -> ( "degree", JS.string value )) education.degree
-                        , Maybe.map (\value -> ( "major", JS.string value )) education.major
-                        , Maybe.map (\value -> ( "specialization", JS.string value )) education.specialization
+                        [ Maybe.map (\value -> ( "specialization", JS.string value )) education.specialization
                         ]
     in
     educationList
@@ -270,9 +266,7 @@ businessCardDecoder =
 educationDecoder : Json.Decoder Education
 educationDecoder =
     P.decode Education
-        |> P.required "institute" Json.string
-        |> P.optional "degree" (Json.map Just Json.string) Nothing
-        |> P.optional "major" (Json.map Just Json.string) Nothing
+        |> P.required "degree" Json.string
         |> P.optional "specialization" (Json.map Just Json.string) Nothing
 
 
