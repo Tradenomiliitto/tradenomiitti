@@ -1,4 +1,4 @@
-module FamilyStatus exposing (..)
+module Children exposing (..)
 
 import Date
 import Date.Extra as Date
@@ -8,7 +8,7 @@ import Translation exposing (T)
 import Util
 
 
-type alias FamilyStatus =
+type alias Children =
     List Birthdate
 
 
@@ -28,7 +28,7 @@ type ChildAgeCategory
     | GrownUpChildren
 
 
-decoder : Json.Decoder FamilyStatus
+decoder : Json.Decoder Children
 decoder =
     let
         birthdateDecoder : Json.Decoder Birthdate
@@ -40,42 +40,47 @@ decoder =
     Json.list birthdateDecoder
 
 
-asText : T -> Maybe Date.Date -> FamilyStatus -> String
-asText t maybeCurrentDate familyStatus =
-    let
-        dates =
-            familyStatus
-                |> List.map
-                    (\{ year, month } ->
-                        String.padLeft 2 '0' (toString month) ++ "/" ++ toString year
-                    )
-                |> Util.humanizeStringList t
+dates : Children -> List String
+dates =
+    List.map
+        (\{ year, month } ->
+            String.padLeft 2 '0' (toString month)
+                ++ "/"
+                ++ toString year
+        )
 
+
+asText : T -> Maybe Date.Date -> Children -> String
+asText t maybeCurrentDate children =
+    let
         ageCategories currentDate =
-            familyStatus
+            children
                 |> List.filterMap (toAgeCategory currentDate)
                 |> List.map (translate t)
                 |> Util.humanizeStringList t
                 |> Util.toSentence
 
         ages currentDate =
-            familyStatus
+            children
                 |> List.filterMap (toAge currentDate)
                 |> List.map (\age -> toString age ++ "v")
                 |> Util.humanizeStringList t
                 |> Util.toSentence
 
         textWithDates =
-            t "familyStatus.becameMother" ++ " " ++ dates ++ "."
+            t "children.becameMother"
+                ++ " "
+                ++ Util.humanizeStringList t (dates children)
+                ++ "."
 
         childCount =
-            List.length familyStatus
+            List.length children
 
         textWithAges currentDate =
             if childCount == 1 then
-                t "familyStatus.child" ++ " " ++ ages currentDate
+                t "children.child" ++ " " ++ ages currentDate
             else if childCount > 1 then
-                t "familyStatus.children" ++ " " ++ ages currentDate
+                t "children.children" ++ " " ++ ages currentDate
             else
                 ""
 
@@ -91,28 +96,28 @@ asText t maybeCurrentDate familyStatus =
 
 
 translate : T -> ChildAgeCategory -> String
-translate t familyStatus =
-    case familyStatus of
+translate t children =
+    case children of
         Unborn ->
-            t "familyStatus.ageCategories.unborn"
+            t "children.ageCategories.unborn"
 
         Baby ->
-            t "familyStatus.ageCategories.baby"
+            t "children.ageCategories.baby"
 
         Toddler ->
-            t "familyStatus.ageCategories.toddler"
+            t "children.ageCategories.toddler"
 
         PlayAge ->
-            t "familyStatus.ageCategories.playAge"
+            t "children.ageCategories.playAge"
 
         Schoolkid ->
-            t "familyStatus.ageCategories.schoolkid"
+            t "children.ageCategories.schoolkid"
 
         Teenager ->
-            t "familyStatus.ageCategories.teenager"
+            t "children.ageCategories.teenager"
 
         GrownUpChildren ->
-            t "familyStatus.ageCategories.grownUpChildren"
+            t "children.ageCategories.grownUpChildren"
 
 
 yearsToCategory : Int -> ChildAgeCategory

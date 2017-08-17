@@ -1,7 +1,7 @@
 port module Profile.Main exposing (..)
 
+import Children
 import Date
-import FamilyStatus
 import Http
 import Json.Decode as Json
 import Json.Encode as JS
@@ -378,13 +378,13 @@ update msg model config =
         AddChild ->
             let
                 birthdate =
-                    Result.map2 FamilyStatus.Birthdate
+                    Result.map2 Children.Birthdate
                         (String.toInt model.birthYear)
                         (String.toInt model.birthMonth)
             in
             case birthdate of
                 Ok date ->
-                    updateUser (\u -> { u | familyStatus = u.familyStatus ++ [ date ] })
+                    updateUser (\u -> { u | children = u.children ++ [ date ] })
                         { model | birthMonth = "", birthYear = "" }
                         ! []
 
@@ -392,7 +392,7 @@ update msg model config =
                     model ! []
 
         DeleteChild index ->
-            updateUser (\u -> { u | familyStatus = List.removeAt index u.familyStatus }) model ! []
+            updateUser (\u -> { u | children = List.removeAt index u.children }) model ! []
 
         -- handled in User
         StartAddContact ->

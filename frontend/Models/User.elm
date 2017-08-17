@@ -1,7 +1,7 @@
 module Models.User exposing (..)
 
+import Children exposing (Children)
 import Date
-import FamilyStatus exposing (FamilyStatus)
 import Json.Decode as Json
 import Json.Decode.Extra exposing (date)
 import Json.Decode.Pipeline as P
@@ -68,7 +68,7 @@ type alias User =
     , education : List Education
     , isAdmin : Bool
     , memberId : Maybe Int
-    , familyStatus : FamilyStatus
+    , children : Children
     , workStatus : Maybe WorkStatus
     , contributionStatus : String
     }
@@ -124,7 +124,7 @@ userDecoder =
         |> P.required "education" (Json.list educationDecoder)
         |> P.optional "is_admin" Json.bool False
         |> P.optional "member_id" (Json.map Just Json.int) Nothing
-        |> P.optional "family_status" FamilyStatus.decoder []
+        |> P.optional "children" Children.decoder []
         |> P.optional "work_status" (Json.map Just WorkStatus.decoder) Nothing
         |> P.optional "contribution" Json.string ""
 
@@ -143,6 +143,7 @@ encode user =
                 |> Maybe.map (JS.string << WorkStatus.toApiString)
                 |> Maybe.withDefault JS.null
           )
+        , ( "children", childrenEncode user.children )
         , ( "contribution", JS.string user.contributionStatus )
         , ( "cropped_picture", JS.string (user.croppedPictureFileName |> Maybe.withDefault "") )
         , ( "special_skills", JS.list (List.map JS.string user.skills) )
@@ -162,6 +163,20 @@ encode user =
                     Just businessCard ->
                         [ ( "business_card", businessCardEncode businessCard ) ]
                )
+
+
+childrenEncode : Children -> JS.Value
+childrenEncode children =
+    let
+        encodeOne birthdate =
+            JS.object
+                [ ( "year", JS.int birthdate.year )
+                , ( "month", JS.int birthdate.month )
+                ]
+    in
+    children
+        |> List.map encodeOne
+        |> JS.list
 
 
 educationEncode : List Education -> JS.Value

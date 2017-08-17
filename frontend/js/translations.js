@@ -80,7 +80,7 @@ const source = {
     codeToUserVisibleMessage: `Jotain meni pieleen. Virheen tunnus on {.}. Meille olisi suuri apu, jos otat kuvakaappauksen koko sivusta ja lähetät sen osoitteeseen ${supportEmail}.`,
     errorResponseFailure: '{.} Järjestelmässä on jotain pahasti pielessä, tutkimme asiaa',
   },
-  familyStatus: {
+  children: {
     becameMother: 'Äidiksi',
     child: 'Lapsi',
     children: 'Lapset',
@@ -291,8 +291,8 @@ const source = {
       addEducation: 'Lisää koulutus',
       instituteRequired: 'Oppilaitos on pakollinen tieto',
     },
-    familyStatusEditing: {
-      hint: 'Kirjoita lapsesi syntymäkuukausi ja -vuosi (esim. "09" ja "2016") ja lisää hänet tietoihisi painamalla Lisää.',
+    childrenEditing: {
+      heading: 'Lapset',
       placeholder: {
         month: 'KK',
         year: 'VVVV',

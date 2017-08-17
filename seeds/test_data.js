@@ -8,7 +8,7 @@ const aino_data = {
   location: 'Helsinki',
   work_status: 'working',
   contribution: 'Haluan opettaa tennistä',
-  family_status: [{ year: 2014, month: 4 }],
+  children: [{ year: 2014, month: 4 }],
 };
 
 const sinituuli_data = {
@@ -20,7 +20,7 @@ const sinituuli_data = {
   description: 'I guess it\'s better to be lucky than good. Your shields were failing, sir. Besides, you look good in a dress.',
   work_status: 'working',
   contribution: '',
-  family_status: [{ year: 2017, month: 6 }, { year: 2015, month: 3 }, { year: 2014, month: 1 }],
+  children: [{ year: 2017, month: 6 }, { year: 2015, month: 3 }, { year: 2014, month: 1 }],
 };
 
 exports.seed = function(knex, Promise) {

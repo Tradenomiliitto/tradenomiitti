@@ -1,8 +1,8 @@
 module Profile.View exposing (..)
 
+import Children
 import Common
 import Date
-import FamilyStatus
 import Html as H
 import Html.Attributes as A
 import Html.Events as E
@@ -665,7 +665,7 @@ userInfoBoxEditing2 t model user =
                 []
             ]
         , location model user
-        , editWorkFamilyStatus model t user
+        , editWorkChildren model t user
         , H.p
             [ A.class "user-page__work-details" ]
             [ H.div [ A.class "profile__marker" ]
@@ -731,7 +731,7 @@ userInfoBox t model user =
                             H.text user.title
                         ]
                     , location model user
-                    , workFamilyStatus t model.currentDate user
+                    , workChildren t model.currentDate user
                     , H.div [ A.class "profile__detail" ] <| contributionStatus t user
                     ]
                 ]
@@ -787,8 +787,8 @@ location model user =
             ]
 
 
-editWorkFamilyStatus : Model -> T -> User -> H.Html Msg
-editWorkFamilyStatus model t user =
+editWorkChildren : Model -> T -> User -> H.Html Msg
+editWorkChildren model t user =
     H.div
         [ A.classList
             [ ( "profile__detail", True )
@@ -799,7 +799,7 @@ editWorkFamilyStatus model t user =
             [ H.i [ A.class "fa fa-home" ] [] ]
         , H.div []
             [ workStatusSelect t user
-            , editFamilyStatus t model user
+            , editChildren t model user
             ]
         ]
 
@@ -820,14 +820,21 @@ workStatusSelect t user =
         ]
 
 
-editFamilyStatus : T -> Model -> User -> H.Html Msg
-editFamilyStatus t model user =
+editChildren : T -> Model -> User -> H.Html Msg
+editChildren t model user =
     H.div
         [ A.class "user-page__editing-familystatus" ]
-        [ H.p [] [ H.text <| t "profile.familyStatusEditing.hint" ]
-        , H.p [] [ H.text <| FamilyStatus.asText t Nothing user.familyStatus ]
+        [ H.p [] [ H.text <| t "profile.childrenEditing.heading" ]
+        , H.ul []
+            (user.children
+                |> Children.dates
+                |> List.indexedMap
+                    (\index date ->
+                        H.li [ E.onClick (DeleteChild index) ] [ H.text date ]
+                    )
+            )
         , H.input
-            [ A.placeholder <| t "profile.familyStatusEditing.placeholder.month"
+            [ A.placeholder <| t "profile.childrenEditing.placeholder.month"
             , A.value model.birthMonth
             , A.size 2
             , A.type_ "number"
@@ -837,7 +844,7 @@ editFamilyStatus t model user =
             ]
             []
         , H.input
-            [ A.placeholder <| t "profile.familyStatusEditing.placeholder.year"
+            [ A.placeholder <| t "profile.childrenEditing.placeholder.year"
             , A.value model.birthYear
             , A.size 4
             , A.type_ "number"
@@ -848,7 +855,7 @@ editFamilyStatus t model user =
             []
         , H.button
             [ E.onClick AddChild ]
-            [ H.text <| t "profile.familyStatusEditing.buttonAdd" ]
+            [ H.text <| t "profile.childrenEditing.buttonAdd" ]
         ]
 
 
@@ -865,8 +872,8 @@ contributionStatus t user =
             ]
 
 
-workFamilyStatus : T -> Maybe Date.Date -> User -> H.Html Msg
-workFamilyStatus t currentDate user =
+workChildren : T -> Maybe Date.Date -> User -> H.Html Msg
+workChildren t currentDate user =
     let
         workStatus =
             case user.workStatus of
@@ -876,15 +883,15 @@ workFamilyStatus t currentDate user =
                 Nothing ->
                     []
 
-        familyStatus =
-            case user.familyStatus of
+        children =
+            case user.children of
                 [] ->
                     []
 
                 status ->
-                    [ H.text <| FamilyStatus.asText t currentDate status ]
+                    [ H.text <| Children.asText t currentDate status ]
     in
-    case workStatus ++ familyStatus of
+    case workStatus ++ children of
         [] ->
             H.text ""
 
