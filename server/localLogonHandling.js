@@ -1,5 +1,6 @@
 const uuid = require('uuid');
 const bcrypt = require('bcryptjs');
+const crypto = require('crypto');
 
 module.exports = function initialize(params) {
   const { knex, util } = params;
@@ -98,9 +99,53 @@ module.exports = function initialize(params) {
       .then(() => res.redirect('/'));
   }
 
+  // 1. Emailaddr belongs to a valid YA-member (email addr in users)
+  // 2. Emailaddr already in use (pw_hash != null)
+  // 3. PW email already sent and valid?
+  // 4. Send PW email
+  function register(req, res) {
+    const email = req.body.email;
+    let user = null;
+    knex('users').whereRaw('settings->>\'email_address\' = ?', [email]).first()
+      .then(item => {
+        user = item;
+        if (user && user.pw_hash == null) {
+          return knex('registration').where({ user_id: user.id }).whereRaw('created_at > NOW() - INTERVAL \'1 minute\'').first();
+        }
+        throw new Error('No such user');
+      })
+      .then(reg_item => {
+        if (reg_item == null) {
+          const uniqueToken = crypto.randomBytes(48).toString('hex');
+          return knex('registration').insert({ user_id: user.id, url_token: uniqueToken });
+        }
+        throw new Error('Already pending');
+      })
+      .then(() => res.json({ status: 'Ok' }))
+      .catch(err => res.json({ message: err.message }));
+  }
+
+  function initPassword(req, res) {
+    const token = req.body.token;
+    const password = req.body.password;
+    knex('registration').where({ url_token: token }).whereRaw('created_at > NOW() - INTERVAL \'1 minute\'').first()
+      .then(item => {
+        if (!item) {
+          throw new Error('Invalid payload');
+        }
+        const newHash = bcrypt.hashSync(password);
+        return knex('users').where({ id: item.user_id }).update({ pw_hash: newHash });
+      })
+      .then(() => knex('registration').where({ url_token: token }).del())
+      .then(() => res.json({ status: 'Ok' }))
+      .catch(err => res.json({ message: err.message }));
+  }
+
   return {
     login,
     logout,
     changePassword,
+    register,
+    initPassword,
   };
 };
