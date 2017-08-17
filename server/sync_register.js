@@ -7,6 +7,8 @@ const knex = require('knex')(knex_config[process.env.environment]);
 function formatData(data) {
   const newData = [];
   data.forEach(item => {
+    if (item["Hakemusvaiheessa olevat jäsenet"])
+      return;
     const newItem = {
       data: {},
       settings: {},
@@ -46,7 +48,6 @@ knex('remote_user_register').del().then(() => {
 }).then(() => {
   console.log("Sync with users...");
   const query = knex.raw('INSERT INTO "users" ("data", "remote_id", "settings") SELECT * FROM "remote_user_register" ON CONFLICT (remote_id) DO UPDATE SET settings = jsonb_set(users.settings, \'{email_address}\', EXCLUDED.settings->\'email_address\')').toQuery();
-  console.log(query)
   return knex.raw(query);
 }).then(() => {
   console.log("Done");
