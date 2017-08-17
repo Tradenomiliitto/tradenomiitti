@@ -26,7 +26,6 @@ function formatData(data) {
     newItem.settings.isAdmin = item['Pääkäyttäjät'] === 'X';
     newItem.remote_id = item['Jäsennumero'];
 
-    //newItem.pw_hash = bcrypt.hashSync('mibit');
     newItem.data = JSON.stringify(newItem.data);
     newItem.settings = JSON.stringify(newItem.settings);
 
