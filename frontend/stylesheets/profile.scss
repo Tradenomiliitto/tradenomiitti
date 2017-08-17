@@ -189,19 +189,21 @@
     text-transform: uppercase;
   }
 
-  &__location {
-    &--marker {
-      margin-right: 5px;
-      width: 20px;
-      @include ie-only {
-        height: 100%;
-      }
-    }
-    &--text {
-      position: relative;
-      top: 3px;
-    }
+  &__marker {
+    width: 20px;
+    font-size: 20px;
+    margin-right: 8px;
+    display: inline-block;
+    text-align: center;
+    color: black;
   }
+
+  &__detail {
+    display: flex;
+    align-items: center;
+    line-height: 175%;
+  }
+
   &__business-card {
     background-color: $light-grey;
     &-view {

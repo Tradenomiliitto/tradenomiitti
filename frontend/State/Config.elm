@@ -4,6 +4,8 @@ import Dict exposing (Dict)
 import Json.Decode as Json
 import Json.Decode.Pipeline as P
 import Json.Encode as JS
+import Translation exposing (T)
+import WorkStatus
 
 
 type alias Model =
@@ -57,19 +59,9 @@ educationOptions type_ =
         >> Maybe.withDefault []
 
 
-institutes : Model -> CategoriedOptions
-institutes =
-    educationOptions "institute"
-
-
 degrees : Model -> CategoriedOptions
 degrees =
     educationOptions "degree"
-
-
-majors : Model -> CategoriedOptions
-majors =
-    educationOptions "major"
 
 
 specializations : Model -> CategoriedOptions
@@ -95,4 +87,11 @@ finnishRegions =
     , "Tampere"
     , "Turku"
     , "Vaasa"
+    ]
+
+
+workStatuses : List WorkStatus.WorkStatus
+workStatuses =
+    [ WorkStatus.Working
+    , WorkStatus.OnLeave
     ]

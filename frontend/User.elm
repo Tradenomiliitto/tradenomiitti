@@ -1,5 +1,6 @@
 module User exposing (..)
 
+import Date
 import Html as H
 import Html.Attributes as A
 import Html.Events as E
@@ -28,6 +29,7 @@ import Util exposing (UpdateMessage(..), ViewMessage(..))
 type Msg
     = UpdateUser User
     | UpdateAds (List Ad)
+    | UpdateDate Date.Date
     | ProfileMessage Profile.Msg
     | Refresh Int
 
@@ -44,6 +46,9 @@ update msg model =
 
         UpdateAds ads ->
             { model | ads = ads } ! []
+
+        UpdateDate date ->
+            { model | date = Just date } ! []
 
         ProfileMessage Profile.StartAddContact ->
             { model
@@ -81,6 +86,7 @@ initTasks userId =
     Cmd.batch
         [ getUser userId
         , getAds userId
+        , Util.getDate UpdateDate
         ]
 
 
@@ -135,6 +141,7 @@ view t model loggedInUser config =
                 | ads = model.ads
                 , viewAllAds = model.viewAllAds
                 , removal = model.removal
+                , currentDate = model.date
             }
 
         views =

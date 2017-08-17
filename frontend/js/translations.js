@@ -1,7 +1,8 @@
-const supportEmail = 'info@mothersinbusiness.fi';
+const supportEmail = 'mibit@mib.fi';
 
 const source = {
   common: {
+    and: 'ja',
     supportEmail,
     dateFormat: 'd.M.y',
     readMore: 'lue lisää',
@@ -17,7 +18,7 @@ const source = {
     selectFilters: {
       domain: 'Valitse toimiala',
       position: 'Valitse tehtäväluokka',
-      location: 'Valitse maakunta',
+      location: 'Valitse alue',
     },
     lengthHint: {
       needsNMoreChars: 'Vielä vähintään {.} merkkiä',
@@ -88,6 +89,19 @@ const source = {
     codeToUserVisibleMessage: `Jotain meni pieleen. Virheen tunnus on {.}. Meille olisi suuri apu, jos otat kuvakaappauksen koko sivusta ja lähetät sen osoitteeseen ${supportEmail}.`,
     errorResponseFailure: '{.} Järjestelmässä on jotain pahasti pielessä, tutkimme asiaa',
   },
+  familyStatus: {
+    becameMother: 'Äidiksi',
+    child: 'Lapsi',
+    children: 'Lapset',
+    ageCategories: {
+      unborn: 'odottaa',
+      baby: 'vauva',
+      playAge: 'leikki-ikäinen',
+      schoolkid: 'kouluikäinen',
+      teenager: 'teini-ikäinen',
+      grownUpChildren: 'aikuinen lapsi',
+    },
+  },
   footer: {
     link1: {
       url: 'http://www.mothersinbusiness.fi',
@@ -115,7 +129,7 @@ const source = {
     introbox: {
       heading: 'Löydä mibiläinen',
       createProfile: 'Luo oma profiili',
-      content: 'MiBiT on mibiläisten oma kohtaamispaikka, jossa yhdistyvät inspiroivat kohtaamiset, vertaistuki ja itsensä kehittäminen. Voit löytää etsimäsi MiB-kontaktin tai tulla itse löydetyksi juuri sinunkaltaistasi henkilöä etsivälle.',
+      content: 'MiBiT on mibiläisten oma kohtaamispaikka, jossa yhdistyvät inspiroivat kohtaamiset, vertaistuki ja itsensä kehittäminen. Voit löytää etsimäsi mibiläisen tai tulla itse löydetyksi juuri sinunkaltaistasi henkilöä etsivälle.',
     },
     tradenomiittiInfo: {
       // \xad === &shy;, that is soft hyphen
@@ -150,7 +164,6 @@ const source = {
       name: 'Nimi',
     },
     filters: {
-      institute: 'Valitse oppilaitos',
       specialization: 'Valitse suuntautuminen / pääaine',
       skill: 'Valitse taito',
     },
@@ -246,9 +259,7 @@ const source = {
     },
     educations: {
       heading: 'Koulutus',
-      institute: 'Oppilaitos',
       degree: 'Tutkintonimike',
-      major: 'Koulutus',
       specialization: 'Suuntautuminen / pääaine',
     },
     viewUser: {
@@ -262,6 +273,7 @@ const source = {
     userInfoBox: {
       nickNamePlaceholder: 'Miksi kutsumme sinua?',
       titlePlaceholder: 'Titteli',
+      contributionPlaceholder: 'Mitä haluaisit opettaa muille?',
     },
     userDescriptionPlaceholder: 'Kirjoita napakka kuvaus itsestäsi',
     userIdForAdmins: 'Jäsentunniste: ',
@@ -284,13 +296,11 @@ const source = {
       selectPositionHint: 'Lisää tehtäväluokka, josta olet kiinnostunut tai sinulla on osaamista',
     },
     educationsEditing: {
-      hint: 'Lisää koulutus. Valitse omaa koulutustasi parhaiten vastaavat vaihtoehdot. Mikäli oppilaitoksesi on vaihtanut nimeä, valitse nykyisen nimen mukainen oppilaitos. Mikäli valikoista ei löydy oikeaa vaihtoehtoa, voit lisätä sen itse.',
-      selectInstitute: 'Valitse oppilaitos',
+      hint: 'Lisää koulutus. Valitse omaa koulutustasi parhaiten vastaavat vaihtoehdot. Mikäli valikoista ei löydy oikeaa vaihtoehtoa, voit lisätä sen itse.',
       selectDegree: 'Valitse tutkintonimike',
-      selectMajor: 'Valitse koulutusala / koulutusohjelma',
       selectSpecialization: 'Valitse suuntautuminen / pääaine',
       addEducation: 'Lisää koulutus',
-      instituteRequired: 'Oppilaitos on pakollinen tieto',
+      degreeRequired: 'Tutkintonimike on pakollinen tieto',
     },
     membershipRegisterInfo: {
       heading: 'MiB:n jäsentiedot',
@@ -301,7 +311,7 @@ const source = {
       domains: 'Toimiala',
       email: 'Sähköposti',
       phone: 'Matkapuhelinnumero',
-      location: 'Maakunta',
+      location: 'Alue',
       missingData: 'Jäsentiedot puuttuvat',
     },
   },
@@ -349,6 +359,10 @@ const source = {
       contact: 'Ota yhteyttä',
       submit: 'Lähetä',
     },
+  },
+  workStatus: {
+    on_leave: 'Vapaalla',
+    working: 'Työelämässä',
   },
 };
 

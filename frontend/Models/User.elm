@@ -68,15 +68,14 @@ type alias User =
     , education : List Education
     , isAdmin : Bool
     , memberId : Maybe Int
-    , familyStatus : List FamilyStatus
+    , familyStatus : FamilyStatus
     , workStatus : Maybe WorkStatus
+    , contributionStatus : String
     }
 
 
 type alias Education =
-    { institute : String
-    , degree : Maybe String
-    , major : Maybe String
+    { degree : String
     , specialization : Maybe String
     }
 
@@ -91,6 +90,18 @@ type alias BusinessCard =
     }
 
 
+maybeString : Json.Decoder (Maybe String)
+maybeString =
+    Json.string
+        |> Json.map
+            (\str ->
+                if String.length str == 0 then
+                    Nothing
+                else
+                    Just str
+            )
+
+
 userDecoder : Json.Decoder User
 userDecoder =
     P.decode User
@@ -103,16 +114,7 @@ userDecoder =
         |> P.required "special_skills" (Json.list Json.string)
         |> P.required "profile_creation_consented" Json.bool
         |> P.required "location" Json.string
-        |> P.required "cropped_picture"
-            (Json.string
-                |> Json.map
-                    (\str ->
-                        if String.length str == 0 then
-                            Nothing
-                        else
-                            Just str
-                    )
-            )
+        |> P.required "cropped_picture" maybeString
         |> P.optional "picture_editing" (Json.map Just pictureEditingDecoder) Nothing
         |> P.optional "extra" (Json.map Just userExtraDecoder) Nothing
         |> P.optional "business_card" (Json.map Just businessCardDecoder) Nothing
@@ -120,8 +122,9 @@ userDecoder =
         |> P.required "education" (Json.list educationDecoder)
         |> P.optional "is_admin" Json.bool False
         |> P.optional "member_id" (Json.map Just Json.int) Nothing
-        |> P.optional "family_status" FamilyStatus.listDecoder []
+        |> P.optional "family_status" FamilyStatus.decoder []
         |> P.optional "work_status" (Json.map Just WorkStatus.decoder) Nothing
+        |> P.optional "contribution" Json.string ""
 
 
 encode : User -> JS.Value
@@ -133,6 +136,12 @@ encode user =
         , ( "domains", JS.list (List.map Skill.encode user.domains) )
         , ( "positions", JS.list (List.map Skill.encode user.positions) )
         , ( "location", JS.string user.location )
+        , ( "work_status"
+          , user.workStatus
+                |> Maybe.map (JS.string << WorkStatus.toApiString)
+                |> Maybe.withDefault JS.null
+          )
+        , ( "contribution", JS.string user.contributionStatus )
         , ( "cropped_picture", JS.string (user.croppedPictureFileName |> Maybe.withDefault "") )
         , ( "special_skills", JS.list (List.map JS.string user.skills) )
         , ( "education", educationEncode user.education )
@@ -158,12 +167,10 @@ educationEncode educationList =
     let
         encodeOne education =
             JS.object <|
-                [ ( "institute", JS.string education.institute )
+                [ ( "degree", JS.string education.degree )
                 ]
                     ++ List.filterMap identity
-                        [ Maybe.map (\value -> ( "degree", JS.string value )) education.degree
-                        , Maybe.map (\value -> ( "major", JS.string value )) education.major
-                        , Maybe.map (\value -> ( "specialization", JS.string value )) education.specialization
+                        [ Maybe.map (\value -> ( "specialization", JS.string value )) education.specialization
                         ]
     in
     educationList
@@ -259,9 +266,7 @@ businessCardDecoder =
 educationDecoder : Json.Decoder Education
 educationDecoder =
     P.decode Education
-        |> P.required "institute" Json.string
-        |> P.optional "degree" (Json.map Just Json.string) Nothing
-        |> P.optional "major" (Json.map Just Json.string) Nothing
+        |> P.required "degree" Json.string
         |> P.optional "specialization" (Json.map Just Json.string) Nothing
 
 

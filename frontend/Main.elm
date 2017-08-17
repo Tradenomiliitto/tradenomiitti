@@ -605,8 +605,7 @@ logo t =
             , A.href "/"
             , Common.linkAction Home NewUrl
             ]
-            [ logoImage (t "navigation.logoAlt") (t "navigation.logoWidth")
-            , H.span [] [ H.text "MiBiT" ]
+            [ H.span [] [ H.text "MiBiT" ]
             ]
         ]
 

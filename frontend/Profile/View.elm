@@ -1,6 +1,7 @@
 module Profile.View exposing (..)
 
 import Common
+import Date
 import FamilyStatus
 import Html as H
 import Html.Attributes as A
@@ -464,8 +465,8 @@ viewEducations t model config user =
                                 [ A.class "user-page__education-details" ]
                                 (List.concat
                                     [ [ H.tr [] <|
-                                            [ H.td [] [ H.text <| t "profile.educations.institute" ]
-                                            , H.td [] [ H.text education.institute ]
+                                            [ H.td [] [ H.text <| t "profile.educations.degree" ]
+                                            , H.td [] [ H.text education.degree ]
                                             ]
                                                 ++ (if model.editing then
                                                         [ H.td
@@ -481,8 +482,6 @@ viewEducations t model config user =
                                                         []
                                                    )
                                       ]
-                                    , rowMaybe (t "profile.educations.degree") education.degree
-                                    , rowMaybe (t "profile.educations.major") education.major
                                     , rowMaybe (t "profile.educations.specialization") education.specialization
                                     ]
                                 )
@@ -520,18 +519,16 @@ educationsEditing t model config =
             [ A.class "row" ]
             [ H.div [ A.class "col-xs-5" ]
                 [ H.p [] [ H.text <| t "profile.educationsEditing.hint" ]
-                , Common.typeaheadInput "user-page__education-details-" (t "profile.educationsEditing.selectInstitute") "education-institute"
                 , Common.typeaheadInput "user-page__education-details-" (t "profile.educationsEditing.selectDegree") "education-degree"
-                , Common.typeaheadInput "user-page__education-details-" (t "profile.educationsEditing.selectMajor") "education-major"
                 , Common.typeaheadInput "user-page__education-details-" (t "profile.educationsEditing.selectSpecialization") "education-specialization"
                 , H.div
                     [ A.class "user-page__education-button-container" ]
-                    [ model.selectedInstitute
+                    [ model.selectedDegree
                         |> Maybe.map
-                            (\institute ->
+                            (\degree ->
                                 H.button
                                     [ A.class "btn btn-primary user-page__education-button"
-                                    , E.onClick <| AddEducation institute
+                                    , E.onClick <| AddEducation degree
                                     ]
                                     [ H.text <| t "profile.educationsEditing.addEducation" ]
                             )
@@ -539,7 +536,7 @@ educationsEditing t model config =
                             (H.button
                                 [ A.class "btn btn-primary user-page__education-button"
                                 , A.disabled True
-                                , A.title <| t "profile.educationsEditing.instituteRequired"
+                                , A.title <| t "profile.educationsEditing.degreeRequired"
                                 ]
                                 [ H.text <| t "profile.educationsEditing.addEducation" ]
                             )
@@ -664,6 +661,18 @@ userInfoBoxEditing2 t model user =
                 []
             ]
         , location model user
+        , editWorkStatus model t user
+        , H.p
+            [ A.class "user-page__work-details" ]
+            [ H.div [ A.class "profile__marker" ]
+                [ H.i [ A.class "fa fa-book" ] [] ]
+            , H.input
+                [ A.value user.contributionStatus
+                , E.onInput ChangeContributionStatus
+                , A.placeholder <| t "profile.userInfoBox.contributionPlaceholder"
+                ]
+                []
+            ]
         ]
     ]
 
@@ -718,7 +727,8 @@ userInfoBox t model user =
                             H.text user.title
                         ]
                     , location model user
-                    , familyStatus t user
+                    , workFamilyStatus t model.currentDate user
+                    , H.div [ A.class "profile__detail" ] <| contributionStatus t user
                     ]
                 ]
             ]
@@ -755,22 +765,65 @@ userIdForAdmins t user =
 
 location : Model -> User -> H.Html Msg
 location model user =
+    if (model.editing == False) && (user.location == "") then
+        H.text ""
+    else
+        H.div
+            [ A.classList
+                [ ( "profile__detail", True )
+                , ( "user-page__editing-location", model.editing )
+                ]
+            ]
+            [ H.div [ A.class "profile__marker" ]
+                [ H.i [ A.class "fa fa-map-marker" ] [] ]
+            , if model.editing then
+                locationSelect user
+              else
+                H.span [ A.class "profile__location--text" ] [ H.text user.location ]
+            ]
+
+
+editWorkStatus : Model -> T -> User -> H.Html Msg
+editWorkStatus model t user =
     H.div
         [ A.classList
-            [ ( "profile__location", True )
+            [ ( "profile__detail", True )
             , ( "user-page__editing-location", model.editing )
             ]
         ]
-        [ H.img [ A.class "profile__location--marker", A.src "/static/lokaatio.svg" ] []
-        , if model.editing then
-            locationSelect user
-          else
-            H.span [ A.class "profile__location--text" ] [ H.text user.location ]
+        [ H.div [ A.class "profile__marker" ]
+            [ H.i [ A.class "fa fa-home" ] [] ]
+        , workStatusSelect t user
         ]
 
 
-familyStatus : T -> User -> H.Html Msg
-familyStatus t user =
+workStatusSelect : T -> User -> H.Html Msg
+workStatusSelect t user =
+    H.span
+        [ A.class "user-page__location-select-container" ]
+        [ H.select
+            [ E.on "change" (Json.map (ChangeWorkStatus << WorkStatus.fromString t) E.targetValue)
+            , A.class "user-page__location-select"
+            ]
+            (List.map (optionPreselected (user.workStatus |> Maybe.map (WorkStatus.toString t) |> Maybe.withDefault "")) ("" :: List.map (WorkStatus.toString t) Config.workStatuses))
+        ]
+
+
+contributionStatus : T -> User -> List (H.Html Msg)
+contributionStatus t user =
+    case user.contributionStatus of
+        "" ->
+            [ H.text "" ]
+
+        _ ->
+            [ H.div [ A.class "profile__marker" ]
+                [ H.i [ A.class "fa fa-book" ] [] ]
+            , H.span [] [ H.text user.contributionStatus ]
+            ]
+
+
+workFamilyStatus : T -> Maybe Date.Date -> User -> H.Html Msg
+workFamilyStatus t currentDate user =
     let
         workStatus =
             case user.workStatus of
@@ -779,10 +832,25 @@ familyStatus t user =
 
                 Nothing ->
                     []
+
+        familyStatus =
+            case user.familyStatus of
+                [] ->
+                    []
+
+                status ->
+                    [ H.text <| FamilyStatus.asText t currentDate status ]
     in
-    H.div [ A.class "profile__family-status" ]
-        [ H.p [] <| workStatus ++ [ H.text <| FamilyStatus.toString t user.familyStatus ]
-        ]
+    case workStatus ++ familyStatus of
+        [] ->
+            H.text ""
+
+        status ->
+            H.div [ A.class "profile__detail" ] <|
+                [ H.div [ A.class "profile__marker" ]
+                    [ H.i [ A.class "fa fa-home" ] [] ]
+                ]
+                    ++ status
 
 
 optionPreselected : String -> String -> H.Html msg

@@ -1,5 +1,6 @@
 port module Profile.Main exposing (..)
 
+import Date
 import Http
 import Json.Decode as Json
 import Json.Encode as JS
@@ -11,6 +12,7 @@ import Skill
 import State.Config as Config
 import State.Profile exposing (Model)
 import Util exposing (UpdateMessage(..))
+import WorkStatus
 
 
 type Msg
@@ -25,8 +27,11 @@ type Msg
     | ChangePositionSelect String
     | ChangeLocation String
     | ChangeTitle String
+    | ChangeWorkStatus (Maybe WorkStatus.WorkStatus)
+    | ChangeContributionStatus String
     | ChangeNickname String
     | ChangeDescription String
+    | UpdateDate Date.Date
     | UpdateUser ()
     | UpdateConsent
     | UpdateBusinessCard BusinessCardField String
@@ -40,9 +45,7 @@ type Msg
     | ShowAll
     | SkillSelected String
     | DeleteSkill String
-    | InstituteSelected String
     | DegreeSelected String
-    | MajorSelected String
     | SpecializationSelected String
     | AddEducation String
     | DeleteEducation Int
@@ -74,9 +77,7 @@ typeaheads : Config.Model -> Cmd msg
 typeaheads config =
     Cmd.batch
         [ typeahead ( "skills-input", Config.categoriedOptionsEncode config.specialSkillOptions, True, True, "" )
-        , typeahead ( "education-institute", Config.categoriedOptionsEncode << Config.institutes <| config, False, False, "" )
         , typeahead ( "education-degree", Config.categoriedOptionsEncode << Config.degrees <| config, False, True, "" )
-        , typeahead ( "education-major", Config.categoriedOptionsEncode << Config.majors <| config, False, True, "" )
         , typeahead ( "education-specialization", Config.categoriedOptionsEncode << Config.specializations <| config, False, True, "" )
         ]
 
@@ -87,14 +88,8 @@ typeAheadToMsg ( typeAheadResultStr, id ) =
         "skills-input" ->
             SkillSelected typeAheadResultStr
 
-        "education-institute" ->
-            InstituteSelected typeAheadResultStr
-
         "education-degree" ->
             DegreeSelected typeAheadResultStr
-
-        "education-major" ->
-            MajorSelected typeAheadResultStr
 
         "education-specialization" ->
             SpecializationSelected typeAheadResultStr
@@ -128,7 +123,10 @@ getAds u =
 
 initTasks : Cmd (UpdateMessage Msg)
 initTasks =
-    Cmd.batch [ getMe ]
+    Cmd.batch
+        [ getMe
+        , Util.getDate UpdateDate
+        ]
 
 
 updateMe : User -> Cmd (UpdateMessage Msg)
@@ -257,8 +255,14 @@ update msg model config =
         ChangeLocation str ->
             updateUser (\u -> { u | location = str }) model ! []
 
+        ChangeWorkStatus maybeWorkStatus ->
+            updateUser (\u -> { u | workStatus = maybeWorkStatus }) model ! []
+
         ChangeTitle str ->
             updateUser (\u -> { u | title = String.slice 0 70 str }) model ! []
+
+        ChangeContributionStatus str ->
+            updateUser (\u -> { u | contributionStatus = String.slice 0 70 str }) model ! []
 
         ChangeNickname str ->
             updateUser (\u -> { u | name = str }) model ! []
@@ -274,32 +278,22 @@ update msg model config =
             updateUser (\u -> { u | skills = List.filter (\skill -> skill /= str) u.skills }) model
                 ! [ typeaheads config ]
 
-        InstituteSelected str ->
-            { model | selectedInstitute = Just str } ! []
-
         DegreeSelected str ->
             { model | selectedDegree = Just str } ! []
-
-        MajorSelected str ->
-            { model | selectedMajor = Just str } ! []
 
         SpecializationSelected str ->
             { model | selectedSpecialization = Just str } ! []
 
-        AddEducation institute ->
+        AddEducation degree ->
             let
                 newEducation =
-                    { institute = institute
-                    , degree = model.selectedDegree
-                    , major = model.selectedMajor
+                    { degree = degree
                     , specialization = model.selectedSpecialization
                     }
             in
             updateUser (\u -> { u | education = u.education ++ [ newEducation ] })
                 { model
-                    | selectedInstitute = Nothing
-                    , selectedDegree = Nothing
-                    , selectedMajor = Nothing
+                    | selectedDegree = Nothing
                     , selectedSpecialization = Nothing
                 }
                 ! [ typeaheads config ]
@@ -325,6 +319,9 @@ update msg model config =
 
         ChangeImage user ->
             model ! [ imageUpload user.pictureEditingDetails ]
+
+        UpdateDate date ->
+            { model | currentDate = Just date } ! []
 
         ImageDetailsUpdate ( cropped, editingDetails ) ->
             updateUser
