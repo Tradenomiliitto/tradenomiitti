@@ -12,6 +12,7 @@ import State.ListAds
 import State.ListUsers
 import State.Login
 import State.Profile as ProfileState
+import State.Registration
 import State.Settings
 import State.StaticContent
 import State.User
@@ -25,6 +26,7 @@ type alias Model =
     , listUsers : State.ListUsers.Model
     , user : State.User.Model
     , login : State.Login.Model
+    , registration : State.Registration.Model
     , changePassword : State.ChangePassword.Model
     , profile : ProfileState.Model
     , initialLoading : Bool
@@ -49,6 +51,7 @@ initState translations location =
     , scrollTop = True -- initially start at top and init
     , user = State.User.init
     , login = State.Login.init
+    , registration = State.Registration.init
     , changePassword = State.ChangePassword.init
     , listUsers = State.ListUsers.init
     , profile = ProfileState.init

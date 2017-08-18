@@ -17,6 +17,7 @@ type Route
     | Profile
     | User Int
     | Login
+    | Registration
     | LoginNeeded (Maybe String)
     | Terms
     | RegisterDescription
@@ -70,6 +71,9 @@ routeToPath route =
 
         RegisterDescription ->
             "/rekisteriseloste"
+
+        Registration ->
+            "/register"
 
         Settings ->
             "/asetukset"
@@ -125,6 +129,9 @@ routeToString t route =
         RegisterDescription ->
             t "navigation.routeNames.registerDescription"
 
+        Registration ->
+            t "navigation.routeNames.registration"
+
         Settings ->
             t "navigation.routeNames.settings"
 
@@ -161,6 +168,7 @@ routeParser =
         , U.map Profile (U.s "profiili")
         , U.map User (U.s "tradenomit" </> U.int)
         , U.map Login (U.s "kirjaudu")
+        , U.map Registration (U.s "register")
         , U.map LoginNeeded (U.s "kirjautuminen-tarvitaan" <?> U.stringParam "seuraava")
         , U.map Terms (U.s "kayttoehdot")
         , U.map RegisterDescription (U.s "rekisteriseloste")

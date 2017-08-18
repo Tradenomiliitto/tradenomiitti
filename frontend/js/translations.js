@@ -213,6 +213,7 @@ const source = {
       loginNeeded: 'Kirjautuminen vaaditaan',
       terms: 'Palvelun käyttöehdot',
       registerDescription: 'Rekisteriseloste',
+      registration: 'Rekisteröinti',
       settings: 'Asetukset',
       contacts: 'Käyntikortit',
       changePassword: 'Vaihda salasana',
@@ -314,6 +315,13 @@ const source = {
       location: 'Alue',
       missingData: 'Jäsentiedot puuttuvat',
     },
+  },
+  registration: {
+    title: 'Rekisteröidy käyttäjäksi',
+    emailPlaceholder: 'Sähköpostiosoite',
+    buttonText: 'Lähetä',
+    success: 'Rekisteröintilinkki lähetetty!',
+    failure: 'Jotain meni pieleen!',
   },
   removal: {
     removeYour: {

@@ -24,6 +24,7 @@ import Navigation
 import PreformattedText
 import Profile.Main as Profile
 import Profile.View
+import Registration
 import Settings
 import State.Ad
 import State.ChangePassword
@@ -119,6 +120,7 @@ type Msg
     | CreateAdMessage CreateAd.Msg
     | ChangePasswordMessage ChangePassword.Msg
     | LoginMessage Login.Msg
+    | RegistrationMessage Registration.Msg
     | ListAdsMessage ListAds.Msg
     | ListUsersMessage ListUsers.Msg
     | AdMessage Ad.Msg
@@ -347,6 +349,14 @@ update msg model =
             in
             { model | login = loginModel }
                 ! [ unpackUpdateMessage LoginMessage cmd ]
+
+        RegistrationMessage msg ->
+            let
+                ( registrationModel, cmd ) =
+                    Registration.update msg model.registration
+            in
+            { model | registration = registrationModel }
+                ! [ unpackUpdateMessage RegistrationMessage cmd ]
 
         ListAdsMessage msg ->
             let
@@ -773,6 +783,9 @@ viewPage model =
 
                 RegisterDescription ->
                     PreformattedText.view model.staticContent.registerDescription
+
+                Registration ->
+                    H.map RegistrationMessage <| Registration.view t model.registration
 
                 Settings ->
                     unpackViewMessage SettingsMessage <| Settings.view t model.settings model.profile.user

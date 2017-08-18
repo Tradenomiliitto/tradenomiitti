@@ -122,13 +122,13 @@ module.exports = function initialize(params) {
         throw new Error('Already pending');
       })
       .then(() => res.json({ status: 'Ok' }))
-      .catch(err => res.json({ message: err.message }));
+      .catch(err => res.status(500).json({ message: err.message }));
   }
 
   function initPassword(req, res) {
     const token = req.body.token;
     const password = req.body.password;
-    knex('registration').where({ url_token: token }).whereRaw('created_at > NOW() - INTERVAL \'1 minute\'').first()
+    knex('registration').where({ url_token: token }).whereRaw('created_at > NOW() - INTERVAL \'1 hour\'').first()
       .then(item => {
         if (!item) {
           throw new Error('Invalid payload');
