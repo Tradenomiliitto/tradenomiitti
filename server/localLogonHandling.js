@@ -110,7 +110,7 @@ module.exports = function initialize(params) {
       .then(item => {
         user = item;
         if (user && user.pw_hash == null) {
-          return knex('registration').where({ user_id: user.id }).whereRaw('created_at > NOW() - INTERVAL \'1 minute\'').first();
+          return knex('registration').where({ user_id: user.id }).whereRaw('created_at > NOW() - INTERVAL \'1 hour\'').first();
         }
         throw new Error('No such user');
       })
@@ -125,6 +125,8 @@ module.exports = function initialize(params) {
       .catch(err => res.status(500).json({ message: err.message }));
   }
 
+  // 1. Check if there is a valid token
+  // 2. If there is, init the password and delete the token
   function initPassword(req, res) {
     const token = req.body.token;
     const password = req.body.password;
