@@ -13,6 +13,7 @@ import Html.Attributes as A
 import Html.Events as E
 import Http
 import Info
+import InitPassword
 import Json.Decode as Json
 import ListAds
 import ListUsers
@@ -30,6 +31,7 @@ import State.Ad
 import State.ChangePassword
 import State.Contacts
 import State.Home
+import State.InitPassword
 import State.ListAds
 import State.ListUsers
 import State.Main exposing (..)
@@ -121,6 +123,7 @@ type Msg
     | ChangePasswordMessage ChangePassword.Msg
     | LoginMessage Login.Msg
     | RegistrationMessage Registration.Msg
+    | InitPasswordMessage InitPassword.Msg
     | ListAdsMessage ListAds.Msg
     | ListUsersMessage ListUsers.Msg
     | AdMessage Ad.Msg
@@ -242,6 +245,9 @@ update msg model =
 
                         ChangePassword ->
                             initWithUpdateMessage { modelWithRoute | changePassword = State.ChangePassword.init } ChangePasswordMessage Cmd.none
+
+                        InitPassword ->
+                            initWithUpdateMessage { modelWithRoute | initPassword = State.InitPassword.init } InitPasswordMessage Cmd.none
 
                         newRoute ->
                             ( modelWithRoute, Cmd.none )
@@ -413,6 +419,13 @@ update msg model =
                     ChangePassword.update msg model.changePassword
             in
             { model | changePassword = changePasswordModel } ! [ unpackUpdateMessage ChangePasswordMessage cmd ]
+
+        InitPasswordMessage msg ->
+            let
+                ( initPasswordModel, cmd ) =
+                    InitPassword.update msg model.initPassword
+            in
+            { model | initPassword = initPasswordModel } ! [ unpackUpdateMessage InitPasswordMessage cmd ]
 
         StaticContentMessage msg ->
             let
@@ -798,6 +811,9 @@ viewPage model =
 
                 ChangePassword ->
                     unpackViewMessage ChangePasswordMessage <| ChangePassword.view t model.changePassword model.profile.user
+
+                InitPassword ->
+                    H.map InitPasswordMessage <| InitPassword.view t model.initPassword
 
                 NotFound ->
                     notImplementedYet t

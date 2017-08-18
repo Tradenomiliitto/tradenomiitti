@@ -149,6 +149,13 @@ const source = {
       buttonCreateProfile: 'Luo oma profiili',
     },
   },
+  initPassword: {
+    title: 'Aseta salasanasi',
+    passwordPlaceholder: 'Salasana',
+    buttonSubmit: 'Lähetä',
+    success: 'Salasana asetettu!',
+    failure: 'Jotain meni pieleen',
+  },
   listAds: {
     heading: 'Selaa ilmoituksia',
     sort: {
@@ -217,6 +224,7 @@ const source = {
       settings: 'Asetukset',
       contacts: 'Käyntikortit',
       changePassword: 'Vaihda salasana',
+      initPassword: 'Aseta salasana',
     },
   },
   profile: {

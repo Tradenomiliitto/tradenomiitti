@@ -24,6 +24,7 @@ type Route
     | Settings
     | Contacts
     | ChangePassword
+    | InitPassword
 
 
 
@@ -84,6 +85,9 @@ routeToPath route =
         ChangePassword ->
             "/vaihdasalasana"
 
+        InitPassword ->
+            "/initpassword"
+
 
 routeToString : T -> Route -> String
 routeToString t route =
@@ -141,6 +145,9 @@ routeToString t route =
         ChangePassword ->
             t "navigation.routeNames.changePassword"
 
+        InitPassword ->
+            t "navigation.routeNames.initPassword"
+
 
 parseLocation : Navigation.Location -> Route
 parseLocation location =
@@ -175,6 +182,7 @@ routeParser =
         , U.map Settings (U.s "asetukset")
         , U.map Contacts (U.s "kayntikortit")
         , U.map ChangePassword (U.s "vaihdasalasana")
+        , U.map InitPassword (U.s "initpassword")
         ]
 
 

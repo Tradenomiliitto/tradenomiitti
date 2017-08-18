@@ -8,6 +8,7 @@ import State.Config
 import State.Contacts
 import State.CreateAd
 import State.Home
+import State.InitPassword
 import State.ListAds
 import State.ListUsers
 import State.Login
@@ -27,6 +28,7 @@ type alias Model =
     , user : State.User.Model
     , login : State.Login.Model
     , registration : State.Registration.Model
+    , initPassword : State.InitPassword.Model
     , changePassword : State.ChangePassword.Model
     , profile : ProfileState.Model
     , initialLoading : Bool
@@ -51,6 +53,7 @@ initState translations location =
     , scrollTop = True -- initially start at top and init
     , user = State.User.init
     , login = State.Login.init
+    , initPassword = State.InitPassword.init
     , registration = State.Registration.init
     , changePassword = State.ChangePassword.init
     , listUsers = State.ListUsers.init
