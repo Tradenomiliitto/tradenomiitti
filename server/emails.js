@@ -6,12 +6,7 @@ const scssVars = scssToJson(colorsFilepath);
 const email_translations = require('./email_translations');
 
 module.exports = function init(params) {
-  const staticDir = params.staticDir;
-  const smtp = params.smtp;
-  const mailFrom = params.mailFrom;
-  const serviceDomain = params.serviceDomain;
-  const util = params.util;
-  const enableEmailGlobally = params.enableEmailGlobally;
+  const { staticDir, smtp, mailFrom, serviceDomain, util, enableEmailGlobally } = params;
 
   const logo = {
     path: `${__dirname}/../frontend/assets/email_logo.png`,
@@ -85,6 +80,12 @@ module.exports = function init(params) {
     ];
     const { email_address, emails_for_new_ads } = util.formatSettings(user.settings);
     sendEmail(email_address, emails_for_new_ads, t.text, t.subject, attachment);
+  }
+
+  function sendRegistrationEmail(email_address, token) {
+    const t = email_translations.sendRegistrationEmail;
+    const content = `${t.text}\r\rhttp://localhost:3000/initpassword?token=${token}\r\r${t.signature}`;
+    sendEmail(email_address, true, content, t.subject);
   }
 
   function sendEmail(email_address, allow_sending, text, subject, attachment) {
@@ -228,5 +229,6 @@ module.exports = function init(params) {
     sendNotificationForAnswer,
     sendNotificationForContact,
     sendNotificationForAds,
+    sendRegistrationEmail,
   };
 };
