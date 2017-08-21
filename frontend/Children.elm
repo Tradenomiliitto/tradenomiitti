@@ -40,14 +40,28 @@ decoder =
     Json.list birthdateDecoder
 
 
+sort : Children -> Children
+sort =
+    List.sortBy birthdateToComparable >> List.reverse
+
+
+birthdateToComparable : Birthdate -> String
+birthdateToComparable { year, month } =
+    toString year
+        ++ "-"
+        ++ String.padLeft 2 '0' (toString month)
+
+
+birthdateToString : Birthdate -> String
+birthdateToString { year, month } =
+    String.padLeft 2 '0' (toString month)
+        ++ "/"
+        ++ toString year
+
+
 dates : Children -> List String
 dates =
-    List.map
-        (\{ year, month } ->
-            String.padLeft 2 '0' (toString month)
-                ++ "/"
-                ++ toString year
-        )
+    List.map birthdateToString
 
 
 asText : T -> Maybe Date.Date -> Children -> String

@@ -824,39 +824,59 @@ editChildren : T -> Model -> User -> H.Html Msg
 editChildren t model user =
     H.div
         [ A.class "user-page__editing-familystatus" ]
-        [ H.p [] [ H.text <| t "profile.childrenEditing.heading" ]
-        , H.ul []
+        [ H.h4 [] [ H.text <| t "profile.childrenEditing.heading" ]
+        , H.ul [ A.class "user-tags" ] <|
             (user.children
                 |> Children.dates
                 |> List.indexedMap
                     (\index date ->
-                        H.li [ E.onClick (DeleteChild index) ] [ H.text date ]
+                        H.li [ A.class "user-tags__tag" ]
+                            [ H.span [ A.class "user-tags__tag-text" ] [ H.text date ]
+                            , H.span [ A.class "user-tags__tag-remove" ] [ H.i [ A.class "fa fa-close" ] [] ]
+                            ]
                     )
             )
-        , H.input
+                ++ addChild t model
+        ]
+
+
+addChild : T -> Model -> List (H.Html Msg)
+addChild t model =
+    [ H.div [ A.class "user-tags__tag" ]
+        [ H.input
             [ A.placeholder <| t "profile.childrenEditing.placeholder.month"
+            , A.class "user-page__add-child-input--month"
             , A.value model.birthMonth
             , A.size 2
             , A.type_ "number"
             , A.maxlength 2
-            , A.style [ ( "width", "auto" ) ]
             , E.onInput ChangeBirthMonth
             ]
             []
         , H.input
             [ A.placeholder <| t "profile.childrenEditing.placeholder.year"
+            , A.class "user-page__add-child-input--year"
             , A.value model.birthYear
             , A.size 4
             , A.type_ "number"
             , A.maxlength 4
-            , A.style [ ( "width", "auto" ) ]
             , E.onInput ChangeBirthYear
             ]
             []
         , H.button
-            [ E.onClick AddChild ]
-            [ H.text <| t "profile.childrenEditing.buttonAdd" ]
+            [ E.onClick AddChild
+            , A.class "user-page__add-child-button"
+            , A.disabled <|
+                case Profile.Main.validateBirthdate model of
+                    Ok _ ->
+                        False
+
+                    Err _ ->
+                        True
+            ]
+            [ H.i [ A.class "fa fa-plus" ] [] ]
         ]
+    ]
 
 
 contributionStatus : T -> User -> List (H.Html Msg)

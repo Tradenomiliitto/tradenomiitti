@@ -209,6 +209,22 @@ updateBusinessCard businessCard field value =
             Nothing
 
 
+validateBirthdate : Model -> Result String Children.Birthdate
+validateBirthdate { birthMonth, birthYear } =
+    Result.map2 Children.Birthdate
+        (String.toInt birthYear)
+        (String.toInt birthMonth)
+        |> Result.andThen
+            (\({ year, month } as date) ->
+                if year < 1900 || year > 2099 then
+                    Err "Vuosiluku ei vaikuta oikealta."
+                else if month < 1 || month > 12 then
+                    Err "Kuukauden täytyy olla välillä 1-12."
+                else
+                    Ok date
+            )
+
+
 update : Msg -> Model -> Config.Model -> ( Model, Cmd (UpdateMessage Msg) )
 update msg model config =
     case msg of
@@ -378,13 +394,12 @@ update msg model config =
         AddChild ->
             let
                 birthdate =
-                    Result.map2 Children.Birthdate
-                        (String.toInt model.birthYear)
-                        (String.toInt model.birthMonth)
+                    validateBirthdate model
             in
             case birthdate of
                 Ok date ->
-                    updateUser (\u -> { u | children = u.children ++ [ date ] })
+                    updateUser
+                        (\u -> { u | children = Children.sort (date :: u.children) })
                         { model | birthMonth = "", birthYear = "" }
                         ! []
 
