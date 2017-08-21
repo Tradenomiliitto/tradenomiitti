@@ -9,6 +9,7 @@ type Status
 
 type alias Model =
     { password : String
+    , password2 : String
     , status : Status
     }
 
@@ -16,5 +17,6 @@ type alias Model =
 init : Model
 init =
     { password = ""
+    , password2 = ""
     , status = NotLoaded
     }

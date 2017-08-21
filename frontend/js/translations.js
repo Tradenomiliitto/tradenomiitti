@@ -152,6 +152,7 @@ const source = {
   initPassword: {
     title: 'Aseta salasanasi',
     passwordPlaceholder: 'Salasana',
+    password2Placeholder: 'Salasana uudelleen',
     buttonSubmit: 'Lähetä',
     success: 'Salasana asetettu!',
     failure: 'Jotain meni pieleen',

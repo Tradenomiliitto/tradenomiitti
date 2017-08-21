@@ -14,6 +14,7 @@ import Util exposing (UpdateMessage(..))
 
 type Msg
     = Password String
+    | Password2 String
     | Submitted
     | SendResponse (Result Http.Error Response)
 
@@ -44,8 +45,11 @@ decodeResponse =
 update : Msg -> Model -> ( Model, Cmd (UpdateMessage Msg) )
 update msg model =
     case msg of
-        Password password ->
-            { model | password = password } ! []
+        Password str ->
+            { model | password = str } ! []
+
+        Password2 str ->
+            { model | password2 = str } ! []
 
         SendResponse (Err error) ->
             { model | status = Failure } ! []
@@ -82,12 +86,16 @@ view t model =
                             [ A.class "initpassword__input" ]
                             [ H.input [ A.type_ "password", A.placeholder <| t "initPassword.passwordPlaceholder", onInput Password ] []
                             ]
+                        , H.h3
+                            [ A.class "initpassword__input" ]
+                            [ H.input [ A.type_ "password", A.placeholder <| t "initPassword.password2Placeholder", onInput Password2 ] []
+                            ]
                         , H.p
                             [ A.class "initpassword__submit-button" ]
                             [ H.button
                                 [ A.type_ "submit"
                                 , A.class "btn btn-primary"
-                                , A.disabled (String.length model.password == 0)
+                                , A.disabled (String.length model.password == 0 || (model.password /= model.password2))
                                 ]
                                 [ H.text <| t "initPassword.buttonSubmit" ]
                             ]
