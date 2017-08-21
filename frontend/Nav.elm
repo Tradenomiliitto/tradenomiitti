@@ -24,7 +24,7 @@ type Route
     | Settings
     | Contacts
     | ChangePassword
-    | InitPassword
+    | InitPassword (Maybe String)
 
 
 
@@ -85,8 +85,8 @@ routeToPath route =
         ChangePassword ->
             "/vaihdasalasana"
 
-        InitPassword ->
-            "/initpassword"
+        InitPassword tokenMaybe ->
+            "/initpassword" ++ (tokenMaybe |> Maybe.map (\s -> "?token=" ++ s) |> Maybe.withDefault "")
 
 
 routeToString : T -> Route -> String
@@ -145,7 +145,7 @@ routeToString t route =
         ChangePassword ->
             t "navigation.routeNames.changePassword"
 
-        InitPassword ->
+        InitPassword _ ->
             t "navigation.routeNames.initPassword"
 
 
@@ -182,7 +182,7 @@ routeParser =
         , U.map Settings (U.s "asetukset")
         , U.map Contacts (U.s "kayntikortit")
         , U.map ChangePassword (U.s "vaihdasalasana")
-        , U.map InitPassword (U.s "initpassword")
+        , U.map InitPassword (U.s "initpassword" <?> U.stringParam "token")
         ]
 
 

@@ -246,7 +246,7 @@ update msg model =
                         ChangePassword ->
                             initWithUpdateMessage { modelWithRoute | changePassword = State.ChangePassword.init } ChangePasswordMessage Cmd.none
 
-                        InitPassword ->
+                        InitPassword _ ->
                             initWithUpdateMessage { modelWithRoute | initPassword = State.InitPassword.init } InitPasswordMessage Cmd.none
 
                         newRoute ->
@@ -812,8 +812,8 @@ viewPage model =
                 ChangePassword ->
                     unpackViewMessage ChangePasswordMessage <| ChangePassword.view t model.changePassword model.profile.user
 
-                InitPassword ->
-                    H.map InitPasswordMessage <| InitPassword.view t model.initPassword
+                InitPassword token ->
+                    H.map InitPasswordMessage <| InitPassword.view t model.initPassword token
 
                 NotFound ->
                     notImplementedYet t

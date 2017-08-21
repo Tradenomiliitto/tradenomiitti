@@ -131,10 +131,16 @@ module.exports = function initialize(params) {
   function initPassword(req, res) {
     const token = req.body.token;
     const password = req.body.password;
+    const password2 = req.body.password2;
+
+
     knex('registration').where({ url_token: token }).whereRaw('created_at > NOW() - INTERVAL \'1 hour\'').first()
       .then(item => {
         if (!item) {
           throw new Error('Invalid payload');
+        }
+        if (password !== password2) {
+          throw new Error('Passwords don\'t match');
         }
         const newHash = bcrypt.hashSync(password);
         return knex('users').where({ id: item.user_id }).update({ pw_hash: newHash });

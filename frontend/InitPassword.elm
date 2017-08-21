@@ -15,7 +15,7 @@ import Util exposing (UpdateMessage(..))
 type Msg
     = Password String
     | Password2 String
-    | Submitted
+    | Submitted (Maybe String)
     | SendResponse (Result Http.Error Response)
 
 
@@ -23,13 +23,14 @@ type alias Response =
     { status : String }
 
 
-submit : Model -> Cmd Msg
-submit model =
+submit : Model -> Maybe String -> Cmd Msg
+submit model maybeToken =
     let
         encoded =
             Json.Encode.object <|
                 [ ( "password", Json.Encode.string model.password )
-                , ( "token", Json.Encode.string "a2578cb311bc7d7b69fa4b19ef1a7ed4767bd0506fc3c7a7882578956477b8d878eaf63f84f47620dc6389e3a60967d9" )
+                , ( "password2", Json.Encode.string model.password2 )
+                , ( "token", Json.Encode.string (Maybe.withDefault "" maybeToken) )
                 ]
     in
     Http.post "/initpassword" (Http.jsonBody encoded) decodeResponse
@@ -57,16 +58,16 @@ update msg model =
         SendResponse (Ok response) ->
             { model | status = Success } ! []
 
-        Submitted ->
-            model ! [ Cmd.map LocalUpdateMessage <| submit model ]
+        Submitted maybeToken ->
+            model ! [ Cmd.map LocalUpdateMessage <| submit model maybeToken ]
 
 
 
 -- Näytä success/failure -> message, jonka serveri lähettää?
 
 
-view : T -> Model -> H.Html Msg
-view t model =
+view : T -> Model -> Maybe String -> H.Html Msg
+view t model maybeToken =
     case model.status of
         NotLoaded ->
             H.div
@@ -77,7 +78,7 @@ view t model =
                         [ A.class "initpassword__container"
                         , onWithOptions "submit"
                             { preventDefault = True, stopPropagation = False }
-                            (Json.Decode.succeed Submitted)
+                            (Json.Decode.succeed (Submitted maybeToken))
                         ]
                         [ H.h1
                             [ A.class "initpassword__heading" ]
