@@ -188,6 +188,8 @@ const source = {
     title: 'Kirjaudu sisään',
     emailPlaceholder: 'Sähköpostiosoite',
     passwordPlaceholder: 'Salasana',
+    success: 'Kirjautuminen onnistui!',
+    failure: 'Kirjautuminen epäonnistui',
   },
   main: {
     profile: 'Profiili',

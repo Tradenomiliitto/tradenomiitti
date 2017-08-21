@@ -145,7 +145,7 @@ if (testLogin) {
 // });
 // app.get('/kirjaudu', logon.login);
 
-app.post('/kirjaudu', urlEncoded, logon.login);
+app.post('/kirjaudu', jsonParser, logon.login);
 app.get('/uloskirjautuminen', logon.logout);
 app.post('/vaihdasalasana', jsonParser, logon.changePassword);
 app.post('/register', jsonParser, logon.register);

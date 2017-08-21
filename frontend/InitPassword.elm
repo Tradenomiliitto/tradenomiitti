@@ -62,10 +62,6 @@ update msg model =
             model ! [ Cmd.map LocalUpdateMessage <| submit model maybeToken ]
 
 
-
--- Näytä success/failure -> message, jonka serveri lähettää?
-
-
 view : T -> Model -> Maybe String -> H.Html Msg
 view t model maybeToken =
     case model.status of

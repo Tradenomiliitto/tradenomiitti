@@ -19,7 +19,7 @@ module.exports = function initialize(params) {
           const pw_hash = user.pw_hash;
           return bcrypt.compare(password, pw_hash);
         }
-        return Promise.reject(new Error('Invalid login'));
+        throw new Error('Invalid login');
       })
       .then(isValid => {
         if (isValid) {
@@ -34,14 +34,15 @@ module.exports = function initialize(params) {
             }),
           ]).then(() => {
             req.session.id = sessionId;
-            return res.redirect(req.query.path || '/');
+            return res.json({ status: 'Ok' });
+            // return res.redirect(req.query.path || '/');
           });
         }
-        return Promise.reject(new Error('Invalid login'));
+        throw new Error('Invalid login');
       })
       .catch(err => knex('events').insert({ type: 'login_failure', data: { error: err.message, email } })
-        // .then(() => res.status(500).send('Jotain meni pieleen'))
-        .then(() => res.status(403).send('Jotain meni pieleen'))
+        .then(() => res.status(500).json({ status: 'Failure', message: 'Login failed' }))
+        // .then(() => res.status(403).send('Jotain meni pieleen'))
       );
   }
 

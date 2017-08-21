@@ -7,8 +7,9 @@ import Http
 import Json.Decode
 import Json.Decode.Pipeline exposing (decode, required)
 import Json.Encode
+import Models.Ad
+import Models.User exposing (User)
 import Nav
-import Profile.Main as Profile
 import State.Login exposing (..)
 import Translation exposing (T)
 import Util exposing (UpdateMessage(..))
@@ -17,28 +18,31 @@ import Util exposing (UpdateMessage(..))
 type Msg
     = Email String
     | Password String
+    | SendResponse (Result Http.Error Response)
+    | Submitted
 
 
+type alias Response =
+    { status : String }
 
---    | SendResponse (Result Http.Error Response)
---    | Submitted
---type alias Response =
---    { status : String }
---submit : Model -> Cmd Msg
---submit model =
---    let
---        encoded =
---            Json.Encode.object <|
---                [ ( "username", Json.Encode.string model.username )
---                , ( "password", Json.Encode.string model.password )
---                ]
---    in
---    Http.post "/kirjaudu" (Http.jsonBody encoded) decodeResponse
---        |> Http.send SendResponse
---decodeResponse : Json.Decode.Decoder Response
---decodeResponse =
---    decode Response
---        |> required "status" Json.Decode.string
+
+submit : Model -> Cmd Msg
+submit model =
+    let
+        encoded =
+            Json.Encode.object <|
+                [ ( "email", Json.Encode.string model.email )
+                , ( "password", Json.Encode.string model.password )
+                ]
+    in
+    Http.post "/kirjaudu" (Http.jsonBody encoded) decodeResponse
+        |> Http.send SendResponse
+
+
+decodeResponse : Json.Decode.Decoder Response
+decodeResponse =
+    decode Response
+        |> required "status" Json.Decode.string
 
 
 update : Msg -> Model -> ( Model, Cmd (UpdateMessage Msg) )
@@ -50,44 +54,80 @@ update msg model =
         Password password ->
             { model | password = password } ! []
 
+        SendResponse (Err error) ->
+            { model | status = Failure } ! []
 
+        SendResponse (Ok response) ->
+            { model | status = Success } ! []
 
---SendResponse (Err error) ->
---    model ! []
---SendResponse (Ok response) ->
---    model ! [ Util.reroute Nav.Home ]
---Submitted ->
---    model ! [ Cmd.map LocalUpdateMessage <| submit model ]
+        Submitted ->
+            model ! [ Cmd.map LocalUpdateMessage <| submit model ]
 
 
 view : T -> Model -> H.Html Msg
 view t model =
-    H.div
-        [ A.class "container last-row" ]
-        [ H.div
-            [ A.class "row login col-sm-6 col-sm-offset-3" ]
-            [ H.form
-                [ A.class "login__container", A.action "/kirjaudu", A.method "post" ]
-                [ H.h1
-                    [ A.class "login__heading" ]
-                    [ H.text <| t "login.title" ]
-                , H.h3
-                    [ A.class "login__input" ]
-                    [ H.input [ A.name "email", A.type_ "text", A.placeholder <| t "login.emailPlaceholder", onInput Email ] []
-                    ]
-                , H.h3
-                    [ A.class "login__input" ]
-                    [ H.input [ A.name "password", A.type_ "password", A.placeholder <| t "login.passwordPlaceholder", onInput Password ] []
-                    ]
-                , H.p
-                    [ A.class "login__submit-button" ]
-                    [ H.button
-                        [ A.type_ "submit"
-                        , A.class "btn btn-primary"
-                        , A.disabled (String.length model.email == 0 || String.length model.password == 0)
+    case model.status of
+        NotLoaded ->
+            H.div
+                [ A.class "container last-row" ]
+                [ H.div
+                    [ A.class "row login col-sm-6 col-sm-offset-3" ]
+                    [ H.form
+                        [ A.class "login__container"
+                        , onWithOptions "submit"
+                            { preventDefault = True, stopPropagation = False }
+                            (Json.Decode.succeed Submitted)
                         ]
-                        [ H.text <| t "common.login" ]
+                        [ H.h1
+                            [ A.class "login__heading" ]
+                            [ H.text <| t "login.title" ]
+                        , H.h3
+                            [ A.class "login__input" ]
+                            [ H.input [ A.name "email", A.type_ "text", A.placeholder <| t "login.emailPlaceholder", onInput Email ] []
+                            ]
+                        , H.h3
+                            [ A.class "login__input" ]
+                            [ H.input [ A.name "password", A.type_ "password", A.placeholder <| t "login.passwordPlaceholder", onInput Password ] []
+                            ]
+                        , H.p
+                            [ A.class "login__submit-button" ]
+                            [ H.button
+                                [ A.type_ "submit"
+                                , A.class "btn btn-primary"
+                                , A.disabled (String.length model.email == 0 || String.length model.password == 0)
+                                ]
+                                [ H.text <| t "common.login" ]
+                            ]
+                        ]
                     ]
                 ]
-            ]
-        ]
+
+        Success ->
+            H.div
+                [ A.class "container last-row" ]
+                [ H.div
+                    [ A.class "row login col-sm-6 col-sm-offset-3" ]
+                    [ H.div
+                        [ A.class "login__container"
+                        ]
+                        [ H.h1
+                            [ A.class "login__heading" ]
+                            [ H.text <| t "login.success" ]
+                        ]
+                    ]
+                ]
+
+        Failure ->
+            H.div
+                [ A.class "container last-row" ]
+                [ H.div
+                    [ A.class "row login col-sm-6 col-sm-offset-3" ]
+                    [ H.div
+                        [ A.class "login__container"
+                        ]
+                        [ H.h1
+                            [ A.class "login__heading" ]
+                            [ H.text <| t "login.failure" ]
+                        ]
+                    ]
+                ]
