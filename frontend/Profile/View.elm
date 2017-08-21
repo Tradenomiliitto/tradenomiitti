@@ -832,7 +832,7 @@ editChildren t model user =
                     (\index date ->
                         H.li [ A.class "user-tags__tag" ]
                             [ H.span [ A.class "user-tags__tag-text" ] [ H.text date ]
-                            , H.span [ A.class "user-tags__tag-remove" ] [ H.i [ A.class "fa fa-close" ] [] ]
+                            , H.span [ E.onClick (DeleteChild index), A.class "user-tags__tag-remove" ] [ H.i [ A.class "fa fa-close" ] [] ]
                             ]
                     )
             )
