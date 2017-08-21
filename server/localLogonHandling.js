@@ -16,8 +16,14 @@ module.exports = function initialize(params) {
       .then(item => {
         if (item) {
           user = item;
-          const pw_hash = user.pw_hash;
-          return bcrypt.compare(password, pw_hash);
+          return knex('remote_user_register').where({ remote_id: user.remote_id }).first();
+        }
+        throw new Error('Invalid login');
+      })
+      .then(remote_user => {
+        // Allow login only if user found also in remote register
+        if (remote_user) {
+          return bcrypt.compare(password, user.pw_hash);
         }
         throw new Error('Invalid login');
       })
