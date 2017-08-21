@@ -137,7 +137,6 @@ module.exports = function initialize(params) {
               }) : null);
               return [
                 makeObject('degree'),
-                makeObject('major'),
                 makeObject('specialization'),
               ].filter(x => x);
             });

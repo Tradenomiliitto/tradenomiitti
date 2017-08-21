@@ -310,9 +310,7 @@ app.get('/api/koulutus', (req, res, next) => {
   knex('education').where({}).orderBy('id')
     .then(rows => {
       const lists = {
-        institute: [],
         degree: [],
-        major: [],
         specialization: [],
       };
       rows.forEach(o => {

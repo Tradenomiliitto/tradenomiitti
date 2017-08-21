@@ -1,4 +1,4 @@
-const supportEmail = 'info@mothersinbusiness.fi';
+const supportEmail = 'mibit@mib.fi';
 
 const source = {
   common: {
@@ -155,7 +155,6 @@ const source = {
       name: 'Nimi',
     },
     filters: {
-      institute: 'Valitse oppilaitos',
       specialization: 'Valitse suuntautuminen / pääaine',
       skill: 'Valitse taito',
     },
@@ -244,9 +243,7 @@ const source = {
     },
     educations: {
       heading: 'Koulutus',
-      institute: 'Oppilaitos',
       degree: 'Tutkintonimike',
-      major: 'Koulutus',
       specialization: 'Suuntautuminen / pääaine',
     },
     viewUser: {
@@ -283,13 +280,11 @@ const source = {
       selectPositionHint: 'Lisää tehtäväluokka, josta olet kiinnostunut tai sinulla on osaamista',
     },
     educationsEditing: {
-      hint: 'Lisää koulutus. Valitse omaa koulutustasi parhaiten vastaavat vaihtoehdot. Mikäli oppilaitoksesi on vaihtanut nimeä, valitse nykyisen nimen mukainen oppilaitos. Mikäli valikoista ei löydy oikeaa vaihtoehtoa, voit lisätä sen itse.',
-      selectInstitute: 'Valitse oppilaitos',
+      hint: 'Lisää koulutus. Valitse omaa koulutustasi parhaiten vastaavat vaihtoehdot. Mikäli valikoista ei löydy oikeaa vaihtoehtoa, voit lisätä sen itse.',
       selectDegree: 'Valitse tutkintonimike',
-      selectMajor: 'Valitse koulutusala / koulutusohjelma',
       selectSpecialization: 'Valitse suuntautuminen / pääaine',
       addEducation: 'Lisää koulutus',
-      instituteRequired: 'Oppilaitos on pakollinen tieto',
+      degreeRequired: 'Tutkintonimike on pakollinen tieto',
     },
     childrenEditing: {
       heading: 'Lapset',
@@ -356,6 +351,10 @@ const source = {
       contact: 'Ota yhteyttä',
       submit: 'Lähetä',
     },
+  },
+  workStatus: {
+    on_leave: 'Vapaalla',
+    working: 'Työelämässä',
   },
 };
 

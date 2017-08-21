@@ -12,9 +12,7 @@ type alias Model =
     , viewAllAds : Bool
     , editing : Bool
     , mouseOverUserImage : Bool
-    , selectedInstitute : Maybe String
     , selectedDegree : Maybe String
-    , selectedMajor : Maybe String
     , selectedSpecialization : Maybe String
     , birthMonth : String
     , birthYear : String
@@ -30,9 +28,7 @@ init =
     , viewAllAds = False
     , editing = False
     , mouseOverUserImage = False
-    , selectedInstitute = Nothing
     , selectedDegree = Nothing
-    , selectedMajor = Nothing
     , selectedSpecialization = Nothing
     , birthMonth = ""
     , birthYear = ""

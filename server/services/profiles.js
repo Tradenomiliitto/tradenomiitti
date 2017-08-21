@@ -36,15 +36,6 @@ module.exports = function initialize(params) {
       });
     }
 
-    if (filters.institute !== undefined) {
-      query = query.whereExists(function whereExists() {
-        this.select('user_id')
-          .from('user_educations')
-          .whereRaw("users.id = user_educations.user_id and data->>'institute' = ?",
-            [filters.institute]);
-      });
-    }
-
     if (filters.specialization !== undefined) {
       query = query.whereExists(function whereExists() {
         this.select('user_id')

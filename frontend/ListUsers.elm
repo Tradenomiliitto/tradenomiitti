@@ -40,7 +40,6 @@ typeaheads : Model -> Config.Model -> Cmd msg
 typeaheads model config =
     Cmd.batch
         [ typeahead ( "skills-input", Config.categoriedOptionsEncode config.specialSkillOptions, False, False, model.selectedSkill )
-        , typeahead ( "education-institute", Config.categoriedOptionsEncode << Config.institutes <| config, False, False, model.selectedInstitute )
         , typeahead ( "education-specialization", Config.categoriedOptionsEncode << Config.specializations <| config, False, False, model.selectedSpecialization )
         ]
 
@@ -50,9 +49,6 @@ typeAheadToMsg ( typeAheadResultStr, id ) =
     case id of
         "skills-input" ->
             ChangeSkillFilter typeAheadResultStr
-
-        "education-institute" ->
-            ChangeInstituteFilter typeAheadResultStr
 
         "education-specialization" ->
             ChangeSpecializationFilter typeAheadResultStr
@@ -92,7 +88,6 @@ getUsers model =
                 |> QueryString.optional "location" model.selectedLocation
                 |> QueryString.optional "special_skill" (emptyToNothing model.selectedSkill)
                 |> QueryString.optional "specialization" (emptyToNothing model.selectedSpecialization)
-                |> QueryString.optional "institute" (emptyToNothing model.selectedInstitute)
                 |> QueryString.add "order" (sortToString model.sort)
                 |> QueryString.render
 
@@ -109,7 +104,6 @@ type Msg
     | ChangeDomainFilter (Maybe String)
     | ChangePositionFilter (Maybe String)
     | ChangeLocationFilter (Maybe String)
-    | ChangeInstituteFilter String
     | ChangeSpecializationFilter String
     | ChangeSkillFilter String
     | ChangeSort Sort
@@ -156,9 +150,6 @@ update msg model =
 
         ChangeLocationFilter value ->
             reInitItems { model | selectedLocation = value }
-
-        ChangeInstituteFilter value ->
-            reInitItems { model | selectedInstitute = value }
 
         ChangeSpecializationFilter value ->
             reInitItems { model | selectedSpecialization = value }
@@ -257,9 +248,6 @@ view t model config isLoggedIn =
             , H.div
                 [ A.class "row list-users__filters" ]
                 [ H.div
-                    [ A.class "col-xs-12 col-sm-4" ]
-                    [ Common.typeaheadInput "list-users__" (t "listUsers.filters.institute") "education-institute" ]
-                , H.div
                     [ A.class "col-xs-12 col-sm-4" ]
                     [ Common.typeaheadInput "list-users__" (t "listUsers.filters.specialization") "education-specialization" ]
                 , H.div
