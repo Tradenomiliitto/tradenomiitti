@@ -3,7 +3,7 @@ const bcrypt = require('bcryptjs');
 const crypto = require('crypto');
 
 module.exports = function initialize(params) {
-  const { knex, util } = params;
+  const { knex, util, emails } = params;
 
   // function login(req, res, next) {
   function login(req, res) {
@@ -117,6 +117,7 @@ module.exports = function initialize(params) {
       .then(reg_item => {
         if (reg_item == null) {
           const uniqueToken = crypto.randomBytes(48).toString('hex');
+          emails.sendRegistrationEmail(email, uniqueToken);
           return knex('registration').insert({ user_id: user.id, url_token: uniqueToken });
         }
         throw new Error('Already pending');
