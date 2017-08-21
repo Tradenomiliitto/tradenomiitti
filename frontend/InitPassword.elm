@@ -29,7 +29,7 @@ submit model =
         encoded =
             Json.Encode.object <|
                 [ ( "password", Json.Encode.string model.password )
-                , ( "token", Json.Encode.string "asdfkhjasdöofhasdlkj788787" )
+                , ( "token", Json.Encode.string "a2578cb311bc7d7b69fa4b19ef1a7ed4767bd0506fc3c7a7882578956477b8d878eaf63f84f47620dc6389e3a60967d9" )
                 ]
     in
     Http.post "/initpassword" (Http.jsonBody encoded) decodeResponse
@@ -114,6 +114,9 @@ view t model =
                         [ H.h1
                             [ A.class "initpassword__heading" ]
                             [ H.text <| t "initPassword.success" ]
+                        , H.p
+                            []
+                            [ H.text <| t "initPassword.successMessage" ]
                         ]
                     ]
                 ]

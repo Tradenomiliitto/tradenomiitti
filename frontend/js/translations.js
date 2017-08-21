@@ -155,6 +155,7 @@ const source = {
     password2Placeholder: 'Salasana uudelleen',
     buttonSubmit: 'Lähetä',
     success: 'Salasana asetettu!',
+    successMessage: 'Salasanasi on nyt asetettu. Voit kirjautua sisään ja alkaa käyttää MiBiTiä!',
     failure: 'Jotain meni pieleen',
   },
   listAds: {
