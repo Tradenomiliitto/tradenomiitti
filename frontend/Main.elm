@@ -134,6 +134,7 @@ type Msg
     | StaticContentMessage StaticContent.Msg
     | Error Http.Error
     | SendErrorResponse (Result Http.Error String)
+    | DoRefreshMe
     | NoOp
 
 
@@ -465,6 +466,9 @@ update msg model =
 
         SendErrorResponse (Err err) ->
             model ! [ showAlert <| tWith "errors.errorResponseFailure" [ toString err ] ]
+
+        DoRefreshMe ->
+            model ! [ unpackUpdateMessage ProfileMessage Profile.getMe ]
 
         NoOp ->
             model ! []
@@ -850,6 +854,9 @@ unpackUpdateMessage mapper cmd =
 
                 Reroute route ->
                     NewUrl route
+
+                RefreshMe ->
+                    DoRefreshMe
         )
         cmd
 

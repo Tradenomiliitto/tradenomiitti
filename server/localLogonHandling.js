@@ -18,14 +18,14 @@ module.exports = function initialize(params) {
           user = item;
           return knex('remote_user_register').where({ remote_id: user.remote_id }).first();
         }
-        throw new Error('Invalid login');
+        throw new Error('Invalid email address');
       })
       .then(remote_user => {
         // Allow login only if user found also in remote register
         if (remote_user) {
           return bcrypt.compare(password, user.pw_hash);
         }
-        throw new Error('Invalid login');
+        throw new Error('User not in remote register');
       })
       .then(isValid => {
         if (isValid) {
@@ -41,14 +41,12 @@ module.exports = function initialize(params) {
           ]).then(() => {
             req.session.id = sessionId;
             return res.json({ status: 'Ok' });
-            // return res.redirect(req.query.path || '/');
           });
         }
-        throw new Error('Invalid login');
+        throw new Error('Invalid password');
       })
       .catch(err => knex('events').insert({ type: 'login_failure', data: { error: err.message, email } })
-        .then(() => res.status(500).json({ status: 'Failure', message: 'Login failed' }))
-        // .then(() => res.status(403).send('Jotain meni pieleen'))
+        .then(() => res.status(401).json({ status: 'Failure', message: 'Login failed' }))
       );
   }
 

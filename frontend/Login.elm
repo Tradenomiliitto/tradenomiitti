@@ -58,7 +58,8 @@ update msg model =
             { model | status = Failure } ! []
 
         SendResponse (Ok response) ->
-            { model | status = Success } ! []
+            { model | status = Success }
+                ! [ Util.refreshMe, Util.reroute Nav.Home ]
 
         Submitted ->
             model ! [ Cmd.map LocalUpdateMessage <| submit model ]
