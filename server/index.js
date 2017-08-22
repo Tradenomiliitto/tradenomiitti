@@ -116,18 +116,18 @@ if (nonLocal) {
 }
 
 // only locally, allow logging in with preseeded session
-if (testLogin) {
-  app.get('/kirjaudu/:id', (req, res) => {
-    req.session.id = `00000000-0000-0000-0000-00000000000${req.params.id}`;
-    knex('events')
-      .insert({
-        type: 'login_success',
-        data: { user_id: parseInt(req.params.id, 10), session_id: req.session.id },
-      })
-      .then(() => res.redirect('/'))
-      .catch(() => res.redirect('/'));
-  });
-}
+// if (testLogin) {
+//   app.get('/kirjaudu/:id', (req, res) => {
+//     req.session.id = `00000000-0000-0000-0000-00000000000${req.params.id}`;
+//     knex('events')
+//       .insert({
+//         type: 'login_success',
+//         data: { user_id: parseInt(req.params.id, 10), session_id: req.session.id },
+//       })
+//       .then(() => res.redirect('/'))
+//       .catch(() => res.redirect('/'));
+//   });
+// }
 
 // locally login as 'Tradenomi1' test user, in production redirect to Avoine's authentication
 // app.get('/kirjaudu', (req, res) => {
