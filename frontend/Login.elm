@@ -82,7 +82,7 @@ view t model =
                             [ H.text <| t "login.title" ]
                         , H.h3
                             [ A.class "login__input" ]
-                            [ H.input [ A.name "email", A.type_ "text", A.autofocus True, A.placeholder <| t "login.emailPlaceholder", onInput Email ] []
+                            [ H.input [ A.name "email", A.type_ "email", A.autofocus True, A.placeholder <| t "login.emailPlaceholder", onInput Email ] []
                             ]
                         , H.h3
                             [ A.class "login__input" ]

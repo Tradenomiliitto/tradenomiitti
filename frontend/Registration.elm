@@ -79,7 +79,7 @@ view t model =
                             [ H.text <| t "registration.title" ]
                         , H.h3
                             [ A.class "registration__input" ]
-                            [ H.input [ A.name "email", A.type_ "text", A.autofocus True, A.placeholder <| t "registration.emailPlaceholder", onInput Email ] []
+                            [ H.input [ A.name "email", A.type_ "email", A.autofocus True, A.placeholder <| t "registration.emailPlaceholder", onInput Email ] []
                             ]
                         , H.p
                             [ A.class "registration__submit-button" ]
