@@ -1,8 +1,8 @@
 module Profile.View exposing (..)
 
+import Children
 import Common
 import Date
-import FamilyStatus
 import Html as H
 import Html.Attributes as A
 import Html.Events as E
@@ -661,7 +661,7 @@ userInfoBoxEditing2 t model user =
                 []
             ]
         , location model user
-        , editWorkStatus model t user
+        , editWorkChildren model t user
         , H.p
             [ A.class "user-page__work-details" ]
             [ H.div [ A.class "profile__marker" ]
@@ -727,7 +727,7 @@ userInfoBox t model user =
                             H.text user.title
                         ]
                     , location model user
-                    , workFamilyStatus t model.currentDate user
+                    , workChildren t model.currentDate user
                     , H.div [ A.class "profile__detail" ] <| contributionStatus t user
                     ]
                 ]
@@ -783,8 +783,8 @@ location model user =
             ]
 
 
-editWorkStatus : Model -> T -> User -> H.Html Msg
-editWorkStatus model t user =
+editWorkChildren : Model -> T -> User -> H.Html Msg
+editWorkChildren model t user =
     H.div
         [ A.classList
             [ ( "profile__detail", True )
@@ -793,20 +793,86 @@ editWorkStatus model t user =
         ]
         [ H.div [ A.class "profile__marker" ]
             [ H.i [ A.class "fa fa-home" ] [] ]
-        , workStatusSelect t user
+        , H.div []
+            [ workStatusSelect t user
+            , editChildren t model user
+            ]
         ]
 
 
 workStatusSelect : T -> User -> H.Html Msg
 workStatusSelect t user =
+    let
+        makeOption =
+            optionPreselected (user.workStatus |> Maybe.map (WorkStatus.toString t) |> Maybe.withDefault "")
+    in
     H.span
         [ A.class "user-page__location-select-container" ]
         [ H.select
             [ E.on "change" (Json.map (ChangeWorkStatus << WorkStatus.fromString t) E.targetValue)
             , A.class "user-page__location-select"
             ]
-            (List.map (optionPreselected (user.workStatus |> Maybe.map (WorkStatus.toString t) |> Maybe.withDefault "")) ("" :: List.map (WorkStatus.toString t) Config.workStatuses))
+            (List.map makeOption ("" :: List.map (WorkStatus.toString t) Config.workStatuses))
         ]
+
+
+editChildren : T -> Model -> User -> H.Html Msg
+editChildren t model user =
+    H.div
+        [ A.class "user-page__editing-familystatus" ]
+        [ H.h4 [] [ H.text <| t "profile.childrenEditing.heading" ]
+        , H.ul [ A.class "user-tags" ] <|
+            (user.children
+                |> Children.dates
+                |> List.indexedMap
+                    (\index date ->
+                        H.li [ A.class "user-tags__tag" ]
+                            [ H.span [ A.class "user-tags__tag-text" ] [ H.text date ]
+                            , H.span [ E.onClick (DeleteChild index), A.class "user-tags__tag-remove" ] [ H.i [ A.class "fa fa-close" ] [] ]
+                            ]
+                    )
+            )
+                ++ addChild t model
+        ]
+
+
+addChild : T -> Model -> List (H.Html Msg)
+addChild t model =
+    [ H.div [ A.class "user-tags__tag" ]
+        [ H.input
+            [ A.placeholder <| t "profile.childrenEditing.placeholder.month"
+            , A.class "user-page__add-child-input--month"
+            , A.value model.birthMonth
+            , A.size 2
+            , A.type_ "number"
+            , A.maxlength 2
+            , E.onInput ChangeBirthMonth
+            ]
+            []
+        , H.input
+            [ A.placeholder <| t "profile.childrenEditing.placeholder.year"
+            , A.class "user-page__add-child-input--year"
+            , A.value model.birthYear
+            , A.size 4
+            , A.type_ "number"
+            , A.maxlength 4
+            , E.onInput ChangeBirthYear
+            ]
+            []
+        , H.button
+            [ E.onClick AddChild
+            , A.class "user-page__add-child-button"
+            , A.disabled <|
+                case Profile.Main.validateBirthdate model of
+                    Ok _ ->
+                        False
+
+                    Err _ ->
+                        True
+            ]
+            [ H.i [ A.class "fa fa-plus" ] [] ]
+        ]
+    ]
 
 
 contributionStatus : T -> User -> List (H.Html Msg)
@@ -822,8 +888,8 @@ contributionStatus t user =
             ]
 
 
-workFamilyStatus : T -> Maybe Date.Date -> User -> H.Html Msg
-workFamilyStatus t currentDate user =
+workChildren : T -> Maybe Date.Date -> User -> H.Html Msg
+workChildren t currentDate user =
     let
         workStatus =
             case user.workStatus of
@@ -833,15 +899,15 @@ workFamilyStatus t currentDate user =
                 Nothing ->
                     []
 
-        familyStatus =
-            case user.familyStatus of
+        children =
+            case user.children of
                 [] ->
                     []
 
                 status ->
-                    [ H.text <| FamilyStatus.asText t currentDate status ]
+                    [ H.text <| Children.asText t currentDate status ]
     in
-    case workStatus ++ familyStatus of
+    case workStatus ++ children of
         [] ->
             H.text ""
 

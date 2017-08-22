@@ -1,0 +1,34 @@
+.user-tags {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  margin: 0;
+  padding: 0;
+
+  &__tag {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    height: 30px;
+    background-color: $light-grey;
+    margin-right: 10px;
+    margin-bottom: 10px;
+  }
+  &__tag-text {
+    flex: 1;
+    padding: 5px;
+  }
+  &__tag-remove {
+    height: 30px;
+    line-height: 30px;
+    width: 30px;
+    text-align: center;
+    cursor: pointer;
+    border-left: 2px solid white;
+
+    &:hover {
+      color: red;
+    }
+  }
+}

@@ -1,5 +1,6 @@
 port module Profile.Main exposing (..)
 
+import Children
 import Date
 import Http
 import Json.Decode as Json
@@ -50,6 +51,10 @@ type Msg
     | AddEducation String
     | DeleteEducation Int
     | RemovalMessage Removal.Msg
+    | ChangeBirthMonth String
+    | ChangeBirthYear String
+    | AddChild
+    | DeleteChild Int
     | NoOp
 
 
@@ -192,6 +197,22 @@ updateBusinessCard businessCard field value =
 
         Nothing ->
             Nothing
+
+
+validateBirthdate : Model -> Result String Children.Birthdate
+validateBirthdate { birthMonth, birthYear } =
+    Result.map2 Children.Birthdate
+        (String.toInt birthYear)
+        (String.toInt birthMonth)
+        |> Result.andThen
+            (\({ year, month } as date) ->
+                if year < 1900 || year > 2099 then
+                    Err "Vuosiluku ei vaikuta oikealta."
+                else if month < 1 || month > 12 then
+                    Err "Kuukauden täytyy olla välillä 1-12."
+                else
+                    Ok date
+            )
 
 
 update : Msg -> Model -> Config.Model -> ( Model, Cmd (UpdateMessage Msg) )
@@ -343,6 +364,30 @@ update msg model config =
 
         MouseLeaveProfilePic ->
             { model | mouseOverUserImage = False } ! []
+
+        ChangeBirthMonth str ->
+            { model | birthMonth = str } ! []
+
+        ChangeBirthYear str ->
+            { model | birthYear = str } ! []
+
+        AddChild ->
+            let
+                birthdate =
+                    validateBirthdate model
+            in
+            case birthdate of
+                Ok date ->
+                    updateUser
+                        (\u -> { u | children = Children.sort (date :: u.children) })
+                        { model | birthMonth = "", birthYear = "" }
+                        ! []
+
+                Err _ ->
+                    model ! []
+
+        DeleteChild index ->
+            updateUser (\u -> { u | children = List.removeAt index u.children }) model ! []
 
         -- handled in User
         StartAddContact ->
