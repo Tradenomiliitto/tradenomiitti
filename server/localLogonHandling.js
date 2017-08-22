@@ -115,7 +115,7 @@ module.exports = function initialize(params) {
       .then(item => {
         user = item;
         if (user && user.pw_hash == null) {
-          return knex('registration').where({ user_id: user.id }).whereRaw('created_at > NOW() - INTERVAL \'1 hour\'').first();
+          return knex('registration').where({ user_id: user.id }).whereRaw('created_at > NOW() - INTERVAL \'1 day\'').first();
         }
         throw new Error('No such user');
       })
@@ -139,7 +139,7 @@ module.exports = function initialize(params) {
     const password2 = req.body.password2;
 
 
-    knex('registration').where({ url_token: token }).whereRaw('created_at > NOW() - INTERVAL \'1 hour\'').first()
+    knex('registration').where({ url_token: token }).whereRaw('created_at > NOW() - INTERVAL \'1 day\'').first()
       .then(item => {
         if (!item) {
           throw new Error('Invalid payload');

@@ -13,7 +13,7 @@ const source = {
   },
   sendRegistrationEmail: {
     subject: 'Aktivoi MiBiT-tilisi',
-    text: 'Hei, tuleva mibiläinen!\r\rAvaa alla oleva aktivointilinkki, niin voit asettaa salasanan käyttäjätilillesi. Salasanan asettamisen jälkeen tilisi on käytettävissä. Aktivointilinkki on toiminnassa tietoturvasyistä vain tunnin. Sen jälkeen sinun on pyydettävä uusi aktivointilinkki sähköpostiosoitteellesi.',
+    text: 'Hei, tuleva mibiläinen!\r\rAvaa alla oleva aktivointilinkki, niin voit asettaa salasanan käyttäjätilillesi. Salasanan asettamisen jälkeen tilisi on käytettävissä. Aktivointilinkki on toiminnassa tietoturvasyistä 24 tuntia. Sen jälkeen sinun on pyydettävä uusi aktivointilinkki sähköpostiosoitteellesi.',
     signature: 'Tervisin,\rMiBiT-tiimi\r',
   },
   answerNotificationHtml: {
