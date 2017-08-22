@@ -7,8 +7,9 @@ const knex = require('knex')(knex_config[process.env.environment]);
 function formatData(data) {
   const newData = [];
   data.forEach(item => {
-    if (item["Hakemusvaiheessa olevat jäsenet"])
+    if (item['Hakemusvaiheessa olevat jäsenet']) {
       return;
+    }
     const newItem = {
       data: {},
       settings: {},
@@ -40,21 +41,25 @@ function formatData(data) {
 const input = fs.readFileSync('conf/assets/users.csv', 'utf8');
 const data = parse(input, { columns: true });
 const formattedData = formatData(data);
-console.log("Delete old stuff...");
+console.log('Delete old stuff...');
 knex('remote_user_register').del().then(() => {
-  console.log("Import csv...");
-  return knex('remote_user_register').insert(formattedData)
-}).then(() => {
-  console.log("Sync with users...");
-  const query = knex.raw('INSERT INTO "users" ("data", "remote_id", "settings") SELECT * FROM "remote_user_register" ON CONFLICT (remote_id) DO UPDATE SET settings = jsonb_set(users.settings, \'{email_address}\', EXCLUDED.settings->\'email_address\')').toQuery();
-  return knex.raw(query);
-}).then(() => {
-  console.log("Done");
-  return process.exit();
-}).catch(error => {
-  console.log(error);
-  return process.exit();
-});
+  console.log('Import csv...');
+  return knex('remote_user_register').insert(formattedData);
+})
+  .then(() => {
+    console.log('Sync with users...');
+    const query = knex.raw('INSERT INTO "users" ("data", "remote_id", "settings") SELECT * FROM "remote_user_register" ON CONFLICT (remote_id) DO UPDATE SET settings = jsonb_set(users.settings, \'{email_address}\', EXCLUDED.settings->\'email_address\')').toQuery();
+    return knex.raw(query);
+  })
+  .then(() => {
+    console.log('Done');
+    return process.exit();
+  })
+  .catch(error => {
+    console.log(error);
+    return process.exit();
+  });
+
 // const input = fs.readFileSync('conf/assets/users.csv', 'utf8');
 // const data = parse(input, { columns: true });
 // const formattedData = formatData(data);

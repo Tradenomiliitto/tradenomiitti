@@ -103,7 +103,7 @@ const ads = require('./ads')({ util, knex, emails, sebacon });
 const adNotifications = require('./adNotifications')({ emails, knex, util });
 const admin = require('./admin')({ knex, util, sebacon });
 
-const urlEncoded = bodyParser.urlencoded({ extended: true });
+// const urlEncoded = bodyParser.urlencoded({ extended: true });
 const jsonParser = bodyParser.json();
 const textParser = bodyParser.text();
 const fileParser = fileUpload();
