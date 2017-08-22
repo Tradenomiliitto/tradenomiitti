@@ -264,6 +264,25 @@
     }
   }
 
+  &__editing-name-details {
+    .user-page__add-child-input {
+      &--month {
+        width: 40px;
+      }
+      &--year {
+        width: 60px;
+      }
+    }
+  }
+
+  &__add-child-button {
+    background-color: $primary;
+    color: $white;
+    border: none;
+    text-align: center;
+    margin-left: 2px;
+  }
+
   &__businesscard {
     width: 80%;
     text-align: left;

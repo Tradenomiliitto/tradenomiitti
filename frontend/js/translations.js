@@ -89,7 +89,7 @@ const source = {
     codeToUserVisibleMessage: `Jotain meni pieleen. Virheen tunnus on {.}. Meille olisi suuri apu, jos otat kuvakaappauksen koko sivusta ja lähetät sen osoitteeseen ${supportEmail}.`,
     errorResponseFailure: '{.} Järjestelmässä on jotain pahasti pielessä, tutkimme asiaa',
   },
-  familyStatus: {
+  children: {
     becameMother: 'Äidiksi',
     child: 'Lapsi',
     children: 'Lapset',
@@ -314,6 +314,14 @@ const source = {
       selectSpecialization: 'Valitse suuntautuminen / pääaine',
       addEducation: 'Lisää koulutus',
       degreeRequired: 'Tutkintonimike on pakollinen tieto',
+    },
+    childrenEditing: {
+      heading: 'Lapset',
+      placeholder: {
+        month: 'KK',
+        year: 'VVVV',
+      },
+      buttonAdd: 'Lisää',
     },
     membershipRegisterInfo: {
       heading: 'MiB:n jäsentiedot',

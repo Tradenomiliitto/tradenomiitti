@@ -14,6 +14,8 @@ type alias Model =
     , mouseOverUserImage : Bool
     , selectedDegree : Maybe String
     , selectedSpecialization : Maybe String
+    , birthMonth : String
+    , birthYear : String
     , removal : Removal.Model
     , currentDate : Maybe Date.Date
     }
@@ -28,6 +30,8 @@ init =
     , mouseOverUserImage = False
     , selectedDegree = Nothing
     , selectedSpecialization = Nothing
+    , birthMonth = ""
+    , birthYear = ""
     , removal = Removal.init Removal.Ad
     , currentDate = Nothing
     }

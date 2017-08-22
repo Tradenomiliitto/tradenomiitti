@@ -28,7 +28,7 @@ module.exports = function initialize(params) {
     formattedUser.name = isLoggedIn ? (userData.name || '') : 'Mibiläinen';
     formattedUser.description = userData.description || '';
     formattedUser.title = userData.title || 'Ei titteliä';
-    formattedUser.family_status = isLoggedIn ? userData.family_status : null;
+    formattedUser.children = isLoggedIn ? userData.children : null;
     formattedUser.work_status = isLoggedIn ? userData.work_status : null;
     formattedUser.contribution = isLoggedIn ? userData.contribution : null;
 
