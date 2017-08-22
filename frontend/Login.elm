@@ -2,13 +2,11 @@ module Login exposing (..)
 
 import Html as H
 import Html.Attributes as A
-import Html.Events exposing (onInput, onSubmit, onWithOptions)
+import Html.Events exposing (onInput, onWithOptions)
 import Http
 import Json.Decode
 import Json.Decode.Pipeline exposing (decode, required)
 import Json.Encode
-import Models.Ad
-import Models.User exposing (User)
 import Nav
 import State.Login exposing (..)
 import Translation exposing (T)
@@ -84,7 +82,7 @@ view t model =
                             [ H.text <| t "login.title" ]
                         , H.h3
                             [ A.class "login__input" ]
-                            [ H.input [ A.name "email", A.type_ "text", A.placeholder <| t "login.emailPlaceholder", onInput Email ] []
+                            [ H.input [ A.name "email", A.type_ "text", A.autofocus True, A.placeholder <| t "login.emailPlaceholder", onInput Email ] []
                             ]
                         , H.h3
                             [ A.class "login__input" ]

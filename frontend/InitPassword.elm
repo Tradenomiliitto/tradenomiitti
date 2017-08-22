@@ -2,7 +2,7 @@ module InitPassword exposing (..)
 
 import Html as H
 import Html.Attributes as A
-import Html.Events exposing (onInput, onSubmit, onWithOptions)
+import Html.Events exposing (onInput, onWithOptions)
 import Http
 import Json.Decode
 import Json.Decode.Pipeline exposing (decode, required)
@@ -81,7 +81,7 @@ view t model maybeToken =
                             [ H.text <| t "initPassword.title" ]
                         , H.h3
                             [ A.class "initpassword__input" ]
-                            [ H.input [ A.type_ "password", A.placeholder <| t "initPassword.passwordPlaceholder", onInput Password ] []
+                            [ H.input [ A.type_ "password", A.autofocus True, A.placeholder <| t "initPassword.passwordPlaceholder", onInput Password ] []
                             ]
                         , H.h3
                             [ A.class "initpassword__input" ]

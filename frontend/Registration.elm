@@ -2,7 +2,7 @@ module Registration exposing (..)
 
 import Html as H
 import Html.Attributes as A
-import Html.Events exposing (onInput, onSubmit, onWithOptions)
+import Html.Events exposing (onInput, onWithOptions)
 import Http
 import Json.Decode
 import Json.Decode.Pipeline exposing (decode, required)
@@ -79,7 +79,7 @@ view t model =
                             [ H.text <| t "registration.title" ]
                         , H.h3
                             [ A.class "registration__input" ]
-                            [ H.input [ A.name "email", A.type_ "text", A.placeholder <| t "registration.emailPlaceholder", onInput Email ] []
+                            [ H.input [ A.name "email", A.type_ "text", A.autofocus True, A.placeholder <| t "registration.emailPlaceholder", onInput Email ] []
                             ]
                         , H.p
                             [ A.class "registration__submit-button" ]

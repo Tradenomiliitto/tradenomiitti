@@ -3,14 +3,12 @@ module ChangePassword exposing (..)
 import Common
 import Html as H
 import Html.Attributes as A
-import Html.Events exposing (onInput, onSubmit, onWithOptions)
+import Html.Events exposing (onInput, onWithOptions)
 import Http
 import Json.Decode
 import Json.Decode.Pipeline exposing (decode, required)
 import Json.Encode
 import Models.User exposing (User)
-import Nav
-import Profile.Main as Profile
 import State.ChangePassword exposing (..)
 import Translation exposing (T)
 import Util exposing (UpdateMessage(..), ViewMessage(..))
@@ -94,7 +92,7 @@ view t model maybeUser =
                                         [ H.text <| t "changePassword.title" ]
                                     , H.h3
                                         [ A.class "changepassword__input" ]
-                                        [ H.input [ A.name "oldpassword", A.type_ "password", A.placeholder <| t "changePassword.oldPasswordPlaceholder", onInput (LocalViewMessage << OldPassword) ] []
+                                        [ H.input [ A.name "oldpassword", A.type_ "password", A.autofocus True, A.placeholder <| t "changePassword.oldPasswordPlaceholder", onInput (LocalViewMessage << OldPassword) ] []
                                         ]
                                     , H.h3
                                         [ A.class "changepassword__input" ]
