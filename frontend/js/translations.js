@@ -128,7 +128,8 @@ const source = {
   home: {
     introbox: {
       heading: 'Löydä mibiläinen',
-      createProfile: 'Luo oma profiili',
+      // createProfile: 'Luo oma profiili',
+      register: 'Rekisteröidy',
       content: 'MiBiT on mibiläisten oma kohtaamispaikka, jossa yhdistyvät inspiroivat kohtaamiset, vertaistuki ja itsensä kehittäminen. Voit löytää etsimäsi mibiläisen tai tulla itse löydetyksi juuri sinunkaltaistasi henkilöä etsivälle.',
     },
     tradenomiittiInfo: {

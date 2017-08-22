@@ -109,9 +109,11 @@ introBoxes t loggedInUserMaybe =
                 Nothing ->
                     [ H.div
                         [ A.class "home__introbox home__introbox--button-container col-xs-11 col-sm-4 col-sm-offset-4" ]
-                        [ Link.button (t "home.introbox.createProfile")
+                        [ Link.button (t "home.introbox.register")
                             "home__introbox--button btn btn-primary"
-                            (Nav.LoginNeeded (Nav.Profile |> Nav.routeToPath |> Just))
+                            Nav.Registration
+
+                        --(Nav.LoginNeeded (Nav.Profile |> Nav.routeToPath |> Just))
                         ]
                     ]
     in
