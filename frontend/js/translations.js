@@ -229,6 +229,7 @@ const source = {
       settings: 'Asetukset',
       contacts: 'Käyntikortit',
       changePassword: 'Vaihda salasana',
+      renewPassword: 'Tilaa uusi salasana',
       initPassword: 'Aseta salasana',
     },
   },
@@ -336,6 +337,14 @@ const source = {
       location: 'Alue',
       missingData: 'Jäsentiedot puuttuvat',
     },
+  },
+  renewPassword: {
+    title: 'Unohtuiko salasanasi?',
+    p: 'Voit pyytää sähköpostiisi linkin, jonka avulla voit luoda itsellesi uuden salasanan.',
+    emailPlaceholder: 'Sähköpostiosoite',
+    buttonText: 'Lähetä',
+    success: 'Salasananvaihtolinkki lähetetty!',
+    failure: 'Jotain meni pieleen!',
   },
   registration: {
     title: 'Rekisteröidy käyttäjäksi',

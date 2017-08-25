@@ -14,6 +14,7 @@ import State.ListUsers
 import State.Login
 import State.Profile as ProfileState
 import State.Registration
+import State.RenewPassword
 import State.Settings
 import State.StaticContent
 import State.User
@@ -29,6 +30,7 @@ type alias Model =
     , login : State.Login.Model
     , registration : State.Registration.Model
     , initPassword : State.InitPassword.Model
+    , renewPassword : State.RenewPassword.Model
     , changePassword : State.ChangePassword.Model
     , profile : ProfileState.Model
     , initialLoading : Bool
@@ -56,6 +58,7 @@ initState translations location =
     , initPassword = State.InitPassword.init
     , registration = State.Registration.init
     , changePassword = State.ChangePassword.init
+    , renewPassword = State.RenewPassword.init
     , listUsers = State.ListUsers.init
     , profile = ProfileState.init
     , initialLoading = True

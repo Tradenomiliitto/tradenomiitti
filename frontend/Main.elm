@@ -26,6 +26,7 @@ import PreformattedText
 import Profile.Main as Profile
 import Profile.View
 import Registration
+import RenewPassword
 import Settings
 import State.Ad
 import State.ChangePassword
@@ -36,6 +37,7 @@ import State.ListAds
 import State.ListUsers
 import State.Main exposing (..)
 import State.Profile
+import State.RenewPassword
 import State.Settings
 import State.User
 import StaticContent
@@ -121,6 +123,7 @@ type Msg
     | ProfileMessage Profile.Msg
     | CreateAdMessage CreateAd.Msg
     | ChangePasswordMessage ChangePassword.Msg
+    | RenewPasswordMessage RenewPassword.Msg
     | LoginMessage Login.Msg
     | RegistrationMessage Registration.Msg
     | InitPasswordMessage InitPassword.Msg
@@ -246,6 +249,9 @@ update msg model =
 
                         ChangePassword ->
                             initWithUpdateMessage { modelWithRoute | changePassword = State.ChangePassword.init } ChangePasswordMessage Cmd.none
+
+                        RenewPassword ->
+                            initWithUpdateMessage { modelWithRoute | renewPassword = State.RenewPassword.init } RenewPasswordMessage Cmd.none
 
                         InitPassword _ ->
                             initWithUpdateMessage { modelWithRoute | initPassword = State.InitPassword.init } InitPasswordMessage Cmd.none
@@ -420,6 +426,14 @@ update msg model =
                     ChangePassword.update msg model.changePassword
             in
             { model | changePassword = changePasswordModel } ! [ unpackUpdateMessage ChangePasswordMessage cmd ]
+
+        RenewPasswordMessage msg ->
+            let
+                ( renewPasswordModel, cmd ) =
+                    RenewPassword.update msg model.renewPassword
+            in
+            { model | renewPassword = renewPasswordModel }
+                ! [ unpackUpdateMessage RenewPasswordMessage cmd ]
 
         InitPasswordMessage msg ->
             let
@@ -815,6 +829,9 @@ viewPage model =
 
                 ChangePassword ->
                     unpackViewMessage ChangePasswordMessage <| ChangePassword.view t model.changePassword model.profile.user
+
+                RenewPassword ->
+                    H.map RenewPasswordMessage <| RenewPassword.view t model.renewPassword
 
                 InitPassword token ->
                     H.map InitPasswordMessage <| InitPassword.view t model.initPassword token
