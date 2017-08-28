@@ -7,7 +7,12 @@
       with_fileglob:
         - "assets/*"
 
+    - name: database configuration
+      template: src=app.json dest=/srv/app.json
+      tags:
+        - deploy
+
     - name: deploy the project on {{ git_remote }}
-      local_action: shell git push {{ git_remote }} master
+      local_action: shell git push {{ git_remote }} {{local_branch | default('master')}}:master
       tags:
         - deploy
