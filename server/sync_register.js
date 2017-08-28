@@ -74,3 +74,7 @@ knex('remote_user_register').del().then(() => {
 //   console.log(error);
 //   return process.exit();
 // });
+
+
+// Update emails in users;
+// update users set settings = jsonb_set(users.settings, '{email_address}', remote_user_register.settings->'email_address') from remote_user_register where users.remote_id=remote_user_register.remote_id;
