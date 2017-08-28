@@ -18,7 +18,7 @@ const source = {
   },
   sendRenewPasswordEmail: {
     subject: 'Vaihda MiBiT-tilisi salasana',
-    text: 'Hei, mibiläinen!\r\rAvaamalla alla olevan salasananvaihtolinkin voit asettaa MiBiT-tilillesi uuden salasanan käyttäjätilillesi. Linkki on toiminnassa tietoturvasyistä 24 tuntia ja sitä voi käyttää vain kerran. Sen jälkeen sinun on pyydettävä uusi linkki sähköpostiosoitteellesi. Jos et ole pyytänyt salasananvaihtolinkkiä, voit poistaa tämän viestin.',
+    text: 'Hei, mibiläinen!\r\rAvaamalla alla olevan salasananvaihtolinkin voit vaihtaa MiBiT-tilisi salasanan. Linkki on toiminnassa tietoturvasyistä 24 tuntia ja sitä voi käyttää vain kerran. Sen jälkeen sinun on pyydettävä uusi linkki sähköpostiosoitteellesi. Jos et ole pyytänyt salasananvaihtolinkkiä, voit poistaa tämän viestin.',
     signature: 'Ystävällisin terveisin,\rMiBiT-tiimi\r',
   },
   answerNotificationHtml: {
