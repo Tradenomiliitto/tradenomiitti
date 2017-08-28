@@ -16,6 +16,11 @@ const source = {
     text: 'Hei, tuleva mibiläinen!\r\rAvaa alla oleva aktivointilinkki, niin voit asettaa salasanan käyttäjätilillesi. Salasanan asettamisen jälkeen tilisi on käytettävissä. Aktivointilinkki on toiminnassa tietoturvasyistä 24 tuntia. Sen jälkeen sinun on pyydettävä uusi aktivointilinkki sähköpostiosoitteellesi.',
     signature: 'Tervisin,\rMiBiT-tiimi\r',
   },
+  sendRenewPasswordEmail: {
+    subject: 'Vaihdat MiBiT-tilisi salasana',
+    text: 'Hei, mibiläinen!\r\rAlla olevalla salasananvaihtolinkillä voit asettaa MiBiT-tilillesi uuden salasanan. Salansananvaihtoinkki on toiminnassa tietoturvasyistä 24 tuntia. Sen jälkeen sinun on pyydettävä uusi inkki sähköpostiosoitteellesi. Jos et pyytänyt salasananvaihtolinkkiä, voit poistaa tämän viestin.',
+    signature: 'Tervisin,\rMiBiT-tiimi\r',
+  },
   answerNotificationHtml: {
     h1: 'Mibiläinen on vastannut ilmoitukseesi',
     p1: 'Ilmoitus voi tuoda mukanaan uusia arvokkaita kontakteja. Muista lähettää kiinnostaville mibiläisille yksityisviesti ja/tai käyntikortti.',

@@ -101,8 +101,7 @@ view t model =
                 [ H.div
                     [ A.class "row renewpassword col-sm-6 col-sm-offset-3" ]
                     [ H.div
-                        [ A.class "renewpassword__container"
-                        ]
+                        [ A.class "renewpassword__container" ]
                         [ H.h1
                             [ A.class "renewpassword__heading" ]
                             [ H.text <| t "renewPassword.success" ]
@@ -116,8 +115,7 @@ view t model =
                 [ H.div
                     [ A.class "row renewpassword col-sm-6 col-sm-offset-3" ]
                     [ H.div
-                        [ A.class "renewpassword__container"
-                        ]
+                        [ A.class "renewpassword__container" ]
                         [ H.h1
                             [ A.class "changepassword__heading" ]
                             [ H.text <| t "renewPassword.failure" ]

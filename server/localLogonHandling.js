@@ -131,6 +131,34 @@ module.exports = function initialize(params) {
       .catch(err => res.status(500).json({ message: err.message }));
   }
 
+  function forgotPassword(req, res) {
+    const email = req.body.email;
+    let user = null;
+    knex('users').whereRaw('settings->>\'email_address\' = ?', [email]).first()
+      .then(item => {
+        user = item;
+        if (!user) {
+          throw new Error('No such user');
+        }
+
+        if (user.pw_hash == null) {
+          throw new Error('User not registered');
+        }
+
+        return knex('registration').where({ user_id: user.id }).whereRaw('created_at > NOW() - INTERVAL \'1 day\'').first();
+      })
+      .then(reg_item => {
+        if (reg_item == null) {
+          const uniqueToken = crypto.randomBytes(48).toString('hex');
+          emails.sendRenewPasswordEmail(email, uniqueToken);
+          return knex('registration').insert({ user_id: user.id, url_token: uniqueToken });
+        }
+        throw new Error('Already pending');
+      })
+      .then(() => res.json({ status: 'Ok' }))
+      .catch(err => res.status(500).json({ message: err.message }));
+  }
+
   // 1. Check if there is a valid token
   // 2. If there is, init the password and delete the token
   function initPassword(req, res) {
@@ -160,6 +188,7 @@ module.exports = function initialize(params) {
     logout,
     changePassword,
     register,
+    forgotPassword,
     initPassword,
   };
 };

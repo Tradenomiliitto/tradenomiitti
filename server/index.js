@@ -149,6 +149,7 @@ app.post('/kirjaudu', jsonParser, logon.login);
 app.get('/uloskirjautuminen', logon.logout);
 app.post('/vaihdasalasana', jsonParser, logon.changePassword);
 app.post('/register', jsonParser, logon.register);
+app.post('/renewpassword', jsonParser, logon.forgotPassword);
 app.post('/initpassword', jsonParser, logon.initPassword);
 
 app.get('/api/profiilit/oma', profile.getMe);
