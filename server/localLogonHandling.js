@@ -1,6 +1,7 @@
 const uuid = require('uuid');
 const bcrypt = require('bcryptjs');
 const crypto = require('crypto');
+const base64url = require('base64url');
 
 module.exports = function initialize(params) {
   const { knex, util, emails } = params;
@@ -103,6 +104,10 @@ module.exports = function initialize(params) {
       .then(() => res.redirect('/'));
   }
 
+  function createUrlToken(size) {
+    return base64url(crypto.randomBytes(size));
+  }
+
   // Allow registration if the user is in users and pw_hash == null
   function register(req, res) {
     const email = req.body.email;
@@ -120,7 +125,7 @@ module.exports = function initialize(params) {
       })
       .then(reg_item => {
         if (reg_item == null) {
-          const uniqueToken = crypto.randomBytes(48).toString('hex');
+          const uniqueToken = createUrlToken(48);
           emails.sendRegistrationEmail(email, uniqueToken);
           return knex('reset_password_request').insert({ user_id: user.id, url_token: uniqueToken });
         }
@@ -150,7 +155,7 @@ module.exports = function initialize(params) {
       })
       .then(reg_item => {
         if (reg_item == null) {
-          const uniqueToken = crypto.randomBytes(48).toString('hex');
+          const uniqueToken = createUrlToken(48);
           emails.sendRenewPasswordEmail(email, uniqueToken);
           return knex('reset_password_request').insert({ user_id: user.id, url_token: uniqueToken });
         }
