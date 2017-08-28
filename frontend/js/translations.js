@@ -191,6 +191,7 @@ const source = {
     passwordPlaceholder: 'Salasana',
     success: 'Kirjautuminen onnistui!',
     failure: 'Kirjautuminen epäonnistui',
+    renewButton: 'Unohtuiko salasanasi?',
   },
   main: {
     profile: 'Profiili',

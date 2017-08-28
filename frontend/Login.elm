@@ -2,11 +2,12 @@ module Login exposing (..)
 
 import Html as H
 import Html.Attributes as A
-import Html.Events exposing (onInput, onWithOptions)
+import Html.Events exposing (onClick, onInput, onWithOptions)
 import Http
 import Json.Decode
 import Json.Decode.Pipeline exposing (decode, required)
 import Json.Encode
+import Link
 import Nav
 import State.Login exposing (..)
 import Translation exposing (T)
@@ -18,6 +19,7 @@ type Msg
     | Password String
     | SendResponse (Result Http.Error Response)
     | Submitted
+    | PasswordForgotten
 
 
 type alias Response =
@@ -62,6 +64,9 @@ update msg model =
         Submitted ->
             model ! [ Cmd.map LocalUpdateMessage <| submit model ]
 
+        PasswordForgotten ->
+            model ! [ Util.reroute Nav.RenewPassword ]
+
 
 view : T -> Model -> H.Html Msg
 view t model =
@@ -98,6 +103,13 @@ view t model =
                                 [ H.text <| t "common.login" ]
                             ]
                         ]
+                    ]
+                , H.div [ A.class "login__renew col-xs-11 col-sm-4 col-sm-offset-4" ]
+                    [ H.button
+                        [ onClick PasswordForgotten
+                        , A.class "login__renew--button btn btn-primary"
+                        ]
+                        [ H.text <| t "login.renewButton" ]
                     ]
                 ]
 
