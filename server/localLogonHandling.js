@@ -116,13 +116,13 @@ module.exports = function initialize(params) {
         if (user.pw_hash != null) {
           throw new Error('User already registered');
         }
-        return knex('registration').where({ user_id: user.id }).whereRaw('created_at > NOW() - INTERVAL \'1 day\'').first();
+        return knex('reset_password_request').where({ user_id: user.id }).whereRaw('created_at > NOW() - INTERVAL \'1 day\'').first();
       })
       .then(reg_item => {
         if (reg_item == null) {
           const uniqueToken = crypto.randomBytes(48).toString('hex');
           emails.sendRegistrationEmail(email, uniqueToken);
-          return knex('registration').insert({ user_id: user.id, url_token: uniqueToken });
+          return knex('reset_password_request').insert({ user_id: user.id, url_token: uniqueToken });
         }
         throw new Error('Already pending');
       })
@@ -146,13 +146,13 @@ module.exports = function initialize(params) {
         if (user.pw_hash == null) {
           throw new Error('User not registered');
         }
-        return knex('registration').where({ user_id: user.id }).whereRaw('created_at > NOW() - INTERVAL \'1 day\'').first();
+        return knex('reset_password_request').where({ user_id: user.id }).whereRaw('created_at > NOW() - INTERVAL \'1 day\'').first();
       })
       .then(reg_item => {
         if (reg_item == null) {
           const uniqueToken = crypto.randomBytes(48).toString('hex');
           emails.sendRenewPasswordEmail(email, uniqueToken);
-          return knex('registration').insert({ user_id: user.id, url_token: uniqueToken });
+          return knex('reset_password_request').insert({ user_id: user.id, url_token: uniqueToken });
         }
         throw new Error('Already pending');
       })
@@ -171,7 +171,7 @@ module.exports = function initialize(params) {
     const password2 = req.body.password2;
     let user_id = null;
 
-    knex('registration').where({ url_token: token }).whereRaw('created_at > NOW() - INTERVAL \'1 day\'').first()
+    knex('reset_password_request').where({ url_token: token }).whereRaw('created_at > NOW() - INTERVAL \'1 day\'').first()
       .then(item => {
         if (!item) {
           throw new Error('No such token');
@@ -183,7 +183,7 @@ module.exports = function initialize(params) {
         const newHash = bcrypt.hashSync(password);
         return knex('users').where({ id: user_id }).update({ pw_hash: newHash });
       })
-      .then(() => knex('registration').where({ url_token: token }).del())
+      .then(() => knex('reset_password_request').where({ url_token: token }).del())
       .then(() => knex('events').insert({ type: 'init_password', data: { user_id: user_id } }))
       .then(() => res.json({ status: 'Ok' }))
       .catch(err =>
