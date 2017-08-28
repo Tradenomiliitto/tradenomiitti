@@ -13,13 +13,13 @@ const source = {
   },
   sendRegistrationEmail: {
     subject: 'Aktivoi MiBiT-tilisi',
-    text: 'Hei, tuleva mibiläinen!\r\rAvaa alla oleva aktivointilinkki, niin voit asettaa salasanan käyttäjätilillesi. Salasanan asettamisen jälkeen tilisi on käytettävissä. Aktivointilinkki on toiminnassa tietoturvasyistä 24 tuntia. Sen jälkeen sinun on pyydettävä uusi aktivointilinkki sähköpostiosoitteellesi.',
-    signature: 'Tervisin,\rMiBiT-tiimi\r',
+    text: 'Hei, tuleva mibiläinen!\r\rAvaamalla alla olevan aktivointilinkin voit asettaa salasanan uudelle MiBiT-tilillesi. Salasanan asettamisen jälkeen tilisi on käytettävissä ja voit kirjautua sisään. Linkki on toiminnassa tietoturvasyistä 24 tuntia ja sitä voi käyttää vain kerran. Sen jälkeen sinun on pyydettävä uusi linkki sähköpostiosoitteellesi. Jos et ole pyytänyt aktivointilinkkiä, voit poistaa tämän viestin',
+    signature: 'Ystävällisin terveisin,\rMiBiT-tiimi\r',
   },
   sendRenewPasswordEmail: {
-    subject: 'Vaihdat MiBiT-tilisi salasana',
-    text: 'Hei, mibiläinen!\r\rAlla olevalla salasananvaihtolinkillä voit asettaa MiBiT-tilillesi uuden salasanan. Salansananvaihtoinkki on toiminnassa tietoturvasyistä 24 tuntia. Sen jälkeen sinun on pyydettävä uusi inkki sähköpostiosoitteellesi. Jos et pyytänyt salasananvaihtolinkkiä, voit poistaa tämän viestin.',
-    signature: 'Tervisin,\rMiBiT-tiimi\r',
+    subject: 'Vaihda MiBiT-tilisi salasana',
+    text: 'Hei, mibiläinen!\r\rAvaamalla alla olevan salasananvaihtolinkin voit asettaa MiBiT-tilillesi uuden salasanan käyttäjätilillesi. Linkki on toiminnassa tietoturvasyistä 24 tuntia ja sitä voi käyttää vain kerran. Sen jälkeen sinun on pyydettävä uusi linkki sähköpostiosoitteellesi. Jos et ole pyytänyt salasananvaihtolinkkiä, voit poistaa tämän viestin.',
+    signature: 'Ystävällisin terveisin,\rMiBiT-tiimi\r',
   },
   answerNotificationHtml: {
     h1: 'Mibiläinen on vastannut ilmoitukseesi',
