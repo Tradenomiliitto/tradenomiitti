@@ -50,7 +50,6 @@ module.exports = function initialize(params) {
       );
   }
 
-  // Can be cleaned if no events needed for test user logouts
   function logout(req, res, next) {
     let sessionId;
     if (req.session.id) {
@@ -82,19 +81,19 @@ module.exports = function initialize(params) {
           return bcrypt.compare(oldPassword, pw_hash);
         })
         .then(isValid => {
-          if (isValid) {
-            if (newPassword === newPassword2) {
-              // Change password here
-              const newHash = bcrypt.hashSync(newPassword);
-              return knex('users').where({ id: user.id }).update({ pw_hash: newHash })
-                .then(() => knex('events').insert({ type: 'change_password_success', data: { user_id: user.id } }))
-                .then(() => res.status(200).json({ status: 'Ok' }));
-            }
-            return knex('events').insert({ type: 'change_password_failure', data: { message: 'No match', user_id: user.id } })
+          if (!isValid) {
+            return knex('events').insert({ type: 'change_password_failure', data: { message: 'Wrong old password', user_id: user.id } })
+              .then(() => res.status(403).json({ status: 'Wrong old password' }));
+          }
+          if (newPassword !== newPassword2) {
+            return knex('events').insert({ type: 'change_password_failure', data: { message: 'Passwords don\'t match', user_id: user.id } })
               .then(() => res.status(500).json({ status: 'Passwords don\'t match' }));
           }
-          return knex('events').insert({ type: 'change_password_failure', data: { message: 'Wrong old password', user_id: user.id } })
-            .then(() => res.status(403).json({ status: 'Wrong old password' }));
+          // Change password here
+          const newHash = bcrypt.hashSync(newPassword);
+          return knex('users').where({ id: user.id }).update({ pw_hash: newHash })
+            .then(() => knex('events').insert({ type: 'change_password_success', data: { user_id: user.id } }))
+            .then(() => res.status(200).json({ status: 'Ok' }));
         })
         .catch(next);
     }
@@ -104,20 +103,20 @@ module.exports = function initialize(params) {
       .then(() => res.redirect('/'));
   }
 
-  // 1. Emailaddr belongs to a valid YA-member (email addr in users)
-  // 2. Emailaddr already in use (pw_hash != null)
-  // 3. PW email already sent and valid?
-  // 4. Send PW email
+  // Allow registration if the user is in users and pw_hash == null
   function register(req, res) {
     const email = req.body.email;
     let user = null;
     knex('users').whereRaw('settings->>\'email_address\' = ?', [email]).first()
       .then(item => {
         user = item;
-        if (user && user.pw_hash == null) {
-          return knex('registration').where({ user_id: user.id }).whereRaw('created_at > NOW() - INTERVAL \'1 day\'').first();
+        if (!user) {
+          throw new Error('No such email address');
         }
-        throw new Error('No such user');
+        if (user.pw_hash != null) {
+          throw new Error('User already registered');
+        }
+        return knex('registration').where({ user_id: user.id }).whereRaw('created_at > NOW() - INTERVAL \'1 day\'').first();
       })
       .then(reg_item => {
         if (reg_item == null) {
@@ -127,10 +126,14 @@ module.exports = function initialize(params) {
         }
         throw new Error('Already pending');
       })
+      .then(() => knex('events').insert({ type: 'register', data: { email: email } }))
       .then(() => res.json({ status: 'Ok' }))
-      .catch(err => res.status(500).json({ message: err.message }));
+      .catch(err =>
+        knex('events').insert({ type: 'register_failure', data: { message: err.message, email: email } })
+          .then(() => res.status(500).json({ message: 'Invalid registration' })));
   }
 
+  // Allow renewal if the user is in users and pw_hash != null
   function forgotPassword(req, res) {
     const email = req.body.email;
     let user = null;
@@ -138,13 +141,11 @@ module.exports = function initialize(params) {
       .then(item => {
         user = item;
         if (!user) {
-          throw new Error('No such user');
+          throw new Error('No such email address');
         }
-
         if (user.pw_hash == null) {
           throw new Error('User not registered');
         }
-
         return knex('registration').where({ user_id: user.id }).whereRaw('created_at > NOW() - INTERVAL \'1 day\'').first();
       })
       .then(reg_item => {
@@ -155,8 +156,11 @@ module.exports = function initialize(params) {
         }
         throw new Error('Already pending');
       })
+      .then(() => knex('events').insert({ type: 'renew_password', data: { email: email } }))
       .then(() => res.json({ status: 'Ok' }))
-      .catch(err => res.status(500).json({ message: err.message }));
+      .catch(err =>
+        knex('events').insert({ type: 'forgotPassword_failure', data: { message: err.message, email: email } })
+          .then(() => res.status(500).json({ message: 'Invalid renewal' })));
   }
 
   // 1. Check if there is a valid token
@@ -165,22 +169,26 @@ module.exports = function initialize(params) {
     const token = req.body.token;
     const password = req.body.password;
     const password2 = req.body.password2;
-
+    let user_id = null;
 
     knex('registration').where({ url_token: token }).whereRaw('created_at > NOW() - INTERVAL \'1 day\'').first()
       .then(item => {
         if (!item) {
-          throw new Error('Invalid payload');
+          throw new Error('No such token');
         }
         if (password !== password2) {
           throw new Error('Passwords don\'t match');
         }
+        user_id = item.user_id;
         const newHash = bcrypt.hashSync(password);
-        return knex('users').where({ id: item.user_id }).update({ pw_hash: newHash });
+        return knex('users').where({ id: user_id }).update({ pw_hash: newHash });
       })
       .then(() => knex('registration').where({ url_token: token }).del())
+      .then(() => knex('events').insert({ type: 'init_password', data: { user_id: user_id } }))
       .then(() => res.json({ status: 'Ok' }))
-      .catch(err => res.json({ message: err.message }));
+      .catch(err =>
+        knex('events').insert({ type: 'initPassword_failure', data: { message: err.message, token: token } })
+          .then(() => res.json({ message: 'Invalid renewal' })));
   }
 
   return {
