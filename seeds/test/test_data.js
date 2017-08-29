@@ -30,15 +30,17 @@ exports.seed = function(knex, Promise) {
       knex('users').insert({
         id: 1,
         remote_id: -1,
-        settings: {},
+        settings: { isAdmin: true, email_address: 'test@test.com' },
         data: aino_data,
+        pw_hash: '$2a$10$v0TXETGJwbBq73NZyWO4qOsw19P1Js3VXFosacTxb72QU3B/RP.sW',
       }))
     .then(() =>
       knex('users').insert({
         id: 2,
         remote_id: -2,
-        settings: {},
+        settings: { email_address: 'test2@test.com' },
         data: sinituuli_data,
+        pw_hash: '$2a$10$v0TXETGJwbBq73NZyWO4qOsw19P1Js3VXFosacTxb72QU3B/RP.sW',
       }))
     .then(() =>
       knex('sessions').insert([
@@ -79,5 +81,13 @@ exports.seed = function(knex, Promise) {
       }))
     .then(() =>
       knex('events').del()
-    );
+    )
+    .then(() => knex('remote_user_register').insert({
+      remote_id: -1,
+      settings: { isAdmin: true, email_address: 'test@test.com' },
+    }))
+    .then(() => knex('remote_user_register').insert({
+      remote_id: -2,
+      settings: { email_address: 'test2@test.com' },
+    }));
 };
