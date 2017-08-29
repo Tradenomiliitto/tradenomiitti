@@ -2,24 +2,104 @@
 exports.up = function(knex, Promise) {
   return knex.schema.createTable('education', function (table) {
     table.increments('id');
-    table.enum('type', [ 'degree', 'specialization' ]).notNullable().index();
+    table.enum('type', ['degree', 'specialization']).notNullable().index();
     table.string('category');
     table.string('title');
-    table.unique([ 'title', 'type' ]);
+    table.unique(['title', 'type']);
   }).then(() => {
     const degrees = {
-      'Yleiset': [
-        'Tradenomi',
-        'Tradenomi YAMK (AMK-maisteri)',
-        'Kauppatieteiden maisteri',
-        'Merkonomi',
-        'Ylioppilas',
-        'Datanomi',
-        'HSO-sihteeri'
-      ]
+      Yleiset: [
+        'DI',
+        'ETK',
+        'ETL',
+        'ETM',
+        'ETT',
+        'ELK',
+        'ELL',
+        'ELT',
+        'FaL',
+        'FaT',
+        'FL',
+        'FM',
+        'FT',
+        'HTK',
+        'HK',
+        'HTL',
+        'HM',
+        'HTT',
+        'HT',
+        'HLK',
+        'HLL',
+        'HLT',
+        'HuK',
+        'KK',
+        'KL',
+        'KM',
+        'KY',
+        'KTK',
+        'KTL',
+        'KTM',
+        'KTT',
+        'LitL',
+        'LitM',
+        'LitT',
+        'LK',
+        'LL',
+        'LT',
+        'LuK',
+        'MMK',
+        'MML',
+        'MMM',
+        'MMT',
+        'ON',
+        'OTL',
+        'OTM',
+        'OTT',
+        'PsK',
+        'PsL',
+        'PsM',
+        'PsT',
+        'SK',
+        'SM',
+        'ST',
+        'TkK',
+        'TkL',
+        'TkT',
+        'TK',
+        'TL',
+        'TM',
+        'TT',
+        'TtK',
+        'TtL',
+        'TtM',
+        'TtT',
+        'VTK',
+        'VTL',
+        'VTM',
+        'VTT',
+        'YET',
+        'YTK',
+        'YTL',
+        'YTM',
+        'YTT',
+        'KuK',
+        'KuM',
+        'KuT',
+        'MuK',
+        'MuL',
+        'MuM',
+        'MuT',
+        'TaK',
+        'TaM',
+        'TaT',
+        'TeK',
+        'TeL',
+        'TeM',
+        'TeT',
+      ],
     };
     const specializations = {
-      'Yleiset': [
+      Yleiset: [
         'Graafinen suunnittelu',
         'Palveluliiketoiminta ja palvelumuotoilu',
         'Brändiosaaja',
@@ -60,8 +140,8 @@ exports.up = function(knex, Promise) {
         'Opettajan koulutus',
         'Opinto-ohjaajan koulutus',
         'Erityisopettajan koulutus',
-        'Asiakaspalvelu ja asiakkuuksien johtaminen'
-      ]
+        'Asiakaspalvelu ja asiakkuuksien johtaminen',
+      ],
     };
 
     function toObjectLists(object, type) {
