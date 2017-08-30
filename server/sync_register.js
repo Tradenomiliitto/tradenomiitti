@@ -1,6 +1,5 @@
 const parse = require('csv-parse/lib/sync');
 const fs = require('fs');
-const bcrypt = require('bcryptjs');
 const knex_config = require('../knexfile.js');
 const knex = require('knex')(knex_config[process.env.environment]);
 
@@ -59,22 +58,3 @@ knex('remote_user_register').del().then(() => {
     console.log(error);
     return process.exit();
   });
-
-// const input = fs.readFileSync('conf/assets/users.csv', 'utf8');
-// const data = parse(input, { columns: true });
-// const formattedData = formatData(data);
-// const query = knex('users').insert(formattedData).toQuery() + ' ON CONFLICT (remote_id) DO UPDATE SET settings = jsonb_set(users.settings, \'{email_address}\', EXCLUDED.settings->\'email_address\')';
-// console.log("Start register sync...");
-// knex.raw(query)
-//   .then(() => {
-//     console.log("Done");
-//     return process.exit();
-//   }
-// ).catch(error => {
-//   console.log(error);
-//   return process.exit();
-// });
-
-
-// Update emails in users;
-// update users set settings = jsonb_set(users.settings, '{email_address}', remote_user_register.settings->'email_address') from remote_user_register where users.remote_id=remote_user_register.remote_id;
