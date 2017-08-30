@@ -29,22 +29,23 @@ module.exports = function initialize(params) {
         throw new Error('User not in remote register');
       })
       .then(isValid => {
-        if (isValid) {
-          return Promise.all([
-            knex('sessions').insert({
-              id: sessionId,
-              user_id: user.id,
-            }),
-            knex('events').insert({
-              type: 'login_success',
-              data: { user_id: user.id, session_id: sessionId },
-            }),
-          ]).then(() => {
-            req.session.id = sessionId;
-            return res.json({ status: 'Ok' });
-          });
+        if (!isValid) {
+          throw new Error('Invalid password');
         }
-        throw new Error('Invalid password');
+        return Promise.all([
+          knex('sessions').insert({
+            id: sessionId,
+            user_id: user.id,
+          }),
+          knex('events').insert({
+            type: 'login_success',
+            data: { user_id: user.id, session_id: sessionId },
+          }),
+        ]);
+      })
+      .then(() => {
+        req.session.id = sessionId;
+        return res.json({ status: 'Ok' });
       })
       .catch(err => knex('events').insert({ type: 'login_failure', data: { error: err.message, email } })
         .then(() => res.status(401).json({ status: 'Failure', message: 'Login failed' }))
@@ -59,9 +60,9 @@ module.exports = function initialize(params) {
           sessionId = req.session.id;
           req.session = null;
           return knex('events').insert({ type: 'logout_success', data: { session_id: sessionId, user_id: user.id } });
-        }).then(() => knex('sessions').where({ id: sessionId }).del()
-        ).then(() => res.redirect('/')
-        )
+        })
+        .then(() => knex('sessions').where({ id: sessionId }).del())
+        .then(() => res.redirect('/'))
         .catch(next);
     }
     return knex('events').insert({ type: 'logout_failure', data: { message: 'no_session_id' } })
@@ -72,28 +73,27 @@ module.exports = function initialize(params) {
     const oldPassword = req.body.oldPassword;
     const newPassword = req.body.newPassword;
     const newPassword2 = req.body.newPassword2;
-    let user;
+    let user_id;
 
     if (req.session.id) {
       return util.userForSession(req)
-        .then(item => {
-          user = item;
-          const pw_hash = item.pw_hash;
+        .then(({ id, pw_hash }) => {
+          user_id = id;
           return bcrypt.compare(oldPassword, pw_hash);
         })
         .then(isValid => {
           if (!isValid) {
-            return knex('events').insert({ type: 'change_password_failure', data: { message: 'Wrong old password', user_id: user.id } })
+            return knex('events').insert({ type: 'change_password_failure', data: { message: 'Wrong old password', user_id } })
               .then(() => res.status(403).json({ status: 'Wrong old password' }));
           }
           if (newPassword !== newPassword2) {
-            return knex('events').insert({ type: 'change_password_failure', data: { message: 'Passwords don\'t match', user_id: user.id } })
+            return knex('events').insert({ type: 'change_password_failure', data: { message: 'Passwords don\'t match', user_id } })
               .then(() => res.status(500).json({ status: 'Passwords don\'t match' }));
           }
           // Change password here
           const newHash = bcrypt.hashSync(newPassword);
-          return knex('users').where({ id: user.id }).update({ pw_hash: newHash })
-            .then(() => knex('events').insert({ type: 'change_password_success', data: { user_id: user.id } }))
+          return knex('users').where({ id: user_id }).update({ pw_hash: newHash })
+            .then(() => knex('events').insert({ type: 'change_password_success', data: { user_id } }))
             .then(() => res.status(200).json({ status: 'Ok' }));
         })
         .catch(next);
@@ -106,6 +106,11 @@ module.exports = function initialize(params) {
 
   function createUrlToken(size) {
     return base64url(crypto.randomBytes(size));
+  }
+
+
+  function fetchToken(whereQuery) {
+    return knex('reset_password_request').where(whereQuery).whereRaw('created_at > NOW() - INTERVAL \'1 day\'').first();
   }
 
   // Allow registration if the user is in users and pw_hash == null
@@ -121,7 +126,7 @@ module.exports = function initialize(params) {
         if (user.pw_hash != null) {
           throw new Error('User already registered');
         }
-        return knex('reset_password_request').where({ user_id: user.id }).whereRaw('created_at > NOW() - INTERVAL \'1 day\'').first();
+        return fetchToken({ user_id: user.id });
       })
       .then(reg_item => {
         if (reg_item == null) {
@@ -151,7 +156,7 @@ module.exports = function initialize(params) {
         if (user.pw_hash == null) {
           throw new Error('User not registered');
         }
-        return knex('reset_password_request').where({ user_id: user.id }).whereRaw('created_at > NOW() - INTERVAL \'1 day\'').first();
+        return fetchToken({ user_id: user.id });
       })
       .then(reg_item => {
         if (reg_item == null) {
@@ -176,7 +181,7 @@ module.exports = function initialize(params) {
     const password2 = req.body.password2;
     let user_id = null;
 
-    knex('reset_password_request').where({ url_token: token }).whereRaw('created_at > NOW() - INTERVAL \'1 day\'').first()
+    fetchToken({ url_token: token })
       .then(item => {
         if (!item) {
           throw new Error('No such token');
