@@ -80,7 +80,15 @@ view t model =
                         , H.p [] [ H.text <| t "renewPassword.p" ]
                         , H.h3
                             [ A.class "renewpassword__input" ]
-                            [ H.input [ A.name "email", A.type_ "email", A.autofocus True, A.placeholder <| t "renewPassword.emailPlaceholder", onInput Email ] []
+                            [ H.input
+                                [ A.name "email"
+                                , A.type_ "email"
+                                , A.autofocus True
+                                , A.placeholder <|
+                                    t "renewPassword.emailPlaceholder"
+                                , onInput Email
+                                ]
+                                []
                             ]
                         , H.p
                             [ A.class "renewpassword__submit-button" ]

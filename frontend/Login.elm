@@ -87,18 +87,36 @@ view t model =
                             [ H.text <| t "login.title" ]
                         , H.h3
                             [ A.class "login__input" ]
-                            [ H.input [ A.name "email", A.type_ "email", A.autofocus True, A.placeholder <| t "login.emailPlaceholder", onInput Email ] []
+                            [ H.input
+                                [ A.name "email"
+                                , A.type_ "email"
+                                , A.autofocus True
+                                , A.placeholder <|
+                                    t "login.emailPlaceholder"
+                                , onInput Email
+                                ]
+                                []
                             ]
                         , H.h3
                             [ A.class "login__input" ]
-                            [ H.input [ A.name "password", A.type_ "password", A.placeholder <| t "login.passwordPlaceholder", onInput Password ] []
+                            [ H.input
+                                [ A.name "password"
+                                , A.type_ "password"
+                                , A.placeholder <|
+                                    t "login.passwordPlaceholder"
+                                , onInput Password
+                                ]
+                                []
                             ]
                         , H.p
                             [ A.class "login__submit-button" ]
                             [ H.button
                                 [ A.type_ "submit"
                                 , A.class "btn btn-primary"
-                                , A.disabled (String.length model.email == 0 || String.length model.password == 0)
+                                , A.disabled
+                                    ((String.length model.email == 0)
+                                        || (String.length model.password == 0)
+                                    )
                                 ]
                                 [ H.text <| t "common.login" ]
                             ]
