@@ -61,7 +61,7 @@ const source = {
     title: 'Vaihda salasanasi',
     oldPasswordPlaceholder: 'Vanha salasana',
     newPasswordPlaceholder: 'Uusi salasana',
-    newPasswordPlaceholder2: 'Uusi alasana uudelleen',
+    newPasswordPlaceholder2: 'Uusi salasana uudelleen',
     submit: 'Lähetä',
     success: 'Salasana vaihdettu!',
   },
