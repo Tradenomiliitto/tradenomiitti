@@ -84,13 +84,13 @@ module.exports = function init(params) {
 
   function sendRegistrationEmail(email_address, token) {
     const t = email_translations.sendRegistrationEmail;
-    const content = `${t.text}\r\rhttps://${serviceDomain}/initpassword?token=${token}\r\r${t.signature}`;
+    const content = `${t.text}\r\rhttps://${serviceDomain}/asetasalasana?token=${token}\r\r${t.signature}`;
     sendEmail(email_address, true, content, t.subject);
   }
 
   function sendRenewPasswordEmail(email_address, token) {
     const t = email_translations.sendRenewPasswordEmail;
-    const content = `${t.text}\r\rhttps://${serviceDomain}/initpassword?token=${token}\r\r${t.signature}`;
+    const content = `${t.text}\r\rhttps://${serviceDomain}/asetasalasana?token=${token}\r\r${t.signature}`;
     sendEmail(email_address, true, content, t.subject);
   }
 

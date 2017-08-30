@@ -33,7 +33,7 @@ submit model maybeToken =
                 , ( "token", Json.Encode.string (Maybe.withDefault "" maybeToken) )
                 ]
     in
-    Http.post "/initpassword" (Http.jsonBody encoded) decodeResponse
+    Http.post "/asetasalasana" (Http.jsonBody encoded) decodeResponse
         |> Http.send SendResponse
 
 

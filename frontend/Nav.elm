@@ -75,7 +75,7 @@ routeToPath route =
             "/rekisteriseloste"
 
         Registration ->
-            "/register"
+            "/rekisteroidy"
 
         Settings ->
             "/asetukset"
@@ -87,10 +87,10 @@ routeToPath route =
             "/vaihdasalasana"
 
         RenewPassword ->
-            "/muistasalasana"
+            "/salasanaunohtui"
 
         InitPassword tokenMaybe ->
-            "/initpassword" ++ (tokenMaybe |> Maybe.map (\s -> "?token=" ++ s) |> Maybe.withDefault "")
+            "/asetasalasana" ++ (tokenMaybe |> Maybe.map (\s -> "?token=" ++ s) |> Maybe.withDefault "")
 
 
 routeToString : T -> Route -> String
@@ -182,15 +182,15 @@ routeParser =
         , U.map Profile (U.s "profiili")
         , U.map User (U.s "tradenomit" </> U.int)
         , U.map Login (U.s "kirjaudu")
-        , U.map Registration (U.s "register")
+        , U.map Registration (U.s "rekisteroidy")
         , U.map LoginNeeded (U.s "kirjautuminen-tarvitaan" <?> U.stringParam "seuraava")
         , U.map Terms (U.s "kayttoehdot")
         , U.map RegisterDescription (U.s "rekisteriseloste")
         , U.map Settings (U.s "asetukset")
         , U.map Contacts (U.s "kayntikortit")
         , U.map ChangePassword (U.s "vaihdasalasana")
-        , U.map RenewPassword (U.s "muistasalasana")
-        , U.map InitPassword (U.s "initpassword" <?> U.stringParam "token")
+        , U.map RenewPassword (U.s "salasanaunohtui")
+        , U.map InitPassword (U.s "asetasalasana" <?> U.stringParam "token")
         ]
 
 

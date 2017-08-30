@@ -30,7 +30,7 @@ submit model =
                 [ ( "email", Json.Encode.string model.email )
                 ]
     in
-    Http.post "/renewpassword" (Http.jsonBody encoded) decodeResponse
+    Http.post "/salasanaunohtui" (Http.jsonBody encoded) decodeResponse
         |> Http.send SendResponse
 
 

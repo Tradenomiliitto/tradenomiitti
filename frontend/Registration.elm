@@ -30,7 +30,7 @@ submit model =
                 [ ( "email", Json.Encode.string model.email )
                 ]
     in
-    Http.post "/register" (Http.jsonBody encoded) decodeResponse
+    Http.post "/rekisteroidy" (Http.jsonBody encoded) decodeResponse
         |> Http.send SendResponse
 
 
