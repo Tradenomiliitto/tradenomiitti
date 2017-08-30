@@ -56,10 +56,6 @@ update msg model =
             model ! [ Cmd.map LocalUpdateMessage <| submit model ]
 
 
-
--- Näytä success/failure -> message, jonka serveri lähettää?
-
-
 view : T -> Model -> H.Html Msg
 view t model =
     case model.status of
