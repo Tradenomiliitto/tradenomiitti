@@ -112,8 +112,6 @@ introBoxes t loggedInUserMaybe =
                         [ Link.button (t "home.introbox.register")
                             "home__introbox--button btn btn-primary"
                             Nav.Registration
-
-                        --(Nav.LoginNeeded (Nav.Profile |> Nav.routeToPath |> Just))
                         ]
                     ]
     in
