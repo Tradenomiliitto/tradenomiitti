@@ -104,6 +104,8 @@ module.exports = function initialize(params) {
         return Promise.resolve(false);
       });
 
+    // Commented out until Avoine back in use
+
     // if sebacon is disabled or we don't have a known admin group, nobody is admin
     // - expect the first test user if testLogin is enabled
     // if (disable && testLogin && id === '-1') {

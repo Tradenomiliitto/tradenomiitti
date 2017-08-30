@@ -92,7 +92,7 @@ const smtp =
 
 const enableEmailGlobally = process.env.ENABLE_EMAIL_SENDING === 'true';
 
-// const restrictToGroup = process.env.RESTRICT_TO_GROUP; // can be empty
+// const restrictToGroup = process.env.RESTRICT_TO_GROUP; // can be empty - used only with Avoine
 
 const util = require('./util')({ knex });
 const emails = require('./emails')({ smtp, mailFrom, staticDir, serviceDomain, util, enableEmailGlobally });
@@ -103,7 +103,7 @@ const ads = require('./ads')({ util, knex, emails, sebacon });
 const adNotifications = require('./adNotifications')({ emails, knex, util });
 const admin = require('./admin')({ knex, util, sebacon });
 
-// const urlEncoded = bodyParser.urlencoded({ extended: true });
+// const urlEncoded = bodyParser.urlencoded({ extended: true }); // Used only with Avoine
 const jsonParser = bodyParser.json();
 const textParser = bodyParser.text();
 const fileParser = fileUpload();
@@ -114,6 +114,8 @@ if (nonLocal) {
   schedule.scheduleJob({ hour: 12, minute: 0, dayOfWeek: new schedule.Range(1, 5) },
     adNotifications.sendNotifications);
 }
+
+// Commented out until Avoine back in use
 
 // only locally, allow logging in with preseeded session
 // if (testLogin) {
@@ -145,6 +147,8 @@ if (nonLocal) {
 // });
 // app.get('/kirjaudu', logon.login);
 
+
+// Used for local user management
 app.post('/kirjaudu', jsonParser, logon.login);
 app.get('/uloskirjautuminen', logon.logout);
 app.post('/vaihdasalasana', jsonParser, logon.changePassword);
