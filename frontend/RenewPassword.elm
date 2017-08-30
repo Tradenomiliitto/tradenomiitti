@@ -73,7 +73,7 @@ view t model =
                         [ H.h1
                             [ A.class "renewpassword__heading" ]
                             [ H.text <| t "renewPassword.title" ]
-                        , H.p [] [ H.text <| t "renewPassword.p" ]
+                        , H.p [] [ H.text <| t "renewPassword.hint" ]
                         , H.h3
                             [ A.class "renewpassword__input" ]
                             [ H.input

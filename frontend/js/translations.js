@@ -341,7 +341,7 @@ const source = {
   },
   renewPassword: {
     title: 'Unohtuiko salasanasi?',
-    p: 'Voit pyytää sähköpostiisi linkin, jonka avulla voit luoda itsellesi uuden salasanan.',
+    hint: 'Voit pyytää sähköpostiisi linkin, jonka avulla voit luoda itsellesi uuden salasanan.',
     emailPlaceholder: 'Sähköpostiosoite',
     buttonText: 'Lähetä',
     success: 'Salasananvaihtolinkki lähetetty!',
