@@ -30,7 +30,7 @@ describe('Handle API requests', () => {
 
   it('should be able to login, logout and see login_success and logout_success events', () => {
     const agent = chai.request.agent(server);
-    return agent.get('/kirjaudu')
+    return agent.post('/kirjaudu').send({ email: 'test@test.com', password: 'test' })
       .then(() => knex('events').select().where({ type: 'login_success' }))
       .then(events => events.should.have.length(1))
       .then(() => agent.get('/uloskirjautuminen'))
@@ -40,7 +40,7 @@ describe('Handle API requests', () => {
 
   it('should be able to login and add a new ad', () => {
     const agent = chai.request.agent(server);
-    return agent.get('/kirjaudu')
+    return agent.post('/kirjaudu').send({ email: 'test@test.com', password: 'test' })
       .then(() => agent.post('/api/ilmoitukset').send({ heading: 'Otsikko', content: 'Sisältö' }))
       .then(res => knex('ads').where({ id: res.body }))
       .then(ad => ad[0].data.heading.should.equal('Otsikko'))
@@ -83,7 +83,7 @@ describe('Handle API requests', () => {
 
   it('should be able to login and get a report', () => {
     const agent = chai.request.agent(server);
-    return agent.get('/kirjaudu')
+    return agent.post('/kirjaudu').send({ email: 'test@test.com', password: 'test' })
       .then(() => agent.get('/api/raportti'))
       .then(res => {
         expect(res).to.have.status(200);

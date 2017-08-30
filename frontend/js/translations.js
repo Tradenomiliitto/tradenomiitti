@@ -13,6 +13,7 @@ const source = {
       profile: 'Oma profiili',
       settings: 'Asetukset',
       contacts: 'Käyntikortit',
+      changePassword: 'Vaihda salasana',
     },
     selectFilters: {
       domain: 'Valitse toimiala',
@@ -55,6 +56,14 @@ const source = {
       cannotAnswerTooltip: 'Et voi vastata tähän kysymykseen',
       submit: 'Vastaa ilmoitukseen',
     },
+  },
+  changePassword: {
+    title: 'Vaihda salasanasi',
+    oldPasswordPlaceholder: 'Vanha salasana',
+    newPasswordPlaceholder: 'Uusi salasana',
+    newPasswordPlaceholder2: 'Uusi salasana uudelleen',
+    submit: 'Lähetä',
+    success: 'Salasana vaihdettu!',
   },
   contacts: {
     heading: 'Käyntikortit',
@@ -119,7 +128,8 @@ const source = {
   home: {
     introbox: {
       heading: 'Löydä mibiläinen',
-      createProfile: 'Luo oma profiili',
+      // createProfile: 'Luo oma profiili',
+      register: 'Rekisteröidy',
       content: 'MiBiT on mibiläisten oma kohtaamispaikka, jossa yhdistyvät inspiroivat kohtaamiset, vertaistuki ja itsensä kehittäminen. Voit löytää etsimäsi mibiläisen tai tulla itse löydetyksi juuri sinunkaltaistasi henkilöä etsivälle.',
     },
     tradenomiittiInfo: {
@@ -139,6 +149,15 @@ const source = {
       buttonEditProfile: 'Muokkaa omaa profiilia',
       buttonCreateProfile: 'Luo oma profiili',
     },
+  },
+  initPassword: {
+    title: 'Aseta salasanasi',
+    passwordPlaceholder: 'Salasana',
+    password2Placeholder: 'Salasana uudelleen',
+    buttonSubmit: 'Lähetä',
+    success: 'Salasana asetettu!',
+    successMessage: 'Salasanasi on nyt asetettu. Voit kirjautua sisään ja alkaa käyttää MiBiTiä!',
+    failure: 'Jotain meni pieleen',
   },
   listAds: {
     heading: 'Selaa ilmoituksia',
@@ -165,6 +184,14 @@ const source = {
     joinHeading: 'Etkö ole vielä Mothers in Business MiB ry:n jäsen?',
     joinUrl: 'http://www.mothersinbusiness.fi/jaseneksi/',
     joinLink: 'Liity jäseneksi',
+  },
+  login: {
+    title: 'Kirjaudu sisään',
+    emailPlaceholder: 'Sähköpostiosoite',
+    passwordPlaceholder: 'Salasana',
+    success: 'Kirjautuminen onnistui!',
+    failure: 'Kirjautuminen epäonnistui',
+    renewButton: 'Unohtuiko salasanasi?',
   },
   main: {
     profile: 'Profiili',
@@ -195,11 +222,16 @@ const source = {
       listAds: 'Ilmoitukset',
       createAd: 'Jätä ilmoitus',
       showAd: 'Ilmoitus {.}',
+      login: 'Kirjaudu',
       loginNeeded: 'Kirjautuminen vaaditaan',
       terms: 'Palvelun käyttöehdot',
       registerDescription: 'Rekisteriseloste',
+      registration: 'Rekisteröinti',
       settings: 'Asetukset',
       contacts: 'Käyntikortit',
+      changePassword: 'Vaihda salasana',
+      renewPassword: 'Tilaa uusi salasana',
+      initPassword: 'Aseta salasana',
     },
   },
   profile: {
@@ -306,6 +338,21 @@ const source = {
       location: 'Alue',
       missingData: 'Jäsentiedot puuttuvat',
     },
+  },
+  renewPassword: {
+    title: 'Unohtuiko salasanasi?',
+    hint: 'Voit pyytää sähköpostiisi linkin, jonka avulla voit luoda itsellesi uuden salasanan.',
+    emailPlaceholder: 'Sähköpostiosoite',
+    buttonText: 'Lähetä',
+    success: 'Salasananvaihtolinkki lähetetty!',
+    failure: 'Jotain meni pieleen!',
+  },
+  registration: {
+    title: 'Rekisteröidy käyttäjäksi',
+    emailPlaceholder: 'Sähköpostiosoite',
+    buttonText: 'Lähetä',
+    success: 'Rekisteröintilinkki lähetetty!',
+    failure: 'Jotain meni pieleen!',
   },
   removal: {
     removeYour: {

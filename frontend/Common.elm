@@ -16,6 +16,7 @@ type ProfileTab
     = SettingsTab
     | ProfileTab
     | ContactsTab
+    | ChangePasswordTab
 
 
 profileTopRow : T -> User -> Bool -> ProfileTab -> H.Html (ViewMessage msg) -> H.Html (ViewMessage msg)
@@ -44,6 +45,9 @@ profileTopRow t user editing profileTab saveOrEdit =
                 ContactsTab ->
                     Nav.Contacts
 
+                ChangePasswordTab ->
+                    Nav.ChangePassword
+
         tabToText tab =
             case tab of
                 ProfileTab ->
@@ -54,6 +58,9 @@ profileTopRow t user editing profileTab saveOrEdit =
 
                 ContactsTab ->
                     t "common.tabs.contacts"
+
+                ChangePasswordTab ->
+                    t "common.tabs.changePassword"
 
         button tab =
             H.h5
@@ -84,6 +91,9 @@ profileTopRow t user editing profileTab saveOrEdit =
 
         contactsButton =
             button ContactsTab
+
+        changePasswordButton =
+            button ChangePasswordTab
     in
     H.div
         [ A.classList
@@ -100,6 +110,7 @@ profileTopRow t user editing profileTab saveOrEdit =
                     [ profileButton
                     , contactsButton
                     , settingsButton
+                    , changePasswordButton
                     ]
                 , H.div
                     [ A.class "col-sm-6 col-xs-12 profile__buttons" ]

@@ -11,6 +11,16 @@ const source = {
     text: 'Kirjaudu MiBitiin nähdäksesi uusimman sisällön',
     subject: 'Uusia ilmoituksia MiBitissä',
   },
+  sendRegistrationEmail: {
+    subject: 'Aktivoi MiBiT-tilisi',
+    text: 'Hei, mibiläinen!\r\rAvaamalla alla olevan aktivointilinkin voit asettaa salasanan uudelle MiBiT-tilillesi. Salasanan asettamisen jälkeen tilisi on käytettävissä ja voit kirjautua sisään. Linkki on toiminnassa tietoturvasyistä 24 tuntia ja sitä voi käyttää vain kerran. Sen jälkeen sinun on pyydettävä uusi linkki sähköpostiosoitteellesi. Jos et ole pyytänyt aktivointilinkkiä, voit poistaa tämän viestin',
+    signature: 'Ystävällisin terveisin,\rMiBiT-tiimi\r',
+  },
+  sendRenewPasswordEmail: {
+    subject: 'Vaihda MiBiT-tilisi salasana',
+    text: 'Hei, mibiläinen!\r\rAvaamalla alla olevan salasananvaihtolinkin voit vaihtaa MiBiT-tilisi salasanan. Linkki on toiminnassa tietoturvasyistä 24 tuntia ja sitä voi käyttää vain kerran. Sen jälkeen sinun on pyydettävä uusi linkki sähköpostiosoitteellesi. Jos et ole pyytänyt salasananvaihtolinkkiä, voit poistaa tämän viestin.',
+    signature: 'Ystävällisin terveisin,\rMiBiT-tiimi\r',
+  },
   answerNotificationHtml: {
     h1: 'Mibiläinen on vastannut ilmoitukseesi',
     p1: 'Ilmoitus voi tuoda mukanaan uusia arvokkaita kontakteja. Muista lähettää kiinnostaville mibiläisille yksityisviesti ja/tai käyntikortti.',

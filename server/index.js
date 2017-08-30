@@ -71,6 +71,7 @@ const sebacon = require('./sebaconService')({
   disable: disableSebacon,
   adminGroup,
   testLogin,
+  knex,
 });
 
 const smtpHost = process.env.SMTP_HOST;
@@ -91,18 +92,18 @@ const smtp =
 
 const enableEmailGlobally = process.env.ENABLE_EMAIL_SENDING === 'true';
 
-const restrictToGroup = process.env.RESTRICT_TO_GROUP; // can be empty
+// const restrictToGroup = process.env.RESTRICT_TO_GROUP; // can be empty - used only with Avoine
 
 const util = require('./util')({ knex });
 const emails = require('./emails')({ smtp, mailFrom, staticDir, serviceDomain, util, enableEmailGlobally });
 
-const logon = require('./logonHandling')({ communicationsKey, knex, sebacon, restrictToGroup, testLogin, util });
+const logon = require('./localLogonHandling')({ knex, util, emails });
 const profile = require('./profile')({ knex, sebacon, util, userImagesPath, emails });
 const ads = require('./ads')({ util, knex, emails, sebacon });
 const adNotifications = require('./adNotifications')({ emails, knex, util });
 const admin = require('./admin')({ knex, util, sebacon });
 
-const urlEncoded = bodyParser.urlencoded({ extended: true });
+// const urlEncoded = bodyParser.urlencoded({ extended: true }); // Used only with Avoine
 const jsonParser = bodyParser.json();
 const textParser = bodyParser.text();
 const fileParser = fileUpload();
@@ -114,37 +115,46 @@ if (nonLocal) {
     adNotifications.sendNotifications);
 }
 
+// Commented out until Avoine back in use
+
 // only locally, allow logging in with preseeded session
-if (testLogin) {
-  app.get('/kirjaudu/:id', (req, res) => {
-    req.session.id = `00000000-0000-0000-0000-00000000000${req.params.id}`;
-    knex('events')
-      .insert({
-        type: 'login_success',
-        data: { user_id: parseInt(req.params.id, 10), session_id: req.session.id },
-      })
-      .then(() => res.redirect('/'))
-      .catch(() => res.redirect('/'));
-  });
-}
+// if (testLogin) {
+//   app.get('/kirjaudu/:id', (req, res) => {
+//     req.session.id = `00000000-0000-0000-0000-00000000000${req.params.id}`;
+//     knex('events')
+//       .insert({
+//         type: 'login_success',
+//         data: { user_id: parseInt(req.params.id, 10), session_id: req.session.id },
+//       })
+//       .then(() => res.redirect('/'))
+//       .catch(() => res.redirect('/'));
+//   });
+// }
 
 // locally login as 'Tradenomi1' test user, in production redirect to Avoine's authentication
-app.get('/kirjaudu', (req, res) => {
-  if (!testLogin) {
-    let encodedPath = '';
-    if (req.query.path) {
-      encodedPath = encodeURIComponent(`?path=${req.query.path}`);
-    }
-    const encodedParam = encodeURIComponent(req.query.base) + encodedPath;
-    const url = `https://tunnistus.avoine.fi/sso-login/?service=tradenomiitti&return=${encodedParam}`;
-    res.redirect(url);
-  } else {
-    res.redirect('/kirjaudu/1');
-  }
-});
+// app.get('/kirjaudu', (req, res) => {
+//   if (!testLogin) {
+//     let encodedPath = '';
+//     if (req.query.path) {
+//       encodedPath = encodeURIComponent(`?path=${req.query.path}`);
+//     }
+//     const encodedParam = encodeURIComponent(req.query.base) + encodedPath;
+//     const url = `https://tunnistus.avoine.fi/sso-login/?service=tradenomiitti&return=${encodedParam}`;
+//     res.redirect(url);
+//   } else {
+//     res.redirect('/kirjaudu/1');
+//   }
+// });
+// app.get('/kirjaudu', logon.login);
 
-app.post('/kirjaudu', urlEncoded, logon.login);
+
+// Used for local user management
+app.post('/kirjaudu', jsonParser, logon.login);
 app.get('/uloskirjautuminen', logon.logout);
+app.post('/vaihdasalasana', jsonParser, logon.changePassword);
+app.post('/rekisteroidy', jsonParser, logon.register);
+app.post('/salasanaunohtui', jsonParser, logon.forgotPassword);
+app.post('/asetasalasana', jsonParser, logon.initPassword);
 
 app.get('/api/profiilit/oma', profile.getMe);
 app.put('/api/profiilit/oma', jsonParser, profile.putMe);

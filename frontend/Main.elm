@@ -1,6 +1,7 @@
 port module Main exposing (..)
 
 import Ad
+import ChangePassword
 import Common
 import Config
 import Contacts
@@ -12,9 +13,11 @@ import Html.Attributes as A
 import Html.Events as E
 import Http
 import Info
+import InitPassword
 import Json.Decode as Json
 import ListAds
 import ListUsers
+import Login
 import LoginNeeded
 import Maybe.Extra as Maybe
 import Nav exposing (..)
@@ -22,14 +25,19 @@ import Navigation
 import PreformattedText
 import Profile.Main as Profile
 import Profile.View
+import Registration
+import RenewPassword
 import Settings
 import State.Ad
+import State.ChangePassword
 import State.Contacts
 import State.Home
+import State.InitPassword
 import State.ListAds
 import State.ListUsers
 import State.Main exposing (..)
 import State.Profile
+import State.RenewPassword
 import State.Settings
 import State.User
 import StaticContent
@@ -114,6 +122,11 @@ type Msg
     | UserMessage User.Msg
     | ProfileMessage Profile.Msg
     | CreateAdMessage CreateAd.Msg
+    | ChangePasswordMessage ChangePassword.Msg
+    | RenewPasswordMessage RenewPassword.Msg
+    | LoginMessage Login.Msg
+    | RegistrationMessage Registration.Msg
+    | InitPasswordMessage InitPassword.Msg
     | ListAdsMessage ListAds.Msg
     | ListUsersMessage ListUsers.Msg
     | AdMessage Ad.Msg
@@ -124,6 +137,7 @@ type Msg
     | StaticContentMessage StaticContent.Msg
     | Error Http.Error
     | SendErrorResponse (Result Http.Error String)
+    | DoRefreshMe
     | NoOp
 
 
@@ -233,6 +247,15 @@ update msg model =
                         Contacts ->
                             initWithUpdateMessage { modelWithRoute | contacts = State.Contacts.init } ContactsMessage Contacts.initTasks
 
+                        ChangePassword ->
+                            initWithUpdateMessage { modelWithRoute | changePassword = State.ChangePassword.init } ChangePasswordMessage Cmd.none
+
+                        RenewPassword ->
+                            initWithUpdateMessage { modelWithRoute | renewPassword = State.RenewPassword.init } RenewPasswordMessage Cmd.none
+
+                        InitPassword _ ->
+                            initWithUpdateMessage { modelWithRoute | initPassword = State.InitPassword.init } InitPasswordMessage Cmd.none
+
                         newRoute ->
                             ( modelWithRoute, Cmd.none )
 
@@ -332,6 +355,22 @@ update msg model =
             { model | createAd = createAdModel }
                 ! [ unpackUpdateMessage CreateAdMessage cmd ]
 
+        LoginMessage msg ->
+            let
+                ( loginModel, cmd ) =
+                    Login.update msg model.login
+            in
+            { model | login = loginModel }
+                ! [ unpackUpdateMessage LoginMessage cmd ]
+
+        RegistrationMessage msg ->
+            let
+                ( registrationModel, cmd ) =
+                    Registration.update msg model.registration
+            in
+            { model | registration = registrationModel }
+                ! [ unpackUpdateMessage RegistrationMessage cmd ]
+
         ListAdsMessage msg ->
             let
                 ( listAdsModel, cmd ) =
@@ -381,6 +420,28 @@ update msg model =
             in
             { model | contacts = contactsModel } ! [ cmd ]
 
+        ChangePasswordMessage msg ->
+            let
+                ( changePasswordModel, cmd ) =
+                    ChangePassword.update msg model.changePassword
+            in
+            { model | changePassword = changePasswordModel } ! [ unpackUpdateMessage ChangePasswordMessage cmd ]
+
+        RenewPasswordMessage msg ->
+            let
+                ( renewPasswordModel, cmd ) =
+                    RenewPassword.update msg model.renewPassword
+            in
+            { model | renewPassword = renewPasswordModel }
+                ! [ unpackUpdateMessage RenewPasswordMessage cmd ]
+
+        InitPasswordMessage msg ->
+            let
+                ( initPasswordModel, cmd ) =
+                    InitPassword.update msg model.initPassword
+            in
+            { model | initPassword = initPasswordModel } ! [ unpackUpdateMessage InitPasswordMessage cmd ]
+
         StaticContentMessage msg ->
             let
                 ( staticContentModel, cmd ) =
@@ -419,6 +480,9 @@ update msg model =
 
         SendErrorResponse (Err err) ->
             model ! [ showAlert <| tWith "errors.errorResponseFailure" [ toString err ] ]
+
+        DoRefreshMe ->
+            model ! [ unpackUpdateMessage ProfileMessage Profile.getMe ]
 
         NoOp ->
             model ! []
@@ -739,6 +803,9 @@ viewPage model =
                 Home ->
                     unpackViewMessage HomeMessage <| Home.view t model.home model.profile.user
 
+                Login ->
+                    H.map LoginMessage <| Login.view t model.login
+
                 ListUsers ->
                     unpackViewMessage ListUsersMessage <| ListUsers.view t model.listUsers model.config (Maybe.isJust model.profile.user)
 
@@ -748,6 +815,9 @@ viewPage model =
                 RegisterDescription ->
                     PreformattedText.view model.staticContent.registerDescription
 
+                Registration ->
+                    H.map RegistrationMessage <| Registration.view t model.registration
+
                 Settings ->
                     unpackViewMessage SettingsMessage <| Settings.view t model.settings model.profile.user
 
@@ -756,6 +826,15 @@ viewPage model =
 
                 Contacts ->
                     unpackViewMessage identity <| Contacts.view t model.contacts model.profile.user
+
+                ChangePassword ->
+                    unpackViewMessage ChangePasswordMessage <| ChangePassword.view t model.changePassword model.profile.user
+
+                RenewPassword ->
+                    H.map RenewPasswordMessage <| RenewPassword.view t model.renewPassword
+
+                InitPassword token ->
+                    H.map InitPasswordMessage <| InitPassword.view t model.initPassword token
 
                 NotFound ->
                     notImplementedYet t
@@ -792,6 +871,9 @@ unpackUpdateMessage mapper cmd =
 
                 Reroute route ->
                     NewUrl route
+
+                RefreshMe ->
+                    DoRefreshMe
         )
         cmd
 

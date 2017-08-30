@@ -4,7 +4,7 @@ module.exports = function initialize(params) {
   const emails = params.emails;
 
   function listProfiles(loggedIn, limit, offset, filters = {}, order) {
-    let query = knex('users').where({}).select('users.*');
+    let query = knex('users').whereNotNull('pw_hash').select('users.*');
     if (limit !== undefined) query = query.limit(limit);
     if (offset !== undefined) query = query.offset(offset);
     if (filters.domain !== undefined) {

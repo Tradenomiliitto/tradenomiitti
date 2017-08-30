@@ -53,6 +53,7 @@ describe('Handle users', () => {
         },
         settings: {},
         modified_at: moment(),
+        pw_hash: 'abc',
       })
       .then(() => service.listProfiles(true, undefined, undefined, {}, sort));
   }
@@ -86,6 +87,7 @@ describe('Handle users', () => {
         },
         settings: {},
         modified_at: moment(),
+        pw_hash: 'abc',
       })
       .then(() => service.listProfiles(false, undefined, undefined, { location: 'siellätäällä' }, 'recent')).then(users => {
         users.should.have.length(1);

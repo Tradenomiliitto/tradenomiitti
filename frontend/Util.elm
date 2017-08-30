@@ -19,6 +19,7 @@ type UpdateMessage msg
     = LocalUpdateMessage msg
     | ApiError Http.Error
     | Reroute Route
+    | RefreshMe
 
 
 makeCmd : msg -> Cmd msg
@@ -40,6 +41,9 @@ localMap msgMapper cmd =
 
                 Reroute route ->
                     Reroute route
+
+                RefreshMe ->
+                    RefreshMe
     in
     Cmd.map mapper cmd
 
@@ -66,6 +70,11 @@ reroute route =
 asApiError : Http.Error -> Cmd (UpdateMessage msg)
 asApiError err =
     makeCmd (ApiError err)
+
+
+refreshMe : Cmd (UpdateMessage msg)
+refreshMe =
+    makeCmd RefreshMe
 
 
 errorHandlingSend : (a -> msg) -> Http.Request a -> Cmd (UpdateMessage msg)

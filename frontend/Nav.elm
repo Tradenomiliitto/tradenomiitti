@@ -16,11 +16,16 @@ type Route
     | NotFound
     | Profile
     | User Int
+    | Login
+    | Registration
     | LoginNeeded (Maybe String)
     | Terms
     | RegisterDescription
     | Settings
     | Contacts
+    | ChangePassword
+    | RenewPassword
+    | InitPassword (Maybe String)
 
 
 
@@ -57,6 +62,9 @@ routeToPath route =
         User userId ->
             "/tradenomit/" ++ toString userId
 
+        Login ->
+            "/kirjaudu"
+
         LoginNeeded pathMaybe ->
             "/kirjautuminen-tarvitaan/" ++ (pathMaybe |> Maybe.map (\s -> "?seuraava=" ++ s) |> Maybe.withDefault "")
 
@@ -66,11 +74,23 @@ routeToPath route =
         RegisterDescription ->
             "/rekisteriseloste"
 
+        Registration ->
+            "/rekisteroidy"
+
         Settings ->
             "/asetukset"
 
         Contacts ->
             "/kayntikortit"
+
+        ChangePassword ->
+            "/vaihdasalasana"
+
+        RenewPassword ->
+            "/salasanaunohtui"
+
+        InitPassword tokenMaybe ->
+            "/asetasalasana" ++ (tokenMaybe |> Maybe.map (\s -> "?token=" ++ s) |> Maybe.withDefault "")
 
 
 routeToString : T -> Route -> String
@@ -105,6 +125,9 @@ routeToString t route =
             t "navigation.routeNames.showAd"
                 |> T.replaceWith [ toString adId ]
 
+        Login ->
+            t "navigation.routeNames.login"
+
         LoginNeeded _ ->
             t "navigation.routeNames.loginNeeded"
 
@@ -114,11 +137,23 @@ routeToString t route =
         RegisterDescription ->
             t "navigation.routeNames.registerDescription"
 
+        Registration ->
+            t "navigation.routeNames.registration"
+
         Settings ->
             t "navigation.routeNames.settings"
 
         Contacts ->
             t "navigation.routeNames.contacts"
+
+        ChangePassword ->
+            t "navigation.routeNames.changePassword"
+
+        RenewPassword ->
+            t "navigation.routeNames.renewPassword"
+
+        InitPassword _ ->
+            t "navigation.routeNames.initPassword"
 
 
 parseLocation : Navigation.Location -> Route
@@ -146,11 +181,16 @@ routeParser =
         , U.map Info (U.s "tietoa")
         , U.map Profile (U.s "profiili")
         , U.map User (U.s "tradenomit" </> U.int)
+        , U.map Login (U.s "kirjaudu")
+        , U.map Registration (U.s "rekisteroidy")
         , U.map LoginNeeded (U.s "kirjautuminen-tarvitaan" <?> U.stringParam "seuraava")
         , U.map Terms (U.s "kayttoehdot")
         , U.map RegisterDescription (U.s "rekisteriseloste")
         , U.map Settings (U.s "asetukset")
         , U.map Contacts (U.s "kayntikortit")
+        , U.map ChangePassword (U.s "vaihdasalasana")
+        , U.map RenewPassword (U.s "salasanaunohtui")
+        , U.map InitPassword (U.s "asetasalasana" <?> U.stringParam "token")
         ]
 
 
@@ -163,6 +203,10 @@ ssoUrl rootUrl maybePath =
         redirectParam =
             Maybe.map (\s -> "&path=" ++ Window.encodeURIComponent s) maybePath |> Maybe.withDefault ""
     in
-    "/kirjaudu?base="
-        ++ loginBase
-        ++ redirectParam
+    "/kirjaudu"
+
+
+
+--"/kirjaudu?base="
+--    ++ loginBase
+--    ++ redirectParam

@@ -661,7 +661,8 @@ userInfoBoxEditing2 t model user =
                 []
             ]
         , location model user
-        , editWorkChildren model t user
+        , editWorkStatus model t user
+        , editChildrenStatus model t user
         , H.p
             [ A.class "user-page__work-details" ]
             [ H.div [ A.class "profile__marker" ]
@@ -783,8 +784,8 @@ location model user =
             ]
 
 
-editWorkChildren : Model -> T -> User -> H.Html Msg
-editWorkChildren model t user =
+editWorkStatus : Model -> T -> User -> H.Html Msg
+editWorkStatus model t user =
     H.div
         [ A.classList
             [ ( "profile__detail", True )
@@ -792,11 +793,22 @@ editWorkChildren model t user =
             ]
         ]
         [ H.div [ A.class "profile__marker" ]
-            [ H.i [ A.class "fa fa-home" ] [] ]
-        , H.div []
-            [ workStatusSelect t user
-            , editChildren t model user
+            [ H.i [ A.class "fa fa-briefcase" ] [] ]
+        , workStatusSelect t user
+        ]
+
+
+editChildrenStatus : Model -> T -> User -> H.Html Msg
+editChildrenStatus model t user =
+    H.div
+        [ A.classList
+            [ ( "profile__detail", True )
+            , ( "user-page__editing-location", model.editing )
             ]
+        ]
+        [ H.div [ A.class "profile__marker" ]
+            [ H.i [ A.class "fa fa-child" ] [] ]
+        , editChildren t model user
         ]
 
 

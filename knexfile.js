@@ -6,16 +6,16 @@ module.exports = {
     client: 'postgresql',
     connection: {
       database: 'tradenomiitti',
-      user:     process.env.db_user,
-      password: process.env.db_password
+      user: process.env.db_user,
+      password: process.env.db_password,
     },
     pool: {
       min: 2,
-      max: 10
+      max: 10,
     },
     migrations: {
-      tableName: 'knex_migrations'
-    }
+      tableName: 'knex_migrations',
+    },
   },
 
   test: {
@@ -23,31 +23,33 @@ module.exports = {
     connection: {
       database: 'tradenomiitti-test',
       user: process.env.db_user,
-      password: process.env.db_password
+      password: process.env.db_password,
     },
     pool: {
       min: 2,
-      max: 5
+      max: 5,
     },
     migration: {
-      tableName: 'knex_migrations'
-    }
+      tableName: 'knex_migrations',
+    },
+    seeds: {
+      directory: 'seeds/test',
+    },
   },
 
   production: {
     client: 'postgresql',
     connection: {
       database: 'tradenomiitti',
-      user:     process.env.db_user,
-      password: process.env.db_password
+      user: process.env.db_user,
+      password: process.env.db_password,
     },
     pool: {
       min: 2,
-      max: 10
+      max: 10,
     },
     migrations: {
-      tableName: 'knex_migrations'
-    }
-  }
-
+      tableName: 'knex_migrations',
+    },
+  },
 };
