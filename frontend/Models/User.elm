@@ -197,7 +197,6 @@ settingsEncode : Settings -> JS.Value
 settingsEncode settings =
     JS.object
         [ ( "emails_for_answers", JS.bool settings.emails_for_answers )
-        , ( "email_address", JS.string settings.email_address )
         , ( "emails_for_businesscards", JS.bool settings.emails_for_businesscards )
         , ( "emails_for_new_ads", JS.bool settings.emails_for_new_ads )
         ]

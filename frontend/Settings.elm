@@ -18,7 +18,6 @@ type Msg
     | ToggleEmailsForAnswers Settings
     | ToggleEmailsForBusinessCards Settings
     | ToggleEmailsForNewAds Settings
-    | ChangeEmailAddress Settings String
     | Save Settings
 
 
@@ -84,17 +83,6 @@ update msg model =
             }
                 ! []
 
-        ChangeEmailAddress settings str ->
-            { model
-                | sending = NotSending
-                , settings =
-                    Just
-                        { settings
-                            | email_address = str
-                        }
-            }
-                ! []
-
         Save settings ->
             { model | sending = Sending } ! [ updateSettings settings ]
 
@@ -148,18 +136,10 @@ viewSettings t model settings =
                     [ H.div
                         [ A.class "form-group"
                         ]
-                        [ H.label
-                            [ A.for "email-address"
-                            ]
+                        [ H.label []
                             [ H.text <| t_ "emailAddress" ]
-                        , H.input
-                            [ A.type_ "text"
-                            , A.class "form-control"
-                            , A.id "email-address"
-                            , A.value settings.email_address
-                            , E.onInput (ChangeEmailAddress settings)
-                            ]
-                            []
+                        , H.div []
+                            [ H.text settings.email_address ]
                         ]
                     , H.div
                         [ A.class "checkbox" ]
