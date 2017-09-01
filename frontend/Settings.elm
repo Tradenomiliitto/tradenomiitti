@@ -6,6 +6,7 @@ import Html.Attributes as A
 import Html.Events as E
 import Http
 import Models.User exposing (Settings, User)
+import Nav
 import State.Settings exposing (..)
 import State.Util exposing (SendingStatus(..))
 import Translation exposing (T)
@@ -19,6 +20,7 @@ type Msg
     | ToggleEmailsForBusinessCards Settings
     | ToggleEmailsForNewAds Settings
     | Save Settings
+    | ChangePassword
 
 
 getSettings : Cmd (UpdateMessage Msg)
@@ -85,6 +87,9 @@ update msg model =
 
         Save settings ->
             { model | sending = Sending } ! [ updateSettings settings ]
+
+        ChangePassword ->
+            model ! [ Util.reroute Nav.ChangePassword ]
 
 
 view : T -> Model -> Maybe User -> H.Html (ViewMessage Msg)
@@ -196,6 +201,13 @@ viewSettings t model settings =
                     []
                     [ H.text <| sendingToText t model.sending ]
                 ]
+            ]
+        , H.div [ A.class "settings__change-password col-xs-11 col-sm-4 col-sm-offset-4" ]
+            [ H.button
+                [ E.onClick ChangePassword
+                , A.class "settings__change-password-button btn btn-primary"
+                ]
+                [ H.text <| t_ "buttonChangePassword" ]
             ]
         ]
 

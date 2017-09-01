@@ -81,7 +81,7 @@ changePasswordForm : T -> Model -> User -> Maybe String -> H.Html (ViewMessage M
 changePasswordForm t model user errorMessage =
     H.div
         []
-        [ Common.profileTopRow t user False Common.ChangePasswordTab (H.div [] [])
+        [ Common.profileTopRow t user False Common.SettingsTab (H.div [] [])
         , H.div
             [ A.class "container last-row" ]
             [ H.div
@@ -172,7 +172,7 @@ view t model maybeUser =
                 Success ->
                     H.div
                         []
-                        [ Common.profileTopRow t user False Common.ChangePasswordTab (H.div [] [])
+                        [ Common.profileTopRow t user False Common.SettingsTab (H.div [] [])
                         , H.div
                             [ A.class "container last-row" ]
                             [ H.div

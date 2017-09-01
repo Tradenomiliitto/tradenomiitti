@@ -13,7 +13,6 @@ const source = {
       profile: 'Oma profiili',
       settings: 'Asetukset',
       contacts: 'Käyntikortit',
-      changePassword: 'Vaihda salasana',
     },
     selectFilters: {
       domain: 'Valitse toimiala',
@@ -379,6 +378,7 @@ const source = {
     emailsForAnswers: 'Ilmoitus uudesta vastauksesta jättämääsi kysymykseen',
     emailsForNewAds: 'Kootut sinulle suunnatut ilmoitukset (viikottainen)',
     buttonSave: 'Tallenna',
+    buttonChangePassword: 'Vaihda salasanasi',
     sending: 'Tallenetaan…',
     success: 'Tallennus onnistui',
     error: 'Tallenuksessa meni jotain pieleen',
