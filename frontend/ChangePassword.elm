@@ -58,8 +58,17 @@ update msg model =
         NewPassword2 password ->
             { model | newPassword2 = password } ! []
 
-        SendResponse (Err error) ->
-            model ! []
+        SendResponse (Err httpError) ->
+            let
+                error =
+                    case httpError of
+                        Http.BadStatus _ ->
+                            Failure
+
+                        _ ->
+                            NetworkError
+            in
+            { model | status = error } ! []
 
         SendResponse (Ok response) ->
             { model | status = Success } ! []
@@ -68,8 +77,8 @@ update msg model =
             model ! [ Cmd.map LocalUpdateMessage <| submit model ]
 
 
-changePasswordForm : T -> Model -> User -> H.Html (ViewMessage Msg)
-changePasswordForm t model user =
+changePasswordForm : T -> Model -> User -> Maybe String -> H.Html (ViewMessage Msg)
+changePasswordForm t model user errorMessage =
     H.div
         []
         [ Common.profileTopRow t user False Common.ChangePasswordTab (H.div [] [])
@@ -120,6 +129,12 @@ changePasswordForm t model user =
                             ]
                             []
                         ]
+                    , errorMessage
+                        |> Maybe.map
+                            (\message ->
+                                H.p [ A.class "error" ] [ H.text message ]
+                            )
+                        |> Maybe.withDefault (H.text "")
                     , H.p
                         [ A.class "changepassword__submit-button" ]
                         [ H.button
@@ -144,7 +159,15 @@ view t model maybeUser =
         Just user ->
             case model.status of
                 NotLoaded ->
-                    changePasswordForm t model user
+                    changePasswordForm t model user Nothing
+
+                Failure ->
+                    changePasswordForm t model user <|
+                        Just (t "changePassword.failure")
+
+                NetworkError ->
+                    changePasswordForm t model user <|
+                        Just (t "changePassword.networkError")
 
                 Success ->
                     H.div

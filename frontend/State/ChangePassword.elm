@@ -4,6 +4,8 @@ module State.ChangePassword exposing (..)
 type Status
     = NotLoaded
     | Success
+    | Failure
+    | NetworkError
 
 
 type alias Model =

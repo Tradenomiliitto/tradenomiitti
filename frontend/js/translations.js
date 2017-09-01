@@ -64,6 +64,8 @@ const source = {
     newPasswordPlaceholder2: 'Uusi salasana uudelleen',
     submit: 'Lähetä',
     success: 'Salasana vaihdettu!',
+    failure: 'Tarkista tiedot ja yritä uudelleen.',
+    networkError: 'Yhteydessä on ongelmia, salasanan vaihto ei onnistunut.',
   },
   contacts: {
     heading: 'Käyntikortit',
