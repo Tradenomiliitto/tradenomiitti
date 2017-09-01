@@ -202,10 +202,10 @@ viewSettings t model settings =
                     [ H.text <| sendingToText t model.sending ]
                 ]
             ]
-        , H.div [ A.class "login__renew col-xs-11 col-sm-4 col-sm-offset-4" ]
+        , H.div [ A.class "settings__change-password col-xs-11 col-sm-4 col-sm-offset-4" ]
             [ H.button
                 [ E.onClick ChangePassword
-                , A.class "login__renew--button btn btn-primary"
+                , A.class "settings__change-password-button btn btn-primary"
                 ]
                 [ H.text <| t_ "buttonChangePassword" ]
             ]

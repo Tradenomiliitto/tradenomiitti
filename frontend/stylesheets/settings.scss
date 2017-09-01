@@ -13,4 +13,15 @@
   &__save {
     margin-top: 25px;
   }
+
+  &__change-password {
+    margin-top: 40px;
+    text-align: center;
+  }
+
+  &__change-password-button {
+    font-size: 18px;
+    @include button-paddings;
+    @include button-colors;
+  }
 }
