@@ -190,8 +190,8 @@ const source = {
     title: 'Kirjaudu sisään',
     emailPlaceholder: 'Sähköpostiosoite',
     passwordPlaceholder: 'Salasana',
-    success: 'Kirjautuminen onnistui!',
     failure: 'Kirjautuminen epäonnistui',
+    networkError: 'Yhteydessä on ongelmia, kirjautuminen ei onnistunut',
     renewButton: 'Unohtuiko salasanasi?',
   },
   main: {
