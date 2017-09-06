@@ -58,8 +58,7 @@ update msg model =
             { model | status = Failure } ! []
 
         SendResponse (Ok response) ->
-            { model | status = Success }
-                ! [ Util.refreshMe, Util.reroute Nav.Home ]
+            model ! [ Util.refreshMe, Util.reroute Nav.Home ]
 
         Submitted ->
             model ! [ Cmd.map LocalUpdateMessage <| submit model ]
@@ -68,95 +67,84 @@ update msg model =
             model ! [ Util.reroute Nav.RenewPassword ]
 
 
+loginForm : T -> Model -> Maybe String -> H.Html Msg
+loginForm t model errorMessage =
+    H.div
+        [ A.class "container last-row" ]
+        [ H.div
+            [ A.class "row login col-sm-6 col-sm-offset-3" ]
+            [ H.form
+                [ A.class "login__container"
+                , onWithOptions "submit"
+                    { preventDefault = True, stopPropagation = False }
+                    (Json.Decode.succeed Submitted)
+                ]
+                [ H.h1
+                    [ A.class "login__heading" ]
+                    [ H.text <| t "login.title" ]
+                , H.h3
+                    [ A.class "login__input" ]
+                    [ H.input
+                        [ A.name "email"
+                        , A.type_ "email"
+                        , A.autofocus True
+                        , A.placeholder <|
+                            t "login.emailPlaceholder"
+                        , onInput Email
+                        ]
+                        []
+                    ]
+                , H.h3
+                    [ A.class "login__input" ]
+                    [ H.input
+                        [ A.name "password"
+                        , A.type_ "password"
+                        , A.placeholder <|
+                            t "login.passwordPlaceholder"
+                        , onInput Password
+                        ]
+                        []
+                    ]
+                , errorMessage
+                    |> Maybe.map
+                        (\message ->
+                            H.p [ A.class "error" ] [ H.text message ]
+                        )
+                    |> Maybe.withDefault (H.text "")
+                , H.p
+                    [ A.class "login__submit-button" ]
+                    [ H.button
+                        [ A.type_ "submit"
+                        , A.class "btn btn-primary"
+                        , A.disabled
+                            ((String.length model.email == 0)
+                                || (String.length model.password == 0)
+                            )
+                        ]
+                        [ H.text <| t "common.login" ]
+                    ]
+                ]
+            ]
+        , H.div [ A.class "login__renew col-xs-11 col-sm-4 col-sm-offset-4" ]
+            [ H.button
+                [ onClick PasswordForgotten
+                , A.class "login__renew--button btn btn-primary"
+                ]
+                [ H.text <| t "login.renewButton" ]
+            ]
+        ]
+
+
 view : T -> Model -> H.Html Msg
 view t model =
     case model.status of
         NotLoaded ->
-            H.div
-                [ A.class "container last-row" ]
-                [ H.div
-                    [ A.class "row login col-sm-6 col-sm-offset-3" ]
-                    [ H.form
-                        [ A.class "login__container"
-                        , onWithOptions "submit"
-                            { preventDefault = True, stopPropagation = False }
-                            (Json.Decode.succeed Submitted)
-                        ]
-                        [ H.h1
-                            [ A.class "login__heading" ]
-                            [ H.text <| t "login.title" ]
-                        , H.h3
-                            [ A.class "login__input" ]
-                            [ H.input
-                                [ A.name "email"
-                                , A.type_ "email"
-                                , A.autofocus True
-                                , A.placeholder <|
-                                    t "login.emailPlaceholder"
-                                , onInput Email
-                                ]
-                                []
-                            ]
-                        , H.h3
-                            [ A.class "login__input" ]
-                            [ H.input
-                                [ A.name "password"
-                                , A.type_ "password"
-                                , A.placeholder <|
-                                    t "login.passwordPlaceholder"
-                                , onInput Password
-                                ]
-                                []
-                            ]
-                        , H.p
-                            [ A.class "login__submit-button" ]
-                            [ H.button
-                                [ A.type_ "submit"
-                                , A.class "btn btn-primary"
-                                , A.disabled
-                                    ((String.length model.email == 0)
-                                        || (String.length model.password == 0)
-                                    )
-                                ]
-                                [ H.text <| t "common.login" ]
-                            ]
-                        ]
-                    ]
-                , H.div [ A.class "login__renew col-xs-11 col-sm-4 col-sm-offset-4" ]
-                    [ H.button
-                        [ onClick PasswordForgotten
-                        , A.class "login__renew--button btn btn-primary"
-                        ]
-                        [ H.text <| t "login.renewButton" ]
-                    ]
-                ]
-
-        Success ->
-            H.div
-                [ A.class "container last-row" ]
-                [ H.div
-                    [ A.class "row login col-sm-6 col-sm-offset-3" ]
-                    [ H.div
-                        [ A.class "login__container"
-                        ]
-                        [ H.h1
-                            [ A.class "login__heading" ]
-                            [ H.text <| t "login.success" ]
-                        ]
-                    ]
-                ]
+            loginForm t model Nothing
 
         Failure ->
-            H.div
-                [ A.class "container last-row" ]
-                [ H.div
-                    [ A.class "row login col-sm-6 col-sm-offset-3" ]
-                    [ H.div
-                        [ A.class "login__container"
-                        ]
-                        [ H.h1
-                            [ A.class "login__heading" ]
-                            [ H.text <| t "login.failure" ]
-                        ]
-                    ]
-                ]
+            loginForm t model <|
+                Just (t "login.failure")
+
+        NetworkError ->
+            loginForm t model <|
+                Just (t "login.networkError")
