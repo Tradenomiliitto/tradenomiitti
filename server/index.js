@@ -13,6 +13,10 @@ const staticDir = nonLocal ? '/srv/static' : `${rootDir}/static`;
 
 const app = express();
 
+const startDate = `----------------------------\n${new Date().toISOString()}`;
+console.log(startDate);
+console.error(startDate);
+
 // knex
 const knex_config = require('../knexfile.js');
 const knex = require('knex')(knex_config[process.env.environment]);
