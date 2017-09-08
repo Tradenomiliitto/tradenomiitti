@@ -28,6 +28,7 @@ function formatData(data) {
 
     newItem.data = JSON.stringify(newItem.data);
     newItem.settings = JSON.stringify(newItem.settings);
+    newItem.member_data = JSON.stringify(item);
 
     newData.push(newItem);
   });
@@ -47,7 +48,7 @@ knex('remote_user_register').del().then(() => {
 })
   .then(() => {
     console.log('Sync with users...');
-    const query = knex.raw('INSERT INTO "users" ("data", "remote_id", "settings") SELECT * FROM "remote_user_register" ON CONFLICT (remote_id) DO UPDATE SET settings = jsonb_set(users.settings, \'{email_address}\', EXCLUDED.settings->\'email_address\')').toQuery();
+    const query = knex.raw('INSERT INTO "users" ("data", "remote_id", "settings", "member_data") SELECT * FROM "remote_user_register" ON CONFLICT (remote_id) DO UPDATE SET member_data = EXCLUDED.member_data, settings = jsonb_set(users.settings, \'{email_address}\', EXCLUDED.settings->\'email_address\')').toQuery();
     return knex.raw(query);
   })
   .then(() => {

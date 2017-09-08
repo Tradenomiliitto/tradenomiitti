@@ -15,13 +15,13 @@ import WorkStatus exposing (WorkStatus)
 
 type alias Extra =
     { first_name : String
-    , nick_name : String
     , last_name : String
-    , domains : List String
-    , positions : List String
+    , division : String
     , email : String
     , phone : String
-    , geoArea : String
+    , streetAddress : String
+    , postalCode : String
+    , postalCity : String
     }
 
 
@@ -229,13 +229,13 @@ userExtraDecoder : Json.Decoder Extra
 userExtraDecoder =
     P.decode Extra
         |> P.required "first_name" Json.string
-        |> P.required "nick_name" Json.string
         |> P.required "last_name" Json.string
-        |> P.required "domains" (Json.list Json.string)
-        |> P.required "positions" (Json.list Json.string)
+        |> P.required "division" Json.string
         |> P.required "email" Json.string
         |> P.required "phone" Json.string
-        |> P.required "geo_area" Json.string
+        |> P.required "streetAddress" Json.string
+        |> P.required "postalCode" Json.string
+        |> P.required "postalCity" Json.string
 
 
 pictureEditingDecoder : Json.Decoder PictureEditing

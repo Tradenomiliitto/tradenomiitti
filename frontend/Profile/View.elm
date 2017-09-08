@@ -111,7 +111,7 @@ membershipDataInfo t =
                 ]
             ]
         , H.a
-            [ A.href "https://asiointi.tral.fi"
+            [ A.href "https://mib.yhdistysavain.fi/jasensivut/"
             , A.target "_blank"
             ]
             [ H.button
@@ -1106,14 +1106,14 @@ membershipRegisterInfo t extra =
     in
     H.table
         [ A.class "user-page__membership-info-definitions" ]
-        [ row "nickName" extra.nick_name
-        , row "firstName" extra.first_name
+        [ row "firstName" extra.first_name
         , row "lastName" extra.last_name
-        , row "positions" (String.join ", " extra.positions)
-        , row "domains" (String.join ", " extra.domains)
         , row "email" extra.email
         , row "phone" extra.phone
-        , row "location" extra.geoArea
+        , row "division" extra.division
+        , row "streetAddress" extra.streetAddress
+        , row "postalCode" extra.postalCode
+        , row "postalCity" extra.postalCity
         ]
 
 

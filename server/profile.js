@@ -2,7 +2,6 @@ const crypto = require('crypto');
 const gm = require('gm'); // Graphics Magick
 const getFileType = require('file-type');
 
-
 module.exports = function initialize(params) {
   const knex = params.knex;
   const sebacon = params.sebacon;
@@ -11,33 +10,50 @@ module.exports = function initialize(params) {
   const emails = params.emails;
   const service = require('./services/profiles')({ knex, util, emails });
 
+  function getExtraData(remote_id, key) {
+    return knex('users').where({ remote_id }).select(knex.raw(`member_data->>'${key}' as item`)).first()
+      .then(({ item }) => item);
+  }
+
+  function isAdmin(remote_id) {
+    return knex('users').where({ remote_id }).first()
+      .then(user => {
+        if (user) {
+          return Promise.resolve(user.settings.isAdmin);
+        }
+        return Promise.resolve(false);
+      });
+  }
+
   function getMe(req, res, next) {
     if (!req.session || !req.session.id) {
       return res.sendStatus(401);
     }
     return util.userForSession(req)
       .then(user => Promise.all([
-        sebacon.getUserFirstName(user.remote_id),
-        sebacon.getUserNickName(user.remote_id),
-        sebacon.getUserLastName(user.remote_id),
-        sebacon.getUserEmploymentExtras(user.remote_id),
-        sebacon.getUserEmail(user.remote_id),
-        sebacon.getUserPhoneNumber(user.remote_id),
-        sebacon.getUserGeoArea(user.remote_id),
+        getExtraData(user.remote_id, 'Etunimi'),
+        getExtraData(user.remote_id, 'Sukunimi'),
+        getExtraData(user.remote_id, 'Paikallisjaosto'),
+        getExtraData(user.remote_id, 'Sähköpostiosoite'),
+        getExtraData(user.remote_id, 'Matkapuhelinnumero'),
+        getExtraData(user.remote_id, 'Lähiosoite'),
+        getExtraData(user.remote_id, 'Postinumero'),
+        getExtraData(user.remote_id, 'Postitoimipaikka'),
         service.profileSkills(user.id),
         service.profileSpecialSkills(user.id),
         service.profileEducations(user.id),
-        sebacon.isAdmin(user.remote_id),
+        isAdmin(user.remote_id),
         user,
       ]))
       .then(([
-        firstname,
-        nickname,
-        lastname,
-        { positions, domains },
+        first_name,
+        last_name,
+        division,
         email,
         phone,
-        geoArea,
+        streetAddress,
+        postalCode,
+        postalCity,
         skills,
         specialSkills,
         educations,
@@ -53,14 +69,14 @@ module.exports = function initialize(params) {
         }
 
         user.extra = {
-          first_name: firstname,
-          nick_name: nickname,
-          last_name: lastname,
-          positions,
-          domains,
+          first_name,
+          last_name,
+          division,
           email,
           phone,
-          geo_area: geoArea,
+          streetAddress,
+          postalCode,
+          postalCity,
         };
 
         user.is_admin = isAdmin;
