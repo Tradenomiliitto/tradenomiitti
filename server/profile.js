@@ -15,7 +15,7 @@ module.exports = function initialize(params) {
       .then(({ item }) => item);
   }
 
-  function isAdmin(remote_id) {
+  function userIsAdmin(remote_id) {
     return knex('users').where({ remote_id }).first()
       .then(user => {
         if (user) {
@@ -42,7 +42,7 @@ module.exports = function initialize(params) {
         service.profileSkills(user.id),
         service.profileSpecialSkills(user.id),
         service.profileEducations(user.id),
-        isAdmin(user.remote_id),
+        userIsAdmin(user.remote_id),
         user,
       ]))
       .then(([
