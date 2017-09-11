@@ -107,7 +107,7 @@ membershipDataInfo t =
             [ A.class "profile__editing--membership--info--text" ]
             [ H.text <| t "profile.membershipInfo.profileUsesMembershipInfo"
             , H.span [ A.class "profile__editing--bold" ]
-                [ H.text <| t "profile.membershipInfo.notVisibleAsIs"
+                [ H.text <| " " ++ t "profile.membershipInfo.notVisibleAsIs"
                 ]
             ]
         , H.a
