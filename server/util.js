@@ -53,6 +53,7 @@ module.exports = function initialize(params) {
     formatted.phone = dbCard.phone || '';
     formatted.email = dbCard.email || '';
     formatted.linkedin = dbCard.linkedin || '';
+    formatted.facebook = dbCard.facebook || '';
 
     return formatted;
   }
