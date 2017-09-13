@@ -328,7 +328,7 @@ const source = {
       buttonAdd: 'Lisää',
     },
     membershipRegisterInfo: {
-      heading: 'MiB:n jäsentiedot',
+      heading: 'MiBin jäsentiedot',
       nickName: 'Kutsumanimi',
       firstName: 'Etunimi',
       lastName: 'Sukunimi',
