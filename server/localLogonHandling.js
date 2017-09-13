@@ -198,7 +198,7 @@ module.exports = function initialize(params) {
       .then(() => res.json({ status: 'Ok' }))
       .catch(err =>
         knex('events').insert({ type: 'initPassword_failure', data: { message: err.message, token: token } })
-          .then(() => res.json({ message: 'Invalid renewal' })));
+          .then(() => res.status(500).json({ message: 'Invalid renewal' })));
   }
 
   return {
