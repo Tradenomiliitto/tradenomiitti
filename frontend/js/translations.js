@@ -358,6 +358,7 @@ const source = {
     buttonText: 'Lähetä',
     success: 'Rekisteröintilinkki lähetetty!',
     failure: 'Jotain meni pieleen!',
+    networkError: 'Yhteydessä on ongelmia, rekisteröityminen ei onnistunut.',
   },
   removal: {
     removeYour: {

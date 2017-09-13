@@ -46,8 +46,17 @@ update msg model =
         Email email ->
             { model | email = email } ! []
 
-        SendResponse (Err error) ->
-            { model | status = Failure } ! []
+        SendResponse (Err httpError) ->
+            let
+                error =
+                    case httpError of
+                        Http.BadStatus _ ->
+                            Failure
+
+                        _ ->
+                            NetworkError
+            in
+            { model | status = error } ! []
 
         SendResponse (Ok response) ->
             { model | status = Success } ! []
@@ -56,51 +65,58 @@ update msg model =
             model ! [ Cmd.map LocalUpdateMessage <| submit model ]
 
 
-
--- Näytä success/failure -> message, jonka serveri lähettää?
+registrationForm : T -> Model -> Maybe String -> H.Html Msg
+registrationForm t model errorMessage =
+    H.div
+        [ A.class "container last-row" ]
+        [ H.div
+            [ A.class "row registration col-sm-6 col-sm-offset-3" ]
+            [ H.form
+                [ A.class "registration__container"
+                , onWithOptions "submit"
+                    { preventDefault = True, stopPropagation = False }
+                    (Json.Decode.succeed Submitted)
+                ]
+                [ H.h1
+                    [ A.class "registration__heading" ]
+                    [ H.text <| t "registration.title" ]
+                , H.h3
+                    [ A.class "registration__input" ]
+                    [ H.input
+                        [ A.name "email"
+                        , A.type_ "email"
+                        , A.autofocus True
+                        , A.placeholder <|
+                            t "registration.emailPlaceholder"
+                        , onInput Email
+                        ]
+                        []
+                    ]
+                , errorMessage
+                    |> Maybe.map
+                        (\message ->
+                            H.p [ A.class "error" ] [ H.text message ]
+                        )
+                    |> Maybe.withDefault (H.text "")
+                , H.p
+                    [ A.class "registration__submit-button" ]
+                    [ H.button
+                        [ A.type_ "submit"
+                        , A.class "btn btn-primary"
+                        , A.disabled (String.length model.email == 0)
+                        ]
+                        [ H.text <| t "registration.buttonText" ]
+                    ]
+                ]
+            ]
+        ]
 
 
 view : T -> Model -> H.Html Msg
 view t model =
     case model.status of
         NotLoaded ->
-            H.div
-                [ A.class "container last-row" ]
-                [ H.div
-                    [ A.class "row registration col-sm-6 col-sm-offset-3" ]
-                    [ H.form
-                        [ A.class "registration__container"
-                        , onWithOptions "submit"
-                            { preventDefault = True, stopPropagation = False }
-                            (Json.Decode.succeed Submitted)
-                        ]
-                        [ H.h1
-                            [ A.class "registration__heading" ]
-                            [ H.text <| t "registration.title" ]
-                        , H.h3
-                            [ A.class "registration__input" ]
-                            [ H.input
-                                [ A.name "email"
-                                , A.type_ "email"
-                                , A.autofocus True
-                                , A.placeholder <|
-                                    t "registration.emailPlaceholder"
-                                , onInput Email
-                                ]
-                                []
-                            ]
-                        , H.p
-                            [ A.class "registration__submit-button" ]
-                            [ H.button
-                                [ A.type_ "submit"
-                                , A.class "btn btn-primary"
-                                , A.disabled (String.length model.email == 0)
-                                ]
-                                [ H.text <| t "registration.buttonText" ]
-                            ]
-                        ]
-                    ]
-                ]
+            registrationForm t model Nothing
 
         Success ->
             H.div
@@ -118,16 +134,9 @@ view t model =
                 ]
 
         Failure ->
-            H.div
-                [ A.class "container last-row" ]
-                [ H.div
-                    [ A.class "row changepassword col-sm-6 col-sm-offset-3" ]
-                    [ H.div
-                        [ A.class "changepassword__container"
-                        ]
-                        [ H.h1
-                            [ A.class "changepassword__heading" ]
-                            [ H.text <| t "registration.failure" ]
-                        ]
-                    ]
-                ]
+            registrationForm t model <|
+                Just (t "registration.failure")
+
+        NetworkError ->
+            registrationForm t model <|
+                Just (t "registration.networkError")
