@@ -37,6 +37,7 @@ import State.ListAds
 import State.ListUsers
 import State.Main exposing (..)
 import State.Profile
+import State.Registration
 import State.RenewPassword
 import State.Settings
 import State.User
@@ -255,6 +256,9 @@ update msg model =
 
                         InitPassword _ ->
                             initWithUpdateMessage { modelWithRoute | initPassword = State.InitPassword.init } InitPasswordMessage Cmd.none
+
+                        Registration ->
+                            initWithUpdateMessage { modelWithRoute | registration = State.Registration.init } RegistrationMessage Cmd.none
 
                         newRoute ->
                             ( modelWithRoute, Cmd.none )
