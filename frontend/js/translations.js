@@ -159,6 +159,7 @@ const source = {
     success: 'Salasana asetettu!',
     successMessage: 'Salasanasi on nyt asetettu. Voit kirjautua sisään ja alkaa käyttää MiBiTiä!',
     failure: 'Jotain meni pieleen',
+    networkError: 'Yhteydessä on ongelmia, salasanan asettaminen ei onnistunut',
   },
   listAds: {
     heading: 'Selaa ilmoituksia',
