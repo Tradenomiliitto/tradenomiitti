@@ -200,6 +200,7 @@ businessCardData t user businessCard =
                 , businessCardDataInput t businessCard Phone
                 , businessCardDataInput t businessCard Email
                 , businessCardDataInput t businessCard LinkedIn
+                , businessCardDataInput t businessCard Facebook
                 ]
             ]
         ]
@@ -229,6 +230,7 @@ businessCardView t user businessCard =
                 , businessCardDataView businessCard Phone
                 , businessCardDataView businessCard Email
                 , businessCardDataView businessCard LinkedIn
+                , businessCardDataView businessCard Facebook
                 ]
             ]
         ]
@@ -257,6 +259,9 @@ businessCardDataInput t card field =
                 LinkedIn ->
                     card.linkedin
 
+                Facebook ->
+                    card.facebook
+
         icon =
             case field of
                 Location ->
@@ -270,6 +275,9 @@ businessCardDataInput t card field =
 
                 LinkedIn ->
                     [ H.i [ A.class "fa fa-linkedin" ] [] ]
+
+                Facebook ->
+                    [ H.i [ A.class "fa fa-facebook" ] [] ]
 
                 _ ->
                     []
@@ -317,6 +325,9 @@ businessCardDataView card field =
                 LinkedIn ->
                     card.linkedin
 
+                Facebook ->
+                    card.facebook
+
         icon =
             case field of
                 Location ->
@@ -330,6 +341,9 @@ businessCardDataView card field =
 
                 LinkedIn ->
                     [ H.i [ A.class "fa fa-linkedin" ] [] ]
+
+                Facebook ->
+                    [ H.i [ A.class "fa fa-facebook" ] [] ]
 
                 _ ->
                     []
@@ -371,6 +385,9 @@ fieldToString t field =
 
         LinkedIn ->
             t "profile.businessCardFields.linkedIn"
+
+        Facebook ->
+            t "profile.businessCardFields.facebook"
 
 
 showProfileView : T -> Model -> User -> RootState.Model -> H.Html (ViewMessage Msg)

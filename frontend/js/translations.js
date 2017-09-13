@@ -265,6 +265,7 @@ const source = {
       phone: 'Puhelinnumero',
       email: 'Sähköposti',
       linkedIn: 'LinkedIn-linkki',
+      facebook: 'Facebook-linkki',
     },
     competences: {
       editHeading: 'Muokkaa osaamistasi',

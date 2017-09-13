@@ -170,6 +170,7 @@ type BusinessCardField
     | Phone
     | Email
     | LinkedIn
+    | Facebook
 
 
 updateBusinessCard : Maybe BusinessCard -> BusinessCardField -> String -> Maybe BusinessCard
@@ -194,6 +195,9 @@ updateBusinessCard businessCard field value =
 
                 LinkedIn ->
                     Just { businessCard | linkedin = value }
+
+                Facebook ->
+                    Just { businessCard | facebook = value }
 
         Nothing ->
             Nothing
