@@ -399,7 +399,7 @@ const source = {
   user: {
     contactUser: {
       alreadySent: 'Olet lähettänyt käyntikortin tälle mibiläiselle.',
-      mustContainPhoneOrEmail: 'Käyntikortissasi täytyy olla vähintään puhelinnumero tai sähköpostiosoite, jotta voisit lähettää sen',
+      mustContainPhoneOrEmail: 'Käyntikortissasi täytyy olla puhelinnumero tai sähköpostiosoite, jotta voisit lähettää sen. Lisää tiedot klikkaamalla nimeäsi yläpalkissa ja valitsemalla "Muokkaa profiilia".',
       businessCardIsAttached: 'Viestin mukana lähetät käyntikortin',
       editOrContactUserPrompt: 'Kirjoita napakka esittelyteksti',
       contactUserPlaceholder: 'Vähintään 10 merkkiä',
