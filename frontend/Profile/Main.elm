@@ -244,7 +244,12 @@ update msg model config =
             { model | ads = ads } ! []
 
         Save user ->
-            model ! [ updateMe user ]
+            let
+                -- try adding a child, in case a date has been typed but not added
+                ( nextModel, cmd ) =
+                    update AddChild model config
+            in
+            nextModel ! [ cmd, updateMe user ]
 
         AllowProfileCreation ->
             let
