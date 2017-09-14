@@ -246,13 +246,15 @@ contactUser t model userToContact loggedInUser =
             [ A.class "col-md-6 user-page__edit-or-contact-user" ]
             [ H.p [] [ H.text <| message ]
             , H.button
-                [ if loggedIn then
-                    E.onClick <| LocalViewMessage Profile.StartAddContact
-                  else
-                    Link.action (Nav.LoginNeeded (Nav.User userToContact.id |> Nav.routeToPath |> Just))
-                , A.class "btn btn-primary"
-                , A.disabled (loggedIn && not canSendContact)
-                ]
+                (A.class "btn btn-primary"
+                    :: (if loggedIn then
+                            [ E.onClick <| LocalViewMessage Profile.StartAddContact
+                            , A.disabled <| not canSendContact
+                            ]
+                        else
+                            [ Link.action (Nav.LoginNeeded (Nav.User userToContact.id |> Nav.routeToPath |> Just)) ]
+                       )
+                )
                 [ H.text <| t_ "contact" ]
             ]
 
