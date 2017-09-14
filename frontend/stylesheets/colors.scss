@@ -25,3 +25,6 @@ $main-text: #444;
 $light-primary: lighten($primary, 9%);
 $lighter-primary: lighten($primary, 15%);
 $light-secondary: lighten($secondary, 9%);
+
+$primary-dull: desaturate(lighten($primary, 30%), 40%);
+
