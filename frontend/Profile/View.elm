@@ -679,7 +679,9 @@ userInfoBoxEditing2 t model user =
             ]
         , H.p
             [ A.class "user-page__work-details" ]
-            [ H.input
+            [ H.div [ A.class "profile__marker" ]
+                [ H.i [ A.class "fa fa-map-marker" ] [] ]
+            , H.input
                 [ A.value user.location
                 , E.onInput ChangeLocation
                 , A.placeholder <| t "profile.userInfoBox.locationPlaceholder"
