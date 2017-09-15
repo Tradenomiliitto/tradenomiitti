@@ -11,6 +11,7 @@ type Msg
     | GetPositionOptions (List String)
     | GetSpecialSkillOptions CategoriedOptions
     | GetEducationOptions Education
+    | GetLocationOptions (List String)
 
 
 getDomainOptions : Cmd (UpdateMessage Msg)
@@ -37,6 +38,12 @@ getEducationOptions =
         |> Util.errorHandlingSend GetEducationOptions
 
 
+getLocationOptions : Cmd (UpdateMessage Msg)
+getLocationOptions =
+    Http.get "/api/alueet" (Json.list Json.string)
+        |> Util.errorHandlingSend GetLocationOptions
+
+
 initTasks : Cmd (UpdateMessage Msg)
 initTasks =
     Cmd.batch
@@ -44,6 +51,7 @@ initTasks =
         , getDomainOptions
         , getSpecialSkillOptions
         , getEducationOptions
+        , getLocationOptions
         ]
 
 
@@ -61,3 +69,6 @@ update msg model =
 
         GetEducationOptions education ->
             { model | educationOptions = education } ! []
+
+        GetLocationOptions location ->
+            { model | locationOptions = location } ! []

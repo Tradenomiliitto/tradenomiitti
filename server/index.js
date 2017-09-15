@@ -314,6 +314,12 @@ app.get('/api/toimialat', (req, res) => {
   return res.json(domains.sort());
 });
 
+app.get('/api/alueet', (req, res, next) => {
+  knex('users').select(knex.raw("array_agg(distinct data->>'location') as location")).whereNotNull('pw_hash').first()
+    .then(row => res.json(row.location))
+    .catch(next);
+});
+
 app.get('/api/osaaminen', (req, res, next) => {
   knex('special_skills').where({}).orderBy('id')
     .then(rows => res.json(rows))
