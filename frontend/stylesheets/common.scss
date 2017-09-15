@@ -89,6 +89,10 @@ $answer-icon-width-to-height-ratio: 64 / 60;
     background-color: $light-primary !important;
     border-color: $light-primary !important;
   }
+  &:disabled, &:disabled:hover {
+    background-color: $primary-dull !important;
+    border-color: $primary-dull !important;
+  }
 }
 
 @mixin inverse-button-colors {

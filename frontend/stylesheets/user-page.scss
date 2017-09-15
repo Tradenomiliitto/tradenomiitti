@@ -16,6 +16,7 @@
     padding-bottom:80px;
     background-color: $light-grey;
     & button {
+      margin-top: 15px;
       @include button-colors;
       @include button-paddings;
     }
