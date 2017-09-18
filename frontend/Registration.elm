@@ -80,6 +80,15 @@ registrationForm t model errorMessage =
                 [ H.h1
                     [ A.class "registration__heading" ]
                     [ H.text <| t "registration.title" ]
+                , H.p []
+                    [ H.text <| t "registration.text"
+                    , H.a
+                        [ A.href <| t "registration.joinUrl"
+                        , A.class "registration__link"
+                        ]
+                        [ H.text <| t "registration.joinLink" ]
+                    , H.text "."
+                    ]
                 , H.h3
                     [ A.class "registration__input" ]
                     [ H.input

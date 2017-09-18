@@ -31,23 +31,13 @@
     }
   }
   &__actionable-items {
+    display: flex;
+    justify-content: space-between;
     margin-top: 40px;
-    &-join {
-      float: left;
-      font-size: 18px;
-      &-link {
-        text-decoration: underline;
-        font-weight: bold;
-        margin-top: 10px;
-        display: block;
-      }
-    }
-    &-login {
-      float: right;
-      &-button {
-        @include button-colors;
-        padding: 20px 42px;
-      }
+
+    &-button {
+      @include button-colors;
+      padding: 20px 42px;
     }
   }
 }

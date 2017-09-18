@@ -2,6 +2,7 @@ module LoginNeeded exposing (view)
 
 import Html as H
 import Html.Attributes as A
+import Nav
 import Translation exposing (T)
 
 
@@ -36,17 +37,20 @@ viewLoginBox t loginUrl =
                 , H.p [] [ H.text <| t_ "info" ]
                 , H.div
                     [ A.class "login-needed__actionable-items" ]
-                    [ H.div [ A.class "login-needed__actionable-items-join" ]
-                        [ H.span [] [ H.text <| t_ "joinHeading" ]
-                        , H.span
-                            [ A.class "login-needed__actionable-items-join-link" ]
-                            [ H.a [ A.href <| t_ "joinUrl" ] [ H.text <| t_ "joinLink" ] ]
+                    [ H.div
+                        [ A.class "login-needed__actionable-items-login"
+                        ]
+                        [ H.a
+                            [ A.class "btn btn-primary btn-lg login-needed__actionable-items-button"
+                            , A.href (Nav.routeToPath Nav.Registration)
+                            ]
+                            [ H.text <| t_ "registerButton" ]
                         ]
                     , H.div
                         [ A.class "login-needed__actionable-items-login"
                         ]
                         [ H.a
-                            [ A.class "btn btn-primary btn-lg login-needed__actionable-items-login-button"
+                            [ A.class "btn btn-primary btn-lg login-needed__actionable-items-button"
                             , A.href loginUrl
                             ]
                             [ H.text <| t "common.login" ]

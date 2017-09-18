@@ -63,7 +63,7 @@ const source = {
     newPasswordPlaceholder2: 'Uusi salasana uudelleen',
     submit: 'Lähetä',
     success: 'Salasana vaihdettu!',
-    failure: 'Tarkista tiedot ja yritä uudelleen.',
+    failure: 'Jotain meni pieleen. Varmista, että kirjoitit vanhan salasanasi oikein.',
     networkError: 'Yhteydessä on ongelmia, salasanan vaihto ei onnistunut.',
   },
   contacts: {
@@ -158,7 +158,7 @@ const source = {
     buttonSubmit: 'Lähetä',
     success: 'Salasana asetettu!',
     successMessage: 'Salasanasi on nyt asetettu. Voit kirjautua sisään ja alkaa käyttää MiBiTiä!',
-    failure: 'Jotain meni pieleen',
+    failure: 'Jotain meni pieleen. Linkkisi saattaa olla vanhentunut tai virheellinen.',
     networkError: 'Yhteydessä on ongelmia, salasanan asettaminen ei onnistunut',
   },
   listAds: {
@@ -182,16 +182,17 @@ const source = {
   },
   loginNeeded: {
     heading: 'Kirjaudu sisään',
-    info: 'MiBiT on ainutlaatuinen kohtaamispaikka Mothers in Business MiB ry:n jäsenille. Sinun tulee kirjautua sisään MiB-tunnuksillasi, jotta voit luoda profiilin ja toimia MiBiTissä.',
+    info: 'MiBiT on ainutlaatuinen kohtaamispaikka Mothers in Business MiB ry:n jäsenille. Kirjaudu sisään, niin voit osallistua! Jos olet uusi käyttäjä, rekisteröidy ensin.',
     joinHeading: 'Etkö ole vielä Mothers in Business MiB ry:n jäsen?',
     joinUrl: 'http://www.mothersinbusiness.fi/jaseneksi/',
     joinLink: 'Liity jäseneksi',
+    registerButton: 'Rekisteröidy',
   },
   login: {
     title: 'Kirjaudu sisään',
     emailPlaceholder: 'Sähköpostiosoite',
     passwordPlaceholder: 'Salasana',
-    failure: 'Kirjautuminen epäonnistui',
+    failure: 'Kirjautuminen epäonnistui. Varmista, että kirjoitit sähköpostiosoitteesi ja salasanasi oikein.',
     networkError: 'Yhteydessä on ongelmia, kirjautuminen ei onnistunut',
     renewButton: 'Unohtuiko salasanasi?',
   },
@@ -356,10 +357,13 @@ const source = {
   },
   registration: {
     title: 'Rekisteröidy käyttäjäksi',
+    text: 'Voit rekisteröityä MiBiTin käyttäjäksi antamalla sähköpostiosoitteesi. Jos et ole vielä MiBin jäsen, voit ',
+    joinLink: 'liittyä tästä',
+    joinUrl: 'http://www.mothersinbusiness.fi/jaseneksi/',
     emailPlaceholder: 'Sähköpostiosoite',
     buttonText: 'Lähetä',
     success: 'Rekisteröintilinkki lähetetty!',
-    failure: 'Jotain meni pieleen!',
+    failure: 'Jotain meni pieleen. Varmista, että kirjoitit sähköpostiosoitteesi oikein. Huomioi myös, että palvelu on tarkoitettu vain MiBin jäsenille.',
     networkError: 'Yhteydessä on ongelmia, rekisteröityminen ei onnistunut.',
   },
   removal: {
