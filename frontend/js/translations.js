@@ -350,7 +350,7 @@ const source = {
     emailPlaceholder: 'Sähköpostiosoite',
     buttonText: 'Lähetä',
     success: 'Salasananvaihtolinkki lähetetty!',
-    failure: 'Jotain meni pieleen!',
+    failure: 'Jotain meni pieleen. Varmista, että kirjoitit sähköpostiosoitteesi oikein.',
   },
   registration: {
     title: 'Rekisteröidy käyttäjäksi',
