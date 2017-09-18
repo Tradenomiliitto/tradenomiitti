@@ -142,6 +142,164 @@ type Msg
     | NoOp
 
 
+urlChange : Model -> Navigation.Location -> ( Model, Cmd Msg )
+urlChange model location =
+    let
+        shouldScroll =
+            model.scrollTop
+
+        route =
+            parseLocation location
+
+        modelWithRoute =
+            { model | route = route, scrollTop = False }
+
+        initWithUpdateMessage initModel mapper cmd =
+            if shouldScroll then
+                initModel ! [ unpackUpdateMessage mapper cmd ]
+            else
+                modelWithRoute ! []
+
+        shouldReloadLocationOptions =
+            case route of
+                ListAds ->
+                    True
+
+                ListUsers ->
+                    True
+
+                _ ->
+                    False
+
+        extraCmd =
+            Cmd.batch
+                [ if shouldReloadLocationOptions then
+                    unpackUpdateMessage ConfigMessage Config.getLocationOptions
+                  else
+                    Cmd.none
+                , scrollTop shouldScroll
+                , doConsentNeededAnimation
+                ]
+
+        ( newModel, cmd ) =
+            case route of
+                ShowAd adId ->
+                    initWithUpdateMessage { modelWithRoute | ad = State.Ad.init }
+                        AdMessage
+                        (Ad.getAd adId)
+
+                Profile ->
+                    let
+                        cleanProfile =
+                            State.Profile.init
+
+                        initializedWithOldUser =
+                            { cleanProfile | user = modelWithRoute.profile.user }
+
+                        initialModel =
+                            { modelWithRoute | profile = initializedWithOldUser }
+                    in
+                    initWithUpdateMessage initialModel
+                        ProfileMessage
+                        Profile.initTasks
+
+                ListAds ->
+                    let
+                        newListAds =
+                            State.ListAds.init
+                    in
+                    initWithUpdateMessage { modelWithRoute | listAds = newListAds }
+                        ListAdsMessage
+                        (ListAds.initTasks newListAds)
+
+                Home ->
+                    let
+                        newHome =
+                            State.Home.init
+
+                        ( newModel, cmd ) =
+                            initWithUpdateMessage { modelWithRoute | home = newHome }
+                                HomeMessage
+                                (Home.initTasks newHome)
+                    in
+                    newModel ! [ cmd, animation ( "home-intro-canvas", False ) ]
+
+                User userId ->
+                    if Just userId == Maybe.map .id model.profile.user then
+                        { model | route = Profile } ! [ Navigation.modifyUrl (routeToPath Profile) ]
+                    else
+                        initWithUpdateMessage { modelWithRoute | user = State.User.init }
+                            UserMessage
+                            (User.initTasks userId)
+
+                ListUsers ->
+                    let
+                        newListUsers =
+                            State.ListUsers.init
+
+                        ( newModel, cmd ) =
+                            initWithUpdateMessage { modelWithRoute | listUsers = newListUsers }
+                                ListUsersMessage
+                                (ListUsers.initTasks newListUsers)
+                    in
+                    newModel ! [ cmd, ListUsers.typeaheads newModel.listUsers model.config ]
+
+                LoginNeeded _ ->
+                    modelWithRoute ! [ animation ( "login-needed-canvas", False ) ]
+
+                Settings ->
+                    initWithUpdateMessage { modelWithRoute | settings = State.Settings.init } SettingsMessage Settings.initTasks
+
+                Contacts ->
+                    initWithUpdateMessage { modelWithRoute | contacts = State.Contacts.init } ContactsMessage Contacts.initTasks
+
+                ChangePassword ->
+                    initWithUpdateMessage { modelWithRoute | changePassword = State.ChangePassword.init } ChangePasswordMessage Cmd.none
+
+                RenewPassword ->
+                    initWithUpdateMessage { modelWithRoute | renewPassword = State.RenewPassword.init } RenewPasswordMessage Cmd.none
+
+                InitPassword _ ->
+                    initWithUpdateMessage { modelWithRoute | initPassword = State.InitPassword.init } InitPasswordMessage Cmd.none
+
+                Registration ->
+                    initWithUpdateMessage { modelWithRoute | registration = State.Registration.init } RegistrationMessage Cmd.none
+
+                newRoute ->
+                    ( modelWithRoute, Cmd.none )
+
+        needsLogin =
+            case ( route, Maybe.isJust model.profile.user, model.initialLoading ) of
+                ( CreateAd, False, False ) ->
+                    True
+
+                ( Profile, False, False ) ->
+                    True
+
+                ( Settings, False, False ) ->
+                    True
+
+                _ ->
+                    False
+
+        newRoute =
+            if needsLogin then
+                routeToPath <| LoginNeeded (routeToPath route |> Just)
+            else
+                routeToPath route
+
+        doConsentNeededAnimation =
+            if not model.initialLoading && model.needsConsent then
+                animation ( "consent-needed-canvas", True )
+            else
+                Cmd.none
+    in
+    if needsLogin then
+        model ! [ Navigation.modifyUrl newRoute ]
+    else
+        newModel ! [ cmd, extraCmd ]
+
+
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     let
@@ -160,143 +318,7 @@ update msg model =
                   ]
 
         UrlChange location ->
-            let
-                shouldScroll =
-                    model.scrollTop
-
-                route =
-                    parseLocation location
-
-                modelWithRoute =
-                    { model | route = route, scrollTop = False }
-
-                initWithUpdateMessage initModel mapper cmd =
-                    if shouldScroll then
-                        initModel ! [ unpackUpdateMessage mapper cmd ]
-                    else
-                        modelWithRoute ! []
-
-                ( newModel, cmd ) =
-                    case route of
-                        ShowAd adId ->
-                            initWithUpdateMessage { modelWithRoute | ad = State.Ad.init }
-                                AdMessage
-                                (Ad.getAd adId)
-
-                        Profile ->
-                            let
-                                cleanProfile =
-                                    State.Profile.init
-
-                                initializedWithOldUser =
-                                    { cleanProfile | user = modelWithRoute.profile.user }
-
-                                initialModel =
-                                    { modelWithRoute | profile = initializedWithOldUser }
-                            in
-                            initWithUpdateMessage initialModel
-                                ProfileMessage
-                                Profile.initTasks
-
-                        ListAds ->
-                            let
-                                newListAds =
-                                    State.ListAds.init
-                            in
-                            initWithUpdateMessage { modelWithRoute | listAds = newListAds }
-                                ListAdsMessage
-                                (ListAds.initTasks newListAds)
-
-                        Home ->
-                            let
-                                newHome =
-                                    State.Home.init
-
-                                ( newModel, cmd ) =
-                                    initWithUpdateMessage { modelWithRoute | home = newHome }
-                                        HomeMessage
-                                        (Home.initTasks newHome)
-                            in
-                            newModel ! [ cmd, animation ( "home-intro-canvas", False ) ]
-
-                        User userId ->
-                            if Just userId == Maybe.map .id model.profile.user then
-                                { model | route = Profile } ! [ Navigation.modifyUrl (routeToPath Profile) ]
-                            else
-                                initWithUpdateMessage { modelWithRoute | user = State.User.init }
-                                    UserMessage
-                                    (User.initTasks userId)
-
-                        ListUsers ->
-                            let
-                                newListUsers =
-                                    State.ListUsers.init
-
-                                ( newModel, cmd ) =
-                                    initWithUpdateMessage { modelWithRoute | listUsers = newListUsers }
-                                        ListUsersMessage
-                                        (ListUsers.initTasks newListUsers)
-                            in
-                            newModel ! [ cmd, ListUsers.typeaheads newModel.listUsers model.config ]
-
-                        LoginNeeded _ ->
-                            modelWithRoute ! [ animation ( "login-needed-canvas", False ) ]
-
-                        Settings ->
-                            initWithUpdateMessage { modelWithRoute | settings = State.Settings.init } SettingsMessage Settings.initTasks
-
-                        Contacts ->
-                            initWithUpdateMessage { modelWithRoute | contacts = State.Contacts.init } ContactsMessage Contacts.initTasks
-
-                        ChangePassword ->
-                            initWithUpdateMessage { modelWithRoute | changePassword = State.ChangePassword.init } ChangePasswordMessage Cmd.none
-
-                        RenewPassword ->
-                            initWithUpdateMessage { modelWithRoute | renewPassword = State.RenewPassword.init } RenewPasswordMessage Cmd.none
-
-                        InitPassword _ ->
-                            initWithUpdateMessage { modelWithRoute | initPassword = State.InitPassword.init } InitPasswordMessage Cmd.none
-
-                        Registration ->
-                            initWithUpdateMessage { modelWithRoute | registration = State.Registration.init } RegistrationMessage Cmd.none
-
-                        newRoute ->
-                            ( modelWithRoute, Cmd.none )
-
-                needsLogin =
-                    case ( route, Maybe.isJust model.profile.user, model.initialLoading ) of
-                        ( CreateAd, False, False ) ->
-                            True
-
-                        ( Profile, False, False ) ->
-                            True
-
-                        ( Settings, False, False ) ->
-                            True
-
-                        _ ->
-                            False
-
-                newRoute =
-                    if needsLogin then
-                        routeToPath <| LoginNeeded (routeToPath route |> Just)
-                    else
-                        routeToPath route
-
-                doConsentNeededAnimation =
-                    if not model.initialLoading && model.needsConsent then
-                        animation ( "consent-needed-canvas", True )
-                    else
-                        Cmd.none
-            in
-            if needsLogin then
-                model ! [ Navigation.modifyUrl newRoute ]
-            else
-                newModel
-                    ! [ cmd
-                      , scrollTop shouldScroll
-                      , doConsentNeededAnimation
-                      ]
+            urlChange model location
 
         UserMessage msg ->
             let
