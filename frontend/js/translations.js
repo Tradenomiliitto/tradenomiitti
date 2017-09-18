@@ -183,9 +183,6 @@ const source = {
   loginNeeded: {
     heading: 'Kirjaudu sisään',
     info: 'MiBiT on ainutlaatuinen kohtaamispaikka Mothers in Business MiB ry:n jäsenille. Kirjaudu sisään, niin voit osallistua! Jos olet uusi käyttäjä, rekisteröidy ensin.',
-    joinHeading: 'Etkö ole vielä Mothers in Business MiB ry:n jäsen?',
-    joinUrl: 'http://www.mothersinbusiness.fi/jaseneksi/',
-    joinLink: 'Liity jäseneksi',
     registerButton: 'Rekisteröidy',
   },
   login: {
