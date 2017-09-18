@@ -10,6 +10,7 @@ type Status
 
 type alias Model =
     { email : String
+    , consent : Bool
     , status : Status
     }
 
@@ -17,5 +18,6 @@ type alias Model =
 init : Model
 init =
     { email = ""
+    , consent = False
     , status = NotLoaded
     }
