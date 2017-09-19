@@ -124,7 +124,7 @@ view t config model =
                         , H.p [] [ H.text <| t "createAd.filtersInfo" ]
                         , Common.select t "create-ad" ChangeDomain Domain config.domainOptions model
                         , Common.select t "create-ad" ChangePosition Position config.positionOptions model
-                        , Common.select t "create-ad" ChangeLocation Location Config.finnishRegions model
+                        , Common.select t "create-ad" ChangeLocation Location config.locationOptions model
                         , H.p
                             [ A.class "create-ad__submit-button" ]
                             [ H.button

@@ -677,7 +677,17 @@ userInfoBoxEditing2 t model user =
                 ]
                 []
             ]
-        , location model user
+        , H.p
+            [ A.class "user-page__work-details" ]
+            [ H.div [ A.class "profile__marker" ]
+                [ H.i [ A.class "fa fa-map-marker" ] [] ]
+            , H.input
+                [ A.value user.location
+                , E.onInput ChangeLocation
+                , A.placeholder <| t "profile.userInfoBox.locationPlaceholder"
+                ]
+                []
+            ]
         , editWorkStatus model t user
         , editChildrenStatus model t user
         , H.p
@@ -744,7 +754,7 @@ userInfoBox t model user =
                           else
                             H.text user.title
                         ]
-                    , location model user
+                    , location user
                     , workChildren t model.currentDate user
                     , H.div [ A.class "profile__detail" ] <| contributionStatus t user
                     ]
@@ -781,23 +791,19 @@ userIdForAdmins t user =
         |> Maybe.withDefault (H.div [] [])
 
 
-location : Model -> User -> H.Html Msg
-location model user =
-    if (model.editing == False) && (user.location == "") then
+location : User -> H.Html Msg
+location user =
+    if user.location == "" then
         H.text ""
     else
         H.div
             [ A.classList
                 [ ( "profile__detail", True )
-                , ( "user-page__editing-location", model.editing )
                 ]
             ]
             [ H.div [ A.class "profile__marker" ]
                 [ H.i [ A.class "fa fa-map-marker" ] [] ]
-            , if model.editing then
-                locationSelect user
-              else
-                H.span [ A.class "profile__location--text" ] [ H.text user.location ]
+            , H.span [ A.class "profile__location--text" ] [ H.text user.location ]
             ]
 
 
@@ -1078,18 +1084,6 @@ userPositions t model user config =
                     []
                )
         )
-
-
-locationSelect : User -> H.Html Msg
-locationSelect user =
-    H.span
-        [ A.class "user-page__location-select-container" ]
-        [ H.select
-            [ E.on "change" (Json.map ChangeLocation E.targetValue)
-            , A.class "user-page__location-select"
-            ]
-            (List.map (optionPreselected user.location) ("" :: Config.finnishRegions))
-        ]
 
 
 select : List String -> (String -> msg) -> String -> String -> H.Html msg

@@ -204,7 +204,7 @@ view t loggedInUserMaybe model config =
                     [ Common.select t "list-users" (LocalViewMessage << ChangePositionFilter) Position config.positionOptions model ]
                 , H.div
                     [ A.class "col-xs-12 col-sm-4" ]
-                    [ Common.select t "list-users" (LocalViewMessage << ChangeLocationFilter) Location Config.finnishRegions model ]
+                    [ Common.select t "list-users" (LocalViewMessage << ChangeLocationFilter) Location config.locationOptions model ]
                 ]
             ]
         , H.div
