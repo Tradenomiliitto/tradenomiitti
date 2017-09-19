@@ -315,8 +315,16 @@ app.get('/api/toimialat', (req, res) => {
 });
 
 app.get('/api/alueet', (req, res, next) => {
-  knex('users').select(knex.raw("array_agg(distinct data->>'location') as location")).whereNotNull('pw_hash').first()
-    .then(row => res.json(row.location))
+  Promise.all([
+    knex('users').select(knex.raw("array_agg(distinct data->>'location') as location")).whereNotNull('pw_hash').first(),
+    knex('ads').select(knex.raw("array_agg(distinct data->>'location') as location")).first(),
+  ])
+    .then(([userResult, adsResult]) => {
+      const locationSet = new Set(userResult.location.concat(adsResult.location).sort());
+      locationSet.delete('');
+      locationSet.delete(null);
+      return res.json(Array.from(locationSet));
+    })
     .catch(next);
 });
 
