@@ -290,6 +290,7 @@ const source = {
     userInfoBox: {
       nickNamePlaceholder: 'Miksi kutsumme sinua?',
       titlePlaceholder: 'Titteli',
+      locationPlaceholder: 'Alue tai kaupunki',
       contributionPlaceholder: 'Mitä haluaisit opettaa muille?',
     },
     userDescriptionPlaceholder: 'Kirjoita napakka kuvaus itsestäsi',
@@ -358,6 +359,7 @@ const source = {
     joinLink: 'liittyä tästä',
     joinUrl: 'http://www.mothersinbusiness.fi/jaseneksi/',
     emailPlaceholder: 'Sähköpostiosoite',
+    consentText: 'Rekisteröitymällä hyväksyn MiB ry:n jäsentietojeni käytön MiBiT-palvelussa',
     buttonText: 'Lähetä',
     success: 'Rekisteröintilinkki lähetetty!',
     failure: 'Jotain meni pieleen. Varmista, että kirjoitit sähköpostiosoitteesi oikein. Huomioi myös, että palvelu on tarkoitettu vain MiBin jäsenille.',

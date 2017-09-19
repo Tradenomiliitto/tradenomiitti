@@ -314,6 +314,20 @@ app.get('/api/toimialat', (req, res) => {
   return res.json(domains.sort());
 });
 
+app.get('/api/alueet', (req, res, next) => {
+  Promise.all([
+    knex('users').select(knex.raw("array_agg(distinct data->>'location') as location")).whereNotNull('pw_hash').first(),
+    knex('ads').select(knex.raw("array_agg(distinct data->>'location') as location")).first(),
+  ])
+    .then(([userResult, adsResult]) => {
+      const locationSet = new Set(userResult.location.concat(adsResult.location).sort());
+      locationSet.delete('');
+      locationSet.delete(null);
+      return res.json(Array.from(locationSet));
+    })
+    .catch(next);
+});
+
 app.get('/api/osaaminen', (req, res, next) => {
   knex('special_skills').where({}).orderBy('id')
     .then(rows => res.json(rows))

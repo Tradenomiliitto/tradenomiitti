@@ -13,6 +13,7 @@ type alias Model =
     , domainOptions : List String
     , specialSkillOptions : CategoriedOptions
     , educationOptions : Education
+    , locationOptions : List String
     }
 
 
@@ -75,19 +76,8 @@ init =
     , domainOptions = []
     , specialSkillOptions = []
     , educationOptions = Dict.empty
+    , locationOptions = []
     }
-
-
-finnishRegions : List String
-finnishRegions =
-    [ "Helsinki"
-    , "Jyväskylä"
-    , "Kuopio"
-    , "Oulu"
-    , "Tampere"
-    , "Turku"
-    , "Vaasa"
-    ]
 
 
 workStatuses : List WorkStatus.WorkStatus

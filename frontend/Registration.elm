@@ -2,7 +2,7 @@ module Registration exposing (..)
 
 import Html as H
 import Html.Attributes as A
-import Html.Events exposing (onInput, onWithOptions)
+import Html.Events exposing (onClick, onInput, onWithOptions)
 import Http
 import Json.Decode
 import Json.Decode.Pipeline exposing (decode, required)
@@ -16,6 +16,7 @@ type Msg
     = Email String
     | Submitted
     | SendResponse (Result Http.Error Response)
+    | ToggleConsent
 
 
 type alias Response =
@@ -64,6 +65,9 @@ update msg model =
         Submitted ->
             model ! [ Cmd.map LocalUpdateMessage <| submit model ]
 
+        ToggleConsent ->
+            { model | consent = not model.consent } ! []
+
 
 registrationForm : T -> Model -> Maybe String -> H.Html Msg
 registrationForm t model errorMessage =
@@ -101,6 +105,18 @@ registrationForm t model errorMessage =
                         ]
                         []
                     ]
+                , H.div
+                    [ A.class "registration__consent" ]
+                    [ H.input
+                        [ A.type_ "checkbox"
+                        , A.class "registration__consent-checkbox"
+                        , onClick ToggleConsent
+                        ]
+                        []
+                    , H.div [ A.class "registration__consent-text" ]
+                        [ H.text (t "registration.consentText")
+                        ]
+                    ]
                 , errorMessage
                     |> Maybe.map
                         (\message ->
@@ -112,7 +128,7 @@ registrationForm t model errorMessage =
                     [ H.button
                         [ A.type_ "submit"
                         , A.class "btn btn-primary"
-                        , A.disabled (String.length model.email == 0)
+                        , A.disabled (String.length model.email == 0 || not model.consent)
                         ]
                         [ H.text <| t "registration.buttonText" ]
                     ]
