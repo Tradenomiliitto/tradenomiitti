@@ -5,6 +5,7 @@ type Status
     = NotLoaded
     | Success
     | Failure
+    | NetworkError
 
 
 type alias Model =
