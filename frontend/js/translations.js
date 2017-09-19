@@ -358,6 +358,7 @@ const source = {
   registration: {
     title: 'Rekisteröidy käyttäjäksi',
     emailPlaceholder: 'Sähköpostiosoite',
+    consentText: 'Rekisteröitymällä hyväksyn MiB ry:n jäsentietojeni käytön MiBiT-palvelussa',
     buttonText: 'Lähetä',
     success: 'Rekisteröintilinkki lähetetty!',
     failure: 'Jotain meni pieleen!',
