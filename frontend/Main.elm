@@ -142,6 +142,11 @@ type Msg
     | NoOp
 
 
+shouldReloadLocationOptions : Route -> Bool
+shouldReloadLocationOptions route =
+    List.member route [ ListAds, ListUsers, CreateAd ]
+
+
 urlChange : Model -> Navigation.Location -> ( Model, Cmd Msg )
 urlChange model location =
     let
@@ -160,20 +165,9 @@ urlChange model location =
             else
                 modelWithRoute ! []
 
-        shouldReloadLocationOptions =
-            case route of
-                ListAds ->
-                    True
-
-                ListUsers ->
-                    True
-
-                _ ->
-                    False
-
         extraCmd =
             Cmd.batch
-                [ if shouldReloadLocationOptions then
+                [ if shouldReloadLocationOptions route then
                     unpackUpdateMessage ConfigMessage Config.getLocationOptions
                   else
                     Cmd.none
