@@ -219,6 +219,17 @@ validateBirthdate { birthMonth, birthYear } =
             )
 
 
+maybeAddChild : Model -> Model
+maybeAddChild model =
+    case validateBirthdate model of
+        Ok date ->
+            { model | birthMonth = "", birthYear = "" }
+                |> updateUser (\u -> { u | children = Children.sort (date :: u.children) })
+
+        Err _ ->
+            model
+
+
 update : Msg -> Model -> Config.Model -> ( Model, Cmd (UpdateMessage Msg) )
 update msg model config =
     case msg of
@@ -244,7 +255,7 @@ update msg model config =
             { model | ads = ads } ! []
 
         Save user ->
-            model ! [ updateMe user ]
+            maybeAddChild model ! [ updateMe user ]
 
         AllowProfileCreation ->
             let
@@ -376,19 +387,7 @@ update msg model config =
             { model | birthYear = str } ! []
 
         AddChild ->
-            let
-                birthdate =
-                    validateBirthdate model
-            in
-            case birthdate of
-                Ok date ->
-                    updateUser
-                        (\u -> { u | children = Children.sort (date :: u.children) })
-                        { model | birthMonth = "", birthYear = "" }
-                        ! []
-
-                Err _ ->
-                    model ! []
+            maybeAddChild model ! []
 
         DeleteChild index ->
             updateUser (\u -> { u | children = List.removeAt index u.children }) model ! []
