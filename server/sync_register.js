@@ -3,28 +3,55 @@ const fs = require('fs');
 const knex_config = require('../knexfile.js');
 const knex = require('knex')(knex_config[process.env.environment]);
 
+const KEY_PENDING = 'Hakemusvaiheessa olevat jäsenet';
+const KEY_FIRSTNAME = 'Etunimi';
+const KEY_EMAIL = 'Sähköpostiosoite';
+const KEY_DIVISION = 'Paikallisjaosto';
+const KEY_ISADMIN = 'Pääkäyttäjät';
+const KEY_REMOTEID = 'Jäsennumero';
+
+function isEnabled(item, key) {
+  return (item[key] !== '');
+}
+
+function checkIfKeysMissing(item) {
+  const missingKeys = [];
+  const neededKeys = [KEY_PENDING, KEY_FIRSTNAME, KEY_EMAIL, KEY_DIVISION,
+    KEY_ISADMIN, KEY_REMOTEID];
+  neededKeys.forEach(key => {
+    if (!Object.prototype.hasOwnProperty.call(item, key)) {
+      missingKeys.push(key);
+    }
+  });
+  return missingKeys;
+}
+
 function formatData(data) {
   const newData = [];
   data.forEach(item => {
-    if (item['Hakemusvaiheessa olevat jäsenet']) {
+    const missingKeys = checkIfKeysMissing(item);
+    if (missingKeys.length) {
+      throw new Error(`sync_register: Missing keys: ${missingKeys.join(', ')}`);
+    }
+    if (isEnabled(item, KEY_PENDING)) {
       return;
     }
     const newItem = {
       data: {},
       settings: {},
     };
-    if (item.Etunimi) {
-      newItem.data.name = item.Etunimi;
+    if (isEnabled(item, KEY_FIRSTNAME)) {
+      newItem.data.name = item[KEY_FIRSTNAME];
     }
-    if (item['Sähköpostiosoite']) {
-      newItem.settings.email_address = item['Sähköpostiosoite'];
+    if (isEnabled(item, KEY_EMAIL)) {
+      newItem.settings.email_address = item[KEY_EMAIL];
     }
-    if (item.Paikallisjaosto) {
-      newItem.data.location = item.Paikallisjaosto;
+    if (isEnabled(item, KEY_DIVISION)) {
+      newItem.data.location = item[KEY_DIVISION];
     }
 
-    newItem.settings.isAdmin = item['Pääkäyttäjät'] === 'X';
-    newItem.remote_id = item['Jäsennumero'];
+    newItem.settings.isAdmin = item[KEY_ISADMIN] === 'X';
+    newItem.remote_id = item[KEY_REMOTEID];
 
     newItem.data = JSON.stringify(newItem.data);
     newItem.settings = JSON.stringify(newItem.settings);
@@ -38,24 +65,30 @@ function formatData(data) {
 // Update the users table
 // Add all new rows based on remote_id
 // Update the email of the existing rows
-const input = fs.readFileSync('conf/assets/users.csv', 'utf8');
-const data = parse(input, { columns: true });
-const formattedData = formatData(data);
-console.log('Delete old stuff...');
-knex('remote_user_register').del().then(() => {
-  console.log('Import csv...');
-  return knex('remote_user_register').insert(formattedData);
-})
+// TODO: React to errorcode
+
+const input = fs.readFileSync('conf/assets/member_data.csv', 'utf8');
+let data = null;
+let formattedData = null;
+try {
+  data = parse(input, { columns: true, relax_column_count: false });
+  formattedData = formatData(data);
+} catch (err) {
+  console.log(`sync_register: Error: ${err.message}`);
+  process.exit(1);
+}
+const stats = `Found ${formattedData.length} members and ${data.length - formattedData.length} pending`;
+knex('remote_user_register').del().then(() => knex('remote_user_register').insert(formattedData))
   .then(() => {
-    console.log('Sync with users...');
     const query = knex.raw('INSERT INTO "users" ("data", "remote_id", "settings", "member_data") SELECT * FROM "remote_user_register" ON CONFLICT (remote_id) DO UPDATE SET member_data = EXCLUDED.member_data, settings = jsonb_set(users.settings, \'{email_address}\', EXCLUDED.settings->\'email_address\') || jsonb_set(users.settings, \'{isAdmin}\', EXCLUDED.settings->\'isAdmin\')').toQuery();
     return knex.raw(query);
   })
   .then(() => {
-    console.log('Done');
-    return process.exit();
+    console.log(`sync_register: ${stats}`);
+    console.log('sync_register: [Done]');
+    return process.exit(0);
   })
-  .catch(error => {
-    console.log(error);
-    return process.exit();
+  .catch(err => {
+    console.log(`sync_register: Error: ${err.message}`);
+    return process.exit(1);
   });
