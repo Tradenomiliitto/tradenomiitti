@@ -10,7 +10,7 @@ const KEY_DIVISION = 'Paikallisjaosto';
 const KEY_ISADMIN = 'Pääkäyttäjät';
 const KEY_REMOTEID = 'Jäsennumero';
 
-function isEnabled(item, key) {
+function isNonEmpty(item, key) {
   return (item[key] !== '');
 }
 
@@ -33,20 +33,23 @@ function formatData(data) {
     if (missingKeys.length) {
       throw new Error(`sync_register: Missing keys: ${missingKeys.join(', ')}`);
     }
-    if (isEnabled(item, KEY_PENDING)) {
+    if (isNonEmpty(item, KEY_PENDING)) {
       return;
     }
     const newItem = {
       data: {},
       settings: {},
     };
-    if (isEnabled(item, KEY_FIRSTNAME)) {
+    if (isNonEmpty(item, KEY_FIRSTNAME)) {
       newItem.data.name = item[KEY_FIRSTNAME];
     }
-    if (isEnabled(item, KEY_EMAIL)) {
+    if (isNonEmpty(item, KEY_EMAIL)) {
       newItem.settings.email_address = item[KEY_EMAIL];
+    } else {
+      // Skip if no email given
+      return;
     }
-    if (isEnabled(item, KEY_DIVISION)) {
+    if (isNonEmpty(item, KEY_DIVISION)) {
       newItem.data.location = item[KEY_DIVISION];
     }
 
@@ -77,7 +80,7 @@ try {
   console.log(`sync_register: Error: ${err.message}`);
   process.exit(1);
 }
-const stats = `Found ${formattedData.length} members and ${data.length - formattedData.length} pending`;
+const stats = `Found ${formattedData.length} members and ${data.length - formattedData.length} non-valid`;
 knex('remote_user_register').del().then(() => knex('remote_user_register').insert(formattedData))
   .then(() => {
     const query = knex.raw('INSERT INTO "users" ("data", "remote_id", "settings", "member_data") SELECT * FROM "remote_user_register" ON CONFLICT (remote_id) DO UPDATE SET member_data = EXCLUDED.member_data, settings = jsonb_set(users.settings, \'{email_address}\', EXCLUDED.settings->\'email_address\') || jsonb_set(users.settings, \'{isAdmin}\', EXCLUDED.settings->\'isAdmin\')').toQuery();
