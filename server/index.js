@@ -51,10 +51,11 @@ if (nonLocal) {
 
 const userImagesPath = nonLocal ? '/srv/static/images' : `${__dirname}/../frontend/static/images`;
 
-const communicationsKey = process.env.COMMUNICATIONS_KEY;
-if (!communicationsKey) console.warn('You should have COMMUNICATIONS_KEY for avoine in ENV');
-
 const disableSebacon = process.env.DISABLE_SEBACON === 'true';
+
+const communicationsKey = process.env.COMMUNICATIONS_KEY;
+if (!disableSebacon && !communicationsKey) console.warn('You should have COMMUNICATIONS_KEY for avoine in ENV');
+
 const sebaconAuth = process.env.SEBACON_AUTH;
 const sebaconCustomer = process.env.SEBACON_CUSTOMER;
 const sebaconUser = process.env.SEBACON_USER;
@@ -78,13 +79,17 @@ const sebacon = require('./sebaconService')({
   knex,
 });
 
+const enableEmailGlobally = process.env.ENABLE_EMAIL_SENDING === 'true';
+
 const smtpHost = process.env.SMTP_HOST;
 const smtpUser = process.env.SMTP_USER;
 const smtpPassword = process.env.SMTP_PASSWORD;
 const smtpTls = process.env.SMTP_TLS;
 const mailFrom = process.env.MAIL_FROM;
 const serviceDomain = process.env.SERVICE_DOMAIN;
-if (!smtpHost || !smtpUser || !smtpPassword || !smtpTls || !mailFrom || !serviceDomain) {
+
+if (enableEmailGlobally &&
+  (!smtpHost || !smtpUser || !smtpPassword || !smtpTls || !mailFrom || !serviceDomain)) {
   console.warn('You should have SMTP_* parameters, MAIL_FROM and SERVICE_DOMAIN in ENV');
 }
 const smtp =
@@ -93,8 +98,6 @@ const smtp =
         password: smtpPassword,
         tls: smtpTls === 'true',
       };
-
-const enableEmailGlobally = process.env.ENABLE_EMAIL_SENDING === 'true';
 
 // const restrictToGroup = process.env.RESTRICT_TO_GROUP; // can be empty - used only with Avoine
 
@@ -320,7 +323,9 @@ app.get('/api/alueet', (req, res, next) => {
     knex('ads').select(knex.raw("array_agg(distinct data->>'location') as location")).first(),
   ])
     .then(([userResult, adsResult]) => {
-      const locationSet = new Set(userResult.location.concat(adsResult.location).sort());
+      const userLocations = userResult.location ? userResult.location : [];
+      const adLocations = adsResult.location ? adsResult.location : [];
+      const locationSet = new Set(userLocations.concat(adLocations).sort());
       locationSet.delete('');
       locationSet.delete(null);
       return res.json(Array.from(locationSet));
