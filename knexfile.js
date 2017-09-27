@@ -4,11 +4,7 @@ module.exports = {
 
   development: {
     client: 'postgresql',
-    connection: {
-      database: 'tradenomiitti',
-      user: process.env.db_user,
-      password: process.env.db_password,
-    },
+    connection: `postgres://${process.env.db_user}:${process.env.db_password}@${process.env.db_host}/tradenomiitti`,
     pool: {
       min: 2,
       max: 10,
@@ -20,11 +16,7 @@ module.exports = {
 
   test: {
     client: 'postgresql',
-    connection: {
-      database: 'tradenomiitti-test',
-      user: process.env.db_user,
-      password: process.env.db_password,
-    },
+    connection: `postgres://${process.env.db_user}:${process.env.db_password}@${process.env.db_host}/tradenomiitti-test`,
     pool: {
       min: 2,
       max: 5,
@@ -39,11 +31,7 @@ module.exports = {
 
   production: {
     client: 'postgresql',
-    connection: {
-      database: 'tradenomiitti',
-      user: process.env.db_user,
-      password: process.env.db_password,
-    },
+    connection: `postgres://${process.env.db_user}:${process.env.db_password}@${process.env.db_host}/mib_prod`,
     pool: {
       min: 2,
       max: 10,

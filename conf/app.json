@@ -4,6 +4,7 @@
       "env"       : {
         "environment" : "{{ db_environment }}",
         "db_user"     : "{{ db_user }}",
+        "db_host" : "{{ db_host }}",
         "db_password" : "{{ db_password }}",
         "COMMUNICATIONS_KEY": "{{ avoine_communications_key }}",
         "NON_LOCAL": "true",
