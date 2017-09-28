@@ -34,7 +34,7 @@ Deployment of a new version is done using git.
 Once:
 
 ```sh
-git remote add ENV ubuntu@SERVER/srv/tradenomiitti.git
+git remote add ENV ubuntu@SERVER:/srv/tradenomiitti.git
 ```
 
 To deploy:
