@@ -200,7 +200,7 @@ const source = {
     login: 'Kirjaudu',
     consentNeeded: {
       heading: 'Tervetuloa MiBiTiin!',
-      content: 'Tehdäksemme palvelun käytöstä mahdollisimman vaivatonta hyödynnämme Mothers in Business MiB ry:n olemassa olevia jäsentietoja (nimesi). Luomalla profiilin hyväksyt tietojesi käytön MiBiTissä. Voit muokata tietojasi myöhemmin.',
+      content: 'Tehdäksemme palvelun käytöstä mahdollisimman vaivatonta hyödynnämme Mothers in Business MiB ry:n olemassa olevia jäsentietoja. Luomalla profiilin hyväksyt tietojesi käytön MiBiTissä. Voit muokata tietojasi myöhemmin.',
       iAcceptThe: 'Hyväksyn palvelun ',
       terms: 'käyttöehdot',
       createProfile: 'Luo profiili',
