@@ -13,13 +13,14 @@ const source = {
   },
   sendRegistrationEmail: {
     subject: 'Aktivoi MiBiT-tilisi',
-    text: 'Hei, mibiläinen!\r\rAvaamalla alla olevan aktivointilinkin voit asettaa salasanan uudelle MiBiT-tilillesi. Salasanan asettamisen jälkeen tilisi on käytettävissä ja voit kirjautua sisään. Linkki on toiminnassa tietoturvasyistä 24 tuntia ja sitä voi käyttää vain kerran. Sen jälkeen sinun on pyydettävä uusi linkki sähköpostiosoitteellesi. Jos et ole pyytänyt aktivointilinkkiä, voit poistaa tämän viestin',
-    signature: 'Ystävällisin terveisin,\rMiBiT-tiimi\r',
+    text: 'Tervetuloa MiBiTin käyttäjäksi!\n\nAvaa ensin alla oleva aktivointilinkki ja aseta salasana käyttäjätilillesi. Tämä tulee tietoturvasyistä tehdä 24 tunnin kuluessa aktivointilinkin vastaanottamisesta. Salasanan asettamisen jälkeen MiBiT-tilisi on käytettävissäsi.\n\nVoit pyytää uuden aktivointilinkin sähköpostiosoitteellesi MiBiT-palvelusta.',
+    moreInfo: 'Lisätietoa palvelun käytöstä löydät MiBiT-palvelun Tietoa-kohdasta.',
+    signature: 'Inspiroivia kohtaamisia toivottaen,\nMothers in Business MiB ry',
   },
   sendRenewPasswordEmail: {
     subject: 'Vaihda MiBiT-tilisi salasana',
-    text: 'Hei, mibiläinen!\r\rAvaamalla alla olevan salasananvaihtolinkin voit vaihtaa MiBiT-tilisi salasanan. Linkki on toiminnassa tietoturvasyistä 24 tuntia ja sitä voi käyttää vain kerran. Sen jälkeen sinun on pyydettävä uusi linkki sähköpostiosoitteellesi. Jos et ole pyytänyt salasananvaihtolinkkiä, voit poistaa tämän viestin.',
-    signature: 'Ystävällisin terveisin,\rMiBiT-tiimi\r',
+    text: 'Hei, mibiläinen!\n\nAvaamalla alla olevan salasananvaihtolinkin voit vaihtaa MiBiT-tilisi salasanan. Linkki on toiminnassa tietoturvasyistä 24 tuntia ja sitä voi käyttää vain kerran. Sen jälkeen sinun on pyydettävä uusi linkki sähköpostiosoitteellesi. Jos et ole pyytänyt salasananvaihtolinkkiä, voit poistaa tämän viestin.',
+    signature: 'Ystävällisin terveisin,\nMothers in Business MiB ry\n',
   },
   answerNotificationHtml: {
     h1: 'Mibiläinen on vastannut ilmoitukseesi',

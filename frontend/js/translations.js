@@ -68,6 +68,7 @@ const source = {
   },
   contacts: {
     heading: 'Käyntikortit',
+    info: 'Nämä henkilöt ovat lähettäneet sinulle MiBiT-käynttikorttinsa. Otathan heihin yhteyttä tai lähetät heille oman MiBiT-käynttikorttisi, sillä vain käyntikortin vastaanottaja voi nähdä lähettäjän yhteystiedot.',
   },
   createAd: {
     headingInputPlaceholder: 'Otsikko',
@@ -135,8 +136,8 @@ const source = {
     },
     tradenomiittiInfo: {
       // \xad === &shy;, that is soft hyphen
-      heading: 'Ko\xADke\xADmuk\xADsel\xADla\xADsi on aina arvoa',
-      paragraph1: 'MiB in Touch eli MiBiT on mibiläisten oma kohtaamispaikka, joka yhdistää MiB ry:n jäsenet ympäri Suomen. Kaipaatko vertaistukea, haluatko tutustua samalla alalla oleviin muihin äiteihin vai löytää samanhenkistä seuraa tietyltä alueelta? MiBiT yhdistää! Voit huhuilla kahvitteluseuraa perhevapaiden aikana, sopia lähialueen Minglejä, etsiä vertaistukea ruuhkavuosiin tai vaikka mentoria uudelle urallesi. Tule mukaan voimaannuttavaan verkostoon!',
+      heading: 'Rakkaudesta uraan ja perheeseen',
+      paragraph1: 'MiBiT on Mothers in Business MiB ry:n jäsenten omat kohtaamispaikka. MiBiT yhdistää MiB ry:n jäsenet ympäri Suomen. Haluatko tutustua samalla alalla oleviin muihin mibiläisiin, kasvattaa ammatillisia verkostojasi tai löytää samanhenkistä seuraa omalta paikkakunnaltasi? MiBiT yhdistää! Voit huhuilla kahvitteluseuraa perhevapaidesi aikana, etsiä vinkkejä ruuhkavuosiin tai vaikka sparrailukaveria ammatillisiin haasteisiin. Tule mukaan voimaannuttavaan verkostoon!',
       paragraph2: 'Luomalla profiilin pääset alkuun, loput on itsestäsi kiinni.',
     },
     listAds: {
@@ -171,6 +172,7 @@ const source = {
   },
   listUsers: {
     heading: 'Selaa mibiläisiä',
+    info: 'Selaa mibiläisiä ja ehdota käyntikorttien vaihtoa verkostosi kasvattamiseksi. Sinulle lähetyt käyntikortit löytyy Profiili-sivusi Käyntikortit-välilehdellä.',
     sort: {
       activity: 'Aktiivisuus',
       name: 'Nimi',
@@ -269,7 +271,6 @@ const source = {
     competences: {
       editHeading: 'Muokkaa osaamistasi',
       hint: 'Kerro osaamisestasi valitsemalla toimiala, tehtäväluokka ja taitosi. Näin MiBiT voi palvellla sinua paremmin ja jotta muut mibiläiset löytävät sinut helpommin. Osaaminen näkyy kaikille käyttäjille.',
-      visibleForEveryone: 'Osaaminen näkyy kaikille käyttäjille.',
     },
     ownProfile: {
       notLoggedIn: 'Et ole kirjautunut',
@@ -401,12 +402,12 @@ const source = {
   },
   user: {
     contactUser: {
-      alreadySent: 'Olet lähettänyt käyntikortin tälle mibiläiselle.',
+      alreadySent: 'Olet lähettänyt käyntikorttisi tälle mibiläiselle. Hänellä on nyt yhteystietosi, jotka olet lisännyt profiilitietoihisi. Vain vastaanottaja näkee käyntikortin yhteystiedot.',
       mustContainPhoneOrEmail: 'Käyntikortissasi täytyy olla puhelinnumero tai sähköpostiosoite, jotta voisit lähettää sen. Lisää tiedot klikkaamalla nimeäsi yläpalkissa ja valitsemalla "Muokkaa profiilia".',
       businessCardIsAttached: 'Viestin mukana lähetät käyntikortin',
       editOrContactUserPrompt: 'Kirjoita napakka esittelyteksti',
       contactUserPlaceholder: 'Vähintään 10 merkkiä',
-      hint: 'Voisiko {.} auttaa sinua? Jaa käyntikorttisi tästä. ',
+      hint: 'Voisiko {.} auttaa sinua? Jaa käyntikorttisi yhteydenottopyynnön kera tästä. Huomaathan, että vain käyntikortin vastaanottaja näkee lähettäjän yhteystiedot. ',
       contact: 'Ota yhteyttä',
       submit: 'Lähetä',
     },

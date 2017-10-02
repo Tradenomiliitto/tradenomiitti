@@ -18,6 +18,11 @@ console.log(startDate);
 console.error(startDate);
 
 // knex
+if (!process.env.db_host || !process.env.db_name
+  || !process.env.db_user || !process.env.db_password) {
+  console.warn('Warning: specify db_* environment variables!');
+}
+
 const knex_config = require('../knexfile.js');
 const knex = require('knex')(knex_config[process.env.environment]);
 

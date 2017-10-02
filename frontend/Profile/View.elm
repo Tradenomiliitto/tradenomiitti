@@ -414,7 +414,6 @@ competences t model config user =
                     , H.p
                         [ A.class "profile__editing--competences--heading--text" ]
                         [ H.text <| t "profile.competences.hint"
-                        , H.span [ A.class "profile__editing--bold" ] [ H.text <| t "profile.competences.visibleForEveryone" ]
                         ]
                     ]
                 ]
