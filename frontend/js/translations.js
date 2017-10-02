@@ -68,6 +68,7 @@ const source = {
   },
   contacts: {
     heading: 'Käyntikortit',
+    info: 'Nämä henkilöt ovat lähettäneet sinulle MiBiT-käynttikorttinsa. Otathan heihin yhteyttä tai lähetät heille oman MiBiT-käynttikorttisi, sillä vain käyntikortin vastaanottaja voi nähdä lähettäjän yhteystiedot.',
   },
   createAd: {
     headingInputPlaceholder: 'Otsikko',
@@ -401,12 +402,12 @@ const source = {
   },
   user: {
     contactUser: {
-      alreadySent: 'Olet lähettänyt käyntikortin tälle mibiläiselle.',
+      alreadySent: 'Olet lähettänyt käyntikorttisi tälle mibiläiselle. Hänellä on nyt yhteystietosi, jotka olet lisännyt profiilitietoihisi. Vain vastaanottaja näkee käyntikortin yhteystiedot.',
       mustContainPhoneOrEmail: 'Käyntikortissasi täytyy olla puhelinnumero tai sähköpostiosoite, jotta voisit lähettää sen. Lisää tiedot klikkaamalla nimeäsi yläpalkissa ja valitsemalla "Muokkaa profiilia".',
       businessCardIsAttached: 'Viestin mukana lähetät käyntikortin',
       editOrContactUserPrompt: 'Kirjoita napakka esittelyteksti',
       contactUserPlaceholder: 'Vähintään 10 merkkiä',
-      hint: 'Voisiko {.} auttaa sinua? Jaa käyntikorttisi tästä. ',
+      hint: 'Voisiko {.} auttaa sinua? Jaa käyntikorttisi yhteydenottopyynnön kera tästä. Huomaathan, että vain käyntikortin vastaanottaja näkee lähettäjän yhteystiedot. ',
       contact: 'Ota yhteyttä',
       submit: 'Lähetä',
     },

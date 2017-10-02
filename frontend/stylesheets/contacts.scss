@@ -21,7 +21,14 @@
   &__heading {
     @include basic-header;
     @include margin-top-under-profile-bar;
+    margin-bottom: 20px;
   }
+
+  &__info {
+    margin-bottom: 30px;
+    max-width: 90ch;
+  }
+
   &__row {
     margin-top: 90px;
     &--first {

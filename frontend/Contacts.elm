@@ -50,6 +50,9 @@ view t model userMaybe =
                             [ A.class "col-xs-12" ]
                             [ H.h1 [ A.class "contacts__heading" ]
                                 [ H.text <| t "contacts.heading" ]
+                            , H.p [ A.class "contacts__info" ]
+                                [ H.text <| t "contacts.info"
+                                ]
                             ]
                         ]
                     ]
