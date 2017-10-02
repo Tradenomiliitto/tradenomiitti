@@ -231,6 +231,8 @@ view t model config isLoggedIn =
                     [ H.h1
                         [ A.class "list-users__header" ]
                         [ H.text <| t "listUsers.heading" ]
+                    , H.p [ A.class "list-users__info" ]
+                        [ H.text <| t "listUsers.info" ]
                     ]
                 ]
             , H.div

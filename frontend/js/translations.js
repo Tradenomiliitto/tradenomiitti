@@ -172,6 +172,7 @@ const source = {
   },
   listUsers: {
     heading: 'Selaa mibiläisiä',
+    info: 'Selaa mibiläisiä ja ehdota käyntikorttien vaihtoa verkostosi kasvattamiseksi. Sinulle lähetyt käyntikortit löytyy Profiili-sivusi Käyntikortit-välilehdellä.',
     sort: {
       activity: 'Aktiivisuus',
       name: 'Nimi',
