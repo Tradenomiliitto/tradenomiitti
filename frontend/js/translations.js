@@ -270,7 +270,6 @@ const source = {
     competences: {
       editHeading: 'Muokkaa osaamistasi',
       hint: 'Kerro osaamisestasi valitsemalla toimiala, tehtäväluokka ja taitosi. Näin MiBiT voi palvellla sinua paremmin ja jotta muut mibiläiset löytävät sinut helpommin. Osaaminen näkyy kaikille käyttäjille.',
-      visibleForEveryone: 'Osaaminen näkyy kaikille käyttäjille.',
     },
     ownProfile: {
       notLoggedIn: 'Et ole kirjautunut',
