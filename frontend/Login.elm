@@ -108,7 +108,7 @@ loginForm t model errorMessage =
                 , errorMessage
                     |> Maybe.map
                         (\message ->
-                            H.p [ A.class "error" ] [ H.text message ]
+                            H.p [ A.class "login__error" ] [ H.text message ]
                         )
                     |> Maybe.withDefault (H.text "")
                 , H.p

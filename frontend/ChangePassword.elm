@@ -132,7 +132,7 @@ changePasswordForm t model user errorMessage =
                     , errorMessage
                         |> Maybe.map
                             (\message ->
-                                H.p [ A.class "error" ] [ H.text message ]
+                                H.p [ A.class "changepassword__error" ] [ H.text message ]
                             )
                         |> Maybe.withDefault (H.text "")
                     , H.p
