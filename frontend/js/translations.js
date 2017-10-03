@@ -158,7 +158,7 @@ const source = {
     password2Placeholder: 'Salasana uudelleen',
     buttonSubmit: 'Lähetä',
     success: 'Salasana asetettu!',
-    successMessage: 'Salasanasi on nyt asetettu. Voit kirjautua sisään ja alkaa käyttää MiBiTiä!',
+    successMessage: 'Salasanasi on nyt asetettu. Voit kirjautua sisään ja aloittaa MiBiTin käytön.',
     failure: 'Jotain meni pieleen. Linkkisi saattaa olla vanhentunut tai virheellinen.',
     networkError: 'Yhteydessä on ongelmia, salasanan asettaminen ei onnistunut',
   },
@@ -356,7 +356,7 @@ const source = {
   },
   registration: {
     title: 'Rekisteröidy käyttäjäksi',
-    text: 'Voit rekisteröityä MiBiTin käyttäjäksi antamalla sähköpostiosoitteesi. Jos et ole vielä MiBin jäsen, voit ',
+    text: 'MiBiT on Mothers in Business MiB ry:n jäsenten kohtaamispaikka. Voit rekisteröityä MiBiTin käyttäjäksi MiB ry:n jäsenrekisteriin ilmoittamallasi sähköpostiosoitteella. Jos et ole vielä MiB ry:n jäsen, voit ',
     joinLink: 'liittyä tästä',
     joinUrl: 'http://www.mothersinbusiness.fi/jaseneksi/',
     emailPlaceholder: 'Sähköpostiosoite',
