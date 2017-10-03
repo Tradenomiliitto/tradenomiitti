@@ -352,7 +352,7 @@ const source = {
     emailPlaceholder: 'Sähköpostiosoite',
     buttonText: 'Lähetä',
     success: 'Salasananvaihtolinkki lähetetty!',
-    failure: 'Jotain meni pieleen. Varmista, että kirjoitit sähköpostiosoitteesi oikein.',
+    failure: 'Jotain meni pieleen. Varmista, että kirjoitit sähköpostiosoitteesi oikein. Tai ehkä olet jo tilannut salasananvaihtolinkin?',
   },
   registration: {
     title: 'Rekisteröidy käyttäjäksi',
