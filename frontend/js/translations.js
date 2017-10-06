@@ -114,7 +114,7 @@ const source = {
       text: 'Liity jäseneksi',
     },
     link3: {
-      url: 'http://www.mothersinbusiness.fi/yhteys/',
+      url: 'mailto:mibit@mib.fi',
       text: 'Ota yhteyttä',
     },
     linkStats: {
