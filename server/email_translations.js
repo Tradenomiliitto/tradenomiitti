@@ -24,7 +24,7 @@ const source = {
   },
   answerNotificationHtml: {
     h1: 'Mibiläinen on vastannut ilmoitukseesi',
-    p1: 'Ilmoitus voi tuoda mukanaan uusia arvokkaita kontakteja. Muista lähettää kiinnostaville mibiläisille yksityisviesti ja/tai käyntikortti.',
+    p1: 'Ilmoitus voi tuoda mukanaan uusia arvokkaita kontakteja. Muista lähettää kiinnostaville mibiläisille käyntikorttisi.',
     a1: 'Katso vastaus',
     h4: 'Ilmoituksesi',
     p2: 'Etkö halua enää sähköposteja? Voit muokata sähköpostiasetuksiasi',
@@ -32,7 +32,7 @@ const source = {
   },
   contactNotificationHtml: {
     h1: 'Olet saanut uuden kontaktin',
-    p1: 'Toinen mibiläinen on antanut sinulle käyntikorttinsa MiBit-palvelussa. Voitte nyt olla yhteydessä ja jakaa osaamistanne vaikka kasvotusten.',
+    p1: 'Toinen mibiläinen on antanut sinulle käyntikorttinsa MiBiT-palvelussa ja toivoo yhteydenottoasi. Voit nyt olla häneen yhteydessä sopiaksenne esimerkiksi tapaamisen. Mikäli haluat hänen saavan sinun yhteystietosi palvelussa, voit lähettää profiilisivun kautta voit oman käyntikorttisi.',
     p2: 'Profiilisivun kautta voit lähettää oman käyntikorttisi.',
     a1: 'Katso profiili',
     detailTitle1: 'Sijainti',
