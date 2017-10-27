@@ -151,7 +151,7 @@ module.exports = function init(params) {
     <p>${t.p1}</p>
     <p>${t.p2}</p>
     <p style="margin-top: 80px;">
-      <a style="font-weight: bold; text-transform: uppercase; background-color: ${scssVars.$primary}; padding-left: 45px; padding-right: 45px; padding-top: 25px; padding-bottom: 25px; color: ${scssVars.$white}; text-decoration: none;" href="https://${serviceDomain}/tradenomit/${user.id}">${t.a1}</a>
+      <a style="font-weight: bold; text-transform: uppercase; background-color: ${scssVars.$primary}; padding-left: 45px; padding-right: 45px; padding-top: 25px; padding-bottom: 25px; color: ${scssVars.$white}; text-decoration: none;" href="https://${serviceDomain}/mibilaiset/${user.id}">${t.a1}</a>
     </p>
     <p style="margin-top: 75px;margin-bottom: 50px;font-weight: bold;">“${message}”</p>
     <div style="padding: 30px; background-color: ${scssVars['$lighter-grey']}; text-align: left;">

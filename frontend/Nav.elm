@@ -45,7 +45,7 @@ routeToPath route =
             "/ilmoitukset"
 
         ListUsers ->
-            "/tradenomit"
+            "/mibilaiset"
 
         Home ->
             "/"
@@ -60,7 +60,7 @@ routeToPath route =
             "/profiili"
 
         User userId ->
-            "/tradenomit/" ++ toString userId
+            "/mibilaiset/" ++ toString userId
 
         Login ->
             "/kirjaudu"
@@ -176,11 +176,11 @@ routeParser =
         [ U.map CreateAd (U.s "ilmoitukset" </> U.s "uusi")
         , U.map ShowAd (U.s "ilmoitukset" </> U.int)
         , U.map ListAds (U.s "ilmoitukset")
-        , U.map ListUsers (U.s "tradenomit")
+        , U.map ListUsers (U.s "mibilaiset")
         , U.map Home (U.s "")
         , U.map Info (U.s "tietoa")
         , U.map Profile (U.s "profiili")
-        , U.map User (U.s "tradenomit" </> U.int)
+        , U.map User (U.s "mibilaiset" </> U.int)
         , U.map Login (U.s "kirjaudu")
         , U.map Registration (U.s "rekisteroidy")
         , U.map LoginNeeded (U.s "kirjautuminen-tarvitaan" <?> U.stringParam "seuraava")
