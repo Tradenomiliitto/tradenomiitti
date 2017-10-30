@@ -40,8 +40,8 @@ sendAd model =
                         , Maybe.map (\value -> ( "location", JS.string value )) model.selectedLocation
                         ]
     in
-    Http.post "/api/ilmoitukset" (Http.jsonBody encoded) Json.int
-        |> Http.send SendResponse
+        Http.post "/api/ilmoitukset" (Http.jsonBody encoded) Json.int
+            |> Http.send SendResponse
 
 
 update : Msg -> Model -> ( Model, Cmd (UpdateMessage Msg) )
