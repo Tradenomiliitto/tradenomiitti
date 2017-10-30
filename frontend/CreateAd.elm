@@ -115,6 +115,17 @@ view t config model =
                             , A.value model.content
                             ]
                             []
+                        , H.label
+                            [ A.class "create-ad__is-job-ad" ]
+                            [ H.input
+                                [ A.type_ "checkbox"
+                                ]
+                                []
+                            , H.span
+                                []
+                                [ H.text (t "createAd.isAJobAd")
+                                ]
+                            ]
                         ]
                     , H.div
                         [ A.class "col-xs-12 col-sm-5 create-ad__filters-submit" ]

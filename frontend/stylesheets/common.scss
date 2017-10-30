@@ -12,6 +12,7 @@ $navbar-default-link-hover-color: $white;
 $navbar-height: 66px;
 $profilebar-height: 55px;
 $profilebar-height-mobile: 77px;
+$checkbox-padding: 10px;
 
 @mixin profile-bar-height {
   height: $profilebar-height;
@@ -25,6 +26,12 @@ $profilebar-height-mobile: 77px;
   @media (max-width: $screen-xs-max) {
     margin-top: #{ $basic-header-margin-top + $profilebar-height-mobile };
   }
+}
+
+@mixin checbox-styles {
+  position: relative;
+  top: -3px;
+  padding-left: $checkbox-padding;
 }
 
 $basic-header-margin-top: 50px;

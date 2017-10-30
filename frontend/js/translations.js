@@ -69,6 +69,7 @@ const source = {
     successContinue: 'Paina selaimesi päivitä-nappulaa jatkaaksesi',
     errorHeading: 'Jotain meni pieleen',
     errorContinue: 'Ole hyvä ja lataa sivu uudelleen',
+    isAJobAd: 'Tämä on työpaikkailmoitus',
   },
   errors: {
     badUrl: 'BadUrl ',
