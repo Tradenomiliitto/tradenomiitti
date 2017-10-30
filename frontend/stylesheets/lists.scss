@@ -110,4 +110,12 @@
       width: calc(100% - 62px);
     }
   }
+
+  &__hide-job-ads {
+    position: relative;
+    top: 4px;
+    span {
+      @include checkbox-styles;
+    }
+  }
 }

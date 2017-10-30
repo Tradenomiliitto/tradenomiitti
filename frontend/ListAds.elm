@@ -179,6 +179,17 @@ view t loggedInUserMaybe model config =
                                 [ H.text <| t "listAds.sort.newestAnswer" ]
                           else
                             H.text ""
+                        , H.label
+                            [ A.class "list-ads__hide-job-ads" ]
+                            [ H.input
+                                [ A.type_ "checkbox"
+                                ]
+                                []
+                            , H.span
+                                []
+                                [ H.text (t "listAds.hideJobAds")
+                                ]
+                            ]
                         ]
                     ]
     in

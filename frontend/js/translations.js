@@ -135,6 +135,7 @@ const source = {
       answerCount: 'Vastauksia',
       newestAnswer: 'Uusin vastaus',
     },
+    hideJobAds: 'Piilota työpaikkailmoitukset',
   },
   listUsers: {
     heading: 'Selaa tradenomeja',
