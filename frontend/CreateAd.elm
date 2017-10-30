@@ -22,6 +22,7 @@ type Msg
     | ChangeDomain (Maybe String)
     | ChangePosition (Maybe String)
     | ChangeLocation (Maybe String)
+    | ToggleIsJobAd
     | Send
     | SendResponse (Result Http.Error Int)
 
@@ -61,6 +62,9 @@ update msg model =
 
         ChangeLocation value ->
             { model | selectedLocation = value } ! []
+
+        ToggleIsJobAd ->
+            { model | isJobAd = not model.isJobAd } ! []
 
         Send ->
             { model | sending = Sending } ! [ Cmd.map LocalUpdateMessage <| sendAd model ]
@@ -119,11 +123,12 @@ view t config model =
                             [ A.class "create-ad__is-job-ad" ]
                             [ H.input
                                 [ A.type_ "checkbox"
+                                , E.onClick ToggleIsJobAd
                                 ]
                                 []
                             , H.span
                                 []
-                                [ H.text (t "createAd.isAJobAd")
+                                [ H.text (t "createAd.isJobAd")
                                 ]
                             ]
                         ]
