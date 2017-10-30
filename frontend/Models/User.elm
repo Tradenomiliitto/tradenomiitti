@@ -37,6 +37,7 @@ type alias Settings =
     , email_address : String
     , emails_for_businesscards : Bool
     , emails_for_new_ads : Bool
+    , hide_job_ads : Bool
     }
 
 
@@ -172,6 +173,7 @@ settingsEncode settings =
         , ( "email_address", JS.string settings.email_address )
         , ( "emails_for_businesscards", JS.bool settings.emails_for_businesscards )
         , ( "emails_for_new_ads", JS.bool settings.emails_for_new_ads )
+        , ( "hide_job_ads", JS.bool settings.hide_job_ads )
         ]
 
 
@@ -228,6 +230,7 @@ settingsDecoder =
         |> P.required "email_address" Json.string
         |> P.required "emails_for_businesscards" Json.bool
         |> P.required "emails_for_new_ads" Json.bool
+        |> P.optional "hide_job_ads" Json.bool False
 
 
 contactDecoder : Json.Decoder Contact

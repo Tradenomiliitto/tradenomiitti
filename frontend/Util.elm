@@ -16,6 +16,11 @@ type UpdateMessage msg
     = LocalUpdateMessage msg
     | ApiError Http.Error
     | Reroute Route
+    | UpdateUserPreferencesMessage UserPrefsMsg
+
+
+type UserPrefsMsg
+    = HideJobAds Bool
 
 
 makeCmd : msg -> Cmd msg
@@ -37,8 +42,11 @@ localMap msgMapper cmd =
 
                 Reroute route ->
                     Reroute route
+
+                UpdateUserPreferencesMessage msg ->
+                    UpdateUserPreferencesMessage msg
     in
-    Cmd.map mapper cmd
+        Cmd.map mapper cmd
 
 
 localViewMap : (msg1 -> msg2) -> H.Html (ViewMessage msg1) -> H.Html (ViewMessage msg2)
@@ -52,7 +60,7 @@ localViewMap msgMapper html =
                 Link route ->
                     Link route
     in
-    H.map mapper html
+        H.map mapper html
 
 
 reroute : Route -> Cmd (UpdateMessage msg)
@@ -63,6 +71,11 @@ reroute route =
 asApiError : Http.Error -> Cmd (UpdateMessage msg)
 asApiError err =
     makeCmd (ApiError err)
+
+
+updateUserPreferences : UserPrefsMsg -> Cmd (UpdateMessage msg)
+updateUserPreferences msg =
+    makeCmd (UpdateUserPreferencesMessage msg)
 
 
 errorHandlingSend : (a -> msg) -> Http.Request a -> Cmd (UpdateMessage msg)

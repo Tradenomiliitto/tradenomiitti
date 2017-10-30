@@ -331,20 +331,28 @@ app.post('/api/ilmoitukset/:id/vastaus', jsonParser, ads.createAnswer);
 app.delete('/api/vastaukset/:id', ads.deleteAnswer);
 
 
+// send user's settings, or default settings
 app.get('/api/asetukset', (req, res) =>
   util.userForSession(req)
     .then(dbUser => res.json(util.formatSettings(dbUser.settings)))
-    .catch(() => res.json(util.genericError))
+        .catch(() => res.json(util.formatSettings({})))
 );
 
-app.put('/api/asetukset', jsonParser, (req, res) =>
-  util.userForSession(req)
-    .then(dbUser => {
-      const newSettings = Object.assign({}, dbUser.settings, req.body);
-      return knex('users').where({ id: dbUser.id }).update('settings', newSettings);
+app.put('/api/asetukset', jsonParser, (req, res, next) => {
+  util.loggedIn(req)
+    .then(isLoggedIn => {
+      if (isLoggedIn)
+        return util.userForSession(req)
+          .then(dbUser => {
+            const newSettings = Object.assign({}, dbUser.settings, req.body);
+            return knex('users').where({ id: dbUser.id }).update('settings', newSettings);
+          })
+          .then(() => res.sendStatus(200))
+          .catch(next)
+      else
+        return res.sendStatus(200)
     })
-    .then(() => res.sendStatus(200))
-);
+});
 
 app.post('/api/kontaktit/:user_id', jsonParser, profile.addContact);
 app.get('/api/kontaktit', profile.listContacts);

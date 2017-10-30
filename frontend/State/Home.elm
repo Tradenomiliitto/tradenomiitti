@@ -3,6 +3,7 @@ module State.Home exposing (..)
 import Removal
 import State.ListAds
 import State.ListUsers
+import State.Settings
 
 
 type alias Model =
@@ -13,9 +14,9 @@ type alias Model =
     }
 
 
-init : Model
-init =
-    { listAds = State.ListAds.init
+init : State.Settings.Model -> Model
+init settings =
+    { listAds = State.ListAds.init settings
     , listUsers = State.ListUsers.init
     , createProfileClicked = False
     , removal = Removal.init Removal.Ad

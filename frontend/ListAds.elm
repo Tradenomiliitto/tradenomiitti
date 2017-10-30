@@ -64,7 +64,14 @@ update msg model =
             reInitItems { model | sort = value }
 
         ToggleHideJobAds ->
-            reInitItems { model | hideJobAds = not model.hideJobAds }
+            let
+                newHide =
+                    not model.hideJobAds
+
+                ( newModel, cmd ) =
+                    reInitItems { model | hideJobAds = newHide }
+            in
+                newModel ! [ cmd, Util.updateUserPreferences (Util.HideJobAds newHide) ]
 
         RemovalMessage msg ->
             let
