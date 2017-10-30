@@ -124,6 +124,7 @@ view t config model =
                             [ H.input
                                 [ A.type_ "checkbox"
                                 , E.onClick ToggleIsJobAd
+                                , A.checked model.isJobAd
                                 ]
                                 []
                             , H.span

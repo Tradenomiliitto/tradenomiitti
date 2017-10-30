@@ -21,6 +21,6 @@ init =
     , selectedDomain = Nothing
     , selectedPosition = Nothing
     , selectedLocation = Nothing
-    , isJobAd = True
+    , isJobAd = False
     , sending = NotSending
     }
