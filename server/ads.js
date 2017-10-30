@@ -50,7 +50,8 @@ module.exports = function initialize(params) {
         req.query.domain,
         req.query.position,
         req.query.location,
-        req.query.order
+        req.query.order,
+        req.query.hide_job_ads
       ))
       .then(ads => res.send(ads))
       .catch(next);

@@ -2,7 +2,7 @@ module.exports = function initialize(params) {
   const knex = params.knex;
   const util = params.util;
 
-  function listAds(loggedIn, limit, offset, domain, position, location, order) {
+  function listAds(loggedIn, limit, offset, domain, position, location, order, hide_job_ads) {
     let query = knex('ads');
     const answers = knex('answers');
 
@@ -41,6 +41,9 @@ module.exports = function initialize(params) {
     }
     if (location !== undefined) {
       query.whereRaw("data->>'location' = ?", [location]);
+    }
+    if (hide_job_ads && hide_job_ads === 'true') {
+      query.whereRaw("data->>'is_job_ad' <> 'true' or data->'is_job_ad' is null");
     }
     return query
       .then(rows => Promise.all(rows.map(ad => util.formatAd(ad, loggedIn))));

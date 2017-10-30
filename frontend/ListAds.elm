@@ -29,6 +29,7 @@ type Msg
     | ChangePositionFilter (Maybe String)
     | ChangeLocationFilter (Maybe String)
     | ChangeSort Sort
+    | ToggleHideJobAds
     | RemovalMessage Removal.Msg
 
 
@@ -62,6 +63,9 @@ update msg model =
         ChangeSort value ->
             reInitItems { model | sort = value }
 
+        ToggleHideJobAds ->
+            reInitItems { model | hideJobAds = not model.hideJobAds }
+
         RemovalMessage msg ->
             let
                 ( newRemoval, cmd ) =
@@ -94,6 +98,12 @@ getAds model =
                 |> QueryString.optional "domain" model.selectedDomain
                 |> QueryString.optional "position" model.selectedPosition
                 |> QueryString.optional "location" model.selectedLocation
+                |> QueryString.add "hide_job_ads"
+                    (if model.hideJobAds then
+                        "true"
+                     else
+                        "false"
+                    )
                 |> QueryString.add "order" (sortToString model.sort)
                 |> QueryString.render
 
@@ -183,6 +193,8 @@ view t loggedInUserMaybe model config =
                             [ A.class "list-ads__hide-job-ads" ]
                             [ H.input
                                 [ A.type_ "checkbox"
+                                , E.onClick ToggleHideJobAds
+                                , A.checked model.hideJobAds
                                 ]
                                 []
                             , H.span
