@@ -89,7 +89,7 @@ errorHandlingSend happyPath request =
                 Err err ->
                     ApiError err
     in
-    Http.send handler request
+        Http.send handler request
 
 
 put : String -> JS.Value -> Http.Request ()
@@ -131,8 +131,8 @@ truncateContent content numChars =
             ( truncated, _ ) =
                 List.foldl (takeNChars numChars) ( "", True ) (String.words content)
         in
-        -- drop extra whitespace created by takeNChars and add three dots
-        String.dropRight 1 truncated ++ "…"
+            -- drop extra whitespace created by takeNChars and add three dots
+            String.dropRight 1 truncated ++ "…"
 
 
 
@@ -148,7 +148,7 @@ takeNChars n word ( accumulator, canAddMore ) =
         totalLength =
             String.length accumulator + String.length word
     in
-    if totalLength < n && canAddMore then
-        ( accumulator ++ word ++ " ", canAddMore )
-    else
-        ( accumulator, False )
+        if totalLength < n && canAddMore then
+            ( accumulator ++ word ++ " ", canAddMore )
+        else
+            ( accumulator, False )
