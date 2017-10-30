@@ -34,6 +34,7 @@ sendAd model =
             JS.object <|
                 [ ( "heading", JS.string model.heading )
                 , ( "content", JS.string model.content )
+                , ( "is_job_ad", JS.bool model.isJobAd )
                 ]
                     ++ List.filterMap identity
                         [ Maybe.map (\value -> ( "domain", JS.string value )) model.selectedDomain
