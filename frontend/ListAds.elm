@@ -118,8 +118,8 @@ view t loggedInUserMaybe model config =
                         [ H.button
                             [ A.classList
                                 [ ( "btn", True )
-                                , ( "list-users__sorter-button", True )
-                                , ( "list-users__sorter-button--active"
+                                , ( "list-ads__sorter-button", True )
+                                , ( "list-ads__sorter-button--active"
                                   , List.member model.sort [ CreatedDesc, CreatedAsc ]
                                   )
                                 ]
@@ -144,8 +144,8 @@ view t loggedInUserMaybe model config =
                         , H.button
                             [ A.classList
                                 [ ( "btn", True )
-                                , ( "list-users__sorter-button", True )
-                                , ( "list-users__sorter-button--active"
+                                , ( "list-ads__sorter-button", True )
+                                , ( "list-ads__sorter-button--active"
                                   , List.member model.sort [ AnswerCountDesc, AnswerCountAsc ]
                                   )
                                 ]
@@ -171,8 +171,8 @@ view t loggedInUserMaybe model config =
                             H.button
                                 [ A.classList
                                     [ ( "btn", True )
-                                    , ( "list-users__sorter-button", True )
-                                    , ( "list-users__sorter-button--active", model.sort == NewestAnswerDesc )
+                                    , ( "list-ads__sorter-button", True )
+                                    , ( "list-ads__sorter-button--active", model.sort == NewestAnswerDesc )
                                     ]
                                 , E.onClick (ChangeSort NewestAnswerDesc)
                                 ]
