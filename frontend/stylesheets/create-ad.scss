@@ -69,7 +69,7 @@
 
   &__is-job-ad {
     & span {
-      @include checbox-styles;
+      @include checkbox-styles;
     }
   }
 }

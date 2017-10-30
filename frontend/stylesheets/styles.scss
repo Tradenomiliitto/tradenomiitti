@@ -63,7 +63,7 @@ body {
   }
 
   &__read-terms {
-    @include checbox-styles;
+    @include checkbox-styles;
     &-link {
       color: $white;
       &:hover,
