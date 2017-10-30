@@ -9,9 +9,14 @@
     - name: install node repo key
       apt_key: file=/var/cache/nodesource.gpg.key state=present
 
-    - name: install node repo
+    - name: remove old node repo
       apt_repository:
         repo: deb https://deb.nodesource.com/node_7.x xenial main
+        state: absent
+
+    - name: install node repo
+      apt_repository:
+        repo: deb https://deb.nodesource.com/node_8.x xenial main
 
     - name: install system dependencies
       apt: pkg={{item}} state=present
