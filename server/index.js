@@ -335,23 +335,24 @@ app.delete('/api/vastaukset/:id', ads.deleteAnswer);
 app.get('/api/asetukset', (req, res) =>
   util.userForSession(req)
     .then(dbUser => res.json(util.formatSettings(dbUser.settings)))
-        .catch(() => res.json(util.formatSettings({})))
+    .catch(() => res.json(util.formatSettings({})))
 );
 
 app.put('/api/asetukset', jsonParser, (req, res, next) => {
   util.loggedIn(req)
     .then(isLoggedIn => {
-      if (isLoggedIn)
+      if (isLoggedIn) {
         return util.userForSession(req)
           .then(dbUser => {
             const newSettings = Object.assign({}, dbUser.settings, req.body);
             return knex('users').where({ id: dbUser.id }).update('settings', newSettings);
           })
           .then(() => res.sendStatus(200))
-          .catch(next)
-      else
-        return res.sendStatus(200)
+          .catch(next);
+      }
+      return res.sendStatus(200);
     })
+    .catch(next);
 });
 
 app.post('/api/kontaktit/:user_id', jsonParser, profile.addContact);
