@@ -45,6 +45,7 @@ function formatData(data) {
     }
     if (isNonEmpty(item, KEY_EMAIL)) {
       newItem.settings.email_address = item[KEY_EMAIL];
+      newItem.email_address = item[KEY_EMAIL];
     } else {
       // Skip if no email given
       return;
@@ -80,10 +81,12 @@ try {
   console.log(`sync_register: Error: ${err.message}`);
   process.exit(1);
 }
+// TODO: Should we use a separate column for unique email?
+// TODO: Should we do the stuff below more elegantly?
 const stats = `Found ${formattedData.length} members and ${data.length - formattedData.length} non-valid/pending`;
 knex('remote_user_register').del().then(() => knex('remote_user_register').insert(formattedData))
   .then(() => {
-    const query = knex.raw('INSERT INTO "users" ("data", "remote_id", "settings", "member_data") SELECT * FROM "remote_user_register" ON CONFLICT (remote_id) DO UPDATE SET member_data = EXCLUDED.member_data, settings = jsonb_set(users.settings, \'{email_address}\', EXCLUDED.settings->\'email_address\') || jsonb_set(users.settings, \'{isAdmin}\', EXCLUDED.settings->\'isAdmin\')').toQuery();
+    const query = knex.raw('INSERT INTO "users" ("data", "remote_id", "settings", "member_data") SELECT "data", "remote_id", "settings", "member_data" FROM "remote_user_register" ON CONFLICT (remote_id) DO UPDATE SET member_data = EXCLUDED.member_data, settings = jsonb_set(users.settings, \'{email_address}\', EXCLUDED.settings->\'email_address\'); INSERT INTO "users" ("data", "remote_id", "settings", "member_data") SELECT "data", "remote_id", "settings", "member_data" FROM "remote_user_register" ON CONFLICT (remote_id) DO UPDATE SET settings = jsonb_set(users.settings, \'{isAdmin}\', EXCLUDED.settings->\'isAdmin\')').toQuery();
     return knex.raw(query);
   })
   .then(() => {
