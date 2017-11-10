@@ -73,9 +73,7 @@ module.exports = function init(params) {
 
   function sendNotificationForAds(user, ads) {
     // Only send ad notifications to users that have consented
-    if (user.data.profile_creation_consented !== true) {
-      return;
-    }
+    if (user.data.profile_creation_consented !== true) { return; }
 
     const t = email_translations.sendNotificationForAds;
     function makeImage(ad, index) {
