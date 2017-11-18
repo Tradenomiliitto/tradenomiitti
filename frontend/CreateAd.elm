@@ -22,6 +22,7 @@ type Msg
     | ChangeDomain (Maybe String)
     | ChangePosition (Maybe String)
     | ChangeLocation (Maybe String)
+    | ToggleIsJobAd
     | Send
     | SendResponse (Result Http.Error Int)
 
@@ -33,6 +34,7 @@ sendAd model =
             JS.object <|
                 [ ( "heading", JS.string model.heading )
                 , ( "content", JS.string model.content )
+                , ( "is_job_ad", JS.bool model.isJobAd )
                 ]
                     ++ List.filterMap identity
                         [ Maybe.map (\value -> ( "domain", JS.string value )) model.selectedDomain
@@ -61,6 +63,9 @@ update msg model =
 
         ChangeLocation value ->
             { model | selectedLocation = value } ! []
+
+        ToggleIsJobAd ->
+            { model | isJobAd = not model.isJobAd } ! []
 
         Send ->
             { model | sending = Sending } ! [ Cmd.map LocalUpdateMessage <| sendAd model ]
@@ -115,6 +120,19 @@ view t config model =
                             , A.value model.content
                             ]
                             []
+                        , H.label
+                            [ A.class "create-ad__is-job-ad" ]
+                            [ H.input
+                                [ A.type_ "checkbox"
+                                , E.onClick ToggleIsJobAd
+                                , A.checked model.isJobAd
+                                ]
+                                []
+                            , H.span
+                                []
+                                [ H.text (t "createAd.isJobAd")
+                                ]
+                            ]
                         ]
                     , H.div
                         [ A.class "col-xs-12 col-sm-5 create-ad__filters-submit" ]

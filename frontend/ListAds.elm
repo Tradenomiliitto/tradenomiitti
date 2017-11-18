@@ -29,6 +29,7 @@ type Msg
     | ChangePositionFilter (Maybe String)
     | ChangeLocationFilter (Maybe String)
     | ChangeSort Sort
+    | ToggleHideJobAds
     | RemovalMessage Removal.Msg
 
 
@@ -62,6 +63,16 @@ update msg model =
         ChangeSort value ->
             reInitItems { model | sort = value }
 
+        ToggleHideJobAds ->
+            let
+                newHide =
+                    not model.hideJobAds
+
+                ( newModel, cmd ) =
+                    reInitItems { model | hideJobAds = newHide }
+            in
+            newModel ! [ cmd, Util.updateUserPreferences (Util.HideJobAds newHide) ]
+
         RemovalMessage msg ->
             let
                 ( newRemoval, cmd ) =
@@ -94,6 +105,12 @@ getAds model =
                 |> QueryString.optional "domain" model.selectedDomain
                 |> QueryString.optional "position" model.selectedPosition
                 |> QueryString.optional "location" model.selectedLocation
+                |> QueryString.add "hide_job_ads"
+                    (if model.hideJobAds then
+                        "true"
+                     else
+                        "false"
+                    )
                 |> QueryString.add "order" (sortToString model.sort)
                 |> QueryString.render
 
@@ -118,8 +135,8 @@ view t loggedInUserMaybe model config =
                         [ H.button
                             [ A.classList
                                 [ ( "btn", True )
-                                , ( "list-users__sorter-button", True )
-                                , ( "list-users__sorter-button--active"
+                                , ( "list-ads__sorter-button", True )
+                                , ( "list-ads__sorter-button--active"
                                   , List.member model.sort [ CreatedDesc, CreatedAsc ]
                                   )
                                 ]
@@ -144,8 +161,8 @@ view t loggedInUserMaybe model config =
                         , H.button
                             [ A.classList
                                 [ ( "btn", True )
-                                , ( "list-users__sorter-button", True )
-                                , ( "list-users__sorter-button--active"
+                                , ( "list-ads__sorter-button", True )
+                                , ( "list-ads__sorter-button--active"
                                   , List.member model.sort [ AnswerCountDesc, AnswerCountAsc ]
                                   )
                                 ]
@@ -171,14 +188,27 @@ view t loggedInUserMaybe model config =
                             H.button
                                 [ A.classList
                                     [ ( "btn", True )
-                                    , ( "list-users__sorter-button", True )
-                                    , ( "list-users__sorter-button--active", model.sort == NewestAnswerDesc )
+                                    , ( "list-ads__sorter-button", True )
+                                    , ( "list-ads__sorter-button--active", model.sort == NewestAnswerDesc )
                                     ]
                                 , E.onClick (ChangeSort NewestAnswerDesc)
                                 ]
                                 [ H.text <| t "listAds.sort.newestAnswer" ]
                           else
                             H.text ""
+                        , H.label
+                            [ A.class "list-ads__hide-job-ads" ]
+                            [ H.input
+                                [ A.type_ "checkbox"
+                                , E.onClick ToggleHideJobAds
+                                , A.checked model.hideJobAds
+                                ]
+                                []
+                            , H.span
+                                []
+                                [ H.text (t "listAds.hideJobAds")
+                                ]
+                            ]
                         ]
                     ]
     in

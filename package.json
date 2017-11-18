@@ -16,7 +16,7 @@
     "deploy": "ansible-playbook conf/deploy.yml -i conf/inventory.ini --limit ${ENV_TO_DEPLOY:-dev} --tags 'deploy'",
     "uploadanddeploy": "ansible-playbook conf/deploy.yml -i conf/inventory.ini --limit ${ENV_TO_DEPLOY:-dev}",
     "seed-db": "knex migrate:latest && knex seed:run",
-    "test": "mocha server/**/*.js",
+    "test": "DISABLE_SEBACON=true ENABLE_EMAIL_SENDING=false mocha server/**/*.js",
     "testFrontend": "cd frontend && elm-test"
   },
   "repository": {
@@ -24,7 +24,7 @@
     "url": "git+https://github.com/futurice/tradenomiitti.git"
   },
   "author": "",
-  "license": "UNLICENSED",
+  "license": "AGPL-3.0",
   "bugs": {
     "url": "https://github.com/futurice/tradenomiitti/issues"
   },

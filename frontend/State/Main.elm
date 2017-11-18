@@ -40,6 +40,10 @@ type alias Model =
 
 initState : List ( String, String ) -> Navigation.Location -> Model
 initState translations location =
+    let
+        initialSettings =
+            State.Settings.init
+    in
     { route = parseLocation location
     , rootUrl = location.origin
     , scrollTop = True -- initially start at top and init
@@ -50,10 +54,10 @@ initState translations location =
     , needsConsent = True
     , acceptsTerms = False
     , createAd = State.CreateAd.init
-    , listAds = State.ListAds.init
+    , listAds = State.ListAds.init initialSettings
     , ad = State.Ad.init
-    , home = State.Home.init
-    , settings = State.Settings.init
+    , home = State.Home.init initialSettings
+    , settings = initialSettings
     , config = State.Config.init
     , contacts = State.Contacts.init
     , staticContent = State.StaticContent.init

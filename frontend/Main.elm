@@ -89,6 +89,9 @@ init { translations } location =
         model =
             initState translations location
 
+        settingsCmd =
+            unpackUpdateMessage SettingsMessage Settings.initTasks
+
         -- after the profile is loaded, an urlchange event is triggered
         profileCmd =
             unpackUpdateMessage ProfileMessage Profile.getMe
@@ -99,7 +102,7 @@ init { translations } location =
         staticContentCmd =
             unpackUpdateMessage StaticContentMessage StaticContent.initTasks
     in
-    model ! [ profileCmd, configCmd, staticContentCmd ]
+    model ! [ settingsCmd, profileCmd, configCmd, staticContentCmd ]
 
 
 
@@ -186,7 +189,7 @@ update msg model =
                         ListAds ->
                             let
                                 newListAds =
-                                    State.ListAds.init
+                                    State.ListAds.init modelWithRoute.settings
                             in
                             initWithUpdateMessage { modelWithRoute | listAds = newListAds }
                                 ListAdsMessage
@@ -195,7 +198,7 @@ update msg model =
                         Home ->
                             let
                                 newHome =
-                                    State.Home.init
+                                    State.Home.init modelWithRoute.settings
 
                                 ( newModel, cmd ) =
                                     initWithUpdateMessage { modelWithRoute | home = newHome }
@@ -792,6 +795,11 @@ unpackUpdateMessage mapper cmd =
 
                 Reroute route ->
                     NewUrl route
+
+                UpdateUserPreferencesMessage msg ->
+                    case msg of
+                        Util.HideJobAds b ->
+                            SettingsMessage (Settings.ChangeHideJobAds b)
         )
         cmd
 

@@ -63,9 +63,7 @@ body {
   }
 
   &__read-terms {
-    position: relative;
-    top: -3px;
-    padding-left: 10px;
+    @include checkbox-styles;
     &-link {
       color: $white;
       &:hover,

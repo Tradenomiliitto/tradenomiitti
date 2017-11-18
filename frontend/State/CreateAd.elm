@@ -9,6 +9,7 @@ type alias Model =
     , selectedDomain : Maybe String
     , selectedPosition : Maybe String
     , selectedLocation : Maybe String
+    , isJobAd : Bool
     , sending : SendingStatus
     }
 
@@ -20,5 +21,6 @@ init =
     , selectedDomain = Nothing
     , selectedPosition = Nothing
     , selectedLocation = Nothing
+    , isJobAd = False
     , sending = NotSending
     }

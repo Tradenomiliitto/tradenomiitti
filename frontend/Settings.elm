@@ -19,6 +19,7 @@ type Msg
     | ToggleEmailsForBusinessCards Settings
     | ToggleEmailsForNewAds Settings
     | ChangeEmailAddress Settings String
+    | ChangeHideJobAds Bool
     | Save Settings
 
 
@@ -94,6 +95,20 @@ update msg model =
                         }
             }
                 ! []
+
+        ChangeHideJobAds b ->
+            let
+                updateHideJobs settings =
+                    let
+                        newSettings =
+                            { settings | hide_job_ads = b }
+                    in
+                    { model | settings = Just newSettings }
+                        ! [ updateSettings newSettings ]
+            in
+            model.settings
+                |> Maybe.map updateHideJobs
+                |> Maybe.withDefault (model ! [])
 
         Save settings ->
             { model | sending = Sending } ! [ updateSettings settings ]

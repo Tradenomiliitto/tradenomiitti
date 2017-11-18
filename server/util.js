@@ -93,10 +93,12 @@ module.exports = function initialize(params) {
     const settings = {};
     const dbSettings = settingsIn || {};
     const trueFallback = value => (value === undefined ? true : value);
+    const falseFallback = value => (value === undefined ? false : value);
     settings.emails_for_answers = trueFallback(dbSettings.emails_for_answers);
     settings.emails_for_businesscards = trueFallback(dbSettings.emails_for_businesscards);
     settings.emails_for_new_ads = trueFallback(dbSettings.emails_for_new_ads);
     settings.email_address = dbSettings.email_address || '';
+    settings.hide_job_ads = falseFallback(dbSettings.hide_job_ads);
     return settings;
   }
 

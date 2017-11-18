@@ -69,6 +69,7 @@ const source = {
     successContinue: 'Paina selaimesi päivitä-nappulaa jatkaaksesi',
     errorHeading: 'Jotain meni pieleen',
     errorContinue: 'Ole hyvä ja lataa sivu uudelleen',
+    isJobAd: 'Tämä on työpaikkailmoitus',
   },
   errors: {
     badUrl: 'BadUrl ',
@@ -134,6 +135,7 @@ const source = {
       answerCount: 'Vastauksia',
       newestAnswer: 'Uusin vastaus',
     },
+    hideJobAds: 'Piilota työpaikkailmoitukset',
   },
   listUsers: {
     heading: 'Selaa tradenomeja',
