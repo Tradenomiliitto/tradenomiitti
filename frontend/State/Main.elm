@@ -44,22 +44,22 @@ initState translations location =
         initialSettings =
             State.Settings.init
     in
-        { route = parseLocation location
-        , rootUrl = location.origin
-        , scrollTop = True -- initially start at top and init
-        , user = State.User.init
-        , listUsers = State.ListUsers.init
-        , profile = ProfileState.init
-        , initialLoading = True
-        , needsConsent = True
-        , acceptsTerms = False
-        , createAd = State.CreateAd.init
-        , listAds = State.ListAds.init initialSettings
-        , ad = State.Ad.init
-        , home = State.Home.init initialSettings
-        , settings = initialSettings
-        , config = State.Config.init
-        , contacts = State.Contacts.init
-        , staticContent = State.StaticContent.init
-        , translations = Translation.fromList translations
-        }
+    { route = parseLocation location
+    , rootUrl = location.origin
+    , scrollTop = True -- initially start at top and init
+    , user = State.User.init
+    , listUsers = State.ListUsers.init
+    , profile = ProfileState.init
+    , initialLoading = True
+    , needsConsent = True
+    , acceptsTerms = False
+    , createAd = State.CreateAd.init
+    , listAds = State.ListAds.init initialSettings
+    , ad = State.Ad.init
+    , home = State.Home.init initialSettings
+    , settings = initialSettings
+    , config = State.Config.init
+    , contacts = State.Contacts.init
+    , staticContent = State.StaticContent.init
+    , translations = Translation.fromList translations
+    }

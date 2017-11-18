@@ -38,12 +38,12 @@ init settings =
                 |> Maybe.map .hide_job_ads
                 |> Maybe.withDefault False
     in
-        { ads = []
-        , cursor = 0
-        , selectedDomain = Nothing
-        , selectedPosition = Nothing
-        , selectedLocation = Nothing
-        , hideJobAds = hideJobAds
-        , removal = Removal.init Removal.Ad
-        , sort = CreatedDesc
-        }
+    { ads = []
+    , cursor = 0
+    , selectedDomain = Nothing
+    , selectedPosition = Nothing
+    , selectedLocation = Nothing
+    , hideJobAds = hideJobAds
+    , removal = Removal.init Removal.Ad
+    , sort = CreatedDesc
+    }

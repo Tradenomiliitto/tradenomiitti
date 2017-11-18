@@ -46,7 +46,7 @@ localMap msgMapper cmd =
                 UpdateUserPreferencesMessage msg ->
                     UpdateUserPreferencesMessage msg
     in
-        Cmd.map mapper cmd
+    Cmd.map mapper cmd
 
 
 localViewMap : (msg1 -> msg2) -> H.Html (ViewMessage msg1) -> H.Html (ViewMessage msg2)
@@ -60,7 +60,7 @@ localViewMap msgMapper html =
                 Link route ->
                     Link route
     in
-        H.map mapper html
+    H.map mapper html
 
 
 reroute : Route -> Cmd (UpdateMessage msg)
@@ -89,7 +89,7 @@ errorHandlingSend happyPath request =
                 Err err ->
                     ApiError err
     in
-        Http.send handler request
+    Http.send handler request
 
 
 put : String -> JS.Value -> Http.Request ()
@@ -131,8 +131,8 @@ truncateContent content numChars =
             ( truncated, _ ) =
                 List.foldl (takeNChars numChars) ( "", True ) (String.words content)
         in
-            -- drop extra whitespace created by takeNChars and add three dots
-            String.dropRight 1 truncated ++ "…"
+        -- drop extra whitespace created by takeNChars and add three dots
+        String.dropRight 1 truncated ++ "…"
 
 
 
@@ -148,7 +148,7 @@ takeNChars n word ( accumulator, canAddMore ) =
         totalLength =
             String.length accumulator + String.length word
     in
-        if totalLength < n && canAddMore then
-            ( accumulator ++ word ++ " ", canAddMore )
-        else
-            ( accumulator, False )
+    if totalLength < n && canAddMore then
+        ( accumulator ++ word ++ " ", canAddMore )
+    else
+        ( accumulator, False )

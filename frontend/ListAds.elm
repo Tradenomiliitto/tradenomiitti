@@ -71,14 +71,14 @@ update msg model =
                 ( newModel, cmd ) =
                     reInitItems { model | hideJobAds = newHide }
             in
-                newModel ! [ cmd, Util.updateUserPreferences (Util.HideJobAds newHide) ]
+            newModel ! [ cmd, Util.updateUserPreferences (Util.HideJobAds newHide) ]
 
         RemovalMessage msg ->
             let
                 ( newRemoval, cmd ) =
                     Removal.update msg model.removal
             in
-                { model | removal = newRemoval } ! [ Util.localMap RemovalMessage cmd ]
+            { model | removal = newRemoval } ! [ Util.localMap RemovalMessage cmd ]
 
 
 initTasks : Model -> Cmd (UpdateMessage Msg)
@@ -92,7 +92,7 @@ reInitItems model =
         newModel =
             { model | ads = [], cursor = 0, removal = Removal.init Removal.Ad }
     in
-        newModel ! [ getAds newModel ]
+    newModel ! [ getAds newModel ]
 
 
 getAds : Model -> Cmd (UpdateMessage Msg)
@@ -120,7 +120,7 @@ getAds model =
         request =
             Http.get url (Json.list Models.Ad.adDecoder)
     in
-        Util.errorHandlingSend (UpdateAds model.cursor) request
+    Util.errorHandlingSend (UpdateAds model.cursor) request
 
 
 view : T -> Maybe User -> Model -> Config.Model -> H.Html (ViewMessage Msg)
@@ -212,38 +212,38 @@ view t loggedInUserMaybe model config =
                         ]
                     ]
     in
-        H.div []
+    H.div []
+        [ H.div
+            [ A.class "container" ]
             [ H.div
-                [ A.class "container" ]
+                [ A.class "row" ]
                 [ H.div
-                    [ A.class "row" ]
-                    [ H.div
-                        [ A.class "col-sm-12" ]
-                        [ H.h1
-                            [ A.class "list-ads__header" ]
-                            [ H.text <| t "listAds.heading" ]
-                        ]
-                    ]
-                , H.div
-                    [ A.class "row list-users__filters" ]
-                    [ H.div
-                        [ A.class "col-xs-12 col-sm-4" ]
-                        [ Common.select t "list-users" (LocalViewMessage << ChangeDomainFilter) Domain config.domainOptions model ]
-                    , H.div
-                        [ A.class "col-xs-12 col-sm-4" ]
-                        [ Common.select t "list-users" (LocalViewMessage << ChangePositionFilter) Position config.positionOptions model ]
-                    , H.div
-                        [ A.class "col-xs-12 col-sm-4" ]
-                        [ Common.select t "list-users" (LocalViewMessage << ChangeLocationFilter) Location Config.finnishRegions model ]
+                    [ A.class "col-sm-12" ]
+                    [ H.h1
+                        [ A.class "list-ads__header" ]
+                        [ H.text <| t "listAds.heading" ]
                     ]
                 ]
             , H.div
-                [ A.class "list-ads__list-background" ]
+                [ A.class "row list-users__filters" ]
                 [ H.div
-                    [ A.class "container last-row" ]
-                    (sorterRow :: (List.map (Util.localViewMap RemovalMessage) <| viewAds t loggedInUserMaybe model.removal model.ads))
+                    [ A.class "col-xs-12 col-sm-4" ]
+                    [ Common.select t "list-users" (LocalViewMessage << ChangeDomainFilter) Domain config.domainOptions model ]
+                , H.div
+                    [ A.class "col-xs-12 col-sm-4" ]
+                    [ Common.select t "list-users" (LocalViewMessage << ChangePositionFilter) Position config.positionOptions model ]
+                , H.div
+                    [ A.class "col-xs-12 col-sm-4" ]
+                    [ Common.select t "list-users" (LocalViewMessage << ChangeLocationFilter) Location Config.finnishRegions model ]
                 ]
             ]
+        , H.div
+            [ A.class "list-ads__list-background" ]
+            [ H.div
+                [ A.class "container last-row" ]
+                (sorterRow :: (List.map (Util.localViewMap RemovalMessage) <| viewAds t loggedInUserMaybe model.removal model.ads))
+            ]
+        ]
 
 
 sortToString : Sort -> String
@@ -277,7 +277,7 @@ viewAds t loggedInUserMaybe removal ads =
         rowsHtml =
             List.map row rows
     in
-        rowsHtml
+    rowsHtml
 
 
 row : List (H.Html msg) -> H.Html msg

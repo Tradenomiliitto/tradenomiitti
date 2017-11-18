@@ -161,9 +161,9 @@ educationEncode educationList =
                         , Maybe.map (\value -> ( "specialization", JS.string value )) education.specialization
                         ]
     in
-        educationList
-            |> List.map encodeOne
-            |> JS.list
+    educationList
+        |> List.map encodeOne
+        |> JS.list
 
 
 settingsEncode : Settings -> JS.Value
