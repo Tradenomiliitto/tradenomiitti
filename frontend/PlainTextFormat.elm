@@ -48,10 +48,20 @@ view str =
         splitSpecialChars url =
             let
                 ( withoutEnd, endPart ) =
-                    if Regex.contains (Regex.regex "[.,;:)]$") url then
-                        ( String.dropRight 1 url, Just <| String.right 1 url )
-                    else
-                        ( url, Nothing )
+                    let
+                        matches =
+                            Regex.find (Regex.AtMost 1) (Regex.regex "[.,;:)]*$") url
+
+                        matchMaybe =
+                            matches |> List.head
+                    in
+                    matchMaybe
+                        |> Maybe.map
+                            (\match ->
+                                ( String.dropRight (String.length match.match) url, Just <| String.right (String.length match.match) url )
+                            )
+                        |> Maybe.withDefault
+                            ( url, Nothing )
 
                 ( beginningPart, urlPart ) =
                     if Regex.contains (Regex.regex "^\\(") withoutEnd then

@@ -35,6 +35,10 @@ urlGuessing =
             { testString = "Myös alkava sulje pitäisi urlittaa (http://example.com)"
             , expectedUrl = "http://example.com"
             }
+        , testUrlGuess
+            { testString = "Jos päättyy )., sulkeva sulje ei silti ole osa urlia (http://example.com)."
+            , expectedUrl = "http://example.com"
+            }
         ]
 
 
