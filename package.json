@@ -59,7 +59,7 @@
     "request": "^2.83.0",
     "request-promise-native": "^1.0.5",
     "scroll-restoration-polyfill": "^0.6.1",
-    "scss-to-json": "atimmer/scss-to-json#d8a292d60881ca52d062a5be8a1b6fac92e73980",
+    "scss-to-json": "^2.0.0",
     "smoothscroll-polyfill": "^0.3.6",
     "uuid": "^3.0.1"
   },
