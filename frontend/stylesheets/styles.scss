@@ -198,6 +198,20 @@ div#not-implemented {
       margin-right: 15px;
     }
   }
+
+  &__chilicorn {
+    display: flex;
+    align-items: center;
+    margin-top: 7px;
+    &-icon {
+      margin: 20px;
+      width: 55px;
+    }
+    &-text {
+      margin-top: 8px;
+      color: $white;
+    }
+  }
 }
 
 .info {

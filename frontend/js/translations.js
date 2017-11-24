@@ -126,6 +126,7 @@ const source = {
       linkedinUrl: 'https://www.linkedin.com/company/mothers-in-business-mib-ry',
       githubUrl: 'https://github.com/futurice/mibit',
     },
+    chilicornUrl: 'https://spiceprogram.org/chilicorn-fund/',
   },
   home: {
     introbox: {
