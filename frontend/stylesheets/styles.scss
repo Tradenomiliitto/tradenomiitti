@@ -202,12 +202,13 @@ div#not-implemented {
   &__chilicorn {
     display: flex;
     align-items: center;
-    margin-top: 7px;
+    margin-top: 1em;
     &-icon {
-      margin: 20px;
-      width: 55px;
+      margin: 10px;
+      width: 40px;
     }
     &-text {
+      width: 12em;
       margin-top: 8px;
       color: $white;
     }

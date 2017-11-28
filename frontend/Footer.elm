@@ -54,7 +54,12 @@ view t routeToMsg userMaybe =
                         , H.a [ A.href <| t "footer.socialButton.githubUrl" ] [ H.i [ A.class "fa fa-github" ] [] ]
                         ]
                     , H.div [ A.class "footer__chilicorn" ]
-                        [ H.p [ A.class "footer__chilicorn-text" ] [ H.text "Made possible by: " ]
+                        [ H.p [ A.class "footer__chilicorn-text" ]
+                            [ H.text <| t "footer.createdBy"
+                            , H.a [ A.href <| t "footer.futuriceUrl" ] [ H.text <| t "footer.futurice" ]
+                            , H.text "'s "
+                            , H.a [ A.href <| t "footer.chilicornUrl" ] [ H.text <| t "footer.chilicornFund" ]
+                            ]
                         , H.a [ A.href <| t "footer.chilicornUrl" ] [ H.img [ A.src "static/Chilicorn-logo.png", A.class "footer__chilicorn-icon" ] [] ]
                         ]
                     ]
