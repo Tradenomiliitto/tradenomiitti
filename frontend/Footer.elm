@@ -57,7 +57,7 @@ view t routeToMsg userMaybe =
                         [ H.p [ A.class "footer__chilicorn-text" ]
                             [ H.text <| t "footer.createdBy"
                             , H.a [ A.href <| t "footer.futuriceUrl" ] [ H.text <| t "footer.futurice" ]
-                            , H.text "'s "
+                            , H.text " "
                             , H.a [ A.href <| t "footer.chilicornUrl" ] [ H.text <| t "footer.chilicornFund" ]
                             ]
                         , H.a [ A.href <| t "footer.chilicornUrl" ] [ H.img [ A.src "static/Chilicorn-logo.png", A.class "footer__chilicorn-icon" ] [] ]

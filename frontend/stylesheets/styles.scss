@@ -201,15 +201,17 @@ div#not-implemented {
 
   &__chilicorn {
     display: flex;
+    width: 16em;
+    justify-content: space-between;
     align-items: center;
-    margin-top: 1em;
+    margin-top: 3.3em;
     &-icon {
       margin: 10px;
-      width: 40px;
+      width: 35px;
     }
     &-text {
-      width: 12em;
-      margin-top: 8px;
+      margin: 0;
+      width: 11em;
       color: $white;
     }
   }
