@@ -3,6 +3,7 @@ module RenewPassword exposing (..)
 import Html as H
 import Html.Attributes as A
 import Html.Events exposing (onInput, onWithOptions)
+import Html.Keyed
 import Http
 import Json.Decode
 import Json.Decode.Pipeline exposing (decode, required)
@@ -83,7 +84,7 @@ renewPasswordForm t model errorMessage =
                 , H.p [] [ H.text <| t "renewPassword.hint" ]
                 , H.h3
                     [ A.class "renewpassword__input" ]
-                    [ H.input
+                    [ Html.Keyed.node "input"
                         [ A.name "email"
                         , A.type_ "email"
                         , A.autofocus True

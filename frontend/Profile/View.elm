@@ -880,6 +880,8 @@ addChild t model =
             , A.size 2
             , A.type_ "number"
             , A.maxlength 2
+            , A.min "1"
+            , A.max "12"
             , E.onInput ChangeBirthMonth
             ]
             []
@@ -890,6 +892,8 @@ addChild t model =
             , A.size 4
             , A.type_ "number"
             , A.maxlength 4
+            , A.min "1900"
+            , A.max "2099"
             , E.onInput ChangeBirthYear
             ]
             []

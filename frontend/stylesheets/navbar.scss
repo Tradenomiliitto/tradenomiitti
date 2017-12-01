@@ -24,6 +24,9 @@
 .navbar-brand {
   padding: 0px;
   display: flex;
+  &__beta {
+    color: yellow;
+  }
 }
 
 

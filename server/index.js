@@ -256,7 +256,7 @@ app.get('/api/toimialat', (req, res) => {
     'Seurakunta',
     'Sosiaalipalvelut',
     'Taide, kulttuuri ja museot',
-    'ICT-ala',
+    'IT-ala',
     'Tilintarkastus ja liikkeenjohdon konsultointi',
     'Tukku- ja vähittäiskauppa',
     'Turvallisuusala',
