@@ -194,6 +194,7 @@ const source = {
   },
   login: {
     title: 'Kirjaudu sisään',
+    hint: 'Kirjaudu sisään MiB ry:n jäsenrekisteriin ilmoittamallasi sähköpostiosoitteella.',
     emailPlaceholder: 'Sähköpostiosoite',
     passwordPlaceholder: 'Salasana',
     failure: 'Kirjautuminen epäonnistui. Varmista, että kirjoitit sähköpostiosoitteesi ja salasanasi oikein.',

@@ -82,6 +82,7 @@ loginForm t model errorMessage =
                 [ H.h1
                     [ A.class "login__heading" ]
                     [ H.text <| t "login.title" ]
+                , H.p [] [ H.text <| t "login.hint" ]
                 , H.h3
                     [ A.class "login__input" ]
                     [ H.input
