@@ -95,7 +95,7 @@
       float: right;
       &-container {
         margin-top: 10px;
-        width: 80%;
+        width: 100%;
       }
     }
     &--editing {
@@ -185,7 +185,7 @@
   &__location-select,
   &__education-details-select,
   &__competence-select {
-    @include select(80%);
+    @include select(100%);
 
     &-label {
       display: block;

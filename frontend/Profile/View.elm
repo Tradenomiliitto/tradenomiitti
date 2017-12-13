@@ -533,7 +533,7 @@ educationsEditing t model config =
     if model.editing then
         [ H.div
             [ A.class "row" ]
-            [ H.div [ A.class "col-xs-5" ]
+            [ H.div [ A.class "col-xs-12 col-sm-8 col-md-6" ]
                 [ H.p [] [ H.text <| t "profile.educationsEditing.hint" ]
                 , Common.typeaheadInput "user-page__education-details-" (t "profile.educationsEditing.selectDegree") "education-degree"
                 , Common.typeaheadInput "user-page__education-details-" (t "profile.educationsEditing.selectSpecialization") "education-specialization"
