@@ -1,12 +1,12 @@
 const json2csv = require('json2csv');
 
 module.exports = function initialize(params) {
-  const { knex, util, sebacon } = params;
+  const { knex, util } = params;
 
   function report(req, res, next) {
     util.userForSession(req)
-      .then(user => sebacon.isAdmin(user.remote_id))
-      .then(isAdmin => {
+      .then(user => {
+        const isAdmin = user.settings.isAdmin;
         if (!isAdmin) return Promise.reject({ status: 403, msg: 'Non Admin tried to access report' });
         return null;
       })

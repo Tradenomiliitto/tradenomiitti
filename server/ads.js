@@ -98,19 +98,18 @@ module.exports = function initialize(params) {
 
   function findRowUserCanDelete(req, table) {
     return util.userForSession(req)
-      .then(user => sebacon.isAdmin(user.remote_id)
-        .then(isAdmin => {
-          if (isAdmin) {
-            return knex(table).where({
-              id: req.params.id,
-            });
-          }
+      .then(user => {
+        const isAdmin = user.settings.isAdmin;
+        if (isAdmin) {
           return knex(table).where({
-            user_id: user.id, // if it's not their own row, don't delete it
             id: req.params.id,
           });
-        })
-      );
+        }
+        return knex(table).where({
+          user_id: user.id, // if it's not their own row, don't delete it
+          id: req.params.id,
+        });
+      });
   }
 
   function deleteRow(req, res, next, table) {
