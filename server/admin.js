@@ -25,6 +25,7 @@ module.exports = function initialize(params) {
             where ads.user_id = users.id\
             ) as gotten_answers_per_ad\
           '))
+          .whereNotNull('pw_hash')
       )
       .then(rows => json2csv({ data: rows, del: ';' }))
       .then(csv => {
