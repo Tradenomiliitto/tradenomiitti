@@ -12,4 +12,6 @@
       - run: /srv/app.json
         path: /srv/checkout/tradenomiitti
         cmd: start
+    pm2_post_cmds:
+      - run: save
     pm2_user: ubuntu

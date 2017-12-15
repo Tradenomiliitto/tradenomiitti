@@ -10,5 +10,5 @@ then
   done
 fi
 
-ansible-galaxy install weareinteractive.pm2 --roles-path conf/roles
-ansible-galaxy install nickjj.letsencrypt --roles-path conf/roles
+ansible-galaxy install weareinteractive.pm2,2.4.0 --force --roles-path conf/roles
+ansible-galaxy install nickjj.letsencrypt,v0.2.2 --force --roles-path conf/roles
