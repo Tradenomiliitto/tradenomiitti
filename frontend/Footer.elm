@@ -28,8 +28,8 @@ view t routeToMsg userMaybe =
                   <|
                     [ H.p [] [ Common.link t Nav.Terms routeToMsg ]
                     , H.p [] [ Common.link t Nav.RegisterDescription routeToMsg ]
-                    , H.p [] [ H.a [ A.href <| t "footer.link1.url" ] [ H.text <| t "footer.link1.text" ] ]
-                    , H.p [] [ H.a [ A.href <| t "footer.link2.url" ] [ H.text <| t "footer.link2.text" ] ]
+                    , H.p [] [ H.a [ A.href <| t "footer.link1.url", A.target "_blank" ] [ H.text <| t "footer.link1.text" ] ]
+                    , H.p [] [ H.a [ A.href <| t "footer.link2.url", A.target "_blank" ] [ H.text <| t "footer.link2.text" ] ]
                     , H.p [] [ H.a [ A.href <| t "footer.link3.url" ] [ H.text <| t "footer.link3.text" ] ]
                     ]
                         ++ (if Models.User.isAdmin userMaybe then
