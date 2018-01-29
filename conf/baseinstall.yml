@@ -74,10 +74,22 @@
     - name: add deploy hook
       copy: src=deploy.sh dest=/srv/tradenomiitti.git/hooks/post-receive mode=0755
     
-    # database configuration
-    - name: database configuration
-      template: src=app.json dest=/srv/app.json 
+    - name: create run script
+      template: src=run.sh dest=/srv/run.sh mode="u=rwx,o=rx,g=rx"
+
+    - name: disable pm2 if it exists from an older installation
+      service: name={{item}} enabled=no state=stopped
+      with_items: [ pm2, pm2-ubuntu ]
+      ignore_errors: yes
+
+    - name: create run service
+      copy: src=tradenomiitti.service dest=/etc/systemd/system/tradenomiitti.service
+      notify:
+        - restart backend
     
+    - name: enable backend service on boot
+      service: name=tradenomiitti state=started enabled=yes
+
     # create folders for static files and user images
     - name: static folder creation
       file: path=/srv/static/images state=directory mode=0755 owner=ubuntu
@@ -94,3 +106,6 @@
   handlers:
     - name: restart nginx
       service: name=nginx state=restarted
+
+    - name: restart backend
+      service: name=tradenomiitti state=restarted

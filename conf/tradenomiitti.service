@@ -1,0 +1,10 @@
+[Unit]
+Description=Tradenomiitti backend
+
+[Service]
+Type=simple
+ExecStart=/srv/run.sh
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

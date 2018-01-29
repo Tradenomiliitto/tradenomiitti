@@ -22,7 +22,6 @@ $EDITOR conf/inventory.ini # edit with your favorite editor
 ENV_TO_DEPLOY=ENV npm run serverinstallbase
 git remote add ENV ubuntu@SERVER:/srv/tradenomiitti.git
 git push ENV master # for each ENV
-ENV_TO_DEPLOY=ENV npm run serverinstallpm2
 ```
 
 ### Actual deployment
