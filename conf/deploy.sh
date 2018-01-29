@@ -18,4 +18,4 @@ npm run compilefrontend
 npm run compilescss
 npm run compileassets
 
-pm2 gracefulReload all
+sudo systemctl restart tradenomiitti
