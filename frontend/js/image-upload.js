@@ -5,7 +5,7 @@ let details;
 const imageInput =
       `<div class="image-upload__file-input-container">
   <label for="image-input" class="image-upload__file-label btn btn-primary btn-lg">Lataa kuva</label>
-  <input id="image-input" class="image-upload__file-input" type="file" onChange="imageUploadInit();"></input>
+  <input id="image-input" class="image-upload__file-input" type="file" accept=".jpg,.jpeg,.png" onChange="imageUploadInit();"></input>
 </div>` ;
 
 export default function initImageUpload(elm2js, js2elm) {
@@ -91,6 +91,7 @@ export default function initImageUpload(elm2js, js2elm) {
       const request = new XMLHttpRequest();
       request.onreadystatechange = () => {
         if (request.readyState === XMLHttpRequest.DONE) {
+          // TODO: handle errors, e.g. wrong file type
           const fileName = request.responseText;
           details.pictureFileName = fileName;
           const data = {};
