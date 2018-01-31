@@ -14,9 +14,7 @@ knex('users').whereNotExists(knex.select('*').from('remote_user_register').where
     }
     console.log('Users below WILL BE DELETED');
     console.log('-----------------');
-    for (const row of rows) {
-      console.log(`remote_id: ${row.remote_id} email: ${row.settings.email_address} name: ${row.data.name}`);
-    }
+    rows.forEach(row => console.log(`remote_id: ${row.remote_id} email: ${row.settings.email_address} name: ${row.data.name}`));
     console.log('-----------------\n');
     process.stdout.write(`Delete ${rows.length} users (y/n)? `);
     process.stdin.on('keypress', (str, key) => {

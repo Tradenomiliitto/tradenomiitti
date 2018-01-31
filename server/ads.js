@@ -4,7 +4,6 @@ module.exports = function initialize(params) {
   const knex = params.knex;
   const emails = params.emails;
   const service = require('./services/ads')({ knex, util });
-  const sebacon = params.sebacon;
 
   function createAd(req, res, next) {
     if (!req.session || !req.session.id) {
