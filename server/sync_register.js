@@ -91,6 +91,10 @@ knex('remote_user_register').del().then(() => knex('remote_user_register').inser
   })
   .then(() => {
     console.log(`sync_register: ${stats}`);
+    return knex('users').whereNotExists(knex.select('*').from('remote_user_register').whereRaw('users.remote_id = remote_user_register.remote_id')).returning('remote_id');
+  })
+  .then(rows => {
+    console.log(`Users to be pruned: ${rows.length}`);
     console.log('sync_register: [Done]');
     return process.exit(0);
   })
