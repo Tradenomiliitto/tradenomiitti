@@ -67,7 +67,7 @@ function formatData(data) {
 }
 
 
-// Test for duplicates
+// Test for duplicate remote_id and email address
 function validate(data) {
   function compare_id(a, b) {
     if (a.remote_id < b.remote_id) {
