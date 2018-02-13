@@ -55,7 +55,7 @@ module.exports = function initialize(params) {
     } else if (filters.child_age === '12-18 vuotta') {
       query = filterByChildrenAge(query, currentYear - 18, currentYear - 12);
     } else if (filters.child_age === 'Aikuinen') {
-      query = filterByChildrenAge(query, currentYear - 200, currentYear - 12);
+      query = filterByChildrenAge(query, currentYear - 200, currentYear - 18);
     }
 
     if (order === undefined || order === 'recent') {
