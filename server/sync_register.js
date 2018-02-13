@@ -66,6 +66,8 @@ function formatData(data) {
   return newData;
 }
 
+
+// Test for duplicates
 function validate(data) {
   function compare_id(a, b) {
     if (a.remote_id < b.remote_id) {
