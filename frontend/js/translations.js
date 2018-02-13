@@ -18,6 +18,7 @@ const source = {
       domain: 'Valitse toimiala',
       position: 'Valitse tehtäväluokka',
       location: 'Valitse alue',
+      childAge: 'Valitse lapsen ikä',
     },
     lengthHint: {
       needsNMoreChars: 'Vielä vähintään {.} merkkiä',

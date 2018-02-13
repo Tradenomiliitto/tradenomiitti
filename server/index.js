@@ -266,6 +266,17 @@ app.get('/api/toimialat', (req, res) => {
   return res.json(domains.sort());
 });
 
+app.get('/api/lasten_iat', (req, res) => {
+  const child_ages = [
+    'Ei lapsia',
+    '0-6 vuotta',
+    '7-12 vuotta',
+    '13-17 vuotta',
+    'Aikuinen',
+  ];
+  return res.json(child_ages);
+});
+
 app.get('/api/alueet', (req, res, next) => {
   Promise.all([
     knex('users').select(knex.raw("array_agg(distinct data->>'location') as location")).whereNotNull('pw_hash').first(),

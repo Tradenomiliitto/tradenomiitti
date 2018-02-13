@@ -218,6 +218,7 @@ type Filter
     = Domain
     | Position
     | Location
+    | ChildAge
 
 
 prompt : T -> Filter -> String
@@ -232,6 +233,9 @@ prompt t filter =
         Location ->
             t "common.selectFilters.location"
 
+        ChildAge ->
+            t "common.selectFilters.childAge"
+
 
 select :
     T
@@ -244,6 +248,7 @@ select :
             | selectedDomain : Maybe String
             , selectedLocation : Maybe String
             , selectedPosition : Maybe String
+            , selectedChildAge : Maybe String
         }
     -> H.Html msg
 select t class toMsg filter options model =
@@ -258,6 +263,9 @@ select t class toMsg filter options model =
 
                 Location ->
                     Just option == model.selectedLocation
+
+                ChildAge ->
+                    Just option == model.selectedChildAge
     in
     H.span
         [ A.class <| class ++ "__select-container" ]

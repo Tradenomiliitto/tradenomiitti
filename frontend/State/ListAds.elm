@@ -18,6 +18,7 @@ type alias Model =
     , selectedDomain : Maybe String
     , selectedPosition : Maybe String
     , selectedLocation : Maybe String
+    , selectedChildAge : Maybe String
     , removal : Removal.Model
     , sort : Sort
     }
@@ -35,6 +36,7 @@ init =
     , selectedDomain = Nothing
     , selectedPosition = Nothing
     , selectedLocation = Nothing
+    , selectedChildAge = Nothing
     , removal = Removal.init Removal.Ad
     , sort = CreatedDesc
     }

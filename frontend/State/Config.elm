@@ -4,7 +4,6 @@ import Dict exposing (Dict)
 import Json.Decode as Json
 import Json.Decode.Pipeline as P
 import Json.Encode as JS
-import Translation exposing (T)
 import WorkStatus
 
 
@@ -14,6 +13,7 @@ type alias Model =
     , specialSkillOptions : CategoriedOptions
     , educationOptions : Education
     , locationOptions : List String
+    , childAgeOptions : List String
     }
 
 
@@ -77,6 +77,7 @@ init =
     , specialSkillOptions = []
     , educationOptions = Dict.empty
     , locationOptions = []
+    , childAgeOptions = []
     }
 
 

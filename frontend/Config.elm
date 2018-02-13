@@ -12,6 +12,7 @@ type Msg
     | GetSpecialSkillOptions CategoriedOptions
     | GetEducationOptions Education
     | GetLocationOptions (List String)
+    | GetChildAgeOptions (List String)
 
 
 getDomainOptions : Cmd (UpdateMessage Msg)
@@ -44,6 +45,12 @@ getLocationOptions =
         |> Util.errorHandlingSend GetLocationOptions
 
 
+getChildAgeOptions : Cmd (UpdateMessage Msg)
+getChildAgeOptions =
+    Http.get "/api/lasten_iat" (Json.list Json.string)
+        |> Util.errorHandlingSend GetChildAgeOptions
+
+
 initTasks : Cmd (UpdateMessage Msg)
 initTasks =
     Cmd.batch
@@ -52,6 +59,7 @@ initTasks =
         , getSpecialSkillOptions
         , getEducationOptions
         , getLocationOptions
+        , getChildAgeOptions
         ]
 
 
@@ -72,3 +80,6 @@ update msg model =
 
         GetLocationOptions location ->
             { model | locationOptions = location } ! []
+
+        GetChildAgeOptions childAge ->
+            { model | childAgeOptions = childAge } ! []
