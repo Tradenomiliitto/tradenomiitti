@@ -44,6 +44,19 @@ module.exports = function initialize(params) {
             [filters.specialization]);
       });
     }
+    const currentDate = new Date();
+    const currentYear = currentDate.getFullYear() + (currentDate.getMonth() / 12);
+    if (filters.child_age === 'Ei lapsia') {
+      query = query.whereRaw("users.data->>'children' is null or users.data->>'children' = '[]'");
+    } else if (filters.child_age === '0-6 vuotta') {
+      query = filterByChildrenAge(query, currentYear - 6, currentYear);
+    } else if (filters.child_age === '6-12 vuotta') {
+      query = filterByChildrenAge(query, currentYear - 12, currentYear - 6);
+    } else if (filters.child_age === '12-18 vuotta') {
+      query = filterByChildrenAge(query, currentYear - 18, currentYear - 12);
+    } else if (filters.child_age === 'Aikuinen') {
+      query = filterByChildrenAge(query, currentYear - 200, currentYear - 12);
+    }
 
     if (order === undefined || order === 'recent') {
       query = query
@@ -131,6 +144,12 @@ module.exports = function initialize(params) {
       from_user: from.id,
       to_user: to.id,
     }).then(resp => resp.length > 0);
+  }
+
+  function filterByChildrenAge(query, minYear, maxYear) {
+    return query.whereExists(function whereExists() {
+      this.select('id').from(knex.raw("(select name, id,y+(m-1)/12 as year from (select data->>'name' as name, id,(jsonb_array_elements(data->'children')->>'year')::float as y, (jsonb_array_elements(data->'children')->>'month')::float as m from users) s ) s2 where year between ? and ? and users.id=id", [minYear, maxYear]));
+    });
   }
 
   return {

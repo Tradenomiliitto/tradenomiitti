@@ -17,6 +17,7 @@ type alias Model =
     , selectedLocation : Maybe String
     , selectedSpecialization : String
     , selectedSkill : String
+    , selectedChildAge : Maybe String
     , sort : Sort
     }
 
@@ -35,5 +36,6 @@ init =
     , selectedLocation = Nothing
     , selectedSpecialization = ""
     , selectedSkill = ""
+    , selectedChildAge = Nothing
     , sort = Recent
     }

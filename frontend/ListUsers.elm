@@ -88,6 +88,7 @@ getUsers model =
                 |> QueryString.optional "location" model.selectedLocation
                 |> QueryString.optional "special_skill" (emptyToNothing model.selectedSkill)
                 |> QueryString.optional "specialization" (emptyToNothing model.selectedSpecialization)
+                |> QueryString.optional "child_age" model.selectedChildAge
                 |> QueryString.add "order" (sortToString model.sort)
                 |> QueryString.render
 
@@ -106,6 +107,7 @@ type Msg
     | ChangeLocationFilter (Maybe String)
     | ChangeSpecializationFilter String
     | ChangeSkillFilter String
+    | ChangeChildAgeFilter (Maybe String)
     | ChangeSort Sort
     | NoOp
 
@@ -156,6 +158,9 @@ update msg model =
 
         ChangeSkillFilter value ->
             reInitItems { model | selectedSkill = value }
+
+        ChangeChildAgeFilter value ->
+            reInitItems { model | selectedChildAge = value }
 
         ChangeSort value ->
             reInitItems { model | sort = value }
@@ -255,6 +260,9 @@ view t model config isLoggedIn =
                 , H.div
                     [ A.class "col-xs-12 col-sm-4" ]
                     [ Common.typeaheadInput "list-users__" (t "listUsers.filters.skill") "skills-input" ]
+                , H.div
+                    [ A.class "col-xs-12 col-sm-4" ]
+                    [ Common.select t "list-users" (LocalViewMessage << ChangeChildAgeFilter) ChildAge config.childAgeOptions model ]
                 ]
             ]
         , H.div
