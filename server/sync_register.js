@@ -66,6 +66,31 @@ function formatData(data) {
   return newData;
 }
 
+function validate(data) {
+  function compare_id(a, b) {
+    if (a.remote_id < b.remote_id) {
+      return -1;
+    }
+    if (a.remote_id > b.remote_id) {
+      return 1;
+    }
+    throw new Error(`sync_register: Duplicate remote_id: ${a.remote_id}`);
+  }
+
+  function compare_email(a, b) {
+    if (a.email_address < b.email_address) {
+      return -1;
+    }
+    if (a.email_address > b.email_address) {
+      return 1;
+    }
+    throw new Error(`sync_register: Duplicate email: ${a.email_address}`);
+  }
+
+  data.sort(compare_id);
+  data.sort(compare_email);
+}
+
 // Update the users table
 // Add all new rows based on remote_id
 // Update the email of the existing rows
@@ -77,6 +102,7 @@ let formattedData = null;
 try {
   data = parse(input, { columns: true, relax_column_count: false });
   formattedData = formatData(data);
+  validate(formattedData);
 } catch (err) {
   console.log(`sync_register: Error: ${err.message}`);
   process.exit(1);
