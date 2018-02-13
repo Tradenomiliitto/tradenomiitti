@@ -270,8 +270,8 @@ app.get('/api/lasten_iat', (req, res) => {
   const child_ages = [
     'Ei lapsia',
     '0-6 vuotta',
-    '6-12 vuotta',
-    '12-18 vuotta',
+    '7-12 vuotta',
+    '13-17 vuotta',
     'Aikuinen',
   ];
   return res.json(child_ages);

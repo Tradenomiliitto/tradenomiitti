@@ -49,11 +49,11 @@ module.exports = function initialize(params) {
     if (filters.child_age === 'Ei lapsia') {
       query = query.whereRaw("users.data->>'children' is null or users.data->>'children' = '[]'");
     } else if (filters.child_age === '0-6 vuotta') {
-      query = filterByChildrenAge(query, currentYear - 6, currentYear);
-    } else if (filters.child_age === '6-12 vuotta') {
-      query = filterByChildrenAge(query, currentYear - 12, currentYear - 6);
-    } else if (filters.child_age === '12-18 vuotta') {
-      query = filterByChildrenAge(query, currentYear - 18, currentYear - 12);
+      query = filterByChildrenAge(query, currentYear - 7, currentYear);
+    } else if (filters.child_age === '7-12 vuotta') {
+      query = filterByChildrenAge(query, currentYear - 13, currentYear - 7);
+    } else if (filters.child_age === '13-17 vuotta') {
+      query = filterByChildrenAge(query, currentYear - 18, currentYear - 13);
     } else if (filters.child_age === 'Aikuinen') {
       query = filterByChildrenAge(query, currentYear - 200, currentYear - 18);
     }
@@ -148,7 +148,7 @@ module.exports = function initialize(params) {
 
   function filterByChildrenAge(query, minYear, maxYear) {
     return query.whereExists(function whereExists() {
-      this.select('id').from(knex.raw("(select name, id,y+(m-1)/12 as year from (select data->>'name' as name, id,(jsonb_array_elements(data->'children')->>'year')::float as y, (jsonb_array_elements(data->'children')->>'month')::float as m from users) s ) s2 where year between ? and ? and users.id=id", [minYear, maxYear]));
+      this.select('id').from(knex.raw("(select name, id,y+(m-1)/12 as year from (select data->>'name' as name, id,(jsonb_array_elements(data->'children')->>'year')::float as y, (jsonb_array_elements(data->'children')->>'month')::float as m from users) s ) s2 where year > ? and year <= ? and users.id=id", [minYear, maxYear]));
     });
   }
 
