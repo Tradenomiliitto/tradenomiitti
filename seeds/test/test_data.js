@@ -8,7 +8,7 @@ const aino_data = {
   location: 'Helsinki',
   work_status: 'working',
   contribution: 'Haluan opettaa tennistä',
-  children: [{ year: 2014, month: 4 }],
+  children: [{ year: 2002, month: 4 }],
 };
 
 const sinituuli_data = {
