@@ -48,7 +48,7 @@ module.exports = function initialize(params) {
     const currentYear = currentDate.getFullYear() + (currentDate.getMonth() / 12);
     if (filters.child_age !== undefined) {
       if (filters.child_age === 'Raskaana') {
-        query = filterByChildrenAge(query, currentYear, currentYear + 2);
+        query = filterByChildrenAge(query, currentYear, currentYear + 0.75);
       } else if (filters.child_age === '0 vuotta') {
         query = filterByChildrenAge(query, currentYear - 1, currentYear);
       } else if (filters.child_age === '1-3 vuotta') {
