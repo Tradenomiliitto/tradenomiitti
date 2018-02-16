@@ -97,7 +97,7 @@ describe('Handle users', () => {
 
   it('should filter by child age and return one user', () => {
     MockDate.set(aDate);
-    return service.listProfiles(false, undefined, undefined, { child_age: '0-6 vuotta' }, 'recent')
+    return service.listProfiles(false, undefined, undefined, { child_age: '0 vuotta' }, 'recent')
       .then(users => {
         users.should.have.length(1);
         return users[0].id.should.equal(2);
@@ -106,7 +106,7 @@ describe('Handle users', () => {
 
   it('should filter by child age and return none', () => {
     MockDate.set(aDate);
-    return service.listProfiles(false, undefined, undefined, { child_age: 'Aikuinen' }, 'recent')
+    return service.listProfiles(false, undefined, undefined, { child_age: '18- vuotta' }, 'recent')
       .then(users => users.should.have.length(0));
   });
 });

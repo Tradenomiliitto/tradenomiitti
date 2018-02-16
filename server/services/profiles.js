@@ -46,16 +46,24 @@ module.exports = function initialize(params) {
     }
     const currentDate = new Date();
     const currentYear = currentDate.getFullYear() + (currentDate.getMonth() / 12);
-    if (filters.child_age === 'Ei lapsia') {
-      query = query.whereRaw("users.data->>'children' is null or users.data->>'children' = '[]'");
-    } else if (filters.child_age === '0-6 vuotta') {
-      query = filterByChildrenAge(query, currentYear - 7, currentYear);
-    } else if (filters.child_age === '7-12 vuotta') {
-      query = filterByChildrenAge(query, currentYear - 13, currentYear - 7);
-    } else if (filters.child_age === '13-17 vuotta') {
-      query = filterByChildrenAge(query, currentYear - 18, currentYear - 13);
-    } else if (filters.child_age === 'Aikuinen') {
-      query = filterByChildrenAge(query, currentYear - 200, currentYear - 18);
+    if (filters.child_age !== undefined) {
+      if (filters.child_age === 'Raskaana') {
+        query = filterByChildrenAge(query, currentYear, currentYear + 2);
+      } else if (filters.child_age === '0 vuotta') {
+        query = filterByChildrenAge(query, currentYear - 1, currentYear);
+      } else if (filters.child_age === '1-3 vuotta') {
+        query = filterByChildrenAge(query, currentYear - 4, currentYear - 1);
+      } else if (filters.child_age === '4-6 vuotta') {
+        query = filterByChildrenAge(query, currentYear - 7, currentYear - 4);
+      } else if (filters.child_age === '7-10 vuotta') {
+        query = filterByChildrenAge(query, currentYear - 11, currentYear - 7);
+      } else if (filters.child_age === '11-14 vuotta') {
+        query = filterByChildrenAge(query, currentYear - 15, currentYear - 11);
+      } else if (filters.child_age === '15-17 vuotta') {
+        query = filterByChildrenAge(query, currentYear - 18, currentYear - 15);
+      } else if (filters.child_age === '18- vuotta') {
+        query = filterByChildrenAge(query, currentYear - 200, currentYear - 18);
+      }
     }
 
     if (order === undefined || order === 'recent') {
