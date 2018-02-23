@@ -668,9 +668,6 @@ logo t =
             ]
             [ H.span [] [ H.text "MiBiT" ]
             ]
-        , H.span [ A.class "navbar-brand__beta" ]
-            [ H.text "BETA"
-            ]
         ]
 
 
