@@ -74,6 +74,7 @@ const source = {
   createAd: {
     headingInputPlaceholder: 'Otsikko',
     adInputPlaceholder: 'Kirjoita ytimekäs ilmoitus',
+    info: 'Ilmoituksen avulla voit esimerkiksi hakea muilta vinkkejä johonkin osaamisalueeseen, kysyä kokemuksia, pyytää apua, jakaa osaamistasi tai hakea seuraa. Huomioithan, että kuhunkin ilmoitukseen voi vastata vain kerran ja että omaan ilmoitukseen ei voi vastata.',
     filtersHeading: 'Kenen toivot vastaavan?',
     filtersInfo: 'Valitsemalla toimialan tai tehtävän varmistat, että kysymyksesi löytää vastaajansa. Valittu kohderyhmä saa myös ilmoituksesi sähköpostina.',
     submit: 'Julkaise ilmoitus',
@@ -170,6 +171,7 @@ const source = {
   },
   listAds: {
     heading: 'Selaa ilmoituksia',
+    info: 'Kirjautuneena käyttäjänä voit vastata muiden ilmoituksiin. Voit vastata kuhunkin ilmoitukseen yhden kerran. Sen jälkeen on suositeltavaa vaihtaa käyntikortteja, mikäli haluatte vielä jatkaa keskustelua. Omaan ilmoitukseesi et voi vastata.',
     sort: {
       date: 'Päivämäärä',
       answerCount: 'Vastauksia',
@@ -258,12 +260,12 @@ const source = {
     },
     publicInfo: {
       heading: 'Julkiset tiedot',
-      hint: 'Valitse itsellesi käyttäjänimi (yleisimmin etunimi) ja kuvaava titteli. Esittele itsesi ja osaamisesi muille kuvaavalla tekstillä',
+      hint: 'Valitse itsellesi käyttäjänimi (yleisimmin etunimi) ja kuvaava titteli. Täytäthän tiedot mahdollisimman kattavasti, jolloin profiilisi löytyy hakutuloksista helpommin ja näin muut mibiläiset pääsevät tutustumaan sinuun.\n\nRaskauden voit ilmoittaa merkitsemällä lasketun ajan.',
     },
     businessCard: {
       heading: 'Käyntikortti',
       hint: 'Täydennä alle tiedot, jotka haluat lähettää käyntikortin mukana. ',
-      visibleForRecipients: 'Tiedot näkyvät vain niille, joille olet lähettänyt kortin',
+      visibleForRecipients: 'Tiedot näkyvät vain niille, joille olet lähettänyt kortin.',
       notFound: 'Käyntikorttia ei löytynyt',
     },
     businessCardFields: {
@@ -367,7 +369,7 @@ const source = {
     joinLink: 'liittyä tästä',
     joinUrl: 'http://www.mothersinbusiness.fi/jaseneksi/',
     emailPlaceholder: 'Sähköpostiosoite',
-    consentText: 'Rekisteröitymällä hyväksyn MiB ry:n jäsentietojeni käytön MiBiT-palvelussa',
+    consentText: 'Rekisteröitymällä hyväksyn MiB ry:n jäsentietojeni käytön MiBiT-palvelussa ja palvelun viestinnässä',
     buttonText: 'Lähetä',
     success: 'Rekisteröintilinkki lähetetty!',
     failure: 'Jotain meni pieleen. Varmista, että kirjoitit sähköpostiosoitteesi oikein. Huomioi myös, että palvelu on tarkoitettu vain MiBin jäsenille.',
