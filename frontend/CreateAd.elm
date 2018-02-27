@@ -115,6 +115,7 @@ view t config model =
                             , A.value model.content
                             ]
                             []
+                        , H.p [] [ H.text <| t "createAd.info" ]
                         ]
                     , H.div
                         [ A.class "col-xs-12 col-sm-5 create-ad__filters-submit" ]

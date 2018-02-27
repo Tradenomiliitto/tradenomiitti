@@ -192,6 +192,7 @@ view t loggedInUserMaybe model config =
                     [ H.h1
                         [ A.class "list-ads__header" ]
                         [ H.text <| t "listAds.heading" ]
+                    , H.p [ A.class "list-ads__info" ] [ H.text <| t "listAds.info" ]
                     ]
                 ]
             , H.div
