@@ -116,6 +116,8 @@ update users set data = '{ "name": "[poistettu]" }', settings='{}' where remote_
 delete from skills where user_id = (select id from users where remote_id = :remote_id);
 delete from user_educations where user_id = (select id from users where remote_id = :remote_id);
 delete from user_special_skills where user_id = (select id from users where remote_id = :remote_id);
+delete from sessions where user_id = (select id from users where remote_id = :remote_id);
+update users set remote_id = -1 where remote_id = :remote_id;
 ```
 
 ### Completely remove user and all their content, including others' replies to their ads
