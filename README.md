@@ -104,6 +104,26 @@ npm test
 npm run testFrontend
 ```
 
+## Removal of profile
+
+Replace REMOTE_ID with the remote ID you want to remove.
+
+### Make user anonymous, but keep ads and replies
+
+```
+\set remote_id '\'' REMOTE_ID '\''
+update users set data = '{ "name": "[poistettu]" }', settings='{}' where remote_id = :remote_id;
+delete from skills where user_id = (select id from users where remote_id = :remote_id);
+delete from user_educations where user_id = (select id from users where remote_id = :remote_id);
+delete from user_special_skills where user_id = (select id from users where remote_id = :remote_id);
+```
+
+### Completely remove user and all their content, including others' replies to their ads
+
+```
+delete from users where remote_id = 'REMOTE_ID';
+```
+
 ## License
 
 Copyright (C) 2017  Tradenomiliitto and others, see AUTHORS
