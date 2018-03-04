@@ -2,6 +2,8 @@
 
 Tradenomiitti is a social web service for members of the trade union Tradenomiliitto. It is up and running at https://tradenomiitti.fi and you can read more about it in [the press release](https://www.sttinfo.fi/tiedote/tradenomien-uusi-palvelu-tarjoaa-rekrytointiapua-ja-mentorointia?publisherId=59695169&releaseId=59695181) (in Finnish) and more about why it's open source [the blog post](http://futurice.com/blog/open-sourcing-a-client-project)
 
+A [fork](https://github.com/futurice/mibit) for a different community, the members of organization [Mothers in Business](http://mothersinbusiness.fi/), is running at https://mibit.mib.fi/ and you can read more about that in [the info page](http://mothersinbusiness.fi/mibit/).
+
 ## Deployment
 
 ### Server installation
