@@ -204,7 +204,7 @@ module.exports = function initialize(params) {
   function putAnyimage(req, res, size, originalBuffer, crop) {
     const fileType = getFileType(originalBuffer);
     const extension = fileType && fileType.ext;
-    if (!['png', 'jpg'].includes(extension)) { return res.status(400).send('Wrong file format'); }
+    if (!['png', 'jpg', 'jpeg'].includes(extension)) { return Promise.resolve(res.status(400).send('Wrong file format')); }
 
     const commonTasks = gm(originalBuffer)
       .autoOrient() // avoid rotating exif issues
