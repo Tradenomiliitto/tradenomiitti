@@ -3,6 +3,7 @@ module.exports = function init(params) {
   const knex = params.knex;
   const util = params.util;
   const service = require('./services/adNotifications')({ knex, util });
+  const MAXIMUM_RANDOM_DELAY_SECONDS = 180;
 
   function sendNotifications() {
     return service.notificationObjects()
@@ -18,7 +19,8 @@ module.exports = function init(params) {
             Promise.all(notification.ads.map(ad => util.formatAd(ad, true)));
           return knex('user_ad_notifications').insert(notificationRows)
             .then(() => Promise.all([util.userById(user.id), formattedAdsPromise]))
-            .then(([dbUser, ads]) => emails.sendNotificationForAds(dbUser, ads));
+            .then(([dbUser, ads]) => setTimeout(() => emails.sendNotificationForAds(dbUser, ads),
+              MAXIMUM_RANDOM_DELAY_SECONDS * Math.random() * 1000));
         });
         return Promise.all(promises);
       })
