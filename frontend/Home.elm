@@ -111,7 +111,7 @@ introBoxes t loggedInUserMaybe =
                         [ A.class "home__introbox home__introbox--button-container col-xs-11 col-sm-4 col-sm-offset-4" ]
                         [ Link.button (t "home.introbox.createProfile")
                             "home__introbox--button btn btn-primary"
-                            (Nav.LoginNeeded (Nav.Profile |> Nav.routeToPath |> Just))
+                            (Nav.LoginNeeded (Nav.ToProfile |> Nav.routeToPath |> Just))
                         ]
                     ]
     in
@@ -232,10 +232,12 @@ listUsersButtons t loggedInUserMaybe =
                 t "home.listUsers.buttonCreateProfile"
             )
             "home__section--heading--buttons--normal btn btn-primary"
-            (if Maybe.isJust loggedInUserMaybe then
-                Nav.Profile
-             else
-                Nav.LoginNeeded << Just << Nav.routeToPath <| Nav.Profile
+            (case loggedInUserMaybe of
+                Just user ->
+                    Nav.Profile user.id
+
+                Nothing ->
+                    Nav.LoginNeeded << Just << Nav.routeToPath <| Nav.ToProfile
             )
         ]
 

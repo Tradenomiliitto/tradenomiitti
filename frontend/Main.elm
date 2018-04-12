@@ -153,7 +153,7 @@ update msg model =
                     model.scrollTop
 
                 route =
-                    parseLocation location
+                    parseLocation model.profile.user location
 
                 modelWithRoute =
                     { model | route = route, scrollTop = False }
@@ -171,7 +171,7 @@ update msg model =
                                 AdMessage
                                 (Ad.getAd adId)
 
-                        Profile ->
+                        Profile id ->
                             let
                                 cleanProfile =
                                     State.Profile.init
@@ -209,11 +209,19 @@ update msg model =
 
                         User userId ->
                             if Just userId == Maybe.map .id model.profile.user then
-                                { model | route = Profile } ! [ Navigation.modifyUrl (routeToPath Profile) ]
+                                { model | route = Profile userId } ! []
                             else
                                 initWithUpdateMessage { modelWithRoute | user = State.User.init }
                                     UserMessage
                                     (User.initTasks userId)
+
+                        ToProfile ->
+                            case model.profile.user of
+                                Just user ->
+                                    { model | route = Profile user.id } ! [ Navigation.modifyUrl (routeToPath (Profile user.id)) ]
+
+                                Nothing ->
+                                    model ! [ Navigation.newUrl (routeToPath (Nav.LoginNeeded << Just << Nav.routeToPath <| Nav.ToProfile)) ]
 
                         ListUsers ->
                             let
@@ -244,7 +252,7 @@ update msg model =
                         ( CreateAd, False, False ) ->
                             True
 
-                        ( Profile, False, False ) ->
+                        ( ToProfile, False, False ) ->
                             True
 
                         ( Settings, False, False ) ->
@@ -657,16 +665,16 @@ viewProfileLink t model =
                     { stopPropagation = False
                     , preventDefault = True
                     }
-                    (Json.succeed <| NewUrl Profile)
+                    (Json.succeed <| NewUrl ToProfile)
                 ]
             else
                 []
 
         endpoint =
             if loggedIn then
-                routeToPath Profile
+                routeToPath ToProfile
             else
-                ssoUrl model.rootUrl (routeToPath Profile |> Just)
+                ssoUrl model.rootUrl (routeToPath ToProfile |> Just)
 
         linkText =
             model.profile.user
@@ -724,8 +732,11 @@ viewPage model =
                 User userId ->
                     unpackViewMessage UserMessage <| User.view t model.user model.profile.user model.config
 
-                Profile ->
+                Profile userId ->
                     unpackViewMessage ProfileMessage <| Profile.View.view t model.profile model
+
+                ToProfile ->
+                    notImplementedYet t
 
                 LoginNeeded route ->
                     LoginNeeded.view t <| ssoUrl model.rootUrl route
