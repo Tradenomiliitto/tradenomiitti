@@ -44,7 +44,7 @@ initState translations location =
         initialSettings =
             State.Settings.init
     in
-    { route = parseLocation location
+    { route = parseLocation Nothing location
     , rootUrl = location.origin
     , scrollTop = True -- initially start at top and init
     , user = State.User.init

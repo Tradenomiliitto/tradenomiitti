@@ -36,7 +36,7 @@ profileTopRow t user editing profileTab saveOrEdit =
         tabToNav tab =
             case tab of
                 ProfileTab ->
-                    Nav.Profile
+                    Nav.Profile user.id
 
                 SettingsTab ->
                     Nav.Settings

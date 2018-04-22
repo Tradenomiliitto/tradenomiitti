@@ -1,5 +1,6 @@
 module Nav exposing (..)
 
+import Models.User
 import Navigation
 import Translation as T exposing (T)
 import UrlParser as U exposing ((</>), (<?>))
@@ -14,7 +15,8 @@ type Route
     | Home
     | Info
     | NotFound
-    | Profile
+    | Profile Int
+    | ToProfile
     | User Int
     | LoginNeeded (Maybe String)
     | Terms
@@ -51,8 +53,11 @@ routeToPath route =
         NotFound ->
             "/notfound"
 
-        Profile ->
-            "/profiili"
+        Profile userId ->
+            "/tradenomit/" ++ toString userId
+
+        ToProfile ->
+            "/profiili/"
 
         User userId ->
             "/tradenomit/" ++ toString userId
@@ -80,7 +85,10 @@ routeToString t route =
             t "navigation.routeNames.user"
                 |> T.replaceWith [ toString userId ]
 
-        Profile ->
+        Profile userId ->
+            t "navigation.routeNames.profile"
+
+        ToProfile ->
             t "navigation.routeNames.profile"
 
         Home ->
@@ -121,11 +129,11 @@ routeToString t route =
             t "navigation.routeNames.contacts"
 
 
-parseLocation : Navigation.Location -> Route
-parseLocation location =
+parseLocation : Maybe Models.User.User -> Navigation.Location -> Route
+parseLocation user location =
     let
         route =
-            U.parsePath routeParser location
+            U.parsePath (routeParser user) location
     in
     case route of
         Just route ->
@@ -135,8 +143,8 @@ parseLocation location =
             NotFound
 
 
-routeParser : U.Parser (Route -> a) a
-routeParser =
+routeParser : Maybe Models.User.User -> U.Parser (Route -> a) a
+routeParser user =
     U.oneOf
         [ U.map CreateAd (U.s "ilmoitukset" </> U.s "uusi")
         , U.map ShowAd (U.s "ilmoitukset" </> U.int)
@@ -144,8 +152,15 @@ routeParser =
         , U.map ListUsers (U.s "tradenomit")
         , U.map Home (U.s "")
         , U.map Info (U.s "tietoa")
-        , U.map Profile (U.s "profiili")
-        , U.map User (U.s "tradenomit" </> U.int)
+        , U.map ToProfile (U.s "profiili")
+        , U.map
+            (\id ->
+                if Just id == Maybe.map .id user then
+                    Profile id
+                else
+                    User id
+            )
+            (U.s "tradenomit" </> U.int)
         , U.map LoginNeeded (U.s "kirjautuminen-tarvitaan" <?> U.stringParam "seuraava")
         , U.map Terms (U.s "kayttoehdot")
         , U.map RegisterDescription (U.s "rekisteriseloste")
