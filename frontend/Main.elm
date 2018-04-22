@@ -736,6 +736,7 @@ viewPage model =
                     unpackViewMessage ProfileMessage <| Profile.View.view t model.profile model
 
                 ToProfile ->
+                    -- Never shown to user, used just for redirection
                     notImplementedYet t
 
                 LoginNeeded route ->
