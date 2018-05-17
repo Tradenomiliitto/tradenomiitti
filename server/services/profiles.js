@@ -76,11 +76,11 @@ module.exports = function initialize(params) {
     }
 
     if (order === 'alphaDesc') {
-      query = query.orderByRaw("lower(users.data->>'name') desc");
+      query = query.orderByRaw("lower(users.data->>'name') desc, users.id asc");
     }
 
     if (order === 'alphaAsc') {
-      query = query.orderByRaw("lower(users.data->>'name') asc");
+      query = query.orderByRaw("lower(users.data->>'name') asc, users.id asc");
     }
 
     return query.then(resp =>
