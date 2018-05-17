@@ -12,6 +12,7 @@ type Sort
 type alias Model =
     { users : List User
     , cursor : Int
+    , receivedCount : Int
     , selectedDomain : Maybe String
     , selectedPosition : Maybe String
     , selectedLocation : Maybe String
@@ -31,6 +32,7 @@ init : Model
 init =
     { users = []
     , cursor = 0
+    , receivedCount = 0
     , selectedDomain = Nothing
     , selectedPosition = Nothing
     , selectedLocation = Nothing

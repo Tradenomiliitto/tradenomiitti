@@ -46,7 +46,7 @@ update msg model =
                 ! []
 
         FooterAppeared ->
-            if Common.shouldNotGetMoreOnFooter model.ads model.cursor then
+            if Common.shouldNotGetMoreOnFooter (List.length model.ads) model.cursor then
                 model ! []
             else
                 model ! [ getAds model ]

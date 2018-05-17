@@ -125,7 +125,7 @@ reInitItems : Model -> ( Model, Cmd (UpdateMessage Msg) )
 reInitItems model =
     let
         newModel =
-            { model | users = [], cursor = 0 }
+            { model | users = [], cursor = 0, receivedCount = 0 }
     in
     newModel ! [ getUsers newModel ]
 
@@ -138,12 +138,13 @@ update msg model =
                 | users = List.uniqueBy .id <| model.users ++ users
 
                 -- always advance by full amount, so we know when to stop asking for more
+                , receivedCount = model.receivedCount + List.length users
                 , cursor = model.cursor + limit
             }
                 ! []
 
         FooterAppeared ->
-            if Common.shouldNotGetMoreOnFooter model.users model.cursor then
+            if Common.shouldNotGetMoreOnFooter model.receivedCount model.cursor then
                 model ! []
             else
                 model ! [ getUsers model ]
