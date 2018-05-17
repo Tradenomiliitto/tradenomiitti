@@ -312,9 +312,9 @@ typeaheadInput classPrefix placeholder id =
 -}
 
 
-shouldNotGetMoreOnFooter : List a -> Int -> Bool
-shouldNotGetMoreOnFooter list cursor =
-    cursor > List.length list || cursor == 0
+shouldNotGetMoreOnFooter : Int -> Int -> Bool
+shouldNotGetMoreOnFooter receivedCount cursor =
+    cursor > receivedCount || cursor == 0
 
 
 chunk2 : List a -> List (List a)
