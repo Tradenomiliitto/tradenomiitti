@@ -12,9 +12,10 @@ module.exports = function initialize(params) {
       })
       .then(() =>
         knex('users')
-          .select('users.remote_id')
-          .select(knex.raw('users.data->>\'name\' as nickname'))
-          .select(knex.raw('users.settings->>\'email_address\' as email'))
+          // Stats anonymized - left for possible future use
+          // .select('users.remote_id')
+          // .select(knex.raw('users.data->>\'name\' as nickname'))
+          // .select(knex.raw('users.settings->>\'email_address\' as email'))
           .select(knex.raw('users.data->>\'profile_creation_consented\' as profile_created'))
           .select(knex.raw('(select count(*) from events where type = \'login_success\' and (events.data->>\'user_id\')::int = users.id) as login_count'))
           .select(knex.raw('(select count(*) from contacts where contacts.from_user = users.id) as sent_business_cards'))
