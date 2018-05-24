@@ -107,6 +107,10 @@ const source = {
     },
   },
   footer: {
+    link0: {
+      url: 'http://www.mothersinbusiness.fi/tietosuoja',
+      text: 'Tietosuojaseloste',
+    },
     link1: {
       url: 'http://www.mothersinbusiness.fi',
       text: 'Mothers in Business MiB ry',
@@ -369,7 +373,8 @@ const source = {
     joinLink: 'liittyä tästä',
     joinUrl: 'http://www.mothersinbusiness.fi/jaseneksi/',
     emailPlaceholder: 'Sähköpostiosoite',
-    consentText: 'Rekisteröitymällä hyväksyn MiB ry:n jäsentietojeni käytön MiBiT-palvelussa ja palvelun viestinnässä',
+    consentText: 'Rekisteröitymällä hyväksyn MiB ry:n jäsentietojeni käytön MiBiT-palvelussa ja palvelumarkkinoinnissa ja viestinnässä. Tutustu MiB ry:n tietosuojaselosteeseen osoitteessa ',
+    consentLink: 'http://mothersinbusiness.fi/tietosuoja/',
     buttonText: 'Lähetä',
     success: 'Rekisteröintilinkki lähetetty!',
     failure: 'Jotain meni pieleen. Varmista, että kirjoitit sähköpostiosoitteesi oikein. Huomioi myös, että palvelu on tarkoitettu vain MiBin jäsenille.',

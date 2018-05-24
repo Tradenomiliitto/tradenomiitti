@@ -115,6 +115,9 @@ registrationForm t model errorMessage =
                         []
                     , H.div [ A.class "registration__consent-text" ]
                         [ H.text (t "registration.consentText")
+                        , H.a
+                            [ A.href <| t "registration.consentLink", A.target "_blank" ]
+                            [ H.text <| t "registration.consentLink" ]
                         ]
                     ]
                 , errorMessage
