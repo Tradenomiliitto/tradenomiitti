@@ -26,6 +26,7 @@
         - git
         - python-psycopg2
         - graphicsmagick
+        - fail2ban
 
     - name: install nginx basic auth password file
       template: src=passwd dest=/etc/nginx/passwd
@@ -41,7 +42,12 @@
       copy: src=journald.conf dest=/etc/systemd/journald.conf
       notify:
         - restart journald
-      
+
+    - name: Configure fail2ban
+      copy: src=fail2ban-jail.local dest=/etc/fail2ban/jail.local
+      notify:
+        - restart fail2ban
+
     - name: create database user
       become_user: postgres
       postgresql_user:
@@ -56,7 +62,7 @@
 
     - name: ensure base services are running
       service: name={{item}} state=started enabled=yes
-      with_items: [ nginx, postgresql ]
+      with_items: [ nginx, postgresql, fail2ban ]
 
     # Set up deployment by git push env master
     - name: make base directories
@@ -117,3 +123,6 @@
 
     - name: restart journald
       service: name=systemd-journald state=restarted
+
+    - name: restart fail2ban
+      service: name=fail2ban state=restarted
