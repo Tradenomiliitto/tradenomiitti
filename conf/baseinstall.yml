@@ -36,6 +36,11 @@
       template: src=nginx.conf dest=/etc/nginx/nginx.conf
       notify:
         - restart nginx
+
+    - name: Enable persistent journal
+      copy: src=journald.conf dest=/etc/systemd/journald.conf
+      notify:
+        - restart journald
       
     - name: create database user
       become_user: postgres
@@ -109,3 +114,6 @@
 
     - name: restart backend
       service: name=tradenomiitti state=restarted
+
+    - name: restart journald
+      service: name=systemd-journald state=restarted
