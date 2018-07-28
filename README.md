@@ -9,10 +9,12 @@ A [fork](https://github.com/futurice/mibit) for a different community, the membe
 ### Server installation
 
 Server installation for Tradenomiitti uses [Ansible](https://docs.ansible.com/).
-The included install configuration assumes Ubuntu with passwordless sudo access
-over SSH with the user `ubuntu` and Python 2 installed on the server and
-symlinked to `python`. The server needs to have a public IP and a public domain
-pointing at it, or else Let's encrypt will fail.
+You need to have a recent enough version of Ansible locally, at least 2.0.0.2
+which is included in Ubuntu 16.04 does not work. The included install
+configuration assumes Ubuntu with passwordless sudo access over SSH with the
+user `ubuntu` and Python 2 installed on the server and symlinked to `python`.
+The server needs to have a public IP and a public domain pointing at it, or else
+Let's encrypt will fail.
 
 You can install servers by running (replace ENV with dev, qa, or prod - defaults to dev if ENV_TO_DEPLOY is not specified):
 
