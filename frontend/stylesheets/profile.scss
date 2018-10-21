@@ -189,19 +189,35 @@
     text-transform: uppercase;
   }
 
+  $marker-margin-right: 7px;
   &__location {
     &--marker {
-      margin-right: 5px;
+      margin-right: $marker-margin-right;
       width: 20px;
       @include ie-only {
         height: 100%;
       }
     }
+
     &--text {
       position: relative;
       top: 3px;
     }
   }
+
+  &__marker {
+    width: 20px;
+    font-size: 20px;
+    margin-right: $marker-margin-right;
+    display: inline-block;
+    text-align: center;
+    color: black;
+  }
+
+  &__detail {
+    margin-top: 7px;
+  }
+
   &__business-card {
     background-color: $light-grey;
     &-view {

@@ -71,6 +71,9 @@
       @include placeholder-color-primary;
     }
     font-weight: bold;
+    margin-bottom: 7px;
+    display: flex;
+    margin-top: 9px;
   }
 
   &__description {

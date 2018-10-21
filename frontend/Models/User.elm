@@ -1,4 +1,4 @@
-module Models.User exposing (..)
+module Models.User exposing (BusinessCard, Contact, Education, Extra, PictureEditing, Settings, User, businessCardDecoder, businessCardEncode, contactDecoder, educationDecoder, educationEncode, encode, isAdmin, pictureEditingDecoder, pictureEditingEncode, settingsDecoder, settingsEncode, userDecoder, userExtraDecoder)
 
 import Date
 import Json.Decode as Json
@@ -6,6 +6,7 @@ import Json.Decode.Extra exposing (date)
 import Json.Decode.Pipeline as P
 import Json.Encode as JS
 import Skill
+
 
 
 -- data in Extra comes from the api
@@ -67,6 +68,7 @@ type alias User =
     , education : List Education
     , isAdmin : Bool
     , memberId : Maybe Int
+    , contributionStatus : String
     }
 
 
@@ -106,6 +108,7 @@ userDecoder =
                     (\str ->
                         if String.length str == 0 then
                             Nothing
+
                         else
                             Just str
                     )
@@ -117,6 +120,7 @@ userDecoder =
         |> P.required "education" (Json.list educationDecoder)
         |> P.optional "is_admin" Json.bool False
         |> P.optional "member_id" (Json.map Just Json.int) Nothing
+        |> P.optional "contribution" Json.string ""
 
 
 encode : User -> JS.Value
@@ -128,6 +132,7 @@ encode user =
         , ( "domains", JS.list (List.map Skill.encode user.domains) )
         , ( "positions", JS.list (List.map Skill.encode user.positions) )
         , ( "location", JS.string user.location )
+        , ( "contribution", JS.string user.contributionStatus )
         , ( "cropped_picture", JS.string (user.croppedPictureFileName |> Maybe.withDefault "") )
         , ( "special_skills", JS.list (List.map JS.string user.skills) )
         , ( "education", educationEncode user.education )
