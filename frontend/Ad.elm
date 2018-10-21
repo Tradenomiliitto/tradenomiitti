@@ -1,4 +1,4 @@
-module Ad exposing (..)
+module Ad exposing (Msg(..), getAd, leaveAnswer, leaveAnswerBox, leaveAnswerPrompt, sendAnswer, update, view, viewAd, viewAnswer, viewAnswerCount, viewAnswerList, viewAnswers, viewDate)
 
 import Common
 import Date
@@ -130,6 +130,7 @@ viewAd t adId model userMaybe rootUrl ad =
                         [ H.text << String.join "; " <| items ]
                     ]
                 ]
+
             else
                 []
 
@@ -166,6 +167,7 @@ viewAd t adId model userMaybe rootUrl ad =
                 , leaveAnswer <|
                     if model.addingAnswer then
                         List.map (H.map LocalViewMessage) <| leaveAnswerBox t (model.sending == Sending) model.answerText adId
+
                     else
                         leaveAnswerPrompt t canAnswer isAsker hasAnswered loggedIn adId
                 ]
@@ -304,6 +306,7 @@ leaveAnswerBox t sending text adId =
                 , A.disabled (String.length text < 10 || String.length text > 1000)
                 ]
                 [ H.text <| t "ad.leaveAnswerBox.submit" ]
+
           else
             H.div [ A.class "ad-page__sending" ] []
         ]
@@ -312,36 +315,22 @@ leaveAnswerBox t sending text adId =
 
 leaveAnswerPrompt : T -> Bool -> Bool -> Bool -> Bool -> Int -> List (H.Html (ViewMessage Msg))
 leaveAnswerPrompt t canAnswer isAsker hasAnswered loggedIn adId =
-    if isAsker then
-        [ H.p
-            [ A.class "ad-page__leave-answer-text" ]
-            [ H.text <| t "ad.leaveAnswerPrompt.isAsker" ]
+    [ H.p
+        [ A.class "ad-page__leave-answer-text" ]
+        [ H.text <| t "ad.leaveAnswerPrompt.hint" ]
+    , H.button
+        [ A.class "btn btn-primary btn-lg ad-page__leave-answer-button"
+        , if loggedIn then
+            E.onClick (LocalViewMessage StartAddAnswer)
+
+          else
+            Link.action (Nav.LoginNeeded (Nav.ShowAd adId |> Nav.routeToPath |> Just))
+        , A.title <|
+            t
+                "ad.leaveAnswerPrompt.answerTooltip"
         ]
-    else if hasAnswered then
-        [ H.p
-            [ A.class "ad-page__leave-answer-text" ]
-            [ H.text <| t "ad.leaveAnswerPrompt.hasAnswered" ]
-        ]
-    else
-        [ H.p
-            [ A.class "ad-page__leave-answer-text" ]
-            [ H.text <| t "ad.leaveAnswerPrompt.hint" ]
-        , H.button
-            [ A.class "btn btn-primary btn-lg ad-page__leave-answer-button"
-            , if loggedIn then
-                E.onClick (LocalViewMessage StartAddAnswer)
-              else
-                Link.action (Nav.LoginNeeded (Nav.ShowAd adId |> Nav.routeToPath |> Just))
-            , A.disabled (not canAnswer && loggedIn)
-            , A.title
-                (if canAnswer || not loggedIn then
-                    t "ad.leaveAnswerPrompt.answerTooltip"
-                 else
-                    t "ad.leaveAnswerPrompt.cannotAnswerTooltip"
-                )
-            ]
-            [ H.text <| t "ad.leaveAnswerPrompt.submit" ]
-        ]
+        [ H.text <| t "ad.leaveAnswerPrompt.submit" ]
+    ]
 
 
 leaveAnswer : List (H.Html (ViewMessage Msg)) -> H.Html (ViewMessage Msg)

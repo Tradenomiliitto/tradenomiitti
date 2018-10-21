@@ -70,11 +70,6 @@ module.exports = function initialize(params) {
       util.userForSession(req),
     ])
       .then(([ad, answers, user]) => {
-        const isAsker = ad.user_id === user.id;
-        if (isAsker) return Promise.reject('User tried to answer own question');
-
-        const alreadyAnswered = answers.some(a => a.user_id === user.id);
-        if (alreadyAnswered) return Promise.reject('User tried to answer several times');
         return Promise.all([
           knex('answers').insert({
             user_id: user.id,
