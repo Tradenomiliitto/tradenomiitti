@@ -23,6 +23,17 @@ const sinituuli_data = {
   children: [{ year: 2017, month: 6 }, { year: 2015, month: 3 }, { year: 2014, month: 1 }],
 };
 
+const member_data = {
+  Etunimi: '',
+  Sukunimi: '',
+  Paikallisjaosto: '',
+  Sähköpostiosoite: '',
+  Matkapuhelinnumero: '',
+  Lähiosoite: '',
+  Postinumero: '',
+  Postitoimipaikka: ''
+};
+
 exports.seed = function(knex, Promise) {
   // Deletes ALL existing entries
   return knex('users').del()
@@ -32,6 +43,7 @@ exports.seed = function(knex, Promise) {
         remote_id: -1,
         settings: { isAdmin: true, email_address: 'test@test.com' },
         data: aino_data,
+        member_data,
         pw_hash: '$2a$10$v0TXETGJwbBq73NZyWO4qOsw19P1Js3VXFosacTxb72QU3B/RP.sW',
       }))
     .then(() =>
@@ -40,6 +52,7 @@ exports.seed = function(knex, Promise) {
         remote_id: -2,
         settings: { email_address: 'test2@test.com' },
         data: sinituuli_data,
+        member_data,
         pw_hash: '$2a$10$v0TXETGJwbBq73NZyWO4qOsw19P1Js3VXFosacTxb72QU3B/RP.sW',
       }))
     .then(() =>
