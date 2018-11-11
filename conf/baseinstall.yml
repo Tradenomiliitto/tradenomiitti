@@ -27,6 +27,7 @@
         - python-psycopg2
         - graphicsmagick
         - fail2ban
+        - mailutils
 
     - name: install nginx basic auth password file
       template: src=passwd dest=/etc/nginx/passwd
@@ -42,6 +43,15 @@
       copy: src=journald.conf dest=/etc/systemd/journald.conf
       notify:
         - restart journald
+
+    - name: Configure email from unattended upgrades
+      lineinfile:
+        dest: /etc/apt/apt.conf.d/50unattended-upgrades
+        state: present
+        insertafter: '^//Unattended-Upgrade::Mail'
+        regexp: '^Unattended-Upgrade::Mail "{{unattended_upgrades_email}}";$'
+        line: 'Unattended-Upgrade::Mail "{{unattended_upgrades_email}}";'
+      when: unattended_upgrades_email|length > 0
 
     - name: Configure fail2ban
       copy: src=fail2ban-jail.local dest=/etc/fail2ban/jail.local
