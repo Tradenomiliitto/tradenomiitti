@@ -27,6 +27,7 @@
         - python-psycopg2
         - graphicsmagick
         - fail2ban
+        - mailutils
 
     - name: install nginx basic auth password file
       template: src=passwd dest=/etc/nginx/passwd
