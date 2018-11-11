@@ -298,12 +298,12 @@ leaveAnswerBox t sending text adId =
             , A.value text
             ]
             []
-        , Common.lengthHint t "ad-page__leave-answer-hint" text 10 1000
+        , Common.lengthHint t "ad-page__leave-answer-hint" text 5 1000
         , if not sending then
             H.button
                 [ A.class "btn btn-primary ad-page__leave-answer-button"
                 , E.onClick (SendAnswer adId)
-                , A.disabled (String.length text < 10 || String.length text > 1000)
+                , A.disabled (String.length text < 5 || String.length text > 1000)
                 ]
                 [ H.text <| t "ad.leaveAnswerBox.submit" ]
 
