@@ -1,4 +1,4 @@
-port module Profile.Main exposing (..)
+port module Profile.Main exposing (BusinessCardField(..), Msg(..), getAds, getMe, imageSave, imageUpload, initTasks, subscriptions, typeAheadToMsg, typeahead, typeaheadResult, typeaheads, update, updateBusinessCard, updateConsent, updateMe, updateSkillList, updateUser)
 
 import Http
 import Json.Decode as Json
@@ -25,6 +25,7 @@ type Msg
     | ChangePositionSelect String
     | ChangeLocation String
     | ChangeTitle String
+    | ChangeContributionStatus String
     | ChangeNickname String
     | ChangeDescription String
     | UpdateUser ()
@@ -109,6 +110,7 @@ subscriptions model =
         [ imageSave ImageDetailsUpdate
         , if model.editing then
             typeaheadResult typeAheadToMsg
+
           else
             Sub.none
         ]
@@ -149,6 +151,7 @@ updateSkillList index skillLevel list =
         (\i x ->
             if i == index then
                 Skill.update skillLevel x
+
             else
                 x
         )
@@ -206,6 +209,7 @@ update msg model config =
                         Http.BadStatus { status } ->
                             if status.code == 403 || status.code == 401 then
                                 Cmd.none
+
                             else
                                 Util.asApiError err
 
@@ -259,6 +263,9 @@ update msg model config =
 
         ChangeTitle str ->
             updateUser (\u -> { u | title = String.slice 0 70 str }) model ! []
+
+        ChangeContributionStatus str ->
+            updateUser (\u -> { u | contributionStatus = String.slice 0 70 str }) model ! []
 
         ChangeNickname str ->
             updateUser (\u -> { u | name = str }) model ! []
@@ -334,6 +341,7 @@ update msg model config =
                         , croppedPictureFileName =
                             if String.length cropped == 0 then
                                 Nothing
+
                             else
                                 Just cropped
                     }

@@ -1,4 +1,4 @@
-module Profile.View exposing (..)
+module Profile.View exposing (businessCard, businessCardData, businessCardDataInput, businessCardDataView, businessCardView, competences, editProfileBox, editProfileHeading, editProfileView, educationEditing, educationsEditing, fieldToString, location, locationSelect, membershipDataBoxEditing, membershipDataInfo, membershipInfoEditing, membershipRegisterInfo, optionPreselected, publicInfo, publicInfoEditing, saveOrEdit, select, showProfileView, userDescription, userDomains, userExpertise, userIdForAdmins, userInfoBox, userInfoBoxEditing, userInfoBoxEditing2, userPositions, userSkills, view, viewEducations, viewOwnProfileMaybe, viewUser)
 
 import Common
 import Html as H
@@ -26,6 +26,7 @@ view t model rootState =
         Just user ->
             if model.editing then
                 editProfileView t model user rootState
+
             else
                 showProfileView t model user rootState
 
@@ -53,18 +54,21 @@ saveOrEdit t user editing =
         , E.onClick <|
             if editing then
                 LocalViewMessage (Save user)
+
             else
                 LocalViewMessage Edit
         , A.disabled <| user.name == ""
         , A.title <|
             if user.name == "" then
                 t "profile.editProfile.nickNameMandatory"
+
             else
                 ""
         ]
         [ H.text
             (if editing then
                 t "profile.editProfile.buttonSave"
+
              else
                 t "profile.editProfile.buttonEdit"
             )
@@ -344,6 +348,7 @@ businessCardDataView card field =
             , H.span [] [ H.text value ]
             , H.hr [ A.class "profile__business-card--input-line", class ] []
             ]
+
     else
         H.span [] []
 
@@ -449,6 +454,7 @@ viewEducations t model config user =
                                                 ]
                                                     ++ (if model.editing then
                                                             [ H.td [] [] ]
+
                                                         else
                                                             []
                                                        )
@@ -475,6 +481,7 @@ viewEducations t model config user =
                                                                 []
                                                             ]
                                                         ]
+
                                                     else
                                                         []
                                                    )
@@ -545,6 +552,7 @@ educationsEditing t model config =
                 ]
             ]
         ]
+
     else
         []
 
@@ -557,6 +565,7 @@ viewUser t model ownProfile contactUser config loggedInUserMaybe user =
                 ListAds.viewAds t loggedInUserMaybe model.removal <|
                     if model.viewAllAds then
                         model.ads
+
                     else
                         List.take 2 model.ads
 
@@ -565,6 +574,7 @@ viewUser t model ownProfile contactUser config loggedInUserMaybe user =
             -- if we don't have anything more to show, don't show button
             if model.viewAllAds || List.length model.ads <= 2 then
                 []
+
             else
                 [ H.button
                     [ A.class "btn user-page__activity-show-more"
@@ -582,6 +592,7 @@ viewUser t model ownProfile contactUser config loggedInUserMaybe user =
             [ H.map LocalViewMessage (userInfoBox t model user)
             , if ownProfile then
                 H.map LocalViewMessage (editProfileBox t user)
+
               else
                 contactUser
             ]
@@ -638,6 +649,7 @@ userInfoBoxEditing2 t model user =
             ]
             [ if model.mouseOverUserImage then
                 SvgIcons.upload
+
               else
                 Common.picElementForUser user
             ]
@@ -662,6 +674,17 @@ userInfoBoxEditing2 t model user =
                 []
             ]
         , location model user
+        , H.p
+            [ A.class "user-page__work-details" ]
+            [ H.div [ A.class "profile__marker" ]
+                [ H.i [ A.class "fa fa-book" ] [] ]
+            , H.input
+                [ A.value user.contributionStatus
+                , E.onInput ChangeContributionStatus
+                , A.placeholder <| t "profile.userInfoBox.contributionPlaceholder"
+                ]
+                []
+            ]
         ]
     ]
 
@@ -701,6 +724,7 @@ userInfoBox t model user =
                                 , E.onInput ChangeNickname
                                 ]
                                 []
+
                           else
                             H.text user.name
                         ]
@@ -712,10 +736,12 @@ userInfoBox t model user =
                                 , E.on "change" (Json.map ChangeTitle E.targetValue)
                                 ]
                                 []
+
                           else
                             H.text user.title
                         ]
                     , location model user
+                    , H.div [ A.class "profile__detail" ] <| contributionStatus t user
                     ]
                 ]
             ]
@@ -737,6 +763,7 @@ userDescription t model user =
                     , E.onInput ChangeDescription
                     ]
                     []
+
               else
                 H.span [] <| PlainTextFormat.view user.description
             ]
@@ -761,15 +788,30 @@ location model user =
         [ H.img [ A.class "profile__location--marker", A.src "/static/lokaatio.svg" ] []
         , if model.editing then
             locationSelect user
+
           else
             H.span [ A.class "profile__location--text" ] [ H.text user.location ]
         ]
+
+
+contributionStatus : T -> User -> List (H.Html Msg)
+contributionStatus t user =
+    case user.contributionStatus of
+        "" ->
+            [ H.text "" ]
+
+        _ ->
+            [ H.div [ A.class "profile__marker" ]
+                [ H.i [ A.class "fa fa-book" ] [] ]
+            , H.span [] [ H.text user.contributionStatus ]
+            ]
 
 
 optionPreselected : String -> String -> H.Html msg
 optionPreselected default value =
     if default == value then
         H.option [ A.selected True ] [ H.text value ]
+
     else
         H.option [] [ H.text value ]
 
@@ -783,6 +825,7 @@ userDomains t model user config =
          ]
             ++ (if model.editing then
                     [ H.p [ A.class "profile__editing--competences--text" ] [ H.text <| t "profile.userDomains.question" ] ]
+
                 else
                     [ H.p [ A.class "profile__editing--competences--text" ] [] ]
                )
@@ -795,6 +838,7 @@ userDomains t model user config =
                         (t "profile.userDomains.selectDomain")
                         (t "profile.userDomains.selectDomainHint")
                     ]
+
                 else
                     []
                )
@@ -811,6 +855,7 @@ userSkills t model user config =
         ]
             ++ (if model.editing then
                     [ H.p [ A.class "profile__editing--competences--text" ] [ H.text <| t "profile.userSkills.question" ] ]
+
                 else
                     [ H.p [ A.class "profile__editing--competences--text" ] [] ]
                )
@@ -836,6 +881,7 @@ userSkills t model user config =
                                                             ]
                                                             []
                                                         ]
+
                                                     else
                                                         []
                                                    )
@@ -864,6 +910,7 @@ userSkills t model user config =
                             ]
                         ]
                     ]
+
                 else
                     []
                )
@@ -880,6 +927,7 @@ userPositions t model user config =
                     [ H.p [ A.class "profile__editing--competences--text" ]
                         [ H.text <| t "profile.userPositions.question" ]
                     ]
+
                 else
                     [ H.p [ A.class "profile__editing--competences--text" ] [] ]
                )
@@ -892,6 +940,7 @@ userPositions t model user config =
                         (t "profile.userPositions.selectPosition")
                         (t "profile.userPositions.selectPositionHint")
                     ]
+
                 else
                     []
                )
