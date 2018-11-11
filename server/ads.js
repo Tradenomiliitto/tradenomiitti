@@ -76,7 +76,7 @@ module.exports = function initialize(params) {
             data: req.body,
           }, ['id', 'user_id']),
           util.userById(ad.user_id)
-            .then(dbUser => emails.sendNotificationForAnswer(dbUser, ad))
+            .then(dbUser => dbUser.id !== user.id ? emails.sendNotificationForAnswer(dbUser, ad) : Promise.resolve(null))
             .catch(e => {
               console.error('Error sending email for answer', e);
               return Promise.resolve(null); // don't crash on failing email
