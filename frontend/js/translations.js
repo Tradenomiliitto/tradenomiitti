@@ -47,11 +47,8 @@ const source = {
       submit: 'Jätä vastaus',
     },
     leaveAnswerPrompt: {
-      isAsker: 'Muut käyttäjät voivat vastata ilmoitukseesi tällä sivulla. Näet vastaukset alla kun niitä tulee.',
-      hasAnswered: 'Olet vastannut tähän ilmoitukseen. Kiitos kun autoit kanssatradenomiasi!',
       hint: 'Kokemuksellasi on aina arvoa. Jaa näkemyksesi vastaamalla ilmoitukseen.',
-      answerTooltip: 'Voit vastata muiden esittämiin kysymyksiin kerran',
-      cannotAnswerTooltip: 'Et voi vastata tähän kysymykseen',
+      answerTooltip: 'Osallistu keskusteluun',
       submit: 'Vastaa ilmoitukseen',
     },
   },
