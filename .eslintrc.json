@@ -28,6 +28,7 @@
     "no-plusplus": "off",
     "no-use-before-define": "off",
     "global-require": "off",
+    "no-confusing-arrow": "off",
     "promise/always-return": "error",
     "promise/no-return-wrap": "error",
     "promise/param-names": "error",
