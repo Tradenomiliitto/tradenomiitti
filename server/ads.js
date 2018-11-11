@@ -66,10 +66,9 @@ module.exports = function initialize(params) {
 
     return Promise.all([
       knex('ads').where({ id: ad_id }).first(),
-      knex('answers').where({ ad_id }),
       util.userForSession(req),
     ])
-      .then(([ad, answers, user]) => {
+      .then(([ad, user]) => {
         return Promise.all([
           knex('answers').insert({
             user_id: user.id,
