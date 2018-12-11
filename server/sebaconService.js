@@ -73,10 +73,8 @@ module.exports = function initialize(params) {
       getUserEmploymentHistory(id),
     ]).then(([domainTitles, positionTitles, res]) => {
       const organisations = Promise.all(
-        res.result.map(o =>
-          getOrganisation(o.tyonantaja)
-            .then(({ result }) => result.name || 'Tuntematon')
-        )
+        res.result.map(o => getOrganisation(o.tyonantaja)
+          .then(({ result }) => result.name || 'Tuntematon'))
       );
       return Promise.all([domainTitles, positionTitles, res, organisations]);
     }).then(([domainTitles, positionTitles, res, organisations]) => ({
@@ -100,7 +98,7 @@ module.exports = function initialize(params) {
     // - expect the first test user if testLogin is enabled
     if (disable && testLogin && id === '-1') {
       return Promise.resolve(true);
-    } else if (disable || !adminGroup) {
+    } if (disable || !adminGroup) {
       return Promise.resolve(false);
     }
 

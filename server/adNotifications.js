@@ -14,8 +14,9 @@ module.exports = function init(params) {
             user_id: user.id,
           }));
           // everybody is logged in when reading email
-          const formattedAdsPromise =
-            Promise.all(notification.ads.map(ad => util.formatAd(ad, true)));
+          const formattedAdsPromise = Promise.all(
+            notification.ads.map(ad => util.formatAd(ad, true))
+          );
           return knex('user_ad_notifications').insert(notificationRows)
             .then(() => Promise.all([util.userById(user.id), formattedAdsPromise]))
             .then(([dbUser, ads]) => emails.sendNotificationForAds(dbUser, ads));

@@ -12,24 +12,20 @@ module.exports = function initialize(params) {
 
     return util
       .userForSession(req)
-      .then(user =>
-        knex('ads').insert(
-          {
-            user_id: user.id,
-            data: req.body,
-          },
-          ['user_id', 'id']
-        )
-      )
-      .then(insertResp =>
-        knex('events').insert(
-          {
-            type: 'create_ad',
-            data: { user_id: insertResp[0].user_id, ad_id: insertResp[0].id },
-          },
-          'data'
-        )
-      )
+      .then(user => knex('ads').insert(
+        {
+          user_id: user.id,
+          data: req.body,
+        },
+        ['user_id', 'id']
+      ))
+      .then(insertResp => knex('events').insert(
+        {
+          type: 'create_ad',
+          data: { user_id: insertResp[0].user_id, ad_id: insertResp[0].id },
+        },
+        'data'
+      ))
       .then(insertResp => res.json(insertResp[0].ad_id))
       .catch(next);
   }
@@ -52,18 +48,16 @@ module.exports = function initialize(params) {
   function listAds(req, res, next) {
     util
       .loggedIn(req)
-      .then(loggedIn =>
-        service.listAds(
-          loggedIn,
-          req.query.limit,
-          req.query.offset,
-          req.query.domain,
-          req.query.position,
-          req.query.location,
-          req.query.order,
-          req.query.hide_job_ads
-        )
-      )
+      .then(loggedIn => service.listAds(
+        loggedIn,
+        req.query.limit,
+        req.query.offset,
+        req.query.domain,
+        req.query.position,
+        req.query.location,
+        req.query.order,
+        req.query.hide_job_ads
+      ))
       .then(ads => res.send(ads))
       .catch(next);
   }
@@ -81,59 +75,51 @@ module.exports = function initialize(params) {
         .first(),
       util.userForSession(req),
     ])
-      .then(([ad, user]) =>
-        Promise.all([
-          knex('answers').insert(
-            {
-              user_id: user.id,
-              ad_id,
-              data: req.body,
-            },
-            ['id', 'user_id']
-          ),
-          util
-            .userById(ad.user_id)
-            .then(dbUser =>
-              dbUser.id !== user.id
-                ? emails.sendNotificationForAnswer(dbUser, ad)
-                : Promise.resolve(null)
-            )
-            .catch(e => {
-              console.error('Error sending email for answer', e);
-              return Promise.resolve(null); // don't crash on failing email
-            }),
-        ])
-      )
-      .then(([insertResp]) =>
-        knex('events').insert(
+      .then(([ad, user]) => Promise.all([
+        knex('answers').insert(
           {
-            type: 'create_answer',
-            data: {
-              answer_id: insertResp[0].id,
-              user_id: insertResp[0].user_id,
-            },
+            user_id: user.id,
+            ad_id,
+            data: req.body,
           },
-          'data'
-        )
-      )
+          ['id', 'user_id']
+        ),
+        util
+          .userById(ad.user_id)
+          .then(dbUser => dbUser.id !== user.id
+            ? emails.sendNotificationForAnswer(dbUser, ad)
+            : Promise.resolve(null))
+          .catch(e => {
+            console.error('Error sending email for answer', e);
+            return Promise.resolve(null); // don't crash on failing email
+          }),
+      ]))
+      .then(([insertResp]) => knex('events').insert(
+        {
+          type: 'create_answer',
+          data: {
+            answer_id: insertResp[0].id,
+            user_id: insertResp[0].user_id,
+          },
+        },
+        'data'
+      ))
       .then(data => res.json(`${data[0].answer_id}`))
       .catch(next);
   }
 
   function findRowUserCanDelete(req, table) {
-    return util.userForSession(req).then(user =>
-      sebacon.isAdmin(user.remote_id).then(isAdmin => {
-        if (isAdmin) {
-          return knex(table).where({
-            id: req.params.id,
-          });
-        }
+    return util.userForSession(req).then(user => sebacon.isAdmin(user.remote_id).then(isAdmin => {
+      if (isAdmin) {
         return knex(table).where({
-          user_id: user.id, // if it's not their own row, don't delete it
           id: req.params.id,
         });
-      })
-    );
+      }
+      return knex(table).where({
+        user_id: user.id, // if it's not their own row, don't delete it
+        id: req.params.id,
+      });
+    }));
   }
 
   function deleteRow(req, res, next, table) {
@@ -172,9 +158,7 @@ module.exports = function initialize(params) {
       .distinct()
       .then(results => results.map(o => o.ad_id));
 
-    const getAdsForAnswerer = getAnswers.then(ad_ids =>
-      knex('ads').whereIn('id', ad_ids)
-    );
+    const getAdsForAnswerer = getAnswers.then(ad_ids => knex('ads').whereIn('id', ad_ids));
     return Promise.all([getAds, getAdsForAnswerer, util.loggedIn(req)])
       .then(([adsAsAsker, adsAsAnswerer, loggedIn]) => {
         const allAds = adsAsAsker.concat(adsAsAnswerer);

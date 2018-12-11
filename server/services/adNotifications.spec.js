@@ -45,9 +45,7 @@ describe('Send notifications for ads', () => {
     }).then(() => {
       MockDate.set(aDayLater);
       return service.usersThatCanReceiveNow();
-    }).then(users =>
-      users.should.not.include(userId)
-    );
+    }).then(users => users.should.not.include(userId));
   });
 
   it('should send ads to people who have not recently received a notification', () => {
@@ -59,15 +57,11 @@ describe('Send notifications for ads', () => {
     }).then(() => {
       MockDate.set(twoWeeksLater);
       return service.usersThatCanReceiveNow();
-    }).then(users =>
-      users.should.include(userId)
-    );
+    }).then(users => users.should.include(userId));
   });
 
   it('should send ads to people who have never received a notification', () => service.usersThatCanReceiveNow()
-    .then(users =>
-      users.should.include(userId)
-    ));
+    .then(users => users.should.include(userId)));
 
   it('should not send ads a person has received a notification about', () => {
     MockDate.set(aDate);
@@ -86,13 +80,11 @@ describe('Send notifications for ads', () => {
         MockDate.set(twoWeeksLater);
         return service.notificationObjects();
       })
-      .then(notifications =>
-        notifications
-          .find(notif => notif.user.id === userId)
-          .ads
-          .map(ad => ad.id)
-          .should.not.include(1)
-      );
+      .then(notifications => notifications
+        .find(notif => notif.user.id === userId)
+        .ads
+        .map(ad => ad.id)
+        .should.not.include(1));
   });
 
   it('should send at most 5 ads per notification', () => {
@@ -115,12 +107,10 @@ describe('Send notifications for ads', () => {
         MockDate.set(aDayLater);
         return service.notificationObjects();
       })
-      .then(notifications =>
-        notifications
-          .find(notif => notif.user.id === userId)
-          .ads
-          .should.have.length(5)
-      );
+      .then(notifications => notifications
+        .find(notif => notif.user.id === userId)
+        .ads
+        .should.have.length(5));
   });
 
   it('should send at least 3 ads per notification', () => {
@@ -162,9 +152,7 @@ describe('Send notifications for ads', () => {
         notifications,
         service.notificationObjects(),
       ]);
-    }).then(([notifications1, notifications2]) =>
-      notifications1.should.not.eql(notifications2)
-    );
+    }).then(([notifications1, notifications2]) => notifications1.should.not.eql(notifications2));
   });
 
   it('should not send ads of the user in question', () => {

@@ -3,7 +3,9 @@ const request = require('request');
 
 
 module.exports = function initialize(params) {
-  const { communicationsKey, knex, sebacon, restrictToGroup, testLogin, util } = params;
+  const {
+    communicationsKey, knex, sebacon, restrictToGroup, testLogin, util,
+  } = params;
 
   function login(req, res, next) {
     const ssoId = req.body.ssoid;

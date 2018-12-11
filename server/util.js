@@ -58,8 +58,9 @@ module.exports = function initialize(params) {
   function formatAd(databaseAd, isLoggedIn) {
     return Promise.all([
       knex('answers').where({ ad_id: databaseAd.id })
-        .then(answers =>
-          Promise.all(answers.map(databaseAnswer => formatAnswer(databaseAnswer, isLoggedIn)))),
+        .then(answers => Promise.all(
+          answers.map(databaseAnswer => formatAnswer(databaseAnswer, isLoggedIn))
+        )),
       knex('users').where({ id: databaseAd.user_id }).then(rows => rows[0]),
     ]).then(([answers, askingUser]) => {
       const ad = {};

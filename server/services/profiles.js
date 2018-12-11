@@ -83,9 +83,7 @@ module.exports = function initialize(params) {
       query = query.orderByRaw("lower(users.data->>'name') asc, users.id asc");
     }
 
-    return query.then(resp =>
-      resp.map(user => util.formatUser(user, loggedIn))
-    );
+    return query.then(resp => resp.map(user => util.formatUser(user, loggedIn)));
   }
 
   function profileSkills(user_id) {
@@ -141,20 +139,16 @@ module.exports = function initialize(params) {
               },
               'id'
             )
-            .then(data =>
-              knex('events').insert({
-                type: 'add_contact',
-                data: { contact_id: data[0] },
-              })
-            )
+            .then(data => knex('events').insert({
+              type: 'add_contact',
+              data: { contact_id: data[0] },
+            }))
             .then(() => util.userById(toUserId))
-            .then(receiver =>
-              emails.sendNotificationForContact(
-                receiver,
-                loggedInUser,
-                introductionText
-              )
-            );
+            .then(receiver => emails.sendNotificationForContact(
+              receiver,
+              loggedInUser,
+              introductionText
+            ));
         }
 
         return Promise.reject(
@@ -167,16 +161,14 @@ module.exports = function initialize(params) {
     return knex('contacts')
       .where('to_user', loggedInUser.id)
       .then(rows => {
-        const promises = rows.map(row =>
-          util.userById(row.from_user).then(fromUser => ({
-            user: util.formatUser(fromUser, true),
-            business_card: util.formatBusinessCard(
-              fromUser.data.business_card || {}
-            ),
-            intro_text: row.intro_text || '',
-            created_at: row.created_at,
-          }))
-        );
+        const promises = rows.map(row => util.userById(row.from_user).then(fromUser => ({
+          user: util.formatUser(fromUser, true),
+          business_card: util.formatBusinessCard(
+            fromUser.data.business_card || {}
+          ),
+          intro_text: row.intro_text || '',
+          created_at: row.created_at,
+        })));
         return Promise.all(promises);
       });
   }
