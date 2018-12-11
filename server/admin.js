@@ -26,7 +26,7 @@ module.exports = function initialize(params) {
             ) as gotten_answers_per_ad\
           '))
       )
-      .then(rows => json2csv({ data: rows, del: ';' }))
+      .then(rows => json2csv.parse(rows, { delimiter: ';' }))
       .then(csv => {
         res.contentType('text/csv');
         return res.send(csv);

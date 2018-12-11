@@ -87,7 +87,7 @@ describe('Handle API requests', () => {
       .then(() => agent.get('/api/raportti'))
       .then(res => {
         expect(res).to.have.status(200);
-        return res.should.be.csv;
+        return expect(res).to.include.header('content-type', 'text/csv; charset=utf-8');
       });
   });
 });
