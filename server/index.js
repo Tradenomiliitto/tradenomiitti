@@ -56,10 +56,10 @@ const sebaconCustomer = process.env.SEBACON_CUSTOMER;
 const sebaconUser = process.env.SEBACON_USER;
 const sebaconPassword = process.env.SEBACON_PASSWORD;
 const adminGroup = process.env.ADMIN_GROUP;
-if ((!sebaconAuth ||
-    !sebaconCustomer ||
-    !sebaconUser ||
-    !sebaconPassword) && !disableSebacon) {
+if ((!sebaconAuth
+    || !sebaconCustomer
+    || !sebaconUser
+    || !sebaconPassword) && !disableSebacon) {
   console.warn('You should have SEBACON_* parameters for avoine in ENV');
 }
 
@@ -82,23 +82,31 @@ const serviceDomain = process.env.SERVICE_DOMAIN;
 if (!smtpHost || !smtpUser || !smtpPassword || !smtpTls || !mailFrom || !serviceDomain) {
   console.warn('You should have SMTP_* parameters, MAIL_FROM and SERVICE_DOMAIN in ENV');
 }
-const smtp =
-      { host: smtpHost,
-        user: smtpUser,
-        password: smtpPassword,
-        tls: smtpTls === 'true',
-      };
+const smtp = {
+  host: smtpHost,
+  user: smtpUser,
+  password: smtpPassword,
+  tls: smtpTls === 'true',
+};
 
 const enableEmailGlobally = process.env.ENABLE_EMAIL_SENDING === 'true';
 
 const restrictToGroup = process.env.RESTRICT_TO_GROUP; // can be empty
 
 const util = require('./util')({ knex });
-const emails = require('./emails')({ smtp, mailFrom, staticDir, serviceDomain, util, enableEmailGlobally });
+const emails = require('./emails')({
+  smtp, mailFrom, staticDir, serviceDomain, util, enableEmailGlobally,
+});
 
-const logon = require('./logonHandling')({ communicationsKey, knex, sebacon, restrictToGroup, testLogin, util });
-const profile = require('./profile')({ knex, sebacon, util, userImagesPath, emails });
-const ads = require('./ads')({ util, knex, emails, sebacon });
+const logon = require('./logonHandling')({
+  communicationsKey, knex, sebacon, restrictToGroup, testLogin, util,
+});
+const profile = require('./profile')({
+  knex, sebacon, util, userImagesPath, emails,
+});
+const ads = require('./ads')({
+  util, knex, emails, sebacon,
+});
 const adNotifications = require('./adNotifications')({ emails, knex, util });
 const admin = require('./admin')({ knex, util, sebacon });
 
@@ -332,11 +340,9 @@ app.delete('/api/vastaukset/:id', ads.deleteAnswer);
 
 
 // send user's settings, or default settings
-app.get('/api/asetukset', (req, res) =>
-  util.userForSession(req)
-    .then(dbUser => res.json(util.formatSettings(dbUser.settings)))
-    .catch(() => res.json(util.formatSettings({})))
-);
+app.get('/api/asetukset', (req, res) => util.userForSession(req)
+  .then(dbUser => res.json(util.formatSettings(dbUser.settings)))
+  .catch(() => res.json(util.formatSettings({}))));
 
 app.put('/api/asetukset', jsonParser, (req, res, next) => {
   util.loggedIn(req)

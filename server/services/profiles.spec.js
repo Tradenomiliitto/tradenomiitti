@@ -31,22 +31,19 @@ describe('Handle users', () => {
   });
 
 
-  it('should list users', () => service.listProfiles(false).then(users =>
-    users.map(user => user.id).should.include(1)
-  ));
+  it('should list users', () => service.listProfiles(false).then(users => users.map(user => user.id).should.include(1)));
 
   it('should respect limit and offset', () => {
     const limit = 0;
     const offset = 0;
-    return service.listProfiles(false, limit, offset).then(users =>
-      users.should.have.length(0)
-    );
+    return service.listProfiles(false, limit, offset).then(users => users.should.have.length(0));
   });
 
   function insertAndList(sort) {
     MockDate.set(aDate);
     return knex('users')
-      .insert({ id: 3,
+      .insert({
+        id: 3,
         remote_id: -3,
         data: {
           name: 'Ökynomi',
@@ -79,7 +76,8 @@ describe('Handle users', () => {
   it('should filter by location', () => {
     MockDate.set(aDate);
     return knex('users')
-      .insert({ id: 3,
+      .insert({
+        id: 3,
         remote_id: -3,
         data: {
           location: 'siellätäällä',
@@ -111,17 +109,14 @@ describe('Handle contacts', () => {
 
 
   it('should list contacts sent by others to logged in user', () => Promise.all([util.userById(1), util.userById(2)])
-    .then(([loggedInUser, otherUser]) =>
-      service.addContact(loggedInUser, otherUser.id, 'intro text longer than 10 chars')
-        .then(() => Promise.all([
-          service.listContacts(loggedInUser),
-          service.listContacts(otherUser),
-        ]))
-        .then(([contactsOfLoggedIn, contactsOfOther]) => {
-          contactsOfLoggedIn.should.have.length(0);
-          contactsOfOther.should.have.length(1);
-          return contactsOfOther[0].user.id.should.equal(loggedInUser.id);
-        })
-    )
-  );
+    .then(([loggedInUser, otherUser]) => service.addContact(loggedInUser, otherUser.id, 'intro text longer than 10 chars')
+      .then(() => Promise.all([
+        service.listContacts(loggedInUser),
+        service.listContacts(otherUser),
+      ]))
+      .then(([contactsOfLoggedIn, contactsOfOther]) => {
+        contactsOfLoggedIn.should.have.length(0);
+        contactsOfOther.should.have.length(1);
+        return contactsOfOther[0].user.id.should.equal(loggedInUser.id);
+      })));
 });

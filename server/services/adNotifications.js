@@ -35,12 +35,9 @@ module.exports = function init(params) {
       const adPosition = ad.data.position;
       const adLocation = ad.data.location;
 
-      const domainIncluded =
-        user.domains.map(skill => skill.heading).includes(adDomain);
-      const positionIncluded =
-        user.positions.map(skill => skill.heading).includes(adPosition);
-      const locationMatches =
-        user.location === adLocation;
+      const domainIncluded = user.domains.map(skill => skill.heading).includes(adDomain);
+      const positionIncluded = user.positions.map(skill => skill.heading).includes(adPosition);
+      const locationMatches = user.location === adLocation;
 
       if (domainIncluded) { ++score; }
       if (adDomain && !domainIncluded) { --score; }
@@ -104,8 +101,8 @@ module.exports = function init(params) {
     return knex('users').whereNotExists(function notExists() {
       this.select('user_id')
         .from('user_ad_notifications')
-        .whereRaw('user_ad_notifications.created_at >= ?' +
-                  'AND users.id = user_ad_notifications.user_id',
+        .whereRaw('user_ad_notifications.created_at >= ?'
+                  + 'AND users.id = user_ad_notifications.user_id',
         [moment().subtract(7, 'days')]);
     })
       .then(resp => resp.map(x => x.id));

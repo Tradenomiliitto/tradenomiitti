@@ -23,7 +23,8 @@ module.exports = function init(params) {
   function sendNotificationForAnswer(dbUser, ad) {
     const t = email_translations.sendNotificationForAnswer;
     const attachment = [
-      { data: answerNotificationHtml(ad),
+      {
+        data: answerNotificationHtml(ad),
         alternative: true,
         related: [
           logo,
@@ -37,7 +38,8 @@ module.exports = function init(params) {
   function sendNotificationForContact(receiver, contactUser, introductionText) {
     const t = email_translations.sendNotificationForContact;
     const attachment = [
-      { data: contactNotificationHtml(contactUser, introductionText),
+      {
+        data: contactNotificationHtml(contactUser, introductionText),
         alternative: true,
         related: [
           logo,
@@ -81,7 +83,8 @@ module.exports = function init(params) {
     }
     const adImages = ads.map(makeImage);
     const attachment = [
-      { data: adNotificationHtml(ads),
+      {
+        data: adNotificationHtml(ads),
         alternative: true,
         related: [logo].concat(adImages),
       },

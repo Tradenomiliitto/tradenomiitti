@@ -48,13 +48,11 @@ describe('Handle API requests', () => {
       .then(ads => ads.should.have.length(4));
   });
 
-  it('should be able to list all ads from API', () =>
-    chai.request(server).get('/api/ilmoitukset')
-      .then(res => {
-        res.body.should.have.length(3);
-        return res.should.be.json;
-      })
-  );
+  it('should be able to list all ads from API', () => chai.request(server).get('/api/ilmoitukset')
+    .then(res => {
+      res.body.should.have.length(3);
+      return res.should.be.json;
+    }));
 
   it('should not be able to get a non-existing ad from API', done => {
     chai.request(server).get('/api/ilmoitukset/0')
@@ -64,14 +62,12 @@ describe('Handle API requests', () => {
       });
   });
 
-  it('should be able to get an existing ad from API', () =>
-    chai.request(server).get('/api/ilmoitukset/1')
-      .then(res => {
-        res.should.have.status(200);
-        res.body.heading.should.equal('foo');
-        return res.should.be.json;
-      })
-  );
+  it('should be able to get an existing ad from API', () => chai.request(server).get('/api/ilmoitukset/1')
+    .then(res => {
+      res.should.have.status(200);
+      res.body.heading.should.equal('foo');
+      return res.should.be.json;
+    }));
 
   it('should not be able to get a report', done => {
     chai.request(server).get('/api/raportti')
@@ -87,7 +83,7 @@ describe('Handle API requests', () => {
       .then(() => agent.get('/api/raportti'))
       .then(res => {
         expect(res).to.have.status(200);
-        return res.should.be.csv;
+        return expect(res).to.include.header('content-type', 'text/csv; charset=utf-8');
       });
   });
 });
