@@ -1,4 +1,4 @@
-module User exposing (..)
+module User exposing (Msg(..), addContact, contactUser, getAds, getUser, initTasks, maybeUserCanSendBusinessCard, update, view)
 
 import Html as H
 import Html.Attributes as A
@@ -22,6 +22,7 @@ import Translation exposing (T)
 import Util exposing (UpdateMessage(..), ViewMessage(..))
 
 
+
 -- UPDATE
 
 
@@ -36,44 +37,60 @@ update : Msg -> Model -> ( Model, Cmd (UpdateMessage Msg) )
 update msg model =
     case msg of
         UpdateUser updatedUser ->
-            { model
+            ( { model
                 | user = Just updatedUser
                 , addingContact = False
-            }
-                ! []
+              }
+            , Cmd.none
+            )
 
         UpdateAds ads ->
-            { model | ads = ads } ! []
+            ( { model | ads = ads }
+            , Cmd.none
+            )
 
         ProfileMessage Profile.StartAddContact ->
-            { model
+            ( { model
                 | addingContact = True
                 , addContactText = ""
-            }
-                ! []
+              }
+            , Cmd.none
+            )
 
         ProfileMessage (Profile.ChangeContactAddingText str) ->
-            { model | addContactText = String.slice 0 1000 str } ! []
+            ( { model | addContactText = String.slice 0 1000 str }
+            , Cmd.none
+            )
 
         ProfileMessage (Profile.AddContact user) ->
-            model ! [ addContact user model.addContactText ]
+            ( model
+            , addContact user model.addContactText
+            )
 
-        ProfileMessage (Profile.RemovalMessage msg) ->
+        ProfileMessage (Profile.RemovalMessage innerMsg) ->
             let
                 ( newRemoval, cmd ) =
-                    Removal.update msg model.removal
+                    Removal.update innerMsg model.removal
             in
-            { model | removal = newRemoval } ! [ Util.localMap (ProfileMessage << Profile.RemovalMessage) cmd ]
+            ( { model | removal = newRemoval }
+            , Util.localMap (ProfileMessage << Profile.RemovalMessage) cmd
+            )
 
         ProfileMessage Profile.ShowAll ->
-            { model | viewAllAds = True } ! []
+            ( { model | viewAllAds = True }
+            , Cmd.none
+            )
 
         ProfileMessage _ ->
-            model ! []
+            ( model
+            , Cmd.none
+            )
 
         -- only handle profile messages that we care about
         Refresh userId ->
-            model ! [ getUser userId ]
+            ( model
+            , getUser userId
+            )
 
 
 initTasks : Int -> Cmd (UpdateMessage Msg)
@@ -88,7 +105,7 @@ getUser : Int -> Cmd (UpdateMessage Msg)
 getUser userId =
     let
         url =
-            "/api/profiilit/" ++ toString userId
+            "/api/profiilit/" ++ String.fromInt userId
 
         request =
             Http.get url Models.User.userDecoder
@@ -100,7 +117,7 @@ getAds : Int -> Cmd (UpdateMessage Msg)
 getAds userId =
     let
         url =
-            "/api/ilmoitukset/tradenomilta/" ++ toString userId
+            "/api/ilmoitukset/tradenomilta/" ++ String.fromInt userId
 
         request =
             Http.get url (Json.list Models.Ad.adDecoder)
@@ -114,7 +131,7 @@ addContact user str =
         encoded =
             JS.object [ ( "message", JS.string str ) ]
     in
-    Http.post ("/api/kontaktit/" ++ toString user.id)
+    Http.post ("/api/kontaktit/" ++ String.fromInt user.id)
         (Http.jsonBody encoded)
         (Json.succeed ())
         |> Util.errorHandlingSend (always (Refresh user.id))
@@ -163,6 +180,7 @@ contactUser t model userToContact loggedInUser =
             [ A.class "col-md-6 user-page__edit-or-contact-user" ]
             [ H.p [] [ H.text <| t_ "alreadySent" ]
             ]
+
     else if model.addingContact then
         let
             button =
@@ -176,6 +194,7 @@ contactUser t model userToContact loggedInUser =
                      ]
                         ++ (if maybeUserCanSendBusinessCard loggedInUser then
                                 []
+
                             else
                                 [ A.title <| t_ "mustContainPhoneOrEmail" ]
                            )
@@ -219,6 +238,7 @@ contactUser t model userToContact loggedInUser =
                 , H.map LocalViewMessage button
                 ]
             ]
+
     else
         H.div
             [ A.class "col-md-6 user-page__edit-or-contact-user" ]
@@ -226,6 +246,7 @@ contactUser t model userToContact loggedInUser =
             , H.button
                 [ if Maybe.isJust loggedInUser then
                     E.onClick <| LocalViewMessage Profile.StartAddContact
+
                   else
                     Link.action (Nav.LoginNeeded (Nav.User userToContact.id |> Nav.routeToPath |> Just))
                 , A.class "btn btn-primary"

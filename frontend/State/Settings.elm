@@ -1,4 +1,4 @@
-module State.Settings exposing (..)
+module State.Settings exposing (Model, init)
 
 import Models.User exposing (Settings)
 import State.Util exposing (SendingStatus(..))

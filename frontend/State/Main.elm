@@ -1,7 +1,8 @@
-module State.Main exposing (..)
+module State.Main exposing (Model, initState)
 
+import Browser
+import Browser.Navigation
 import Nav exposing (..)
-import Navigation
 import State.Ad
 import State.Config
 import State.Contacts
@@ -14,11 +15,14 @@ import State.Settings
 import State.StaticContent
 import State.User
 import Translation exposing (Translations)
+import Url
+import Util exposing (origin)
 
 
 type alias Model =
     { route : Route
     , rootUrl : String
+    , key : Browser.Navigation.Key
     , scrollTop : Bool
     , listUsers : State.ListUsers.Model
     , user : State.User.Model
@@ -38,14 +42,15 @@ type alias Model =
     }
 
 
-initState : List ( String, String ) -> Navigation.Location -> Model
-initState translations location =
+initState : List ( String, String ) -> Url.Url -> Browser.Navigation.Key -> Model
+initState translations location key =
     let
         initialSettings =
             State.Settings.init
     in
     { route = parseLocation Nothing location
-    , rootUrl = location.origin
+    , rootUrl = origin location
+    , key = key
     , scrollTop = True -- initially start at top and init
     , user = State.User.init
     , listUsers = State.ListUsers.init

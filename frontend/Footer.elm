@@ -1,4 +1,4 @@
-module Footer exposing (..)
+module Footer exposing (view)
 
 import Common
 import Html as H
@@ -37,11 +37,12 @@ view t routeToMsg userMaybe =
                                     [ A.class "footer__admin-link" ]
                                     [ H.a
                                         [ A.href "/api/raportti"
-                                        , A.downloadAs "raportti.csv"
+                                        , A.download "raportti.csv"
                                         ]
                                         [ H.text <| t "footer.linkStats.text" ]
                                     ]
                                 ]
+
                             else
                                 []
                            )

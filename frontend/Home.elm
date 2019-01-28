@@ -1,4 +1,4 @@
-port module Home exposing (..)
+port module Home exposing (Msg(..), initTasks, introAnimation, introBoxes, introScreen, listAdsButtons, listAdsHeading, listFourAds, listLatestAds, listThreeUsers, listUsers, listUsersButtons, listUsersHeading, readMoreButton, scrollHomeBelowFold, sectionHeader, tradenomiImage, tradenomiittiHeader, tradenomiittiInfo, tradenomiittiInfoText, tradenomiittiRow, tradenomiittiSection, update, view)
 
 import Html as H
 import Html.Attributes as A
@@ -29,34 +29,44 @@ port scrollHomeBelowFold : Bool -> Cmd msg
 
 
 update : Msg -> Model -> ( Model, Cmd (UpdateMessage Msg) )
-update msg model =
-    case msg of
+update outerMsg model =
+    case outerMsg of
         ListAdsMessage msg ->
             let
                 ( listAdsModel, cmd ) =
                     ListAds.update msg model.listAds
             in
-            { model | listAds = listAdsModel } ! [ Util.localMap ListAdsMessage cmd ]
+            ( { model | listAds = listAdsModel }
+            , Util.localMap ListAdsMessage cmd
+            )
 
         ListUsersMessage msg ->
             let
                 ( listUsersModel, cmd ) =
                     ListUsers.update msg model.listUsers
             in
-            { model | listUsers = listUsersModel } ! [ Util.localMap ListUsersMessage cmd ]
+            ( { model | listUsers = listUsersModel }
+            , Util.localMap ListUsersMessage cmd
+            )
 
         ClickCreateProfile ->
-            { model | createProfileClicked = True } ! []
+            ( { model | createProfileClicked = True }
+            , Cmd.none
+            )
 
         ScrollBelowFold ->
-            model ! [ scrollHomeBelowFold True ]
+            ( model
+            , scrollHomeBelowFold True
+            )
 
         RemovalMessage msg ->
             let
                 ( newRemoval, cmd ) =
                     Removal.update msg model.removal
             in
-            { model | removal = newRemoval } ! [ Util.localMap RemovalMessage cmd ]
+            ( { model | removal = newRemoval }
+            , Util.localMap RemovalMessage cmd
+            )
 
 
 initTasks : Model -> Cmd (UpdateMessage Msg)
@@ -228,6 +238,7 @@ listUsersButtons t loggedInUserMaybe =
         , Link.button
             (if Maybe.isJust loggedInUserMaybe then
                 t "home.listUsers.buttonEditProfile"
+
              else
                 t "home.listUsers.buttonCreateProfile"
             )

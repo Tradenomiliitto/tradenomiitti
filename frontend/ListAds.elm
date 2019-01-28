@@ -1,7 +1,8 @@
-module ListAds exposing (..)
+module ListAds exposing (Msg(..), adListView, getAds, initTasks, reInitItems, row, sortToString, update, view, viewAds)
 
 import Ad
 import Common exposing (Filter(..))
+import Dict
 import Html as H
 import Html.Attributes as A
 import Html.Events as E
@@ -12,14 +13,13 @@ import List.Extra as List
 import Models.Ad
 import Models.User exposing (User)
 import Nav
-import QueryString
-import QueryString.Extra as QueryString
+import QS
 import Removal
 import State.Config as Config
 import State.ListAds exposing (..)
 import SvgIcons
 import Translation exposing (T)
-import Util exposing (UpdateMessage(..), ViewMessage(..))
+import Util exposing (UpdateMessage(..), ViewMessage(..), qsOptional)
 
 
 type Msg
@@ -37,19 +37,25 @@ update : Msg -> Model -> ( Model, Cmd (UpdateMessage Msg) )
 update msg model =
     case msg of
         UpdateAds previousCursor ads ->
-            { model
+            ( { model
                 | ads = List.uniqueBy .id <| model.ads ++ ads
 
                 -- always advance by full amount, so we know when to stop asking for more
                 , cursor = previousCursor + limit
-            }
-                ! []
+              }
+            , Cmd.none
+            )
 
         FooterAppeared ->
             if Common.shouldNotGetMoreOnFooter (List.length model.ads) model.cursor then
-                model ! []
+                ( model
+                , Cmd.none
+                )
+
             else
-                model ! [ getAds model ]
+                ( model
+                , getAds model
+                )
 
         ChangeDomainFilter value ->
             reInitItems { model | selectedDomain = value }
@@ -71,14 +77,18 @@ update msg model =
                 ( newModel, cmd ) =
                     reInitItems { model | hideJobAds = newHide }
             in
-            newModel ! [ cmd, Util.updateUserPreferences (Util.HideJobAds newHide) ]
+            ( newModel
+            , Cmd.batch [ cmd, Util.updateUserPreferences (Util.HideJobAds newHide) ]
+            )
 
-        RemovalMessage msg ->
+        RemovalMessage innerMsg ->
             let
                 ( newRemoval, cmd ) =
-                    Removal.update msg model.removal
+                    Removal.update innerMsg model.removal
             in
-            { model | removal = newRemoval } ! [ Util.localMap RemovalMessage cmd ]
+            ( { model | removal = newRemoval }
+            , Util.localMap RemovalMessage cmd
+            )
 
 
 initTasks : Model -> Cmd (UpdateMessage Msg)
@@ -92,27 +102,32 @@ reInitItems model =
         newModel =
             { model | ads = [], cursor = 0, removal = Removal.init Removal.Ad }
     in
-    newModel ! [ getAds newModel ]
+    ( newModel
+    , getAds newModel
+    )
 
 
 getAds : Model -> Cmd (UpdateMessage Msg)
 getAds model =
     let
         queryString =
-            QueryString.empty
-                |> QueryString.add "limit" (toString limit)
-                |> QueryString.add "offset" (toString model.cursor)
-                |> QueryString.optional "domain" model.selectedDomain
-                |> QueryString.optional "position" model.selectedPosition
-                |> QueryString.optional "location" model.selectedLocation
-                |> QueryString.add "hide_job_ads"
-                    (if model.hideJobAds then
-                        "true"
-                     else
-                        "false"
+            Dict.empty
+                |> Dict.insert "limit" (QS.One <| QS.Str <| String.fromInt limit)
+                |> Dict.insert "offset" (QS.One <| QS.Str <| String.fromInt model.cursor)
+                |> qsOptional "domain" model.selectedDomain
+                |> qsOptional "position" model.selectedPosition
+                |> qsOptional "location" model.selectedLocation
+                |> Dict.insert "hide_job_ads"
+                    (QS.One <|
+                        QS.Str <|
+                            if model.hideJobAds then
+                                "true"
+
+                            else
+                                "false"
                     )
-                |> QueryString.add "order" (sortToString model.sort)
-                |> QueryString.render
+                |> Dict.insert "order" (QS.One <| QS.Str <| sortToString model.sort)
+                |> QS.serialize QS.config
 
         url =
             "/api/ilmoitukset/" ++ queryString
@@ -144,6 +159,7 @@ view t loggedInUserMaybe model config =
                                 (ChangeSort <|
                                     if model.sort == CreatedDesc then
                                         CreatedAsc
+
                                     else
                                         CreatedDesc
                                 )
@@ -170,6 +186,7 @@ view t loggedInUserMaybe model config =
                                 (ChangeSort <|
                                     if model.sort == AnswerCountDesc then
                                         AnswerCountAsc
+
                                     else
                                         AnswerCountDesc
                                 )
@@ -194,6 +211,7 @@ view t loggedInUserMaybe model config =
                                 , E.onClick (ChangeSort NewestAnswerDesc)
                                 ]
                                 [ H.text <| t "listAds.sort.newestAnswer" ]
+
                           else
                             H.text ""
                         , H.label
@@ -316,7 +334,7 @@ adListView t loggedInUserMaybe removal index ad =
                     ]
                     [ H.span
                         [ A.class "list-ads__ad-preview-answer-count-number" ]
-                        [ H.text << toString <| Models.Ad.adCount ad.answers ]
+                        [ H.text << String.fromInt <| Models.Ad.adCount ad.answers ]
                     , SvgIcons.answers
                     ]
                 , H.div [ A.class "list-ads__ad-preview-author-info" ] [ Common.authorInfo ad.createdBy ]

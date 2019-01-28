@@ -1,4 +1,4 @@
-module Translation exposing (..)
+module Translation exposing (HasTranslations, T, Translations, fromList, get, getWith, replaceWith)
 
 import Dict exposing (Dict)
 import List.Extra as List
@@ -48,5 +48,5 @@ getWith translations key replacements =
 replaceWith : List String -> String -> String
 replaceWith replacements =
     String.split "{.}"
-        >> flip List.interweave replacements
+        >> (\a -> List.interweave a replacements)
         >> String.join ""

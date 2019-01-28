@@ -30,18 +30,19 @@ view str =
         isUrl rawWord =
             let
                 word =
-                    Regex.replace Regex.All (Regex.regex "^\\(") (always "") rawWord
+                    Regex.replace (Maybe.withDefault Regex.never <| Regex.fromString "^\\(") (always "") rawWord
             in
             [ String.startsWith "http://" word
             , String.startsWith "https://" word
             , String.startsWith "www." word
-            , Regex.contains (Regex.regex "\\w+\\.\\w+/\\w+") word
+            , Regex.contains (Maybe.withDefault Regex.never <| Regex.fromString "\\w+\\.\\w+/\\w+") word
             ]
                 |> List.any identity
 
         toUrl word =
             if isUrl word then
                 splitSpecialChars word
+
             else
                 [ H.text word ]
 
@@ -50,7 +51,7 @@ view str =
                 ( withoutEnd, endPart ) =
                     let
                         matches =
-                            Regex.find (Regex.AtMost 1) (Regex.regex "[.,;:)]*$") url
+                            Regex.findAtMost 1 (Maybe.withDefault Regex.never <| Regex.fromString "[.,;:)]*$") url
 
                         matchMaybe =
                             matches |> List.head
@@ -64,14 +65,16 @@ view str =
                             ( url, Nothing )
 
                 ( beginningPart, urlPart ) =
-                    if Regex.contains (Regex.regex "^\\(") withoutEnd then
+                    if Regex.contains (Maybe.withDefault Regex.never <| Regex.fromString "^\\(") withoutEnd then
                         ( Just <| String.left 1 withoutEnd, String.dropLeft 1 withoutEnd )
+
                     else
                         ( Nothing, withoutEnd )
 
                 urlWithGuessedHttp =
                     if not (String.startsWith "http" urlPart) then
                         "http://" ++ urlPart
+
                     else
                         urlPart
             in

@@ -1,22 +1,23 @@
-module ListUsers exposing (..)
+module ListUsers exposing (Msg(..), emptyToNothing, getUsers, initTasks, reInitItems, row, sortToString, subscriptions, typeAheadToMsg, typeaheads, update, view, viewUser)
 
 import Common exposing (Filter(..))
+import Dict
 import Html as H
 import Html.Attributes as A
 import Html.Events as E
 import Http
 import Json.Decode as Json
+import Json.Encode as JS
 import Link
 import List.Extra as List
 import Models.User exposing (User)
 import Nav
 import Profile.Main exposing (typeahead, typeaheadResult)
-import QueryString
-import QueryString.Extra as QueryString
+import QS
 import State.Config as Config
 import State.ListUsers exposing (..)
 import Translation exposing (T)
-import Util exposing (UpdateMessage(..), ViewMessage(..))
+import Util exposing (UpdateMessage(..), ViewMessage(..), qsOptional)
 
 
 sortToString : Sort -> String
@@ -39,9 +40,9 @@ sortToString sort =
 typeaheads : Model -> Config.Model -> Cmd msg
 typeaheads model config =
     Cmd.batch
-        [ typeahead ( "skills-input", Config.categoriedOptionsEncode config.specialSkillOptions, False, False, model.selectedSkill )
-        , typeahead ( "education-institute", Config.categoriedOptionsEncode << Config.institutes <| config, False, False, model.selectedInstitute )
-        , typeahead ( "education-specialization", Config.categoriedOptionsEncode << Config.specializations <| config, False, False, model.selectedSpecialization )
+        [ typeahead <| JS.list identity [ JS.string "skills-input", Config.categoriedOptionsEncode config.specialSkillOptions, JS.bool False, JS.bool False, JS.string model.selectedSkill ]
+        , typeahead <| JS.list identity [ JS.string "education-institute", Config.categoriedOptionsEncode << Config.institutes <| config, JS.bool False, JS.bool False, JS.string model.selectedInstitute ]
+        , typeahead <| JS.list identity [ JS.string "education-specialization", Config.categoriedOptionsEncode << Config.specializations <| config, JS.bool False, JS.bool False, JS.string model.selectedSpecialization ]
         ]
 
 
@@ -76,6 +77,7 @@ emptyToNothing : String -> Maybe String
 emptyToNothing str =
     if String.length str == 0 then
         Nothing
+
     else
         Just str
 
@@ -84,17 +86,17 @@ getUsers : Model -> Cmd (UpdateMessage Msg)
 getUsers model =
     let
         queryString =
-            QueryString.empty
-                |> QueryString.add "limit" (toString limit)
-                |> QueryString.add "offset" (toString model.cursor)
-                |> QueryString.optional "domain" model.selectedDomain
-                |> QueryString.optional "position" model.selectedPosition
-                |> QueryString.optional "location" model.selectedLocation
-                |> QueryString.optional "special_skill" (emptyToNothing model.selectedSkill)
-                |> QueryString.optional "specialization" (emptyToNothing model.selectedSpecialization)
-                |> QueryString.optional "institute" (emptyToNothing model.selectedInstitute)
-                |> QueryString.add "order" (sortToString model.sort)
-                |> QueryString.render
+            Dict.empty
+                |> Dict.insert "limit" (QS.One <| QS.Str <| String.fromInt limit)
+                |> Dict.insert "offset" (QS.One <| QS.Str <| String.fromInt model.cursor)
+                |> qsOptional "domain" model.selectedDomain
+                |> qsOptional "position" model.selectedPosition
+                |> qsOptional "location" model.selectedLocation
+                |> qsOptional "special_skill" (emptyToNothing model.selectedSkill)
+                |> qsOptional "specialization" (emptyToNothing model.selectedSpecialization)
+                |> qsOptional "institute" (emptyToNothing model.selectedInstitute)
+                |> Dict.insert "order" (QS.One <| QS.Str <| sortToString model.sort)
+                |> QS.serialize QS.config
 
         url =
             "/api/profiilit/" ++ queryString
@@ -127,27 +129,35 @@ reInitItems model =
         newModel =
             { model | users = [], cursor = 0, receivedCount = 0 }
     in
-    newModel ! [ getUsers newModel ]
+    ( newModel
+    , getUsers newModel
+    )
 
 
 update : Msg -> Model -> ( Model, Cmd (UpdateMessage Msg) )
 update msg model =
     case msg of
         UpdateUsers users ->
-            { model
+            ( { model
                 | users = List.uniqueBy .id <| model.users ++ users
 
                 -- always advance by full amount, so we know when to stop asking for more
                 , receivedCount = model.receivedCount + List.length users
                 , cursor = model.cursor + limit
-            }
-                ! []
+              }
+            , Cmd.none
+            )
 
         FooterAppeared ->
             if Common.shouldNotGetMoreOnFooter model.receivedCount model.cursor then
-                model ! []
+                ( model
+                , Cmd.none
+                )
+
             else
-                model ! [ getUsers model ]
+                ( model
+                , getUsers model
+                )
 
         ChangeDomainFilter value ->
             reInitItems { model | selectedDomain = value }
@@ -171,7 +181,9 @@ update msg model =
             reInitItems { model | sort = value }
 
         NoOp ->
-            model ! []
+            ( model
+            , Cmd.none
+            )
 
 
 view : T -> Model -> Config.Model -> Bool -> H.Html (ViewMessage Msg)
@@ -213,6 +225,7 @@ view t model config isLoggedIn =
                                 (ChangeSort <|
                                     if model.sort == AlphaAsc then
                                         AlphaDesc
+
                                     else
                                         AlphaAsc
                                 )
@@ -275,6 +288,7 @@ view t model config isLoggedIn =
               <|
                 if isLoggedIn then
                     sorterRow :: rowsHtml
+
                 else
                     rowsHtml
             ]

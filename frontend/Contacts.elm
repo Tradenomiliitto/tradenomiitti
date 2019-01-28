@@ -1,4 +1,4 @@
-module Contacts exposing (..)
+module Contacts exposing (Msg(..), getContacts, initTasks, renderContact, update, view)
 
 import Ad
 import Common
@@ -32,7 +32,9 @@ update : Msg -> Model -> ( Model, Cmd msg )
 update msg model =
     case msg of
         GetContacts list ->
-            { model | contacts = list } ! []
+            ( { model | contacts = list }
+            , Cmd.none
+            )
 
 
 view : T -> Model -> Maybe User -> H.Html (ViewMessage msg)

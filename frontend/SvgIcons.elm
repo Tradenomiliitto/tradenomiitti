@@ -1,4 +1,4 @@
-module SvgIcons exposing (..)
+module SvgIcons exposing (answers, businessCard, email, location, phone, upload, userPicPlaceHolder)
 
 import Html as H
 import Html.Attributes as A

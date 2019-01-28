@@ -27,7 +27,7 @@ viewSingleSection i { heading, content } =
     let
         sectionHeading =
             heading
-                |> Maybe.map (\text -> H.h4 [ A.class "preformatted__section-heading" ] [ H.text <| toString (i + 1) ++ " " ++ text ])
+                |> Maybe.map (\text -> H.h4 [ A.class "preformatted__section-heading" ] [ H.text <| String.fromInt (i + 1) ++ " " ++ text ])
                 |> Maybe.toList
     in
     sectionHeading

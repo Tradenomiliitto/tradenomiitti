@@ -1,4 +1,4 @@
-module State.CreateAd exposing (..)
+module State.CreateAd exposing (Model, init)
 
 import State.Util exposing (SendingStatus(..))
 

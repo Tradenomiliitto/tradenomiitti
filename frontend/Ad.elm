@@ -2,7 +2,6 @@ module Ad exposing (Msg(..), getAd, leaveAnswer, leaveAnswerBox, leaveAnswerProm
 
 import Common
 import Date
-import Date.Extra as Date
 import Html as H
 import Html.Attributes as A
 import Html.Events as E
@@ -18,6 +17,7 @@ import PlainTextFormat
 import Removal
 import State.Ad exposing (..)
 import State.Util exposing (SendingStatus(..))
+import Time
 import Translation exposing (T)
 import Util exposing (UpdateMessage(..), ViewMessage(..))
 
@@ -33,7 +33,7 @@ type Msg
 
 getAd : Int -> Cmd (UpdateMessage Msg)
 getAd adId =
-    Http.get ("/api/ilmoitukset/" ++ toString adId) Models.Ad.adDecoder
+    Http.get ("/api/ilmoitukset/" ++ String.fromInt adId) Models.Ad.adDecoder
         |> Util.errorHandlingSend GetAd
 
 
@@ -44,7 +44,7 @@ sendAnswer model adId =
             JS.object
                 [ ( "content", JS.string model.answerText ) ]
     in
-    Http.post ("/api/ilmoitukset/" ++ toString adId ++ "/vastaus") (Http.jsonBody encoded) Json.string
+    Http.post ("/api/ilmoitukset/" ++ String.fromInt adId ++ "/vastaus") (Http.jsonBody encoded) Json.string
         |> Http.send (LocalUpdateMessage << SendAnswerResponse adId)
 
 
@@ -52,34 +52,47 @@ update : Msg -> Model -> ( Model, Cmd (UpdateMessage Msg) )
 update msg model =
     case msg of
         StartAddAnswer ->
-            { model | addingAnswer = True } ! []
+            ( { model | addingAnswer = True }
+            , Cmd.none
+            )
 
         ChangeAnswerText str ->
-            { model | answerText = str } ! []
+            ( { model | answerText = str }
+            , Cmd.none
+            )
 
         SendAnswer adId ->
-            { model | sending = Sending } ! [ sendAnswer model adId ]
+            ( { model | sending = Sending }
+            , sendAnswer model adId
+            )
 
         SendAnswerResponse adId (Ok _) ->
-            { model
+            ( { model
                 | sending = FinishedSuccess "ok"
                 , answerText = ""
                 , addingAnswer = False
-            }
-                ! [ getAd adId ]
+              }
+            , getAd adId
+            )
 
         SendAnswerResponse adId (Err _) ->
-            { model | sending = FinishedFail } ! []
+            ( { model | sending = FinishedFail }
+            , Cmd.none
+            )
 
         GetAd ad ->
-            { model | ad = Just ad } ! []
+            ( { model | ad = Just ad }
+            , Cmd.none
+            )
 
-        RemovalMessage msg ->
+        RemovalMessage innerMsg ->
             let
                 ( newRemoval, cmd ) =
-                    Removal.update msg model.removal
+                    Removal.update innerMsg model.removal
             in
-            { model | removal = newRemoval } ! [ Util.localMap RemovalMessage cmd ]
+            ( { model | removal = newRemoval }
+            , Util.localMap RemovalMessage cmd
+            )
 
 
 view : T -> Model -> Int -> Maybe User -> String -> H.Html (ViewMessage Msg)
@@ -99,10 +112,10 @@ viewAd t adId model userMaybe rootUrl ad =
             case userMaybe of
                 Just user ->
                     let
-                        isAsker =
+                        isAskerInner =
                             ad.createdBy.id == user.id
 
-                        hasAnswered =
+                        hasAnsweredInner =
                             case ad.answers of
                                 AnswerCount _ ->
                                     False
@@ -113,7 +126,7 @@ viewAd t adId model userMaybe rootUrl ad =
                                         |> List.map (.id << .createdBy)
                                         |> List.any ((==) user.id)
                     in
-                    ( not isAsker && not hasAnswered, isAsker, hasAnswered )
+                    ( not isAskerInner && not hasAnsweredInner, isAskerInner, hasAnsweredInner )
 
                 Nothing ->
                     ( False, False, False )
@@ -200,7 +213,7 @@ viewAnswerList : T -> Maybe User -> Model -> List Answer -> H.Html (ViewMessage 
 viewAnswerList t userMaybe model answers =
     H.div
         [ A.class "ad-page__answers" ]
-        (List.indexedMap (\i answer -> viewAnswer t userMaybe model answer ((i + 1) % 2 == 0) i) answers)
+        (List.indexedMap (\i answer -> viewAnswer t userMaybe model answer (modBy 2 (i + 1) == 0) i) answers)
 
 
 viewAnswer : T -> Maybe User -> Model -> Answer -> Bool -> Int -> H.Html (ViewMessage Msg)
@@ -270,7 +283,7 @@ viewAnswerCount t num adId rootUrl =
 
                 n ->
                     ( t "ad.answerCount.n.heading"
-                        |> Translation.replaceWith [ toString n ]
+                        |> Translation.replaceWith [ String.fromInt n ]
                     , t "ad.answerCount.n.hint"
                     )
     in
@@ -340,6 +353,10 @@ leaveAnswer contents =
         contents
 
 
-viewDate : T -> Date.Date -> H.Html msg
+viewDate : T -> Time.Posix -> H.Html msg
 viewDate t date =
-    H.p [ A.class "ad-page__date" ] [ H.text (Date.toFormattedString (t "common.dateFormat") date) ]
+    H.p [ A.class "ad-page__date" ] [ H.text (Date.format (t "common.dateFormat") <| Date.fromPosix Time.utc date) ]
+
+
+
+-- FIXME DOn't use utc

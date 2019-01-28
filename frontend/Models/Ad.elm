@@ -1,10 +1,11 @@
-module Models.Ad exposing (..)
+module Models.Ad exposing (Ad, Answer, Answers(..), adCount, adDecoder, answerDecoder, answersDecoder)
 
 import Date
 import Json.Decode as Json
-import Json.Decode.Extra exposing (date)
+import Json.Decode.Extra exposing (datetime)
 import Json.Decode.Pipeline as P
 import Models.User exposing (User)
+import Time
 
 
 type alias Ad =
@@ -15,7 +16,7 @@ type alias Ad =
     , position : Maybe String
     , location : Maybe String
     , createdBy : User
-    , createdAt : Date.Date
+    , createdAt : Time.Posix
     , id : Int
     }
 
@@ -28,14 +29,14 @@ type Answers
 type alias Answer =
     { content : String
     , createdBy : User
-    , createdAt : Date.Date
+    , createdAt : Time.Posix
     , id : Int
     }
 
 
 adDecoder : Json.Decoder Ad
 adDecoder =
-    P.decode Ad
+    Json.succeed Ad
         |> P.required "heading" Json.string
         |> P.required "content" Json.string
         |> P.required "answers" answersDecoder
@@ -43,7 +44,7 @@ adDecoder =
         |> P.optional "position" (Json.map Just Json.string) Nothing
         |> P.optional "location" (Json.map Just Json.string) Nothing
         |> P.required "created_by" Models.User.userDecoder
-        |> P.required "created_at" date
+        |> P.required "created_at" datetime
         |> P.required "id" Json.int
 
 
@@ -61,10 +62,10 @@ answersDecoder =
 
 answerDecoder : Json.Decoder Answer
 answerDecoder =
-    P.decode Answer
+    Json.succeed Answer
         |> P.required "content" Json.string
         |> P.required "created_by" Models.User.userDecoder
-        |> P.required "created_at" date
+        |> P.required "created_at" datetime
         |> P.required "id" Json.int
 
 

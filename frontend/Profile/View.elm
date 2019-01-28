@@ -158,8 +158,8 @@ businessCard t user =
             , H.span [ A.class "profile__editing--bold" ] [ H.text <| t "profile.businessCard.visibleForRecipients" ]
             ]
         , case user.businessCard of
-            Just businessCard ->
-                businessCardData t user businessCard
+            Just businessCardValue ->
+                businessCardData t user businessCardValue
 
             Nothing ->
                 H.div [] [ H.text <| t "profile.businessCard.notFound" ]
@@ -167,7 +167,7 @@ businessCard t user =
 
 
 businessCardData : T -> User -> Models.User.BusinessCard -> H.Html Msg
-businessCardData t user businessCard =
+businessCardData t user businessCardParam =
     H.div
         [ A.class "profile__business-card" ]
         [ H.div [ A.class "profile__business-card--container" ]
@@ -180,7 +180,7 @@ businessCardData t user businessCard =
                         [ H.input
                             [ A.class "profile__business-card--name-work--input"
                             , A.placeholder <| t "profile.businessCardFields.name"
-                            , A.value businessCard.name
+                            , A.value businessCardParam.name
                             , E.onInput (UpdateBusinessCard Profile.Main.Name)
                             ]
                             []
@@ -189,7 +189,7 @@ businessCardData t user businessCard =
                         [ H.input
                             [ A.class "profile__business-card--name-work--input"
                             , A.placeholder <| t "profile.businessCardFields.title"
-                            , A.value businessCard.title
+                            , A.value businessCardParam.title
                             , E.onInput (UpdateBusinessCard Profile.Main.Title)
                             ]
                             []
@@ -197,17 +197,17 @@ businessCardData t user businessCard =
                     ]
                 ]
             , H.div [ A.class "profile__business-card--data--contact" ]
-                [ businessCardDataInput t businessCard Location
-                , businessCardDataInput t businessCard Phone
-                , businessCardDataInput t businessCard Email
-                , businessCardDataInput t businessCard LinkedIn
+                [ businessCardDataInput t businessCardParam Location
+                , businessCardDataInput t businessCardParam Phone
+                , businessCardDataInput t businessCardParam Email
+                , businessCardDataInput t businessCardParam LinkedIn
                 ]
             ]
         ]
 
 
 businessCardView : T -> User -> Models.User.BusinessCard -> H.Html (ViewMessage msg)
-businessCardView t user businessCard =
+businessCardView t user businessCardParam =
     H.div
         [ A.class "profile__business-card profile__business-card-view" ]
         [ H.div
@@ -220,16 +220,16 @@ businessCardView t user businessCard =
                 , H.div
                     [ A.class "inline profile__business-card--data--name-work" ]
                     [ H.h4 []
-                        [ H.text businessCard.name ]
+                        [ H.text businessCardParam.name ]
                     , H.h5 []
-                        [ H.text businessCard.title ]
+                        [ H.text businessCardParam.title ]
                     ]
                 ]
             , H.div [ A.class "profile__business-card--data--contact" ]
-                [ businessCardDataView businessCard Location
-                , businessCardDataView businessCard Phone
-                , businessCardDataView businessCard Email
-                , businessCardDataView businessCard LinkedIn
+                [ businessCardDataView businessCardParam Location
+                , businessCardDataView businessCardParam Phone
+                , businessCardDataView businessCardParam Email
+                , businessCardDataView businessCardParam LinkedIn
                 ]
             ]
         ]
@@ -773,7 +773,7 @@ userDescription t model user =
 userIdForAdmins : T -> User -> H.Html msg
 userIdForAdmins t user =
     user.memberId
-        |> Maybe.map (\id -> H.p [] [ H.text <| t "profile.userIdForAdmins" ++ toString id ])
+        |> Maybe.map (\id -> H.p [] [ H.text <| t "profile.userIdForAdmins" ++ String.fromInt id ])
         |> Maybe.withDefault (H.div [] [])
 
 

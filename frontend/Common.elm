@@ -1,4 +1,4 @@
-module Common exposing (..)
+module Common exposing (Filter(..), ProfileTab(..), authorInfo, authorInfoWithLocation, chunk2, chunk3, lengthHint, link, linkAction, picElementForUser, profileTopRow, prompt, rowFolder, rowFolder3, select, shouldNotGetMoreOnFooter, showLocation, typeaheadInput)
 
 import Html as H
 import Html.Attributes as A
@@ -70,6 +70,7 @@ profileTopRow t user editing profileTab saveOrEdit =
                  ]
                     ++ (if tab /= profileTab then
                             [ E.onClick << Link << tabToNav <| tab ]
+
                         else
                             []
                        )
@@ -175,12 +176,14 @@ link t route toMsg =
 
 linkAction : Route -> (Route -> msg) -> H.Attribute msg
 linkAction route toMsg =
-    E.onWithOptions
+    E.custom
         "click"
-        { stopPropagation = False
-        , preventDefault = True
-        }
-        (Json.succeed <| toMsg route)
+        (Json.succeed
+            { message = toMsg route
+            , stopPropagation = False
+            , preventDefault = True
+            }
+        )
 
 
 showLocation : String -> H.Html msg
@@ -197,13 +200,15 @@ lengthHint t class text minLength maxLength =
         ( key, n ) =
             if String.length text < minLength then
                 ( "common.lengthHint.needsNMoreChars", minLength - String.length text )
+
             else if String.length text <= maxLength then
                 ( "common.lengthHint.fitsAtMostNCharsMore", maxLength - String.length text )
+
             else
                 ( "common.lengthHint.tooLongByNChars", String.length text - maxLength )
 
         hint =
-            Translation.replaceWith [ toString n ] (t key)
+            Translation.replaceWith [ String.fromInt n ] (t key)
     in
     H.span
         [ A.class class ]
@@ -244,8 +249,8 @@ select :
     -> H.Html msg
 select t class toMsg filter options model =
     let
-        isSelected option filter =
-            case filter of
+        isSelected option innerFilter =
+            case innerFilter of
                 Domain ->
                     Just option == model.selectedDomain
 
@@ -265,6 +270,7 @@ select t class toMsg filter options model =
                         (\str ->
                             if str == prompt t filter then
                                 Nothing
+
                             else
                                 Just str
                         )

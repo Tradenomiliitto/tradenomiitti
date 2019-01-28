@@ -1,6 +1,8 @@
-port module Main exposing (..)
+port module Main exposing (Flags, HtmlId, Msg(..), animation, closeMenu, footerAppeared, init, logo, logoImage, main, navigation, navigationList, notImplementedYet, scrollTop, sendError, sendGaPageView, showAlert, subscriptions, unpackUpdateMessage, unpackViewMessage, update, verticalBar, view, viewLink, viewLinkInverse, viewPage, viewProfileLink)
 
 import Ad
+import Browser
+import Browser.Navigation
 import Common
 import Config
 import Contacts
@@ -18,7 +20,6 @@ import ListUsers
 import LoginNeeded
 import Maybe.Extra as Maybe
 import Nav exposing (..)
-import Navigation
 import PreformattedText
 import Profile.Main as Profile
 import Profile.View
@@ -34,6 +35,7 @@ import State.Settings
 import State.User
 import StaticContent
 import Translation as T exposing (HasTranslations, T, Translations)
+import Url
 import User
 import Util exposing (UpdateMessage(..), ViewMessage(..))
 
@@ -75,19 +77,21 @@ type alias Flags =
 
 main : Program Flags Model Msg
 main =
-    Navigation.programWithFlags UrlChange
+    Browser.application
         { init = init
         , view = view
         , update = update
         , subscriptions = subscriptions
+        , onUrlChange = UrlChange
+        , onUrlRequest = ClickedLink
         }
 
 
-init : Flags -> Navigation.Location -> ( Model, Cmd Msg )
-init { translations } location =
+init : Flags -> Url.Url -> Browser.Navigation.Key -> ( Model, Cmd Msg )
+init { translations } location key =
     let
         model =
-            initState translations location
+            initState translations location key
 
         settingsCmd =
             unpackUpdateMessage SettingsMessage Settings.initTasks
@@ -102,7 +106,9 @@ init { translations } location =
         staticContentCmd =
             unpackUpdateMessage StaticContentMessage StaticContent.initTasks
     in
-    model ! [ settingsCmd, profileCmd, configCmd, staticContentCmd ]
+    ( model
+    , Cmd.batch [ settingsCmd, profileCmd, configCmd, staticContentCmd ]
+    )
 
 
 
@@ -111,7 +117,8 @@ init { translations } location =
 
 type Msg
     = NewUrl Route
-    | UrlChange Navigation.Location
+    | UrlChange Url.Url
+    | ClickedLink Browser.UrlRequest
     | AllowProfileCreation
     | ToggleAcceptTerms
     | UserMessage User.Msg
@@ -131,7 +138,7 @@ type Msg
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
-update msg model =
+update outerMsg model =
     let
         t =
             T.get model.translations
@@ -139,13 +146,36 @@ update msg model =
         tWith =
             T.getWith model.translations
     in
-    case msg of
+    case outerMsg of
+        ClickedLink urlRequest ->
+            case urlRequest of
+                Browser.Internal url ->
+                    if
+                        String.contains "uloskirjautuminen" (Url.toString url)
+                            || String.contains "kirjaudu" (Url.toString url)
+                    then
+                        ( model
+                        , Browser.Navigation.load (Url.toString url)
+                        )
+
+                    else
+                        ( model
+                        , Cmd.none
+                        )
+
+                Browser.External url ->
+                    ( model
+                    , Browser.Navigation.load url
+                    )
+
         NewUrl route ->
-            { model | scrollTop = True }
-                ! [ Navigation.newUrl (routeToPath route)
-                  , sendGaPageView (routeToPath route)
-                  , closeMenu True
-                  ]
+            ( { model | scrollTop = True }
+            , Cmd.batch
+                [ Browser.Navigation.pushUrl model.key (routeToPath route)
+                , sendGaPageView (routeToPath route)
+                , closeMenu True
+                ]
+            )
 
         UrlChange location ->
             let
@@ -158,13 +188,18 @@ update msg model =
                 modelWithRoute =
                     { model | route = route, scrollTop = False }
 
-                initWithUpdateMessage initModel mapper cmd =
+                initWithUpdateMessage initModel mapper cmdIn =
                     if shouldScroll then
-                        initModel ! [ unpackUpdateMessage mapper cmd ]
-                    else
-                        modelWithRoute ! []
+                        ( initModel
+                        , unpackUpdateMessage mapper cmdIn
+                        )
 
-                ( newModel, cmd ) =
+                    else
+                        ( modelWithRoute
+                        , Cmd.none
+                        )
+
+                ( newModel, innerCmd ) =
                     case route of
                         ShowAd adId ->
                             initWithUpdateMessage { modelWithRoute | ad = State.Ad.init }
@@ -200,16 +235,21 @@ update msg model =
                                 newHome =
                                     State.Home.init modelWithRoute.settings
 
-                                ( newModel, cmd ) =
+                                ( newNewModel, innerInnerCmd ) =
                                     initWithUpdateMessage { modelWithRoute | home = newHome }
                                         HomeMessage
                                         (Home.initTasks newHome)
                             in
-                            newModel ! [ cmd, animation ( "home-intro-canvas", False ) ]
+                            ( newNewModel
+                            , Cmd.batch [ innerInnerCmd, animation ( "home-intro-canvas", False ) ]
+                            )
 
                         User userId ->
                             if Just userId == Maybe.map .id model.profile.user then
-                                { model | route = Profile userId } ! []
+                                ( { model | route = Profile userId }
+                                , Cmd.none
+                                )
+
                             else
                                 initWithUpdateMessage { modelWithRoute | user = State.User.init }
                                     UserMessage
@@ -218,25 +258,33 @@ update msg model =
                         ToProfile ->
                             case model.profile.user of
                                 Just user ->
-                                    { model | route = Profile user.id } ! [ Navigation.modifyUrl (routeToPath (Profile user.id)) ]
+                                    ( { model | route = Profile user.id }
+                                    , Browser.Navigation.replaceUrl model.key (routeToPath (Profile user.id))
+                                    )
 
                                 Nothing ->
-                                    model ! [ Navigation.newUrl (routeToPath (Nav.LoginNeeded << Just << Nav.routeToPath <| Nav.ToProfile)) ]
+                                    ( model
+                                    , Browser.Navigation.pushUrl model.key (routeToPath (Nav.LoginNeeded << Just << Nav.routeToPath <| Nav.ToProfile))
+                                    )
 
                         ListUsers ->
                             let
                                 newListUsers =
                                     State.ListUsers.init
 
-                                ( newModel, cmd ) =
+                                ( newNewModel, innerInnerCmd ) =
                                     initWithUpdateMessage { modelWithRoute | listUsers = newListUsers }
                                         ListUsersMessage
                                         (ListUsers.initTasks newListUsers)
                             in
-                            newModel ! [ cmd, ListUsers.typeaheads newModel.listUsers model.config ]
+                            ( newNewModel
+                            , Cmd.batch [ innerInnerCmd, ListUsers.typeaheads newNewModel.listUsers model.config ]
+                            )
 
                         LoginNeeded _ ->
-                            modelWithRoute ! [ animation ( "login-needed-canvas", False ) ]
+                            ( modelWithRoute
+                            , animation ( "login-needed-canvas", False )
+                            )
 
                         Settings ->
                             initWithUpdateMessage { modelWithRoute | settings = State.Settings.init } SettingsMessage Settings.initTasks
@@ -244,7 +292,7 @@ update msg model =
                         Contacts ->
                             initWithUpdateMessage { modelWithRoute | contacts = State.Contacts.init } ContactsMessage Contacts.initTasks
 
-                        newRoute ->
+                        _ ->
                             ( modelWithRoute, Cmd.none )
 
                 needsLogin =
@@ -264,47 +312,58 @@ update msg model =
                 newRoute =
                     if needsLogin then
                         routeToPath <| LoginNeeded (routeToPath route |> Just)
+
                     else
                         routeToPath route
 
                 doConsentNeededAnimation =
                     if not model.initialLoading && model.needsConsent then
                         animation ( "consent-needed-canvas", True )
+
                     else
                         Cmd.none
             in
             if needsLogin then
-                model ! [ Navigation.modifyUrl newRoute ]
+                ( model
+                , Browser.Navigation.replaceUrl model.key newRoute
+                )
+
             else
-                newModel
-                    ! [ cmd
-                      , scrollTop shouldScroll
-                      , doConsentNeededAnimation
-                      ]
+                ( newModel
+                , Cmd.batch
+                    [ innerCmd
+                    , scrollTop shouldScroll
+                    , doConsentNeededAnimation
+                    ]
+                )
 
         UserMessage msg ->
             let
-                ( userModel, cmd ) =
+                ( userModel, innerCmd ) =
                     User.update msg model.user
             in
-            ( { model | user = userModel }, unpackUpdateMessage UserMessage cmd )
+            ( { model | user = userModel }, unpackUpdateMessage UserMessage innerCmd )
 
         AllowProfileCreation ->
             let
-                ( profileModel, cmd ) =
+                ( profileModel, innerCmd ) =
                     Profile.update Profile.AllowProfileCreation model.profile model.config
 
                 newModel =
                     { model | profile = profileModel }
             in
-            newModel ! [ unpackUpdateMessage ProfileMessage cmd ]
+            ( newModel
+            , unpackUpdateMessage ProfileMessage innerCmd
+            )
 
         ToggleAcceptTerms ->
-            { model | acceptsTerms = not model.acceptsTerms } ! []
+            ( { model | acceptsTerms = not model.acceptsTerms }
+            , Cmd.none
+            )
 
         ProfileMessage msg ->
             let
-                ( profileModel, cmd ) =
+                ( profileModel, innerCmd ) =
                     Profile.update msg model.profile model.config
 
                 ( initialLoading, needsConsent ) =
@@ -322,86 +381,106 @@ update msg model =
                 -- logged in profile, so redo that once we are first loaded
                 redoNewUrlCmd =
                     if initialLoading /= model.initialLoading then
-                        Navigation.modifyUrl (routeToPath model.route)
+                        Browser.Navigation.replaceUrl model.key (routeToPath model.route)
+
                     else
                         Cmd.none
             in
-            { model
+            ( { model
                 | profile = profileModel
                 , initialLoading = initialLoading
                 , needsConsent = needsConsent
-            }
-                ! [ unpackUpdateMessage ProfileMessage cmd
-                  , redoNewUrlCmd
-                  ]
+              }
+            , Cmd.batch
+                [ unpackUpdateMessage ProfileMessage innerCmd
+                , redoNewUrlCmd
+                ]
+            )
 
         CreateAdMessage msg ->
             let
-                ( createAdModel, cmd ) =
+                ( createAdModel, innerCmd ) =
                     CreateAd.update msg model.createAd
             in
-            { model | createAd = createAdModel }
-                ! [ unpackUpdateMessage CreateAdMessage cmd ]
+            ( { model | createAd = createAdModel }
+            , unpackUpdateMessage CreateAdMessage innerCmd
+            )
 
         ListAdsMessage msg ->
             let
-                ( listAdsModel, cmd ) =
+                ( listAdsModel, innerCmd ) =
                     ListAds.update msg model.listAds
             in
-            { model | listAds = listAdsModel } ! [ unpackUpdateMessage ListAdsMessage cmd ]
+            ( { model | listAds = listAdsModel }
+            , unpackUpdateMessage ListAdsMessage innerCmd
+            )
 
         ListUsersMessage msg ->
             let
-                ( listUsersModel, cmd ) =
+                ( listUsersModel, innerCmd ) =
                     ListUsers.update msg model.listUsers
             in
-            { model | listUsers = listUsersModel } ! [ unpackUpdateMessage ListUsersMessage cmd ]
+            ( { model | listUsers = listUsersModel }
+            , unpackUpdateMessage ListUsersMessage innerCmd
+            )
 
         AdMessage msg ->
             let
-                ( adModel, cmd ) =
+                ( adModel, innerCmd ) =
                     Ad.update msg model.ad
             in
-            { model | ad = adModel } ! [ unpackUpdateMessage AdMessage cmd ]
+            ( { model | ad = adModel }
+            , unpackUpdateMessage AdMessage innerCmd
+            )
 
         HomeMessage msg ->
             let
-                ( homeModel, cmd ) =
+                ( homeModel, innerCmd ) =
                     Home.update msg model.home
             in
-            { model | home = homeModel } ! [ unpackUpdateMessage HomeMessage cmd ]
+            ( { model | home = homeModel }
+            , unpackUpdateMessage HomeMessage innerCmd
+            )
 
         SettingsMessage msg ->
             let
-                ( settingsModel, cmd ) =
+                ( settingsModel, innerCmd ) =
                     Settings.update msg model.settings
             in
-            { model | settings = settingsModel } ! [ unpackUpdateMessage SettingsMessage cmd ]
+            ( { model | settings = settingsModel }
+            , unpackUpdateMessage SettingsMessage innerCmd
+            )
 
         ConfigMessage msg ->
             let
-                ( configModel, cmd ) =
+                ( configModel, innerCmd ) =
                     Config.update msg model.config
             in
-            { model | config = configModel } ! [ cmd ]
+            ( { model | config = configModel }
+            , innerCmd
+            )
 
         ContactsMessage msg ->
             let
-                ( contactsModel, cmd ) =
+                ( contactsModel, innerCmd ) =
                     Contacts.update msg model.contacts
             in
-            { model | contacts = contactsModel } ! [ cmd ]
+            ( { model | contacts = contactsModel }
+            , innerCmd
+            )
 
         StaticContentMessage msg ->
             let
-                ( staticContentModel, cmd ) =
+                ( staticContentModel, innerCmd ) =
                     StaticContent.update msg model.staticContent
             in
-            { model | staticContent = staticContentModel } ! [ cmd ]
+            ( { model | staticContent = staticContentModel }
+            , innerCmd
+            )
 
         Error err ->
             let
-                cmd =
+                innerCmd =
                     case err of
                         Http.BadUrl str ->
                             sendError <| t "errors.badUrl" ++ str
@@ -423,16 +502,24 @@ update msg model =
                                 _ ->
                                     showAlert <| tWith "errors.codeToUserVisibleMessage" [ body ]
             in
-            model ! [ cmd ]
+            ( model
+            , innerCmd
+            )
 
         SendErrorResponse (Ok str) ->
-            model ! [ showAlert <| tWith "errors.codeToUserVisibleMessage" [ str ] ]
+            ( model
+            , showAlert <| tWith "errors.codeToUserVisibleMessage" [ str ]
+            )
 
         SendErrorResponse (Err err) ->
-            model ! [ showAlert <| tWith "errors.errorResponseFailure" [ toString err ] ]
+            ( model
+            , showAlert <| tWith "errors.errorResponseFailure" [ Debug.toString err ]
+            )
 
         NoOp ->
-            model ! []
+            ( model
+            , Cmd.none
+            )
 
 
 
@@ -472,12 +559,23 @@ subscriptions model =
 -- VIEW
 
 
-view : Model -> H.Html Msg
+view : Model -> Browser.Document Msg
 view model =
     let
         t =
             T.get model.translations
+    in
+    { title = t "common.title"
+    , body = [ viewHtml model t ]
+    }
 
+
+
+-- viewHtml : Model -> H.Html Msg
+
+
+viewHtml model t =
+    let
         splashScreen =
             H.div
                 [ A.class "splash-screen" ]
@@ -535,6 +633,7 @@ view model =
     in
     if model.initialLoading then
         splashScreen
+
     else
         case ( model.needsConsent, model.route ) of
             ( True, Terms ) ->
@@ -604,7 +703,7 @@ logoImage alt width =
         [ A.alt alt
         , A.src "/static/main_logo.svg"
         , A.class "logo-image"
-        , A.style [ ( "width", width ) ]
+        , A.style "width" width
         ]
         []
 
@@ -660,19 +759,23 @@ viewProfileLink t model =
 
         action =
             if loggedIn then
-                [ E.onWithOptions
+                [ E.custom
                     "click"
-                    { stopPropagation = False
-                    , preventDefault = True
-                    }
-                    (Json.succeed <| NewUrl ToProfile)
+                    (Json.succeed
+                        { message = NewUrl ToProfile
+                        , stopPropagation = False
+                        , preventDefault = True
+                        }
+                    )
                 ]
+
             else
                 []
 
         endpoint =
             if loggedIn then
                 routeToPath ToProfile
+
             else
                 ssoUrl model.rootUrl (routeToPath ToProfile |> Just)
 
@@ -682,6 +785,7 @@ viewProfileLink t model =
                     (\u ->
                         if u.profileCreated then
                             u.name
+
                         else
                             t "main.profile"
                     )
@@ -795,7 +899,7 @@ unpackViewMessage func html =
 
 
 unpackUpdateMessage : (msg -> Msg) -> Cmd (UpdateMessage msg) -> Cmd Msg
-unpackUpdateMessage mapper cmd =
+unpackUpdateMessage mapper innerCmd =
     Cmd.map
         (\appMsg ->
             case appMsg of
@@ -813,7 +917,7 @@ unpackUpdateMessage mapper cmd =
                         Util.HideJobAds b ->
                             SettingsMessage (Settings.ChangeHideJobAds b)
         )
-        cmd
+        innerCmd
 
 
 notImplementedYet : T -> H.Html Msg

@@ -1,4 +1,4 @@
-module State.User exposing (..)
+module State.User exposing (Model, init)
 
 import Models.Ad exposing (Ad)
 import Models.User exposing (User)

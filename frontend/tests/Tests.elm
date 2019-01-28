@@ -1,4 +1,4 @@
-module Tests exposing (..)
+module Tests exposing (chunkingAlgorithm, normalize, testUrlGuess, truncationAlgorithm, urlGuessing)
 
 import Common exposing (chunk2, chunk3)
 import Expect

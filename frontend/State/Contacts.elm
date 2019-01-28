@@ -1,4 +1,4 @@
-module State.Contacts exposing (..)
+module State.Contacts exposing (Model, init)
 
 import Models.User exposing (Contact)
 

@@ -1,4 +1,4 @@
-module State.Util exposing (..)
+module State.Util exposing (SendingStatus(..))
 
 
 type SendingStatus

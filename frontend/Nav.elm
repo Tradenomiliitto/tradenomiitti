@@ -1,9 +1,11 @@
-module Nav exposing (..)
+module Nav exposing (Route(..), parseLocation, routeParser, routeToPath, routeToString, ssoUrl)
 
+import Browser
 import Models.User
-import Navigation
 import Translation as T exposing (T)
-import UrlParser as U exposing ((</>), (<?>))
+import Url
+import Url.Parser as U exposing ((</>), (<?>))
+import Url.Parser.Query as Query
 import Window
 
 
@@ -36,7 +38,7 @@ routeToPath route =
             "/ilmoitukset/uusi"
 
         ShowAd adId ->
-            "/ilmoitukset/" ++ toString adId
+            "/ilmoitukset/" ++ String.fromInt adId
 
         ListAds ->
             "/ilmoitukset"
@@ -54,13 +56,13 @@ routeToPath route =
             "/notfound"
 
         Profile userId ->
-            "/tradenomit/" ++ toString userId
+            "/tradenomit/" ++ String.fromInt userId
 
         ToProfile ->
             "/profiili/"
 
         User userId ->
-            "/tradenomit/" ++ toString userId
+            "/tradenomit/" ++ String.fromInt userId
 
         LoginNeeded pathMaybe ->
             "/kirjautuminen-tarvitaan/" ++ (pathMaybe |> Maybe.map (\s -> "?seuraava=" ++ s) |> Maybe.withDefault "")
@@ -83,7 +85,7 @@ routeToString t route =
     case route of
         User userId ->
             t "navigation.routeNames.user"
-                |> T.replaceWith [ toString userId ]
+                |> T.replaceWith [ String.fromInt userId ]
 
         Profile userId ->
             t "navigation.routeNames.profile"
@@ -111,7 +113,7 @@ routeToString t route =
 
         ShowAd adId ->
             t "navigation.routeNames.showAd"
-                |> T.replaceWith [ toString adId ]
+                |> T.replaceWith [ String.fromInt adId ]
 
         LoginNeeded _ ->
             t "navigation.routeNames.loginNeeded"
@@ -129,13 +131,13 @@ routeToString t route =
             t "navigation.routeNames.contacts"
 
 
-parseLocation : Maybe Models.User.User -> Navigation.Location -> Route
+parseLocation : Maybe Models.User.User -> Url.Url -> Route
 parseLocation user location =
     let
-        route =
-            U.parsePath (routeParser user) location
+        routeMaybe =
+            U.parse (routeParser user) location
     in
-    case route of
+    case routeMaybe of
         Just route ->
             route
 
@@ -150,18 +152,19 @@ routeParser user =
         , U.map ShowAd (U.s "ilmoitukset" </> U.int)
         , U.map ListAds (U.s "ilmoitukset")
         , U.map ListUsers (U.s "tradenomit")
-        , U.map Home (U.s "")
+        , U.map Home U.top
         , U.map Info (U.s "tietoa")
         , U.map ToProfile (U.s "profiili")
         , U.map
             (\id ->
                 if Just id == Maybe.map .id user then
                     Profile id
+
                 else
                     User id
             )
             (U.s "tradenomit" </> U.int)
-        , U.map LoginNeeded (U.s "kirjautuminen-tarvitaan" <?> U.stringParam "seuraava")
+        , U.map LoginNeeded (U.s "kirjautuminen-tarvitaan" <?> Query.string "seuraava")
         , U.map Terms (U.s "kayttoehdot")
         , U.map RegisterDescription (U.s "rekisteriseloste")
         , U.map Settings (U.s "asetukset")
