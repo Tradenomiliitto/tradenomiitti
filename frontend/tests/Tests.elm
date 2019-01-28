@@ -4,6 +4,7 @@ import Common exposing (chunk2, chunk3)
 import Expect
 import Fuzz exposing (int, list, string, tuple)
 import Html as H
+import Html.Attributes
 import PlainTextFormat
 import Regex
 import Test exposing (..)
@@ -55,7 +56,7 @@ testUrlGuess { expectedUrl, testString } =
             in
             Expect.all
                 [ Query.count (Expect.equal 1)
-                , Query.first >> Query.has [ attribute "href" expectedUrl ]
+                , Query.first >> Query.has [ attribute <| Html.Attributes.attribute "href" expectedUrl ]
                 ]
                 elements
 
@@ -106,6 +107,6 @@ truncationAlgorithm =
 normalize : String -> String
 normalize string =
     string
-        |> Regex.replace Regex.All (Regex.regex "…") (always "")
-        |> Regex.replace Regex.All (Regex.regex "\\s+") (always " ")
-        |> Regex.replace Regex.All (Regex.regex "^\\s+") (always "")
+        |> Regex.replace (Maybe.withDefault Regex.never <| Regex.fromString "…") (always "")
+        |> Regex.replace (Maybe.withDefault Regex.never <| Regex.fromString "\\s+") (always " ")
+        |> Regex.replace (Maybe.withDefault Regex.never <| Regex.fromString "^\\s+") (always "")
