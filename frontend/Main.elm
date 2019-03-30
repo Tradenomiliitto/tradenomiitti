@@ -72,6 +72,7 @@ port showAlert : String -> Cmd msg
 
 type alias Flags =
     { translations : List ( String, String )
+    , timeZoneOffset : Int
     }
 
 
@@ -88,10 +89,10 @@ main =
 
 
 init : Flags -> Url.Url -> Browser.Navigation.Key -> ( Model, Cmd Msg )
-init { translations } location key =
+init { translations, timeZoneOffset } location key =
     let
         model =
-            initState translations location key
+            initState translations location key timeZoneOffset
 
         settingsCmd =
             unpackUpdateMessage SettingsMessage Settings.initTasks
@@ -834,10 +835,10 @@ viewPage model =
         content =
             case model.route of
                 User userId ->
-                    unpackViewMessage UserMessage <| User.view t model.user model.profile.user model.config
+                    unpackViewMessage UserMessage <| User.view t model.timeZone model.user model.profile.user model.config
 
                 Profile userId ->
-                    unpackViewMessage ProfileMessage <| Profile.View.view t model.profile model
+                    unpackViewMessage ProfileMessage <| Profile.View.view t model.timeZone model.profile model
 
                 ToProfile ->
                     -- Never shown to user, used just for redirection
@@ -850,13 +851,13 @@ viewPage model =
                     H.map CreateAdMessage <| CreateAd.view t model.config model.createAd
 
                 ListAds ->
-                    unpackViewMessage ListAdsMessage <| ListAds.view t model.profile.user model.listAds model.config
+                    unpackViewMessage ListAdsMessage <| ListAds.view t model.timeZone model.profile.user model.listAds model.config
 
                 ShowAd adId ->
-                    unpackViewMessage AdMessage <| Ad.view t model.ad adId model.profile.user model.rootUrl
+                    unpackViewMessage AdMessage <| Ad.view t model.ad adId model.profile.user model.rootUrl model.timeZone
 
                 Home ->
-                    unpackViewMessage HomeMessage <| Home.view t model.home model.profile.user
+                    unpackViewMessage HomeMessage <| Home.view t model.timeZone model.home model.profile.user
 
                 ListUsers ->
                     unpackViewMessage ListUsersMessage <| ListUsers.view t model.listUsers model.config (Maybe.isJust model.profile.user)
@@ -874,7 +875,7 @@ viewPage model =
                     Info.view model.staticContent.info
 
                 Contacts ->
-                    unpackViewMessage identity <| Contacts.view t model.contacts model.profile.user
+                    unpackViewMessage identity <| Contacts.view t model.timeZone model.contacts model.profile.user
 
                 NotFound ->
                     notImplementedYet t

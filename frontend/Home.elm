@@ -11,6 +11,7 @@ import Models.User exposing (User)
 import Nav
 import Removal
 import State.Home exposing (..)
+import Time
 import Translation exposing (T)
 import Util exposing (UpdateMessage(..), ViewMessage(..))
 
@@ -77,12 +78,12 @@ initTasks model =
         ]
 
 
-view : T -> Model -> Maybe User -> H.Html (ViewMessage Msg)
-view t model loggedInUserMaybe =
+view : T -> Time.Zone -> Model -> Maybe User -> H.Html (ViewMessage Msg)
+view t timeZone model loggedInUserMaybe =
     H.div
         []
         [ introScreen t loggedInUserMaybe
-        , listLatestAds t loggedInUserMaybe model
+        , listLatestAds t timeZone loggedInUserMaybe model
         , listUsers t model loggedInUserMaybe
         , tradenomiittiSection t
         ]
@@ -151,14 +152,14 @@ introBoxes t loggedInUserMaybe =
 -- LIST LATEST ADS --
 
 
-listLatestAds : T -> Maybe User -> Model -> H.Html (ViewMessage Msg)
-listLatestAds t loggedInUserMaybe model =
+listLatestAds : T -> Time.Zone -> Maybe User -> Model -> H.Html (ViewMessage Msg)
+listLatestAds t timeZone loggedInUserMaybe model =
     H.div
         [ A.class "home__latest-ads" ]
         [ H.div
             [ A.class "home__section--container" ]
             [ listAdsHeading t
-            , listFourAds t loggedInUserMaybe model
+            , listFourAds t timeZone loggedInUserMaybe model
             ]
         ]
 
@@ -194,12 +195,12 @@ sectionHeader title =
         [ H.text title ]
 
 
-listFourAds : T -> Maybe User -> Model -> H.Html (ViewMessage Msg)
-listFourAds t loggedInUserMaybe model =
+listFourAds : T -> Time.Zone -> Maybe User -> Model -> H.Html (ViewMessage Msg)
+listFourAds t timeZone loggedInUserMaybe model =
     Util.localViewMap RemovalMessage <|
         H.div
             []
-            (ListAds.viewAds t loggedInUserMaybe model.removal (List.take 4 model.listAds.ads))
+            (ListAds.viewAds t timeZone loggedInUserMaybe model.removal (List.take 4 model.listAds.ads))
 
 
 

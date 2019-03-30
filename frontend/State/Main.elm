@@ -14,6 +14,7 @@ import State.Profile as ProfileState
 import State.Settings
 import State.StaticContent
 import State.User
+import Time
 import Translation exposing (Translations)
 import Url
 import Util exposing (origin)
@@ -39,11 +40,12 @@ type alias Model =
     , contacts : State.Contacts.Model
     , staticContent : State.StaticContent.Model
     , translations : Translations
+    , timeZone : Time.Zone
     }
 
 
-initState : List ( String, String ) -> Url.Url -> Browser.Navigation.Key -> Model
-initState translations location key =
+initState : List ( String, String ) -> Url.Url -> Browser.Navigation.Key -> Int -> Model
+initState translations location key timeZoneOffset =
     let
         initialSettings =
             State.Settings.init
@@ -67,4 +69,5 @@ initState translations location key =
     , contacts = State.Contacts.init
     , staticContent = State.StaticContent.init
     , translations = Translation.fromList translations
+    , timeZone = Time.customZone timeZoneOffset []
     }

@@ -13,7 +13,7 @@ import translations from './translations';
 
 const app = Elm.Main.init({
   node: document.getElementById('app'),
-  flags: { translations },
+  flags: { translations, timeZoneOffset: -new Date().getTimezoneOffset() },
 });
 
 initAnimation(app.ports.animation);

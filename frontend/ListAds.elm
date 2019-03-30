@@ -18,6 +18,7 @@ import Removal
 import State.Config as Config
 import State.ListAds exposing (..)
 import SvgIcons
+import Time
 import Translation exposing (T)
 import Util exposing (UpdateMessage(..), ViewMessage(..), qsOptional)
 
@@ -138,8 +139,8 @@ getAds model =
     Util.errorHandlingSend (UpdateAds model.cursor) request
 
 
-view : T -> Maybe User -> Model -> Config.Model -> H.Html (ViewMessage Msg)
-view t loggedInUserMaybe model config =
+view : T -> Time.Zone -> Maybe User -> Model -> Config.Model -> H.Html (ViewMessage Msg)
+view t timeZone loggedInUserMaybe model config =
     let
         sorterRow =
             H.map LocalViewMessage <|
@@ -259,7 +260,7 @@ view t loggedInUserMaybe model config =
             [ A.class "list-ads__list-background" ]
             [ H.div
                 [ A.class "container last-row" ]
-                (sorterRow :: (List.map (Util.localViewMap RemovalMessage) <| viewAds t loggedInUserMaybe model.removal model.ads))
+                (sorterRow :: (List.map (Util.localViewMap RemovalMessage) <| viewAds t timeZone loggedInUserMaybe model.removal model.ads))
             ]
         ]
 
@@ -283,11 +284,11 @@ sortToString sort =
             "newest_answer_desc"
 
 
-viewAds : T -> Maybe User -> Removal.Model -> List Models.Ad.Ad -> List (H.Html (ViewMessage Removal.Msg))
-viewAds t loggedInUserMaybe removal ads =
+viewAds : T -> Time.Zone -> Maybe User -> Removal.Model -> List Models.Ad.Ad -> List (H.Html (ViewMessage Removal.Msg))
+viewAds t timeZone loggedInUserMaybe removal ads =
     let
         adsHtml =
-            List.indexedMap (adListView t loggedInUserMaybe removal) ads
+            List.indexedMap (adListView t timeZone loggedInUserMaybe removal) ads
 
         rows =
             Common.chunk2 adsHtml
@@ -305,8 +306,8 @@ row ads =
         ads
 
 
-adListView : T -> Maybe User -> Removal.Model -> Int -> Models.Ad.Ad -> H.Html (ViewMessage Removal.Msg)
-adListView t loggedInUserMaybe removal index ad =
+adListView : T -> Time.Zone -> Maybe User -> Removal.Model -> Int -> Models.Ad.Ad -> H.Html (ViewMessage Removal.Msg)
+adListView t timeZone loggedInUserMaybe removal index ad =
     H.div
         [ A.class "col-xs-12 col-sm-6 list-ads__item-container"
         ]
@@ -318,7 +319,7 @@ adListView t loggedInUserMaybe removal index ad =
                 , Link.action (Nav.ShowAd ad.id)
                 , A.class "card-link list-ads__item-expanding-part"
                 ]
-                [ Ad.viewDate t ad.createdAt
+                [ Ad.viewDate t timeZone ad.createdAt
                 , H.h3
                     [ A.class "list-ads__ad-preview-heading" ]
                     [ H.text ad.heading ]

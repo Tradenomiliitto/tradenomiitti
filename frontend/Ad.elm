@@ -95,15 +95,15 @@ update msg model =
             )
 
 
-view : T -> Model -> Int -> Maybe User -> String -> H.Html (ViewMessage Msg)
-view t model adId user rootUrl =
+view : T -> Model -> Int -> Maybe User -> String -> Time.Zone -> H.Html (ViewMessage Msg)
+view t model adId user rootUrl timeZone =
     model.ad
-        |> Maybe.map (viewAd t adId model user rootUrl)
+        |> Maybe.map (viewAd t adId model user rootUrl timeZone)
         |> Maybe.withDefault (H.div [] [ H.text <| t "ad.requestFailed" ])
 
 
-viewAd : T -> Int -> Model -> Maybe User -> String -> Ad -> H.Html (ViewMessage Msg)
-viewAd t adId model userMaybe rootUrl ad =
+viewAd : T -> Int -> Model -> Maybe User -> String -> Time.Zone -> Ad -> H.Html (ViewMessage Msg)
+viewAd t adId model userMaybe rootUrl timeZone ad =
     let
         loggedIn =
             Maybe.isJust userMaybe
@@ -167,7 +167,7 @@ viewAd t adId model userMaybe rootUrl ad =
                 [ A.class "row ad-page__ad-container" ]
                 [ H.div
                     [ A.class "col-xs-12 col-sm-6 ad-page__ad" ]
-                    [ viewDate t ad.createdAt
+                    [ viewDate t timeZone ad.createdAt
                     , H.h1 [ A.class "user-page__activity-item-heading" ] [ H.text ad.heading ]
                     , H.p [ A.class "user-page__activity-item-content" ] (PlainTextFormat.view ad.content)
                     , H.hr [] []
@@ -188,18 +188,18 @@ viewAd t adId model userMaybe rootUrl ad =
         , H.hr [ A.class "full-width-ruler" ] []
         , H.div
             [ A.class "container last-row" ]
-            [ viewAnswers t userMaybe model ad.answers adId rootUrl ]
+            [ viewAnswers t userMaybe model ad.answers adId rootUrl timeZone ]
         ]
 
 
-viewAnswers : T -> Maybe User -> Model -> Answers -> Int -> String -> H.Html (ViewMessage Msg)
-viewAnswers t userMaybe model answers adId rootUrl =
+viewAnswers : T -> Maybe User -> Model -> Answers -> Int -> String -> Time.Zone -> H.Html (ViewMessage Msg)
+viewAnswers t userMaybe model answers adId rootUrl timeZone =
     case answers of
         AnswerCount num ->
             viewAnswerCount t num adId rootUrl
 
         AnswerList (fst :: rst) ->
-            viewAnswerList t userMaybe model (fst :: rst)
+            viewAnswerList t userMaybe model (fst :: rst) timeZone
 
         AnswerList _ ->
             H.div
@@ -209,15 +209,15 @@ viewAnswers t userMaybe model answers adId rootUrl =
                 ]
 
 
-viewAnswerList : T -> Maybe User -> Model -> List Answer -> H.Html (ViewMessage Msg)
-viewAnswerList t userMaybe model answers =
+viewAnswerList : T -> Maybe User -> Model -> List Answer -> Time.Zone -> H.Html (ViewMessage Msg)
+viewAnswerList t userMaybe model answers timeZone =
     H.div
         [ A.class "ad-page__answers" ]
-        (List.indexedMap (\i answer -> viewAnswer t userMaybe model answer (modBy 2 (i + 1) == 0) i) answers)
+        (List.indexedMap (\i answer -> viewAnswer t userMaybe model answer (modBy 2 (i + 1) == 0) timeZone i) answers)
 
 
-viewAnswer : T -> Maybe User -> Model -> Answer -> Bool -> Int -> H.Html (ViewMessage Msg)
-viewAnswer t userMaybe model answer isEven zerobasedIndex =
+viewAnswer : T -> Maybe User -> Model -> Answer -> Bool -> Time.Zone -> Int -> H.Html (ViewMessage Msg)
+viewAnswer t userMaybe model answer isEven timeZone zerobasedIndex =
     H.div
         [ A.class "row ad-page__answers-row" ]
         [ H.div
@@ -238,7 +238,7 @@ viewAnswer t userMaybe model answer isEven zerobasedIndex =
                     ]
                 ]
               <|
-                [ viewDate t answer.createdAt
+                [ viewDate t timeZone answer.createdAt
                 , H.hr [] []
                 , H.p [] (PlainTextFormat.view answer.content)
                 , Common.authorInfo answer.createdBy
@@ -353,10 +353,6 @@ leaveAnswer contents =
         contents
 
 
-viewDate : T -> Time.Posix -> H.Html msg
-viewDate t date =
-    H.p [ A.class "ad-page__date" ] [ H.text (Date.format (t "common.dateFormat") <| Date.fromPosix Time.utc date) ]
-
-
-
--- FIXME DOn't use utc
+viewDate : T -> Time.Zone -> Time.Posix -> H.Html msg
+viewDate t timeZone date =
+    H.p [ A.class "ad-page__date" ] [ H.text (Date.format (t "common.dateFormat") <| Date.fromPosix timeZone date) ]
