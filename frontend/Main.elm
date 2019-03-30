@@ -571,10 +571,7 @@ view model =
     }
 
 
-
--- viewHtml : Model -> H.Html Msg
-
-
+viewHtml : Model -> T -> H.Html Msg
 viewHtml model t =
     let
         splashScreen =
