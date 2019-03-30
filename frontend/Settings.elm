@@ -1,4 +1,4 @@
-module Settings exposing (..)
+module Settings exposing (Msg(..), getSettings, initTasks, sendingToText, update, updateSettings, view, viewSettings, viewSettingsPage)
 
 import Common
 import Html as H
@@ -44,57 +44,67 @@ update : Msg -> Model -> ( Model, Cmd (UpdateMessage Msg) )
 update msg model =
     case msg of
         GetSettings settings ->
-            { model | settings = Just settings } ! []
+            ( { model | settings = Just settings }
+            , Cmd.none
+            )
 
         UpdateSettings (Ok _) ->
-            { model | sending = FinishedSuccess "" } ! []
+            ( { model | sending = FinishedSuccess "" }
+            , Cmd.none
+            )
 
         UpdateSettings (Err _) ->
-            { model | sending = FinishedFail } ! []
+            ( { model | sending = FinishedFail }
+            , Cmd.none
+            )
 
         ToggleEmailsForAnswers settings ->
-            { model
+            ( { model
                 | sending = NotSending
                 , settings =
                     Just
                         { settings
                             | emails_for_answers = not settings.emails_for_answers
                         }
-            }
-                ! []
+              }
+            , Cmd.none
+            )
 
         ToggleEmailsForBusinessCards settings ->
-            { model
+            ( { model
                 | sending = NotSending
                 , settings =
                     Just
                         { settings
                             | emails_for_businesscards = not settings.emails_for_businesscards
                         }
-            }
-                ! []
+              }
+            , Cmd.none
+            )
 
         ToggleEmailsForNewAds settings ->
-            { model
+            ( { model
                 | sending = NotSending
                 , settings =
                     Just
                         { settings
                             | emails_for_new_ads = not settings.emails_for_new_ads
                         }
-            }
-                ! []
+              }
+            , Cmd.none
+            )
 
         ChangeEmailAddress settings str ->
-            { model
+            ( { model
                 | sending = NotSending
                 , settings =
                     Just
                         { settings
                             | email_address = str
                         }
-            }
-                ! []
+              }
+            , Cmd.none
+            )
 
         ChangeHideJobAds b ->
             let
@@ -103,15 +113,22 @@ update msg model =
                         newSettings =
                             { settings | hide_job_ads = b }
                     in
-                    { model | settings = Just newSettings }
-                        ! [ updateSettings newSettings ]
+                    ( { model | settings = Just newSettings }
+                    , updateSettings newSettings
+                    )
             in
             model.settings
                 |> Maybe.map updateHideJobs
-                |> Maybe.withDefault (model ! [])
+                |> Maybe.withDefault
+                    (( model
+                     , Cmd.none
+                     )
+                    )
 
         Save settings ->
-            { model | sending = Sending } ! [ updateSettings settings ]
+            ( { model | sending = Sending }
+            , updateSettings settings
+            )
 
 
 view : T -> Model -> Maybe User -> H.Html (ViewMessage Msg)

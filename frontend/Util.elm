@@ -1,10 +1,13 @@
-module Util exposing (..)
+module Util exposing (UpdateMessage(..), UserPrefsMsg(..), ViewMessage(..), asApiError, delete, errorHandlingSend, localMap, localViewMap, makeCmd, origin, put, qsOptional, reroute, takeNChars, truncateContent, updateUserPreferences)
 
+import Dict exposing (Dict)
 import Html as H
 import Http
 import Json.Encode as JS
 import Nav exposing (Route)
+import QS
 import Task
+import Url
 
 
 type ViewMessage msg
@@ -126,6 +129,7 @@ truncateContent : String -> Int -> String
 truncateContent content numChars =
     if String.length content < numChars then
         content
+
     else
         let
             ( truncated, _ ) =
@@ -150,5 +154,33 @@ takeNChars n word ( accumulator, canAddMore ) =
     in
     if totalLength < n && canAddMore then
         ( accumulator ++ word ++ " ", canAddMore )
+
     else
         ( accumulator, False )
+
+
+qsOptional : String -> Maybe String -> QS.Query -> QS.Query
+qsOptional key maybeValue dict =
+    case maybeValue of
+        Just value ->
+            Dict.insert key (QS.One <| QS.Str value) dict
+
+        Nothing ->
+            dict
+
+
+origin : Url.Url -> String
+origin url =
+    let
+        protocol =
+            case url.protocol of
+                Url.Http ->
+                    "http://"
+
+                Url.Https ->
+                    "https://"
+
+        portPart =
+            Maybe.withDefault "" (Maybe.map (\port_ -> ":" ++ String.fromInt port_) url.port_)
+    in
+    protocol ++ url.host ++ portPart

@@ -1,4 +1,4 @@
-module State.ListAds exposing (..)
+module State.ListAds exposing (Model, Sort(..), init, limit)
 
 import Models.Ad
 import Removal

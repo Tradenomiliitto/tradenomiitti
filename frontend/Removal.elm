@@ -1,12 +1,12 @@
-module Removal exposing (..)
+module Removal exposing (AdLike, Model, Msg(..), Removal, RemovalTarget(..), deleteAd, deleteAnswer, init, update, view)
 
+import Browser.Navigation
 import Html as H
 import Html.Attributes as A
 import Html.Events as E
 import List.Extra as List
 import Maybe.Extra as Maybe
 import Models.User exposing (User)
-import Navigation
 import Translation exposing (T)
 import Util exposing (UpdateMessage(..), ViewMessage(..))
 
@@ -44,13 +44,13 @@ type alias Removal =
 
 deleteAd : Int -> Cmd (UpdateMessage Msg)
 deleteAd id =
-    Util.delete ("/api/ilmoitukset/" ++ toString id)
+    Util.delete ("/api/ilmoitukset/" ++ String.fromInt id)
         |> Util.errorHandlingSend (always SuccesfullyRemoved)
 
 
 deleteAnswer : Int -> Cmd (UpdateMessage Msg)
 deleteAnswer id =
-    Util.delete ("/api/vastaukset/" ++ toString id)
+    Util.delete ("/api/vastaukset/" ++ String.fromInt id)
         |> Util.errorHandlingSend (always SuccesfullyRemoved)
 
 
@@ -58,10 +58,14 @@ update : Msg -> Model -> ( Model, Cmd (UpdateMessage Msg) )
 update msg model =
     case msg of
         InitiateRemove index id ->
-            { model | removals = { index = index, id = id } :: model.removals } ! []
+            ( { model | removals = { index = index, id = id } :: model.removals }
+            , Cmd.none
+            )
 
         CancelRemoval index ->
-            { model | removals = List.filterNot (\removal -> removal.index == index) model.removals } ! []
+            ( { model | removals = List.filterNot (\removal -> removal.index == index) model.removals }
+            , Cmd.none
+            )
 
         ConfirmRemoval id ->
             let
@@ -73,10 +77,14 @@ update msg model =
                         Answer ->
                             deleteAnswer id
             in
-            model ! [ cmd ]
+            ( model
+            , cmd
+            )
 
         SuccesfullyRemoved ->
-            model ! [ Navigation.reload ]
+            ( model
+            , Browser.Navigation.reload
+            )
 
 
 type alias AdLike a =
@@ -146,9 +154,11 @@ view t userMaybe index ad model =
             [ A.class "removal" ]
             [ if not isBeingRemoved then
                 icon
+
               else
                 confirmationBox
             ]
         ]
+
     else
         []

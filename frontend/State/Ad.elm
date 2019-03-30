@@ -1,4 +1,4 @@
-module State.Ad exposing (..)
+module State.Ad exposing (Model, init)
 
 import Models.Ad exposing (Ad)
 import Removal

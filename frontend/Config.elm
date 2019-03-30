@@ -1,4 +1,4 @@
-module Config exposing (..)
+module Config exposing (Msg(..), getDomainOptions, getEducationOptions, getPositionOptions, getSpecialSkillOptions, initTasks, update)
 
 import Http
 import Json.Decode as Json
@@ -51,13 +51,21 @@ update : Msg -> Model -> ( Model, Cmd msg )
 update msg model =
     case msg of
         GetPositionOptions list ->
-            { model | positionOptions = list } ! []
+            ( { model | positionOptions = list }
+            , Cmd.none
+            )
 
         GetDomainOptions list ->
-            { model | domainOptions = list } ! []
+            ( { model | domainOptions = list }
+            , Cmd.none
+            )
 
         GetSpecialSkillOptions dict ->
-            { model | specialSkillOptions = dict } ! []
+            ( { model | specialSkillOptions = dict }
+            , Cmd.none
+            )
 
         GetEducationOptions education ->
-            { model | educationOptions = education } ! []
+            ( { model | educationOptions = education }
+            , Cmd.none
+            )

@@ -1,4 +1,4 @@
-module State.ListUsers exposing (..)
+module State.ListUsers exposing (Model, Sort(..), init, limit)
 
 import Models.User exposing (User)
 

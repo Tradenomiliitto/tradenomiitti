@@ -1,4 +1,4 @@
-module Link exposing (..)
+module Link exposing (action, button, link)
 
 import Html as H
 import Html.Attributes as A
@@ -29,9 +29,11 @@ button title class route =
 
 action : Route -> H.Attribute (ViewMessage msg)
 action route =
-    E.onWithOptions
+    E.custom
         "click"
-        { stopPropagation = True -- Don't navigate twice in case of stacked links
-        , preventDefault = True
-        }
-        (Json.succeed <| Link route)
+        (Json.succeed
+            { message = Link route
+            , stopPropagation = True -- Don't navigate twice in case of stacked links
+            , preventDefault = True
+            }
+        )

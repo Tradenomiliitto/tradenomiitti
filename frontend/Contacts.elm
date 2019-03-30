@@ -1,4 +1,4 @@
-module Contacts exposing (..)
+module Contacts exposing (Msg(..), getContacts, initTasks, renderContact, update, view)
 
 import Ad
 import Common
@@ -9,6 +9,7 @@ import Json.Decode as Json
 import Models.User exposing (Contact, User)
 import Profile.View
 import State.Contacts exposing (..)
+import Time
 import Translation exposing (T)
 import Util exposing (UpdateMessage, ViewMessage(..))
 
@@ -32,11 +33,13 @@ update : Msg -> Model -> ( Model, Cmd msg )
 update msg model =
     case msg of
         GetContacts list ->
-            { model | contacts = list } ! []
+            ( { model | contacts = list }
+            , Cmd.none
+            )
 
 
-view : T -> Model -> Maybe User -> H.Html (ViewMessage msg)
-view t model userMaybe =
+view : T -> Time.Zone -> Model -> Maybe User -> H.Html (ViewMessage msg)
+view t timeZone model userMaybe =
     case userMaybe of
         Just user ->
             H.div
@@ -66,7 +69,7 @@ view t model userMaybe =
                                 ]
                                 row
                         )
-                        (Common.chunk2 (List.map (renderContact t) model.contacts))
+                        (Common.chunk2 (List.map (renderContact t timeZone) model.contacts))
                     )
                 ]
 
@@ -74,12 +77,12 @@ view t model userMaybe =
             H.div [] []
 
 
-renderContact : T -> Contact -> H.Html (ViewMessage msg)
-renderContact t contact =
+renderContact : T -> Time.Zone -> Contact -> H.Html (ViewMessage msg)
+renderContact t timeZone contact =
     H.div
         [ A.class "col-xs-12 col-sm-6 contacts__item-container"
         ]
-        [ Ad.viewDate t contact.createdAt
+        [ Ad.viewDate t timeZone contact.createdAt
         , H.p
             [ A.class "contacts__intro-text" ]
             [ H.text contact.introText ]

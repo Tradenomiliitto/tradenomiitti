@@ -1,4 +1,4 @@
-module State.Profile exposing (..)
+module State.Profile exposing (Model, init)
 
 import Models.Ad
 import Models.User exposing (User)

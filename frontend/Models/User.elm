@@ -2,10 +2,11 @@ module Models.User exposing (BusinessCard, Contact, Education, Extra, PictureEdi
 
 import Date
 import Json.Decode as Json
-import Json.Decode.Extra exposing (date)
+import Json.Decode.Extra exposing (datetime)
 import Json.Decode.Pipeline as P
 import Json.Encode as JS
 import Skill
+import Time
 
 
 
@@ -46,7 +47,7 @@ type alias Contact =
     { user : User
     , businessCard : BusinessCard
     , introText : String
-    , createdAt : Date.Date
+    , createdAt : Time.Posix
     }
 
 
@@ -92,7 +93,7 @@ type alias BusinessCard =
 
 userDecoder : Json.Decoder User
 userDecoder =
-    P.decode User
+    Json.succeed User
         |> P.required "id" Json.int
         |> P.required "name" Json.string
         |> P.required "description" Json.string
@@ -129,12 +130,12 @@ encode user =
         [ ( "name", JS.string user.name )
         , ( "description", JS.string user.description )
         , ( "title", JS.string user.title )
-        , ( "domains", JS.list (List.map Skill.encode user.domains) )
-        , ( "positions", JS.list (List.map Skill.encode user.positions) )
+        , ( "domains", JS.list identity (List.map Skill.encode user.domains) )
+        , ( "positions", JS.list identity (List.map Skill.encode user.positions) )
         , ( "location", JS.string user.location )
         , ( "contribution", JS.string user.contributionStatus )
         , ( "cropped_picture", JS.string (user.croppedPictureFileName |> Maybe.withDefault "") )
-        , ( "special_skills", JS.list (List.map JS.string user.skills) )
+        , ( "special_skills", JS.list identity (List.map JS.string user.skills) )
         , ( "education", educationEncode user.education )
         ]
             ++ (user.pictureEditingDetails
@@ -168,7 +169,7 @@ educationEncode educationList =
     in
     educationList
         |> List.map encodeOne
-        |> JS.list
+        |> JS.list identity
 
 
 settingsEncode : Settings -> JS.Value
@@ -207,7 +208,7 @@ pictureEditingEncode details =
 
 userExtraDecoder : Json.Decoder Extra
 userExtraDecoder =
-    P.decode Extra
+    Json.succeed Extra
         |> P.required "first_name" Json.string
         |> P.required "nick_name" Json.string
         |> P.required "last_name" Json.string
@@ -220,7 +221,7 @@ userExtraDecoder =
 
 pictureEditingDecoder : Json.Decoder PictureEditing
 pictureEditingDecoder =
-    P.decode PictureEditing
+    Json.succeed PictureEditing
         |> P.required "file_name" Json.string
         |> P.required "x" Json.float
         |> P.required "y" Json.float
@@ -230,7 +231,7 @@ pictureEditingDecoder =
 
 settingsDecoder : Json.Decoder Settings
 settingsDecoder =
-    P.decode Settings
+    Json.succeed Settings
         |> P.required "emails_for_answers" Json.bool
         |> P.required "email_address" Json.string
         |> P.required "emails_for_businesscards" Json.bool
@@ -240,16 +241,16 @@ settingsDecoder =
 
 contactDecoder : Json.Decoder Contact
 contactDecoder =
-    P.decode Contact
+    Json.succeed Contact
         |> P.required "user" userDecoder
         |> P.required "business_card" businessCardDecoder
         |> P.required "intro_text" Json.string
-        |> P.required "created_at" date
+        |> P.required "created_at" datetime
 
 
 businessCardDecoder : Json.Decoder BusinessCard
 businessCardDecoder =
-    P.decode BusinessCard
+    Json.succeed BusinessCard
         |> P.required "name" Json.string
         |> P.required "title" Json.string
         |> P.required "location" Json.string
@@ -260,7 +261,7 @@ businessCardDecoder =
 
 educationDecoder : Json.Decoder Education
 educationDecoder =
-    P.decode Education
+    Json.succeed Education
         |> P.required "institute" Json.string
         |> P.optional "degree" (Json.map Just Json.string) Nothing
         |> P.optional "major" (Json.map Just Json.string) Nothing

@@ -1,4 +1,4 @@
-module StaticContent exposing (..)
+module StaticContent exposing (Msg(..), getInfo, getRegisterDescription, getTerms, initTasks, update)
 
 import Http
 import State.StaticContent exposing (..)
@@ -42,10 +42,16 @@ update : Msg -> Model -> ( Model, Cmd msg )
 update msg model =
     case msg of
         GetInfo info ->
-            { model | info = info } ! []
+            ( { model | info = info }
+            , Cmd.none
+            )
 
         GetTerms terms ->
-            { model | terms = terms } ! []
+            ( { model | terms = terms }
+            , Cmd.none
+            )
 
         GetRegisterDescription registerDescription ->
-            { model | registerDescription = registerDescription } ! []
+            ( { model | registerDescription = registerDescription }
+            , Cmd.none
+            )

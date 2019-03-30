@@ -1,4 +1,4 @@
-module State.StaticContent exposing (..)
+module State.StaticContent exposing (Model, StaticContent, StaticContentBlock, contentsDecoder, decoder, empty, init)
 
 import Json.Decode as Json
 import Json.Decode.Pipeline as P
@@ -40,14 +40,14 @@ init =
 
 decoder : Json.Decoder StaticContent
 decoder =
-    P.decode StaticContent
+    Json.succeed StaticContent
         |> P.required "title" Json.string
         |> P.required "contents" contentsDecoder
 
 
 contentsDecoder : Json.Decoder (List StaticContentBlock)
 contentsDecoder =
-    P.decode StaticContentBlock
+    Json.succeed StaticContentBlock
         |> P.optional "heading" (Json.maybe Json.string) Nothing
         |> P.required "content" Json.string
         |> Json.list

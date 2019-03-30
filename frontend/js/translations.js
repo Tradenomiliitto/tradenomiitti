@@ -4,6 +4,7 @@ const source = {
   common: {
     supportEmail,
     dateFormat: 'd.M.y',
+    title: 'Tradenomiitti',
     readMore: 'lue lisää',
     cancel: 'Peru',
     login: 'Kirjaudu',

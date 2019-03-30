@@ -1,4 +1,4 @@
-module CreateAd exposing (..)
+module CreateAd exposing (Msg(..), maxHeading, minHeading, sendAd, update, view)
 
 import Common exposing (Filter(..))
 import Html as H
@@ -50,35 +50,54 @@ update : Msg -> Model -> ( Model, Cmd (UpdateMessage Msg) )
 update msg model =
     case msg of
         ChangeHeading str ->
-            { model | heading = String.filter ((/=) '\n') str } ! []
+            ( { model | heading = String.filter ((/=) '\n') str }
+            , Cmd.none
+            )
 
         ChangeContent str ->
-            { model | content = str } ! []
+            ( { model | content = str }
+            , Cmd.none
+            )
 
         ChangeDomain value ->
-            { model | selectedDomain = value } ! []
+            ( { model | selectedDomain = value }
+            , Cmd.none
+            )
 
         ChangePosition value ->
-            { model | selectedPosition = value } ! []
+            ( { model | selectedPosition = value }
+            , Cmd.none
+            )
 
         ChangeLocation value ->
-            { model | selectedLocation = value } ! []
+            ( { model | selectedLocation = value }
+            , Cmd.none
+            )
 
         ToggleIsJobAd ->
-            { model | isJobAd = not model.isJobAd } ! []
+            ( { model | isJobAd = not model.isJobAd }
+            , Cmd.none
+            )
 
         Send ->
-            { model | sending = Sending } ! [ Cmd.map LocalUpdateMessage <| sendAd model ]
+            ( { model | sending = Sending }
+            , Cmd.map LocalUpdateMessage <| sendAd model
+            )
 
         SendResponse (Err _) ->
-            { model | sending = FinishedFail } ! []
+            ( { model | sending = FinishedFail }
+            , Cmd.none
+            )
 
         SendResponse (Ok id) ->
-            init
-                ! [ Util.reroute (Nav.ShowAd id) ]
+            ( init
+            , Util.reroute (Nav.ShowAd id)
+            )
 
         NoOp ->
-            model ! []
+            ( model
+            , Cmd.none
+            )
 
 
 minHeading : Int

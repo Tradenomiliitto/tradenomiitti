@@ -1,4 +1,4 @@
-module Skill exposing (..)
+module Skill exposing (Model, Msg(..), SkillLevel(..), allSkills, decoder, encode, skillLevelDecoder, skillToInt, update, view)
 
 import Html as H
 import Html.Attributes as A
@@ -29,7 +29,7 @@ type alias Model =
 
 decoder : Json.Decoder Model
 decoder =
-    P.decode Model
+    Json.succeed Model
         |> P.required "heading" Json.string
         |> P.required "skill_level" skillLevelDecoder
 
@@ -120,6 +120,7 @@ view t editing model =
                     ([ A.class <|
                         (if editing then
                             "skill__circle--clickable "
+
                          else
                             ""
                         )
@@ -128,6 +129,7 @@ view t editing model =
                      ]
                         ++ (if editing then
                                 [ E.onClick (LevelChange skillLevel) ]
+
                             else
                                 []
                            )
@@ -157,7 +159,7 @@ view t editing model =
             , H.p
                 []
                 [ H.input
-                    [ A.value (toString skillNumber)
+                    [ A.value (String.fromInt skillNumber)
                     , A.type_ "text"
                     , A.class "skill__input"
                     ]
@@ -179,6 +181,7 @@ view t editing model =
                             []
                         ]
                     ]
+
                 else
                     []
                )

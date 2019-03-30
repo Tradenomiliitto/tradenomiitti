@@ -61,7 +61,7 @@ port imageUpload : Maybe PictureEditing -> Cmd msg
 port imageSave : (( String, PictureEditing ) -> msg) -> Sub msg
 
 
-port typeahead : ( String, JS.Value, Bool, Bool, String ) -> Cmd msg
+port typeahead : JS.Value -> Cmd msg
 
 
 port typeaheadResult : (( String, String ) -> msg) -> Sub msg
@@ -74,11 +74,11 @@ port typeaheadResult : (( String, String ) -> msg) -> Sub msg
 typeaheads : Config.Model -> Cmd msg
 typeaheads config =
     Cmd.batch
-        [ typeahead ( "skills-input", Config.categoriedOptionsEncode config.specialSkillOptions, True, True, "" )
-        , typeahead ( "education-institute", Config.categoriedOptionsEncode << Config.institutes <| config, False, False, "" )
-        , typeahead ( "education-degree", Config.categoriedOptionsEncode << Config.degrees <| config, False, True, "" )
-        , typeahead ( "education-major", Config.categoriedOptionsEncode << Config.majors <| config, False, True, "" )
-        , typeahead ( "education-specialization", Config.categoriedOptionsEncode << Config.specializations <| config, False, True, "" )
+        [ typeahead <| JS.list identity [ JS.string "skills-input", Config.categoriedOptionsEncode config.specialSkillOptions, JS.bool True, JS.bool True, JS.string "" ]
+        , typeahead <| JS.list identity [ JS.string "education-institute", Config.categoriedOptionsEncode << Config.institutes <| config, JS.bool False, JS.bool False, JS.string "" ]
+        , typeahead <| JS.list identity [ JS.string "education-degree", Config.categoriedOptionsEncode << Config.degrees <| config, JS.bool False, JS.bool True, JS.string "" ]
+        , typeahead <| JS.list identity [ JS.string "education-major", Config.categoriedOptionsEncode << Config.majors <| config, JS.bool False, JS.bool True, JS.string "" ]
+        , typeahead <| JS.list identity [ JS.string "education-specialization", Config.categoriedOptionsEncode << Config.specializations <| config, JS.bool False, JS.bool True, JS.string "" ]
         ]
 
 
@@ -124,7 +124,7 @@ getMe =
 
 getAds : User -> Cmd (UpdateMessage Msg)
 getAds u =
-    Http.get ("/api/ilmoitukset/tradenomilta/" ++ toString u.id) (Json.list Models.Ad.adDecoder)
+    Http.get ("/api/ilmoitukset/tradenomilta/" ++ String.fromInt u.id) (Json.list Models.Ad.adDecoder)
         |> Util.errorHandlingSend GetAds
 
 
@@ -159,8 +159,8 @@ updateSkillList index skillLevel list =
 
 
 updateUser : (User -> User) -> Model -> Model
-updateUser update model =
-    { model | user = Maybe.map update model.user }
+updateUser updater model =
+    { model | user = Maybe.map updater model.user }
 
 
 type BusinessCardField
@@ -173,8 +173,8 @@ type BusinessCardField
 
 
 updateBusinessCard : Maybe BusinessCard -> BusinessCardField -> String -> Maybe BusinessCard
-updateBusinessCard businessCard field value =
-    case businessCard of
+updateBusinessCard businessCardMaybe field value =
+    case businessCardMaybe of
         Just businessCard ->
             case field of
                 Name ->
@@ -216,82 +216,126 @@ update msg model config =
                         _ ->
                             Util.asApiError err
             in
-            { model | user = Nothing } ! [ cmd ]
+            ( { model | user = Nothing }
+            , cmd
+            )
 
         GetMe (Ok user) ->
-            { model | user = Just user } ! [ getAds user ]
+            ( { model | user = Just user }
+            , getAds user
+            )
 
         GetAds ads ->
-            { model | ads = ads } ! []
+            ( { model | ads = ads }
+            , Cmd.none
+            )
 
         Save user ->
-            model ! [ updateMe user ]
+            ( model
+            , updateMe user
+            )
 
         AllowProfileCreation ->
             let
                 newModel =
                     { model | editing = True }
             in
-            newModel
-                ! [ updateConsent
-                  , typeaheads config
-                  ]
+            ( newModel
+            , Cmd.batch
+                [ updateConsent
+                , typeaheads config
+                ]
+            )
 
         Edit ->
-            { model | editing = True } ! [ typeaheads config ]
+            ( { model | editing = True }
+            , typeaheads config
+            )
 
         DomainSkillMessage index (Skill.LevelChange skillLevel) ->
-            updateUser (\u -> { u | domains = updateSkillList index skillLevel u.domains }) model ! []
+            ( updateUser (\u -> { u | domains = updateSkillList index skillLevel u.domains }) model
+            , Cmd.none
+            )
 
         PositionSkillMessage index (Skill.LevelChange skillLevel) ->
-            updateUser (\u -> { u | positions = updateSkillList index skillLevel u.positions }) model ! []
+            ( updateUser (\u -> { u | positions = updateSkillList index skillLevel u.positions }) model
+            , Cmd.none
+            )
 
         DomainSkillMessage index Skill.Delete ->
-            updateUser (\u -> { u | domains = List.removeAt index u.domains }) model ! []
+            ( updateUser (\u -> { u | domains = List.removeAt index u.domains }) model
+            , Cmd.none
+            )
 
         PositionSkillMessage index Skill.Delete ->
-            updateUser (\u -> { u | positions = List.removeAt index u.positions }) model ! []
+            ( updateUser (\u -> { u | positions = List.removeAt index u.positions }) model
+            , Cmd.none
+            )
 
         ChangeDomainSelect str ->
-            updateUser (\u -> { u | domains = List.uniqueBy .heading <| u.domains ++ [ Skill.Model str Skill.Interested ] }) model ! []
+            ( updateUser (\u -> { u | domains = List.uniqueBy .heading <| u.domains ++ [ Skill.Model str Skill.Interested ] }) model
+            , Cmd.none
+            )
 
         ChangePositionSelect str ->
-            updateUser (\u -> { u | positions = List.uniqueBy .heading <| u.positions ++ [ Skill.Model str Skill.Interested ] }) model ! []
+            ( updateUser (\u -> { u | positions = List.uniqueBy .heading <| u.positions ++ [ Skill.Model str Skill.Interested ] }) model
+            , Cmd.none
+            )
 
         ChangeLocation str ->
-            updateUser (\u -> { u | location = str }) model ! []
+            ( updateUser (\u -> { u | location = str }) model
+            , Cmd.none
+            )
 
         ChangeTitle str ->
-            updateUser (\u -> { u | title = String.slice 0 70 str }) model ! []
+            ( updateUser (\u -> { u | title = String.slice 0 70 str }) model
+            , Cmd.none
+            )
 
         ChangeContributionStatus str ->
-            updateUser (\u -> { u | contributionStatus = String.slice 0 70 str }) model ! []
+            ( updateUser (\u -> { u | contributionStatus = String.slice 0 70 str }) model
+            , Cmd.none
+            )
 
         ChangeNickname str ->
-            updateUser (\u -> { u | name = str }) model ! []
+            ( updateUser (\u -> { u | name = str }) model
+            , Cmd.none
+            )
 
         ChangeDescription str ->
-            updateUser (\u -> { u | description = String.slice 0 400 str }) model ! []
+            ( updateUser (\u -> { u | description = String.slice 0 400 str }) model
+            , Cmd.none
+            )
 
         SkillSelected str ->
-            updateUser (\u -> { u | skills = List.unique <| u.skills ++ [ str ] }) model
-                ! [ typeaheads config ]
+            ( updateUser (\u -> { u | skills = List.unique <| u.skills ++ [ str ] }) model
+            , typeaheads config
+            )
 
         DeleteSkill str ->
-            updateUser (\u -> { u | skills = List.filter (\skill -> skill /= str) u.skills }) model
-                ! [ typeaheads config ]
+            ( updateUser (\u -> { u | skills = List.filter (\skill -> skill /= str) u.skills }) model
+            , typeaheads config
+            )
 
         InstituteSelected str ->
-            { model | selectedInstitute = Just str } ! []
+            ( { model | selectedInstitute = Just str }
+            , Cmd.none
+            )
 
         DegreeSelected str ->
-            { model | selectedDegree = Just str } ! []
+            ( { model | selectedDegree = Just str }
+            , Cmd.none
+            )
 
         MajorSelected str ->
-            { model | selectedMajor = Just str } ! []
+            ( { model | selectedMajor = Just str }
+            , Cmd.none
+            )
 
         SpecializationSelected str ->
-            { model | selectedSpecialization = Just str } ! []
+            ( { model | selectedSpecialization = Just str }
+            , Cmd.none
+            )
 
         AddEducation institute ->
             let
@@ -302,39 +346,49 @@ update msg model config =
                     , specialization = model.selectedSpecialization
                     }
             in
-            updateUser (\u -> { u | education = u.education ++ [ newEducation ] })
+            ( updateUser (\u -> { u | education = u.education ++ [ newEducation ] })
                 { model
                     | selectedInstitute = Nothing
                     , selectedDegree = Nothing
                     , selectedMajor = Nothing
                     , selectedSpecialization = Nothing
                 }
-                ! [ typeaheads config ]
+            , typeaheads config
+            )
 
         DeleteEducation index ->
-            updateUser
+            ( updateUser
                 (\u -> { u | education = List.removeAt index u.education })
                 model
-                ! [ typeaheads config ]
+            , typeaheads config
+            )
 
         UpdateUser _ ->
-            { model | editing = False }
-                ! (model.user
+            ( { model | editing = False }
+            , Cmd.batch
+                (model.user
                     |> Maybe.map (\user -> [ getAds user ])
                     |> Maybe.withDefault []
-                  )
+                )
+            )
 
         UpdateBusinessCard field value ->
-            updateUser (\u -> { u | businessCard = updateBusinessCard u.businessCard field value }) model ! []
+            ( updateUser (\u -> { u | businessCard = updateBusinessCard u.businessCard field value }) model
+            , Cmd.none
+            )
 
         UpdateConsent ->
-            model ! [ getMe ]
+            ( model
+            , getMe
+            )
 
         ChangeImage user ->
-            model ! [ imageUpload user.pictureEditingDetails ]
+            ( model
+            , imageUpload user.pictureEditingDetails
+            )
 
         ImageDetailsUpdate ( cropped, editingDetails ) ->
-            updateUser
+            ( updateUser
                 (\u ->
                     { u
                         | pictureEditingDetails = Just editingDetails
@@ -347,33 +401,50 @@ update msg model config =
                     }
                 )
                 model
-                ! []
+            , Cmd.none
+            )
 
         MouseEnterProfilePic ->
-            { model | mouseOverUserImage = True } ! []
+            ( { model | mouseOverUserImage = True }
+            , Cmd.none
+            )
 
         MouseLeaveProfilePic ->
-            { model | mouseOverUserImage = False } ! []
+            ( { model | mouseOverUserImage = False }
+            , Cmd.none
+            )
 
         -- handled in User
         StartAddContact ->
-            model ! []
+            ( model
+            , Cmd.none
+            )
 
         ChangeContactAddingText str ->
-            model ! []
+            ( model
+            , Cmd.none
+            )
 
         AddContact user ->
-            model ! []
+            ( model
+            , Cmd.none
+            )
 
         ShowAll ->
-            { model | viewAllAds = True } ! []
+            ( { model | viewAllAds = True }
+            , Cmd.none
+            )
 
-        RemovalMessage msg ->
+        RemovalMessage innerMsg ->
             let
                 ( newRemoval, cmd ) =
-                    Removal.update msg model.removal
+                    Removal.update innerMsg model.removal
             in
-            { model | removal = newRemoval } ! [ Util.localMap RemovalMessage cmd ]
+            ( { model | removal = newRemoval }
+            , Util.localMap RemovalMessage cmd
+            )
 
         NoOp ->
-            model ! []
+            ( model
+            , Cmd.none
+            )

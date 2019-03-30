@@ -1,4 +1,4 @@
-port module Home exposing (..)
+port module Home exposing (Msg(..), initTasks, introAnimation, introBoxes, introScreen, listAdsButtons, listAdsHeading, listFourAds, listLatestAds, listThreeUsers, listUsers, listUsersButtons, listUsersHeading, readMoreButton, scrollHomeBelowFold, sectionHeader, tradenomiImage, tradenomiittiHeader, tradenomiittiInfo, tradenomiittiInfoText, tradenomiittiRow, tradenomiittiSection, update, view)
 
 import Html as H
 import Html.Attributes as A
@@ -11,6 +11,7 @@ import Models.User exposing (User)
 import Nav
 import Removal
 import State.Home exposing (..)
+import Time
 import Translation exposing (T)
 import Util exposing (UpdateMessage(..), ViewMessage(..))
 
@@ -29,34 +30,44 @@ port scrollHomeBelowFold : Bool -> Cmd msg
 
 
 update : Msg -> Model -> ( Model, Cmd (UpdateMessage Msg) )
-update msg model =
-    case msg of
+update outerMsg model =
+    case outerMsg of
         ListAdsMessage msg ->
             let
                 ( listAdsModel, cmd ) =
                     ListAds.update msg model.listAds
             in
-            { model | listAds = listAdsModel } ! [ Util.localMap ListAdsMessage cmd ]
+            ( { model | listAds = listAdsModel }
+            , Util.localMap ListAdsMessage cmd
+            )
 
         ListUsersMessage msg ->
             let
                 ( listUsersModel, cmd ) =
                     ListUsers.update msg model.listUsers
             in
-            { model | listUsers = listUsersModel } ! [ Util.localMap ListUsersMessage cmd ]
+            ( { model | listUsers = listUsersModel }
+            , Util.localMap ListUsersMessage cmd
+            )
 
         ClickCreateProfile ->
-            { model | createProfileClicked = True } ! []
+            ( { model | createProfileClicked = True }
+            , Cmd.none
+            )
 
         ScrollBelowFold ->
-            model ! [ scrollHomeBelowFold True ]
+            ( model
+            , scrollHomeBelowFold True
+            )
 
         RemovalMessage msg ->
             let
                 ( newRemoval, cmd ) =
                     Removal.update msg model.removal
             in
-            { model | removal = newRemoval } ! [ Util.localMap RemovalMessage cmd ]
+            ( { model | removal = newRemoval }
+            , Util.localMap RemovalMessage cmd
+            )
 
 
 initTasks : Model -> Cmd (UpdateMessage Msg)
@@ -67,12 +78,12 @@ initTasks model =
         ]
 
 
-view : T -> Model -> Maybe User -> H.Html (ViewMessage Msg)
-view t model loggedInUserMaybe =
+view : T -> Time.Zone -> Model -> Maybe User -> H.Html (ViewMessage Msg)
+view t timeZone model loggedInUserMaybe =
     H.div
         []
         [ introScreen t loggedInUserMaybe
-        , listLatestAds t loggedInUserMaybe model
+        , listLatestAds t timeZone loggedInUserMaybe model
         , listUsers t model loggedInUserMaybe
         , tradenomiittiSection t
         ]
@@ -141,14 +152,14 @@ introBoxes t loggedInUserMaybe =
 -- LIST LATEST ADS --
 
 
-listLatestAds : T -> Maybe User -> Model -> H.Html (ViewMessage Msg)
-listLatestAds t loggedInUserMaybe model =
+listLatestAds : T -> Time.Zone -> Maybe User -> Model -> H.Html (ViewMessage Msg)
+listLatestAds t timeZone loggedInUserMaybe model =
     H.div
         [ A.class "home__latest-ads" ]
         [ H.div
             [ A.class "home__section--container" ]
             [ listAdsHeading t
-            , listFourAds t loggedInUserMaybe model
+            , listFourAds t timeZone loggedInUserMaybe model
             ]
         ]
 
@@ -184,12 +195,12 @@ sectionHeader title =
         [ H.text title ]
 
 
-listFourAds : T -> Maybe User -> Model -> H.Html (ViewMessage Msg)
-listFourAds t loggedInUserMaybe model =
+listFourAds : T -> Time.Zone -> Maybe User -> Model -> H.Html (ViewMessage Msg)
+listFourAds t timeZone loggedInUserMaybe model =
     Util.localViewMap RemovalMessage <|
         H.div
             []
-            (ListAds.viewAds t loggedInUserMaybe model.removal (List.take 4 model.listAds.ads))
+            (ListAds.viewAds t timeZone loggedInUserMaybe model.removal (List.take 4 model.listAds.ads))
 
 
 
@@ -228,6 +239,7 @@ listUsersButtons t loggedInUserMaybe =
         , Link.button
             (if Maybe.isJust loggedInUserMaybe then
                 t "home.listUsers.buttonEditProfile"
+
              else
                 t "home.listUsers.buttonCreateProfile"
             )

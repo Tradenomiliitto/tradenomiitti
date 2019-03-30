@@ -11,8 +11,10 @@ import initShowAlerts from './show-alerts';
 import initTypeahead from './typeahead';
 import translations from './translations';
 
-
-const app = Elm.Main.embed(document.getElementById('app'), { translations });
+const app = Elm.Main.init({
+  node: document.getElementById('app'),
+  flags: { translations, timeZoneOffset: -new Date().getTimezoneOffset() },
+});
 
 initAnimation(app.ports.animation);
 initScrollingToTop(app.ports.scrollTop);

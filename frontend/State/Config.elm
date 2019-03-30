@@ -1,4 +1,4 @@
-module State.Config exposing (..)
+module State.Config exposing (CategoriedOption, CategoriedOptions, Education, Model, categoriedOptionsDecoder, categoriedOptionsEncode, degrees, educationOptions, finnishRegions, init, institutes, majors, specializations)
 
 import Dict exposing (Dict)
 import Json.Decode as Json
@@ -30,7 +30,7 @@ categoriedOptionsDecoder : Json.Decoder CategoriedOptions
 categoriedOptionsDecoder =
     let
         singleDecoder =
-            P.decode CategoriedOption
+            Json.succeed CategoriedOption
                 |> P.required "category" Json.string
                 |> P.required "title" Json.string
     in
@@ -47,7 +47,7 @@ categoriedOptionsEncode categoriedOptions =
                     , ( "title", JS.string option.title )
                     ]
             )
-        |> JS.list
+        |> JS.list identity
 
 
 educationOptions : String -> Model -> CategoriedOptions

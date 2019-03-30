@@ -1,8 +1,8 @@
-module Window exposing (..)
+module Window exposing (encodeURIComponent)
 
-import Native.Window
+import Url
 
 
 encodeURIComponent : String -> String
 encodeURIComponent =
-    Native.Window.encodeURIComponent
+    Url.percentEncode

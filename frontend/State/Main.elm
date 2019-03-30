@@ -1,7 +1,8 @@
-module State.Main exposing (..)
+module State.Main exposing (Model, initState)
 
+import Browser
+import Browser.Navigation
 import Nav exposing (..)
-import Navigation
 import State.Ad
 import State.Config
 import State.Contacts
@@ -13,12 +14,16 @@ import State.Profile as ProfileState
 import State.Settings
 import State.StaticContent
 import State.User
+import Time
 import Translation exposing (Translations)
+import Url
+import Util exposing (origin)
 
 
 type alias Model =
     { route : Route
     , rootUrl : String
+    , key : Browser.Navigation.Key
     , scrollTop : Bool
     , listUsers : State.ListUsers.Model
     , user : State.User.Model
@@ -35,17 +40,19 @@ type alias Model =
     , contacts : State.Contacts.Model
     , staticContent : State.StaticContent.Model
     , translations : Translations
+    , timeZone : Time.Zone
     }
 
 
-initState : List ( String, String ) -> Navigation.Location -> Model
-initState translations location =
+initState : List ( String, String ) -> Url.Url -> Browser.Navigation.Key -> Int -> Model
+initState translations location key timeZoneOffset =
     let
         initialSettings =
             State.Settings.init
     in
     { route = parseLocation Nothing location
-    , rootUrl = location.origin
+    , rootUrl = origin location
+    , key = key
     , scrollTop = True -- initially start at top and init
     , user = State.User.init
     , listUsers = State.ListUsers.init
@@ -62,4 +69,5 @@ initState translations location =
     , contacts = State.Contacts.init
     , staticContent = State.StaticContent.init
     , translations = Translation.fromList translations
+    , timeZone = Time.customZone timeZoneOffset []
     }
