@@ -183,4 +183,4 @@ origin url =
         portPart =
             Maybe.withDefault "" (Maybe.map (\port_ -> ":" ++ String.fromInt port_) url.port_)
     in
-    protocol ++ url.host ++ portPart ++ "/"
+    protocol ++ url.host ++ portPart
