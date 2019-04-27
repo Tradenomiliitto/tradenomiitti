@@ -209,13 +209,15 @@
     width: 20px;
     font-size: 20px;
     margin-right: $marker-margin-right;
-    display: inline-block;
+    display: flex;
+    align-items: center;
     text-align: center;
     color: black;
   }
 
   &__detail {
     margin-top: 7px;
+    display: flex;
   }
 
   &__business-card {
