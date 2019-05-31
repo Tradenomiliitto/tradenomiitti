@@ -1,3 +1,15 @@
+@mixin padded-header() {
+  &-header {
+    @include heading-font;
+    text-transform: uppercase;
+    margin-bottom: 25px;
+  }
+}
+
+@mixin base-padding() {
+  padding-top: $full-width-ruler-margin-bottom;
+}
+
 .user-page {
   &__section {
     margin-top: #{ $navbar-height + $content-top-margin };
@@ -89,7 +101,7 @@
   }
 
   &__education {
-    padding-top: $full-width-ruler-margin-bottom;
+    @include base-padding;
     background-color: $light-grey;
     &-button {
       float: right;
@@ -101,11 +113,7 @@
     &--editing {
       background-color: $white;
     }
-    &-header {
-      @include heading-font;
-      text-transform: uppercase;
-      margin-bottom: 25px;
-    }
+    @include padded-header;
 
     &-details {
       margin-bottom: 30px;
@@ -131,6 +139,11 @@
         margin-bottom: 20px;
       }
     }
+  }
+
+  &__career-story {
+    @include padded-header;
+    @include base-padding;
   }
 
   &__membership-info {
@@ -203,13 +216,9 @@
     margin-top: $full-width-ruler-margin-top;
     margin-bottom: $full-width-ruler-margin-bottom;
     padding-bottom: $full-width-ruler-margin-top;
-    padding-top: $full-width-ruler-margin-bottom;
+    @include base-padding;
     background-color: $light-grey;
-    &-header {
-      @include heading-font;
-      text-transform: uppercase;
-      margin-bottom: 25px;
-    }
+    @include padded-header;
 
     &-item {
       margin-top: 25px;

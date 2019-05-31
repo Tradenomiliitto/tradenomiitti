@@ -48,7 +48,8 @@ const source = {
       submit: 'Jätä vastaus',
     },
     leaveAnswerPrompt: {
-      hint: 'Kokemuksellasi on aina arvoa. Jaa näkemyksesi vastaamalla ilmoitukseen.',
+      hint:
+        'Kokemuksellasi on aina arvoa. Jaa näkemyksesi vastaamalla ilmoitukseen.',
       answerTooltip: 'Osallistu keskusteluun',
       submit: 'Vastaa ilmoitukseen',
     },
@@ -60,7 +61,8 @@ const source = {
     headingInputPlaceholder: 'Otsikko',
     adInputPlaceholder: 'Kirjoita ytimekäs ilmoitus',
     filtersHeading: 'Kenen toivot vastaavan?',
-    filtersInfo: 'Valitsemalla toimialan tai tehtävän varmistat, että kysymyksesi löytää vastaajansa. Valittu kohderyhmä saa myös ilmoituksesi sähköpostina.',
+    filtersInfo:
+      'Valitsemalla toimialan tai tehtävän varmistat, että kysymyksesi löytää vastaajansa. Valittu kohderyhmä saa myös ilmoituksesi sähköpostina.',
     submit: 'Julkaise ilmoitus',
     successHeading: 'Lähetys onnistui',
     successAdId: 'Ilmoituksen numero on: ',
@@ -73,10 +75,12 @@ const source = {
     badUrl: 'BadUrl ',
     timeout: 'Vastauksen saaminen kesti liian kauan, yritä myöhemmin uudelleen',
     networkError: 'Yhteydessä on ongelma, yritä myöhemmin uudelleen',
-    badPayload: 'Jotain meni pieleen. Verkosta tuli\n\n{.}\n\nja virhe oli\n\n{.}',
+    badPayload:
+      'Jotain meni pieleen. Verkosta tuli\n\n{.}\n\nja virhe oli\n\n{.}',
     badStatus: `Haettua sisältöä ei löytynyt. Se on voitu poistaa tai osoitteessa voi olla virhe. Voit ottaa yhteyttä osoitteeseen ${supportEmail} halutessasi. Ota silloin kuvakaappaus sivusta ja lähetä se viestin liitteenä. {.}`,
     codeToUserVisibleMessage: `Jotain meni pieleen. Virheen tunnus on {.}. Meille olisi suuri apu, jos otat kuvakaappauksen koko sivusta ja lähetät sen osoitteeseen ${supportEmail}.`,
-    errorResponseFailure: '{.} Järjestelmässä on jotain pahasti pielessä, tutkimme asiaa',
+    errorResponseFailure:
+      '{.} Järjestelmässä on jotain pahasti pielessä, tutkimme asiaa',
   },
   footer: {
     link1: {
@@ -98,7 +102,8 @@ const source = {
       facebookUrl: 'https://www.facebook.com/tradenomiliitto',
       twitterUrl: 'https://twitter.com/Tradenomiliitto',
       instagramUrl: 'https://www.instagram.com/tradenomiliitto/',
-      linkedinUrl: 'http://www.linkedin.com/groups/Tradenomiliitto-TRAL-ry-2854058/about',
+      linkedinUrl:
+        'http://www.linkedin.com/groups/Tradenomiliitto-TRAL-ry-2854058/about',
       githubUrl: 'https://github.com/tradenomiliitto/tradenomiitti',
     },
   },
@@ -106,13 +111,16 @@ const source = {
     introbox: {
       heading: 'Kohtaa tradenomi',
       createProfile: 'Luo oma profiili',
-      content: 'Tradenomiitti on tradenomien oma kohtaamispaikka, jossa jäsenet löytävät toisensa yhteisten aiheiden ympäriltä ja hyötyvät toistensa kokemuksista.',
+      content:
+        'Tradenomiitti on tradenomien oma kohtaamispaikka, jossa jäsenet löytävät toisensa yhteisten aiheiden ympäriltä ja hyötyvät toistensa kokemuksista.',
     },
     tradenomiittiInfo: {
       // \xad === &shy;, that is soft hyphen
       heading: 'Ko\xADke\xADmuk\xADsel\xADla\xADsi on aina arvoa',
-      paragraph1: 'Tradenomiitti on tradenomien oma kohtaamispaikka, jossa yhdistyvät inspiroivat kohtaamiset ja itsensä kehittäminen. Tradenomiitti tuo tradenomien osaamisen esille - olit sitten opiskelija tai kokenut konkari. Juuri sinulla voi olla vastaus toisen tradenomin kysymykseen, tai ehkä uusi työnantajasi etsii sinua jo?',
-      paragraph2: 'Luomalla profiilin pääset alkuun, loput on itsestäsi kiinni.',
+      paragraph1:
+        'Tradenomiitti on tradenomien oma kohtaamispaikka, jossa yhdistyvät inspiroivat kohtaamiset ja itsensä kehittäminen. Tradenomiitti tuo tradenomien osaamisen esille - olit sitten opiskelija tai kokenut konkari. Juuri sinulla voi olla vastaus toisen tradenomin kysymykseen, tai ehkä uusi työnantajasi etsii sinua jo?',
+      paragraph2:
+        'Luomalla profiilin pääset alkuun, loput on itsestäsi kiinni.',
     },
     listAds: {
       heading: 'Uusimmat ilmoitukset',
@@ -149,7 +157,8 @@ const source = {
   },
   loginNeeded: {
     heading: 'Kirjaudu sisään',
-    info: 'Tradenomiitti on ainutlaatuinen kohtaamispaikka Tradenomiliiton jäsenille. Sinun tulee kirjautua sisään TRAL-tunnuksillasi, jotta voit luoda profiilin ja toimia Tradenomiitissa.',
+    info:
+      'Tradenomiitti on ainutlaatuinen kohtaamispaikka Tradenomiliiton jäsenille. Sinun tulee kirjautua sisään TRAL-tunnuksillasi, jotta voit luoda profiilin ja toimia Tradenomiitissa.',
     joinHeading: 'Etkö ole vielä TRAL:n jäsen?',
     joinUrl: 'http://tral.fi',
     joinLink: 'Liity jäseneksi',
@@ -159,7 +168,8 @@ const source = {
     login: 'Kirjaudu',
     consentNeeded: {
       heading: 'Tervetuloa Tradenomiittiin!',
-      content: 'Tehdäksemme palvelun käytöstä mahdollisimman vaivatonta hyödynnämme Tradenomiliiton olemassa olevia jäsentietoja (nimesi, työhistoriasi). Luomalla profiilin hyväksyt tietojesi käytön Tradenomiitti-palvelussa. Voit muokata tietojasi myöhemmin.',
+      content:
+        'Tehdäksemme palvelun käytöstä mahdollisimman vaivatonta hyödynnämme Tradenomiliiton olemassa olevia jäsentietoja (nimesi, työhistoriasi). Luomalla profiilin hyväksyt tietojesi käytön Tradenomiitti-palvelussa. Voit muokata tietojasi myöhemmin.',
       iAcceptThe: 'Hyväksyn palvelun ',
       terms: 'käyttöehdot',
       createProfile: 'Luo profiili',
@@ -193,24 +203,28 @@ const source = {
   profile: {
     editProfile: {
       heading: 'Muokkaa profiilia',
-      hint: 'Tehdäksemme Tradenomiitin käytöstä sinulle mahdollisimman vaivatonta, olemme luoneet sinulle profiilin TRAL:n jäsentietojen perusteella. Viimeistele profiilisi tarkastamalla jäsentietosi, muokkaamalla julkista profiiliasi ja täyttämällä henkilökohtainen käyntikorttisi.',
+      hint:
+        'Tehdäksemme Tradenomiitin käytöstä sinulle mahdollisimman vaivatonta, olemme luoneet sinulle profiilin TRAL:n jäsentietojen perusteella. Viimeistele profiilisi tarkastamalla jäsentietosi, muokkaamalla julkista profiiliasi ja täyttämällä henkilökohtainen käyntikorttisi.',
       nickNameMandatory: 'Kutsumanimi on pakollinen',
       buttonSave: 'Tallenna profiili',
       buttonEdit: 'Muokkaa profiilia',
     },
     membershipInfo: {
-      profileUsesMembershipInfo: 'Profiilissa hyödynnetään liiton jäsentietoja. Tarkistathan, että tietosi ovat järjestelmässämme ajan tasalla. ',
+      profileUsesMembershipInfo:
+        'Profiilissa hyödynnetään liiton jäsentietoja. Tarkistathan, että tietosi ovat järjestelmässämme ajan tasalla. ',
       notVisibleAsIs: 'Jäsentiedot eivät näy sellaisenaan muille.',
       buttonUpdateInfo: 'päivitä jäsentiedot',
     },
     publicInfo: {
       heading: 'Julkiset tiedot',
-      hint: 'Valitse itsellesi käyttäjänimi (yleisimmin etunimi) ja kuvaava titteli. Esittele itsesi ja osaamisesi muille kuvaavalla tekstillä',
+      hint:
+        'Valitse itsellesi käyttäjänimi (yleisimmin etunimi) ja kuvaava titteli. Esittele itsesi ja osaamisesi muille kuvaavalla tekstillä',
     },
     businessCard: {
       heading: 'Käyntikortti',
       hint: 'Täydennä alle tiedot, jotka haluat lähettää käyntikortin mukana. ',
-      visibleForRecipients: 'Tiedot näkyvät vain niille, joille olet lähettänyt kortin',
+      visibleForRecipients:
+        'Tiedot näkyvät vain niille, joille olet lähettänyt kortin',
       notFound: 'Käyntikorttia ei löytynyt',
     },
     businessCardFields: {
@@ -223,7 +237,8 @@ const source = {
     },
     competences: {
       editHeading: 'Muokkaa osaamistasi',
-      hint: 'Osaamisesi on esitäytetty jäsentietojemme perusteella. Muokkaa ja täydennä tehtäviä ja toimialoja, jotta Tradenomiitti voi palvella sinua paremmin ja jotta muut tradenomit löytäisivät sinut helpommin. ',
+      hint:
+        'Osaamisesi on esitäytetty jäsentietojemme perusteella. Muokkaa ja täydennä tehtäviä ja toimialoja, jotta Tradenomiitti voi palvella sinua paremmin ja jotta muut tradenomit löytäisivät sinut helpommin. ',
       visibleForEveryone: 'Osaaminen näkyy kaikille käyttäjille.',
     },
     ownProfile: {
@@ -236,12 +251,16 @@ const source = {
       major: 'Koulutus',
       specialization: 'Suuntautuminen / pääaine',
     },
+    careerStory: {
+      heading: 'Uratarina',
+    },
     viewUser: {
       showAllActivity: 'Näytä kaikki aktiivisuus',
       activity: 'Aktiivisuus',
     },
     editProfileBox: {
-      hint: 'Onhan profiilisi ajan tasalla? Mielenkiintoinen ja aktiivinen profiili auttaa luomaan kontakteja',
+      hint:
+        'Onhan profiilisi ajan tasalla? Mielenkiintoinen ja aktiivinen profiili auttaa luomaan kontakteja',
       editProfile: 'Muokkaa profiilia',
     },
     userInfoBox: {
@@ -253,9 +272,11 @@ const source = {
     userIdForAdmins: 'Jäsentunniste: ',
     userDomains: {
       heading: 'Toimiala',
-      question: 'Valitse toimialat, joista olet kiinnostunut tai sinulla on kokemusta',
+      question:
+        'Valitse toimialat, joista olet kiinnostunut tai sinulla on kokemusta',
       selectDomain: 'Valitse toimiala',
-      selectDomainHint: 'Lisää toimiala, josta olet kiinnostunut tai sinulla on osaamista',
+      selectDomainHint:
+        'Lisää toimiala, josta olet kiinnostunut tai sinulla on osaamista',
     },
     userSkills: {
       heading: 'Osaaminen',
@@ -267,10 +288,12 @@ const source = {
       heading: 'Tehtäväluokka',
       question: 'Missä tehtävissä olet toiminut tai haluaisit toimia?',
       selectPosition: 'Valitse tehtäväluokka',
-      selectPositionHint: 'Lisää tehtäväluokka, josta olet kiinnostunut tai sinulla on osaamista',
+      selectPositionHint:
+        'Lisää tehtäväluokka, josta olet kiinnostunut tai sinulla on osaamista',
     },
     educationsEditing: {
-      hint: 'Lisää koulutus. Valitse omaa koulutustasi parhaiten vastaavat vaihtoehdot. Mikäli oppilaitoksesi on vaihtanut nimeä, valitse nykyisen nimen mukainen oppilaitos. Mikäli valikoista ei löydy oikeaa vaihtoehtoa, voit lisätä sen itse.',
+      hint:
+        'Lisää koulutus. Valitse omaa koulutustasi parhaiten vastaavat vaihtoehdot. Mikäli oppilaitoksesi on vaihtanut nimeä, valitse nykyisen nimen mukainen oppilaitos. Mikäli valikoista ei löydy oikeaa vaihtoehtoa, voit lisätä sen itse.',
       selectInstitute: 'Valitse oppilaitos',
       selectDegree: 'Valitse tutkintonimike',
       selectMajor: 'Valitse koulutusala / koulutusohjelma',
@@ -301,14 +324,16 @@ const source = {
       answer: 'Haluan poistaa vastaukseni',
     },
     confirmationText: {
-      ad: 'Tämä poistaa ilmoituksen ja kaikki siihen tulleet vastaukset pysyvästi. Oletko varma?',
+      ad:
+        'Tämä poistaa ilmoituksen ja kaikki siihen tulleet vastaukset pysyvästi. Oletko varma?',
       answer: 'Tämä poistaa vastauksen pysyvästi. Oletko varma?',
     },
   },
   settings: {
     heading: 'Asetukset',
     emailsHeading: 'Sähköpostit',
-    emailsInfo: 'Voit itse valita missä tilanteissa Tradenomiitti lähettää sinulle viestin sähköpostitse. Sähköposti varmistaa sen, että saat tiedon uusista kontakteista, sinua koskevista ilmoituksista ja saamistasi vastauksista.',
+    emailsInfo:
+      'Voit itse valita missä tilanteissa Tradenomiitti lähettää sinulle viestin sähköpostitse. Sähköposti varmistaa sen, että saat tiedon uusista kontakteista, sinua koskevista ilmoituksista ja saamistasi vastauksista.',
     emailAddress: 'Sähköpostiosoite',
     emailsForBusinesscards: 'Ilmoitus uudesta kontaktista/käyntikortista',
     emailsForAnswers: 'Ilmoitus uudesta vastauksesta jättämääsi kysymykseen',
@@ -327,7 +352,8 @@ const source = {
   user: {
     contactUser: {
       alreadySent: 'Olet lähettänyt käyntikortin tälle tradenomille.',
-      mustContainPhoneOrEmail: 'Käyntikortissasi täytyy olla vähintään puhelinnumero tai sähköpostiosoite, jotta voisit lähettää sen',
+      mustContainPhoneOrEmail:
+        'Käyntikortissasi täytyy olla vähintään puhelinnumero tai sähköpostiosoite, jotta voisit lähettää sen',
       businessCardIsAttached: 'Viestin mukana lähetät käyntikortin',
       editOrContactUserPrompt: 'Kirjoita napakka esittelyteksti',
       contactUserPlaceholder: 'Vähintään 10 merkkiä',
@@ -337,7 +363,6 @@ const source = {
     },
   },
 };
-
 
 // transform into flat object with keys like "home.introbox.createProfile"
 function flatten(object) {

@@ -499,7 +499,7 @@ viewEducations t model config user =
     in
     H.div
         [ A.classList
-            [ ( "user-page__education last-row", True )
+            [ ( "user-page__education", True )
             , ( "user-page__education--editing", model.editing )
             ]
         ]
@@ -556,6 +556,23 @@ educationsEditing t model config =
 
     else
         []
+
+
+viewCareerStory : T -> H.Html Msg
+viewCareerStory t =
+    H.div
+        [ A.class "user-page__career-story last-row" ]
+        [ H.div
+            [ A.class "container" ]
+            [ H.div
+                [ A.class "row" ]
+                [ H.div
+                    [ A.class "col-xs-12" ]
+                    [ H.h3 [ A.class "user-page__career-story-header" ] [ H.text <| t "profile.careerStory.heading" ]
+                    ]
+                ]
+            ]
+        ]
 
 
 viewUser : T -> Time.Zone -> Model -> Bool -> H.Html (ViewMessage Msg) -> Config.Model -> Maybe User -> User -> List (H.Html (ViewMessage Msg))
@@ -622,6 +639,7 @@ viewUser t timeZone model ownProfile contactUser config loggedInUserMaybe user =
             List.map (H.map LocalViewMessage) (userExpertise t model user config)
         ]
     , H.map LocalViewMessage <| viewEducations t model config user
+    , H.map LocalViewMessage <| viewCareerStory t
     ]
 
 
