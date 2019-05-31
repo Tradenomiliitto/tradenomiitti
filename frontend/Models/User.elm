@@ -128,7 +128,7 @@ userDecoder =
         |> P.optional "business_card" (Json.map Just businessCardDecoder) Nothing
         |> P.optional "contacted" Json.bool False
         |> P.required "education" (Json.list educationDecoder)
-        |> P.optional "career_story" (Json.list careerStoryStepDecoder) []
+        |> P.optional "career_story" (Json.list careerStoryStepDecoder) [ CareerStoryStep "ammatti, työpaikka" Nothing Nothing "Tein siellä kaikenlaista", CareerStoryStep "toinen ammatti, toinen työpaikka" Nothing Nothing "Tein siellä kaikenlaista muuta" ]
         |> P.optional "is_admin" Json.bool False
         |> P.optional "member_id" (Json.map Just Json.int) Nothing
         |> P.optional "contribution" Json.string ""
