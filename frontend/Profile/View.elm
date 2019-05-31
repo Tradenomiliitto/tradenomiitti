@@ -47,7 +47,7 @@ editProfileView t model user rootState =
         , H.map LocalViewMessage (PublicInfo.editing t model user)
         , H.map LocalViewMessage (Expertise.competences t model rootState.config user)
         , H.map LocalViewMessage (Education.editing t model rootState.config user)
-        , H.map LocalViewMessage (CareerStory.editing t model)
+        , H.map LocalViewMessage (CareerStory.view t model)
         ]
 
 
