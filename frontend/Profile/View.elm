@@ -1,4 +1,4 @@
-module Profile.View exposing (careerStoryEditing, editProfileBox, editProfileHeading, editProfileView, saveOrEdit, showProfileView, view, viewCareerStory, viewOwnProfileMaybe, viewUser)
+module Profile.View exposing (editProfileBox, editProfileHeading, editProfileView, saveOrEdit, showProfileView, view, viewOwnProfileMaybe, viewUser)
 
 import Common
 import Html as H
@@ -9,6 +9,7 @@ import Link
 import ListAds
 import Models.User exposing (User)
 import Nav
+import Profile.CareerStory as CareerStory
 import Profile.Education as Education
 import Profile.Expertise as Expertise
 import Profile.Main exposing (BusinessCardField(..), Msg(..))
@@ -46,7 +47,7 @@ editProfileView t model user rootState =
         , H.map LocalViewMessage (PublicInfo.editing t model user)
         , H.map LocalViewMessage (Expertise.competences t model rootState.config user)
         , H.map LocalViewMessage (Education.editing t model rootState.config user)
-        , H.map LocalViewMessage (careerStoryEditing t model)
+        , H.map LocalViewMessage (CareerStory.editing t model)
         ]
 
 
@@ -110,38 +111,6 @@ viewOwnProfileMaybe t timeZone model ownProfile config =
                     [ H.text <| t "profile.ownProfile.notLoggedIn" ]
                 ]
             ]
-
-
-careerStoryEditing =
-    viewCareerStory
-
-
-viewCareerStory : T -> Model -> H.Html Msg
-viewCareerStory t model =
-    H.div
-        [ A.classList
-            [ ( "user-page__career-story last-row", True )
-            , ( "user-page__career-story--editing", model.editing )
-            ]
-        ]
-        [ H.div
-            [ A.class "container" ]
-            [ H.div
-                [ A.class "row" ]
-                [ H.div
-                    [ A.class "col-xs-12" ]
-                    ([ H.h3 [ A.class "user-page__career-story-header" ] [ H.text <| t "profile.careerStory.heading" ]
-                     ]
-                        ++ (if model.editing then
-                                [ H.p [ A.class "user-page__career-story-hint" ] [ H.text <| t "profile.careerStory.hint" ] ]
-
-                            else
-                                []
-                           )
-                    )
-                ]
-            ]
-        ]
 
 
 viewUser : T -> Time.Zone -> Model -> Bool -> H.Html (ViewMessage Msg) -> Config.Model -> Maybe User -> User -> List (H.Html (ViewMessage Msg))
@@ -208,7 +177,7 @@ viewUser t timeZone model ownProfile contactUser config loggedInUserMaybe user =
             List.map (H.map LocalViewMessage) (Expertise.view t model user config)
         ]
     , H.map LocalViewMessage <| Education.view t model config user
-    , H.map LocalViewMessage <| viewCareerStory t model
+    , H.map LocalViewMessage <| CareerStory.view t model
     ]
 
 
