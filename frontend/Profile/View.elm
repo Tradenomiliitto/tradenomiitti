@@ -1,4 +1,4 @@
-module Profile.View exposing (careerStoryEditing, competences, editProfileBox, editProfileHeading, editProfileView, educationEditing, educationsEditing, saveOrEdit, showProfileView, view, viewCareerStory, viewEducations, viewOwnProfileMaybe, viewUser)
+module Profile.View exposing (careerStoryEditing, competences, editProfileBox, editProfileHeading, editProfileView, saveOrEdit, showProfileView, view, viewCareerStory, viewOwnProfileMaybe, viewUser)
 
 import Common
 import Html as H
@@ -9,6 +9,7 @@ import Link
 import ListAds
 import Models.User exposing (User)
 import Nav
+import Profile.Education as Education
 import Profile.Expertise as Expertise
 import Profile.Main exposing (BusinessCardField(..), Msg(..))
 import Profile.Membership as Membership
@@ -44,7 +45,7 @@ editProfileView t model user rootState =
         , Membership.infoEditing t user
         , H.map LocalViewMessage (PublicInfo.editing t model user)
         , H.map LocalViewMessage (competences t model rootState.config user)
-        , H.map LocalViewMessage (educationEditing t model rootState.config user)
+        , H.map LocalViewMessage (Education.editing t model rootState.config user)
         , H.map LocalViewMessage (careerStoryEditing t model)
         ]
 
@@ -125,11 +126,6 @@ competences t model config user =
         ]
 
 
-educationEditing : T -> Model -> Config.Model -> User -> H.Html Msg
-educationEditing =
-    viewEducations
-
-
 viewOwnProfileMaybe : T -> Time.Zone -> Model -> Bool -> Config.Model -> List (H.Html (ViewMessage Msg))
 viewOwnProfileMaybe t timeZone model ownProfile config =
     model.user
@@ -141,127 +137,6 @@ viewOwnProfileMaybe t timeZone model ownProfile config =
                     [ H.text <| t "profile.ownProfile.notLoggedIn" ]
                 ]
             ]
-
-
-viewEducations : T -> Model -> Config.Model -> User -> H.Html Msg
-viewEducations t model config user =
-    let
-        educations =
-            user.education
-                |> List.indexedMap
-                    (\index education ->
-                        let
-                            rowMaybe title valueMaybe =
-                                valueMaybe
-                                    |> Maybe.map
-                                        (\value ->
-                                            [ H.tr [] <|
-                                                [ H.td [] [ H.text title ]
-                                                , H.td [] [ H.text value ]
-                                                ]
-                                                    ++ (if model.editing then
-                                                            [ H.td [] [] ]
-
-                                                        else
-                                                            []
-                                                       )
-                                            ]
-                                        )
-                                    |> Maybe.withDefault []
-                        in
-                        H.div
-                            [ A.class "col-xs-12 col-sm-6" ]
-                            [ H.table
-                                [ A.class "user-page__education-details" ]
-                                (List.concat
-                                    [ [ H.tr [] <|
-                                            [ H.td [] [ H.text <| t "profile.educations.institute" ]
-                                            , H.td [] [ H.text education.institute ]
-                                            ]
-                                                ++ (if model.editing then
-                                                        [ H.td
-                                                            []
-                                                            [ H.i
-                                                                [ A.class "fa fa-remove user-page__education-details-remove"
-                                                                , E.onClick (DeleteEducation index)
-                                                                ]
-                                                                []
-                                                            ]
-                                                        ]
-
-                                                    else
-                                                        []
-                                                   )
-                                      ]
-                                    , rowMaybe (t "profile.educations.degree") education.degree
-                                    , rowMaybe (t "profile.educations.major") education.major
-                                    , rowMaybe (t "profile.educations.specialization") education.specialization
-                                    ]
-                                )
-                            ]
-                    )
-                |> Common.chunk2
-                |> List.map (\rowContents -> H.div [ A.class "row" ] rowContents)
-    in
-    H.div
-        [ A.classList
-            [ ( "user-page__education", True )
-            , ( "user-page__education--editing", model.editing )
-            ]
-        ]
-        [ H.div
-            [ A.class "container" ]
-          <|
-            [ H.div
-                [ A.class "row" ]
-                [ H.div
-                    [ A.class "col-xs-12" ]
-                    [ H.h3 [ A.class "user-page__education-header" ] [ H.text <| t "profile.educations.heading" ]
-                    ]
-                ]
-            ]
-                ++ educations
-                ++ educationsEditing t model config
-        ]
-
-
-educationsEditing : T -> Model -> Config.Model -> List (H.Html Msg)
-educationsEditing t model config =
-    if model.editing then
-        [ H.div
-            [ A.class "row" ]
-            [ H.div [ A.class "col-xs-5" ]
-                [ H.p [ A.class "user-page__education-hint" ] [ H.text <| t "profile.educationsEditing.hint" ]
-                , Common.typeaheadInput "user-page__education-details-" (t "profile.educationsEditing.selectInstitute") "education-institute"
-                , Common.typeaheadInput "user-page__education-details-" (t "profile.educationsEditing.selectDegree") "education-degree"
-                , Common.typeaheadInput "user-page__education-details-" (t "profile.educationsEditing.selectMajor") "education-major"
-                , Common.typeaheadInput "user-page__education-details-" (t "profile.educationsEditing.selectSpecialization") "education-specialization"
-                , H.div
-                    [ A.class "user-page__education-button-container" ]
-                    [ model.selectedInstitute
-                        |> Maybe.map
-                            (\institute ->
-                                H.button
-                                    [ A.class "btn btn-primary user-page__education-button"
-                                    , E.onClick <| AddEducation institute
-                                    ]
-                                    [ H.text <| t "profile.educationsEditing.addEducation" ]
-                            )
-                        |> Maybe.withDefault
-                            (H.button
-                                [ A.class "btn btn-primary user-page__education-button"
-                                , A.disabled True
-                                , A.title <| t "profile.educationsEditing.instituteRequired"
-                                ]
-                                [ H.text <| t "profile.educationsEditing.addEducation" ]
-                            )
-                    ]
-                ]
-            ]
-        ]
-
-    else
-        []
 
 
 careerStoryEditing =
@@ -359,7 +234,7 @@ viewUser t timeZone model ownProfile contactUser config loggedInUserMaybe user =
           <|
             List.map (H.map LocalViewMessage) (Expertise.view t model user config)
         ]
-    , H.map LocalViewMessage <| viewEducations t model config user
+    , H.map LocalViewMessage <| Education.view t model config user
     , H.map LocalViewMessage <| viewCareerStory t model
     ]
 
