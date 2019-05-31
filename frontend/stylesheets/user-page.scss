@@ -110,8 +110,12 @@
         width: 80%;
       }
     }
+    &-hint {
+      font-size: 16px;
+    }
     &--editing {
       background-color: $white;
+      padding-bottom: 50px;
     }
     @include padded-header;
 
@@ -144,6 +148,12 @@
   &__career-story {
     @include padded-header;
     @include base-padding;
+    &--editing {
+      background-color: $light-grey;
+    }
+    &-hint {
+      font-size: 16px;
+    }
   }
 
   &__membership-info {

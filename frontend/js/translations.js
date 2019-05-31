@@ -253,6 +253,8 @@ const source = {
     },
     careerStory: {
       heading: 'Uratarina',
+      hint:
+        'Lisää aikajanalle urasi tärkeimmät vaiheet. Aloita nykyisestä työpaikastasi.',
     },
     viewUser: {
       showAllActivity: 'Näytä kaikki aktiivisuus',

@@ -45,6 +45,7 @@ editProfileView t model user rootState =
         , H.map LocalViewMessage (publicInfoEditing t model user)
         , H.map LocalViewMessage (competences t model rootState.config user)
         , H.map LocalViewMessage (educationEditing t model rootState.config user)
+        , H.map LocalViewMessage (careerStoryEditing t model)
         ]
 
 
@@ -525,7 +526,7 @@ educationsEditing t model config =
         [ H.div
             [ A.class "row" ]
             [ H.div [ A.class "col-xs-5" ]
-                [ H.p [] [ H.text <| t "profile.educationsEditing.hint" ]
+                [ H.p [ A.class "user-page__education-hint" ] [ H.text <| t "profile.educationsEditing.hint" ]
                 , Common.typeaheadInput "user-page__education-details-" (t "profile.educationsEditing.selectInstitute") "education-institute"
                 , Common.typeaheadInput "user-page__education-details-" (t "profile.educationsEditing.selectDegree") "education-degree"
                 , Common.typeaheadInput "user-page__education-details-" (t "profile.educationsEditing.selectMajor") "education-major"
@@ -558,18 +559,33 @@ educationsEditing t model config =
         []
 
 
-viewCareerStory : T -> H.Html Msg
-viewCareerStory t =
+careerStoryEditing =
+    viewCareerStory
+
+
+viewCareerStory : T -> Model -> H.Html Msg
+viewCareerStory t model =
     H.div
-        [ A.class "user-page__career-story last-row" ]
+        [ A.classList
+            [ ( "user-page__career-story last-row", True )
+            , ( "user-page__career-story--editing", model.editing )
+            ]
+        ]
         [ H.div
             [ A.class "container" ]
             [ H.div
                 [ A.class "row" ]
                 [ H.div
                     [ A.class "col-xs-12" ]
-                    [ H.h3 [ A.class "user-page__career-story-header" ] [ H.text <| t "profile.careerStory.heading" ]
-                    ]
+                    ([ H.h3 [ A.class "user-page__career-story-header" ] [ H.text <| t "profile.careerStory.heading" ]
+                     ]
+                        ++ (if model.editing then
+                                [ H.p [ A.class "user-page__career-story-hint" ] [ H.text <| t "profile.careerStory.hint" ] ]
+
+                            else
+                                []
+                           )
+                    )
                 ]
             ]
         ]
@@ -639,7 +655,7 @@ viewUser t timeZone model ownProfile contactUser config loggedInUserMaybe user =
             List.map (H.map LocalViewMessage) (userExpertise t model user config)
         ]
     , H.map LocalViewMessage <| viewEducations t model config user
-    , H.map LocalViewMessage <| viewCareerStory t
+    , H.map LocalViewMessage <| viewCareerStory t model
     ]
 
 
