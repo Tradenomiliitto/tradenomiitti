@@ -2,13 +2,14 @@ module Profile.CareerStory exposing (view)
 
 import Html as H
 import Html.Attributes as A
+import Models.User exposing (User)
 import Profile.Main exposing (Msg(..))
 import State.Profile exposing (Model)
 import Translation exposing (T)
 
 
-view : T -> Model -> H.Html Msg
-view t model =
+view : T -> Model -> User -> H.Html Msg
+view t model user =
     let
         ifEditing el =
             if model.editing then
@@ -44,6 +45,7 @@ view t model =
                                 [ H.span [] [ H.text "+" ] ]
                             ]
                         )
+                    ++ List.map (\step -> H.div [] []) user.careerStory
             ]
         ]
 

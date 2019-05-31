@@ -67,6 +67,7 @@ type alias User =
     , businessCard : Maybe BusinessCard
     , contacted : Bool
     , education : List Education
+    , careerStory : List CareerStoryStep
     , isAdmin : Bool
     , memberId : Maybe Int
     , contributionStatus : String
@@ -78,6 +79,14 @@ type alias Education =
     , degree : Maybe String
     , major : Maybe String
     , specialization : Maybe String
+    }
+
+
+type alias CareerStoryStep =
+    { title : String
+    , domain : Maybe String
+    , position : Maybe String
+    , description : String
     }
 
 
@@ -119,6 +128,7 @@ userDecoder =
         |> P.optional "business_card" (Json.map Just businessCardDecoder) Nothing
         |> P.optional "contacted" Json.bool False
         |> P.required "education" (Json.list educationDecoder)
+        |> P.optional "career_story" (Json.list careerStoryStepDecoder) []
         |> P.optional "is_admin" Json.bool False
         |> P.optional "member_id" (Json.map Just Json.int) Nothing
         |> P.optional "contribution" Json.string ""
@@ -266,6 +276,15 @@ educationDecoder =
         |> P.optional "degree" (Json.map Just Json.string) Nothing
         |> P.optional "major" (Json.map Just Json.string) Nothing
         |> P.optional "specialization" (Json.map Just Json.string) Nothing
+
+
+careerStoryStepDecoder : Json.Decoder CareerStoryStep
+careerStoryStepDecoder =
+    Json.succeed CareerStoryStep
+        |> P.required "title" Json.string
+        |> P.optional "domain" (Json.map Just Json.string) Nothing
+        |> P.optional "position" (Json.map Just Json.string) Nothing
+        |> P.required "description" Json.string
 
 
 isAdmin : Maybe User -> Bool

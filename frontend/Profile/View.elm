@@ -47,7 +47,7 @@ editProfileView t model user rootState =
         , H.map LocalViewMessage (PublicInfo.editing t model user)
         , H.map LocalViewMessage (Expertise.competences t model rootState.config user)
         , H.map LocalViewMessage (Education.editing t model rootState.config user)
-        , H.map LocalViewMessage (CareerStory.view t model)
+        , H.map LocalViewMessage (CareerStory.view t model user)
         ]
 
 
@@ -177,7 +177,7 @@ viewUser t timeZone model ownProfile contactUser config loggedInUserMaybe user =
             List.map (H.map LocalViewMessage) (Expertise.view t model user config)
         ]
     , H.map LocalViewMessage <| Education.view t model config user
-    , H.map LocalViewMessage <| CareerStory.view t model
+    , H.map LocalViewMessage <| CareerStory.view t model user
     ]
 
 
