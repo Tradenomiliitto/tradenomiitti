@@ -27,6 +27,7 @@ view t model =
             [ A.class "container" ]
             [ H.div
                 [ A.class "row" ]
+              <|
                 [ H.div
                     [ A.class "col-xs-12" ]
                   <|
@@ -36,6 +37,13 @@ view t model =
                     ]
                         ++ ifEditing (hint t)
                 ]
+                    ++ ifEditing
+                        (H.div
+                            [ A.class "col-xs-12 user-page__career-story-add-button-container" ]
+                            [ H.span [ A.class "user-page__career-story-add-button" ]
+                                [ H.span [] [ H.text "+" ] ]
+                            ]
+                        )
             ]
         ]
 

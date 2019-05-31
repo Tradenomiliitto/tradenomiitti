@@ -154,6 +154,27 @@
     &-hint {
       font-size: 16px;
     }
+    &-add-button {
+      &-container {
+        display: flex;
+        justify-content: center;
+      }
+      background-color: $primary;
+      color: $white;
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      text-align: center;
+      font-size: 2em;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      & span {
+        position: relative;
+        top: 1px;
+      }
+    }
   }
 
   &__membership-info {
