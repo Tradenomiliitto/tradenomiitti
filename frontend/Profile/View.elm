@@ -1,4 +1,4 @@
-module Profile.View exposing (businessCard, businessCardData, businessCardDataInput, businessCardDataView, businessCardView, competences, editProfileBox, editProfileHeading, editProfileView, educationEditing, educationsEditing, fieldToString, location, locationSelect, membershipDataBoxEditing, membershipDataInfo, membershipInfoEditing, membershipRegisterInfo, optionPreselected, publicInfo, publicInfoEditing, saveOrEdit, select, showProfileView, userDescription, userDomains, userExpertise, userIdForAdmins, userInfoBox, userInfoBoxEditing, userInfoBoxEditing2, userPositions, userSkills, view, viewEducations, viewOwnProfileMaybe, viewUser)
+module Profile.View exposing (businessCard, businessCardData, businessCardDataInput, businessCardDataView, businessCardView, competences, editProfileBox, editProfileHeading, editProfileView, educationEditing, educationsEditing, fieldToString, location, locationSelect, membershipDataBoxEditing, membershipInfoEditing, membershipRegisterInfo, optionPreselected, publicInfo, publicInfoEditing, saveOrEdit, select, showProfileView, userDescription, userDomains, userExpertise, userIdForAdmins, userInfoBox, userInfoBoxEditing, userInfoBoxEditing2, userPositions, userSkills, view, viewEducations, viewOwnProfileMaybe, viewUser)
 
 import Common
 import Html as H
@@ -11,6 +11,7 @@ import Models.User exposing (User)
 import Nav
 import PlainTextFormat
 import Profile.Main exposing (BusinessCardField(..), Msg(..))
+import Profile.Membership as Membership
 import Skill
 import State.Config as Config
 import State.Main as RootState
@@ -97,30 +98,7 @@ membershipInfoEditing t user =
         [ H.div
             [ A.class "row" ]
             [ membershipDataBoxEditing t user
-            , membershipDataInfo t
-            ]
-        ]
-
-
-membershipDataInfo : T -> H.Html msg
-membershipDataInfo t =
-    H.div
-        [ A.class "profile__editing--membership--info col-md-6" ]
-        [ H.p
-            [ A.class "profile__editing--membership--info--text" ]
-            [ H.text <| t "profile.membershipInfo.profileUsesMembershipInfo"
-            , H.span [ A.class "profile__editing--bold" ]
-                [ H.text <| t "profile.membershipInfo.notVisibleAsIs"
-                ]
-            ]
-        , H.a
-            [ A.href "https://asiointi.tral.fi"
-            , A.target "_blank"
-            ]
-            [ H.button
-                [ A.class "profile__editing--membership--info--button btn btn-primary" ]
-                [ H.text <| t "profile.membershipInfo.buttonUpdateInfo"
-                ]
+            , Membership.dataInfo t
             ]
         ]
 
