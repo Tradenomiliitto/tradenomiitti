@@ -7,7 +7,7 @@ import Html.Attributes as A
 import Http
 import Json.Decode as Json
 import Models.User exposing (Contact, User)
-import Profile.View
+import Profile.PublicInfo
 import State.Contacts exposing (..)
 import Time
 import Translation exposing (T)
@@ -86,5 +86,5 @@ renderContact t timeZone contact =
         , H.p
             [ A.class "contacts__intro-text" ]
             [ H.text contact.introText ]
-        , Profile.View.businessCardView t contact.user contact.businessCard
+        , Profile.PublicInfo.businessCardView t contact.user contact.businessCard
         ]

@@ -12,6 +12,7 @@ import Models.Ad exposing (Ad)
 import Models.User exposing (User)
 import Nav
 import Profile.Main as Profile
+import Profile.PublicInfo
 import Profile.View
 import Removal
 import State.Config as Config
@@ -215,7 +216,7 @@ contactUser t model userToContact loggedInUser =
                                     [ H.text <| t_ "businessCardIsAttached" ]
                                 , H.div
                                     [ A.class "popover__content" ]
-                                    [ Profile.View.businessCardView t user businessCard ]
+                                    [ Profile.PublicInfo.businessCardView t user businessCard ]
                                 ]
                             ]
 
