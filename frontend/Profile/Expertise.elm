@@ -1,4 +1,4 @@
-module Profile.Expertise exposing (view)
+module Profile.Expertise exposing (competences, view)
 
 import Common
 import Html as H
@@ -11,6 +11,33 @@ import Skill
 import State.Config as Config
 import State.Profile exposing (Model)
 import Translation exposing (T)
+
+
+competences : T -> Model -> Config.Model -> User -> H.Html Msg
+competences t model config user =
+    H.div
+        [ A.class "container-fluid profile__editing--competences" ]
+        [ H.div
+            [ A.class "container"
+            ]
+            [ H.div [ A.class "profile__editing--competences--row row" ]
+                [ H.div
+                    [ A.class "profile__editing--competences--heading col-md-7" ]
+                    [ H.h3
+                        [ A.class "profile__editing--competences--heading--title" ]
+                        [ H.text <| t "profile.competences.editHeading" ]
+                    , H.p
+                        [ A.class "profile__editing--competences--heading--text" ]
+                        [ H.text <| t "profile.competences.hint"
+                        , H.span [ A.class "profile__editing--bold" ] [ H.text <| t "profile.competences.visibleForEveryone" ]
+                        ]
+                    ]
+                ]
+            , H.div
+                [ A.class "profile__editing--competences--row row" ]
+                (view t model user config)
+            ]
+        ]
 
 
 view : T -> Model -> User -> Config.Model -> List (H.Html Msg)

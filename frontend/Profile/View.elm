@@ -1,4 +1,4 @@
-module Profile.View exposing (careerStoryEditing, competences, editProfileBox, editProfileHeading, editProfileView, saveOrEdit, showProfileView, view, viewCareerStory, viewOwnProfileMaybe, viewUser)
+module Profile.View exposing (careerStoryEditing, editProfileBox, editProfileHeading, editProfileView, saveOrEdit, showProfileView, view, viewCareerStory, viewOwnProfileMaybe, viewUser)
 
 import Common
 import Html as H
@@ -44,7 +44,7 @@ editProfileView t model user rootState =
         , editProfileHeading t
         , Membership.infoEditing t user
         , H.map LocalViewMessage (PublicInfo.editing t model user)
-        , H.map LocalViewMessage (competences t model rootState.config user)
+        , H.map LocalViewMessage (Expertise.competences t model rootState.config user)
         , H.map LocalViewMessage (Education.editing t model rootState.config user)
         , H.map LocalViewMessage (careerStoryEditing t model)
         ]
@@ -97,33 +97,6 @@ showProfileView t timeZone model user rootState =
         [ Common.profileTopRow t user model.editing Common.ProfileTab (saveOrEdit t user model.editing)
         ]
             ++ viewOwnProfileMaybe t timeZone model True rootState.config
-
-
-competences : T -> Model -> Config.Model -> User -> H.Html Msg
-competences t model config user =
-    H.div
-        [ A.class "container-fluid profile__editing--competences" ]
-        [ H.div
-            [ A.class "container"
-            ]
-            [ H.div [ A.class "profile__editing--competences--row row" ]
-                [ H.div
-                    [ A.class "profile__editing--competences--heading col-md-7" ]
-                    [ H.h3
-                        [ A.class "profile__editing--competences--heading--title" ]
-                        [ H.text <| t "profile.competences.editHeading" ]
-                    , H.p
-                        [ A.class "profile__editing--competences--heading--text" ]
-                        [ H.text <| t "profile.competences.hint"
-                        , H.span [ A.class "profile__editing--bold" ] [ H.text <| t "profile.competences.visibleForEveryone" ]
-                        ]
-                    ]
-                ]
-            , H.div
-                [ A.class "profile__editing--competences--row row" ]
-                (Expertise.view t model user config)
-            ]
-        ]
 
 
 viewOwnProfileMaybe : T -> Time.Zone -> Model -> Bool -> Config.Model -> List (H.Html (ViewMessage Msg))
