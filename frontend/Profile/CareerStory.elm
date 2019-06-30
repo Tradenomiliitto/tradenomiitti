@@ -95,11 +95,11 @@ viewStoryStep t model config step index isEven =
                 []
             , ViewUtil.select config.domainOptions
                 (ChangeCareerStoryDomainSelect index)
-                (t "profile.userDomains.selectDomain")
+                (Maybe.withDefault (t "profile.userDomains.selectDomain") step.domain)
                 (t "profile.careerStory.selectDomainHint")
             , ViewUtil.select config.positionOptions
                 (ChangeCareerStoryPositionSelect index)
-                (t "profile.userPositions.selectPosition")
+                (Maybe.withDefault (t "profile.userPositions.selectPosition") step.position)
                 (t "profile.careerStory.selectPositionHint")
             , H.textarea
                 [ A.value step.description

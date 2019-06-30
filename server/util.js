@@ -29,6 +29,7 @@ module.exports = function initialize(params) {
     formattedUser.description = userData.description || '';
     formattedUser.title = userData.title || 'Ei titteliä';
     formattedUser.contribution = isLoggedIn ? userData.contribution : null;
+    formattedUser.career_story = userData.career_story || [];
 
     // only get these when getting detailed profile
     formattedUser.domains = [];
