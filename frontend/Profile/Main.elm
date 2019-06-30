@@ -5,7 +5,7 @@ import Json.Decode as Json
 import Json.Encode as JS
 import List.Extra as List
 import Models.Ad
-import Models.User exposing (BusinessCard, PictureEditing, User)
+import Models.User exposing (BusinessCard, CareerStoryStep, PictureEditing, User)
 import Removal
 import Skill
 import State.Config as Config
@@ -55,6 +55,10 @@ type Msg
     | RemovalMessage Removal.Msg
     | AddCareerStoryStep Position
     | RemoveCareerStoryStep Int
+    | ChangeCareerStoryTitle Int String
+    | ChangeCareerStoryDomainSelect Int String
+    | ChangeCareerStoryPositionSelect Int String
+    | ChangeCareerStoryDescription Int String
     | NoOp
 
 
@@ -168,6 +172,29 @@ updateSkillList index skillLevel list =
 updateUser : (User -> User) -> Model -> Model
 updateUser updater model =
     { model | user = Maybe.map updater model.user }
+
+
+updateCareerStoryStep : Int -> (CareerStoryStep -> CareerStoryStep) -> Model -> Model
+updateCareerStoryStep index updater model =
+    { model
+        | user =
+            Maybe.map
+                (\u ->
+                    { u
+                        | careerStory =
+                            List.indexedMap
+                                (\i step ->
+                                    if i == index then
+                                        updater step
+
+                                    else
+                                        step
+                                )
+                                u.careerStory
+                    }
+                )
+                model.user
+    }
 
 
 type BusinessCardField
@@ -478,6 +505,26 @@ update msg model config =
                     { u | careerStory = List.removeAt i u.careerStory }
                 )
                 model
+            , Cmd.none
+            )
+
+        ChangeCareerStoryTitle i str ->
+            ( updateCareerStoryStep i (\step -> { step | title = String.slice 0 70 str }) model
+            , Cmd.none
+            )
+
+        ChangeCareerStoryDomainSelect i str ->
+            ( updateCareerStoryStep i (\step -> { step | domain = Just str }) model
+            , Cmd.none
+            )
+
+        ChangeCareerStoryPositionSelect i str ->
+            ( updateCareerStoryStep i (\step -> { step | position = Just str }) model
+            , Cmd.none
+            )
+
+        ChangeCareerStoryDescription i str ->
+            ( updateCareerStoryStep i (\step -> { step | description = String.slice 0 400 str }) model
             , Cmd.none
             )
 

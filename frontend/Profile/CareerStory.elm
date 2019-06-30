@@ -90,19 +90,21 @@ viewStoryStep t model config step index isEven =
             , H.input
                 [ A.placeholder <| t "profile.careerStory.titlePlaceholder"
                 , A.value step.title
+                , E.onInput (ChangeCareerStoryTitle index)
                 ]
                 []
             , ViewUtil.select config.domainOptions
-                (always NoOp)
+                (ChangeCareerStoryDomainSelect index)
                 (t "profile.userDomains.selectDomain")
                 (t "profile.careerStory.selectDomainHint")
             , ViewUtil.select config.positionOptions
-                (always NoOp)
+                (ChangeCareerStoryPositionSelect index)
                 (t "profile.userPositions.selectPosition")
                 (t "profile.careerStory.selectPositionHint")
             , H.textarea
                 [ A.value step.description
                 , A.placeholder <| t "profile.careerStory.descriptionPlaceholder"
+                , E.onInput (ChangeCareerStoryDescription index)
                 ]
                 []
             ]
