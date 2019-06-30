@@ -12,6 +12,7 @@
     "promise"
   ],
   "rules": {
+    "function-paren-newline": "off",
     "arrow-parens": ["error", "as-needed"],
     "comma-dangle": ["error", {
       "arrays": "always-multiline",
