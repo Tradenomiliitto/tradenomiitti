@@ -44,7 +44,7 @@ view t model config user =
                 ]
                     ++ ifEditing
                         (addButton Top)
-                    ++ List.indexedMap (\i step -> viewStoryStep t model config step (modBy 2 (i + 1) == 0)) user.careerStory
+                    ++ List.indexedMap (\i step -> viewStoryStep t model config step i (modBy 2 (i + 1) == 0)) user.careerStory
                     ++ ifEditing
                         (addButton Bottom)
             ]
@@ -68,7 +68,7 @@ hint t =
     H.p [ A.class "user-page__career-story-hint" ] [ H.text <| t "profile.careerStory.hint" ]
 
 
-viewStoryStep t model config step isEven =
+viewStoryStep t model config step index isEven =
     H.div
         [ A.classList
             [ ( "col-sm-6 col-xs-11", True )
@@ -79,7 +79,15 @@ viewStoryStep t model config step isEven =
         ]
     <|
         if model.editing then
-            [ H.input
+            [ H.span [ A.class "removal" ]
+                [ H.img
+                    [ A.class "removal__icon"
+                    , A.src "/static/close.svg"
+                    , E.onClick <| RemoveCareerStoryStep index
+                    ]
+                    []
+                ]
+            , H.input
                 [ A.placeholder <| t "profile.careerStory.titlePlaceholder"
                 , A.value step.title
                 ]

@@ -54,6 +54,7 @@ type Msg
     | DeleteEducation Int
     | RemovalMessage Removal.Msg
     | AddCareerStoryStep Position
+    | RemoveCareerStoryStep Int
     | NoOp
 
 
@@ -451,20 +452,34 @@ update msg model config =
             )
 
         AddCareerStoryStep position ->
-            let
-                oldCareerStory =
-                    Maybe.map .careerStory model.user
-                        |> Maybe.withDefault []
+            ( updateUser
+                (\u ->
+                    let
+                        oldCareerStory =
+                            u.careerStory
 
-                newCareerStory =
-                    case position of
-                        Top ->
-                            Models.User.emptyCareerStoryStep :: oldCareerStory
+                        newCareerStory =
+                            case position of
+                                Top ->
+                                    Models.User.emptyCareerStoryStep :: oldCareerStory
 
-                        Bottom ->
-                            oldCareerStory ++ [ Models.User.emptyCareerStoryStep ]
-            in
-            ( updateUser (\u -> { u | careerStory = newCareerStory }) model, Cmd.none )
+                                Bottom ->
+                                    oldCareerStory ++ [ Models.User.emptyCareerStoryStep ]
+                    in
+                    { u | careerStory = newCareerStory }
+                )
+                model
+            , Cmd.none
+            )
+
+        RemoveCareerStoryStep i ->
+            ( updateUser
+                (\u ->
+                    { u | careerStory = List.removeAt i u.careerStory }
+                )
+                model
+            , Cmd.none
+            )
 
         NoOp ->
             ( model
