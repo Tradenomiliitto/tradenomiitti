@@ -83,12 +83,12 @@ update msg model =
             , Cmd.none
             )
 
+        -- only handle profile messages that we care about
         ProfileMessage _ ->
             ( model
             , Cmd.none
             )
 
-        -- only handle profile messages that we care about
         Refresh userId ->
             ( model
             , getUser userId
