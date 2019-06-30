@@ -9,10 +9,8 @@ import Skill
 import Time
 
 
-
--- data in Extra comes from the api
-
-
+{-| data in Extra comes from the api
+-}
 type alias Extra =
     { first_name : String
     , nick_name : String
