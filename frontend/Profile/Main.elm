@@ -1,4 +1,4 @@
-port module Profile.Main exposing (BusinessCardField(..), Msg(..), getAds, getMe, imageSave, imageUpload, initTasks, subscriptions, typeAheadToMsg, typeahead, typeaheadResult, typeaheads, update, updateBusinessCard, updateConsent, updateMe, updateSkillList, updateUser)
+port module Profile.Main exposing (BusinessCardField(..), Msg(..), Position(..), getAds, getMe, imageSave, imageUpload, initTasks, subscriptions, typeAheadToMsg, typeahead, typeaheadResult, typeaheads, update, updateBusinessCard, updateConsent, updateMe, updateSkillList, updateUser)
 
 import Http
 import Json.Decode as Json
@@ -11,6 +11,11 @@ import Skill
 import State.Config as Config
 import State.Profile exposing (Model)
 import Util exposing (UpdateMessage(..))
+
+
+type Position
+    = Top
+    | Bottom
 
 
 type Msg
@@ -48,6 +53,7 @@ type Msg
     | AddEducation String
     | DeleteEducation Int
     | RemovalMessage Removal.Msg
+    | AddCareerStoryStep Position
     | NoOp
 
 
@@ -443,6 +449,22 @@ update msg model config =
             ( { model | removal = newRemoval }
             , Util.localMap RemovalMessage cmd
             )
+
+        AddCareerStoryStep position ->
+            let
+                oldCareerStory =
+                    Maybe.map .careerStory model.user
+                        |> Maybe.withDefault []
+
+                newCareerStory =
+                    case position of
+                        Top ->
+                            Models.User.emptyCareerStoryStep :: oldCareerStory
+
+                        Bottom ->
+                            oldCareerStory ++ [ Models.User.emptyCareerStoryStep ]
+            in
+            ( updateUser (\u -> { u | careerStory = newCareerStory }) model, Cmd.none )
 
         NoOp ->
             ( model

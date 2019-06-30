@@ -255,6 +255,10 @@ const source = {
       heading: 'Uratarina',
       hint:
         'Lisää aikajanalle urasi tärkeimmät vaiheet. Aloita nykyisestä työpaikastasi.',
+      titlePlaceholder: 'Ammattinimike, työpaikka',
+      selectDomainHint: 'Millä toimialalla toimit urasi tässä vaiheessa?',
+      selectPositionHint: 'Missä tehtävässä toimit urasi tässä vaiheessa?',
+      descriptionPlaceholder: 'Mitä haluat kertoa urasi tästä vaiheesta?',
     },
     viewUser: {
       showAllActivity: 'Näytä kaikki aktiivisuus',

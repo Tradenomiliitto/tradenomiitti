@@ -2,9 +2,10 @@ module Profile.CareerStory exposing (view)
 
 import Html as H
 import Html.Attributes as A
+import Html.Events as E
 import Models.User exposing (User)
 import PlainTextFormat
-import Profile.Main exposing (Msg(..))
+import Profile.Main exposing (Msg(..), Position(..))
 import Profile.ViewUtil as ViewUtil
 import State.Config as Config
 import State.Profile exposing (Model)
@@ -42,21 +43,23 @@ view t model config user =
                         ++ ifEditing (hint t)
                 ]
                     ++ ifEditing
-                        (H.div
-                            [ A.class "col-xs-12 user-page__career-story-add-button-container" ]
-                            [ H.span [ A.class "user-page__career-story-add-button" ]
-                                [ H.span [] [ H.text "+" ] ]
-                            ]
-                        )
+                        (addButton Top)
                     ++ List.indexedMap (\i step -> viewStoryStep t model config step (modBy 2 (i + 1) == 0)) user.careerStory
                     ++ ifEditing
-                        (H.div
-                            [ A.class "col-xs-12 user-page__career-story-add-button-container" ]
-                            [ H.span [ A.class "user-page__career-story-add-button" ]
-                                [ H.span [] [ H.text "+" ] ]
-                            ]
-                        )
+                        (addButton Bottom)
             ]
+        ]
+
+
+addButton : Position -> H.Html Msg
+addButton position =
+    H.div
+        [ A.class "col-xs-12 user-page__career-story-add-button-container" ]
+        [ H.span
+            [ A.class "user-page__career-story-add-button"
+            , E.onClick <| AddCareerStoryStep position
+            ]
+            [ H.span [] [ H.text "+" ] ]
         ]
 
 
@@ -76,18 +79,22 @@ viewStoryStep t model config step isEven =
         ]
     <|
         if model.editing then
-            [ H.input [ A.placeholder "moi", A.value step.title ] []
+            [ H.input
+                [ A.placeholder <| t "profile.careerStory.titlePlaceholder"
+                , A.value step.title
+                ]
+                []
             , ViewUtil.select config.domainOptions
                 (always NoOp)
                 (t "profile.userDomains.selectDomain")
-                (t "profile.userDomains.selectDomainHint")
+                (t "profile.careerStory.selectDomainHint")
             , ViewUtil.select config.positionOptions
                 (always NoOp)
                 (t "profile.userPositions.selectPosition")
-                (t "profile.userPositions.selectPositionHint")
+                (t "profile.careerStory.selectPositionHint")
             , H.textarea
                 [ A.value step.description
-                , A.placeholder <| "hei"
+                , A.placeholder <| t "profile.careerStory.descriptionPlaceholder"
                 ]
                 []
             ]

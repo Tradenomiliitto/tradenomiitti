@@ -1,4 +1,4 @@
-module Models.User exposing (BusinessCard, Contact, Education, Extra, PictureEditing, Settings, User, businessCardDecoder, businessCardEncode, contactDecoder, educationDecoder, educationEncode, encode, isAdmin, pictureEditingDecoder, pictureEditingEncode, settingsDecoder, settingsEncode, userDecoder, userExtraDecoder)
+module Models.User exposing (BusinessCard, Contact, Education, Extra, PictureEditing, Settings, User, businessCardDecoder, businessCardEncode, contactDecoder, educationDecoder, educationEncode, emptyCareerStoryStep, encode, isAdmin, pictureEditingDecoder, pictureEditingEncode, settingsDecoder, settingsEncode, userDecoder, userExtraDecoder)
 
 import Date
 import Json.Decode as Json
@@ -87,6 +87,14 @@ type alias CareerStoryStep =
     , domain : Maybe String
     , position : Maybe String
     , description : String
+    }
+
+
+emptyCareerStoryStep =
+    { title = ""
+    , domain = Nothing
+    , position = Nothing
+    , description = ""
     }
 
 
