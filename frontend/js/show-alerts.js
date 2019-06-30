@@ -1,8 +1,8 @@
 
-const container = document.getElementById('error-messages');
 
 export default function initShowAlerts(elm2js) {
   elm2js.subscribe(text => {
+    const container = document.getElementById('error-messages');
     const node = document.createElement('p');
     const textNode = document.createTextNode(text);
     node.appendChild(textNode);
