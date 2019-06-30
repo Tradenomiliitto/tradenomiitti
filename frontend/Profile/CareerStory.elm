@@ -24,8 +24,8 @@ view t model config user =
     in
     H.div
         [ A.classList
-            [ ( "user-page__career-story last-row", True )
-            , ( "user-page__career-story--editing", model.editing )
+            [ ( "career-story last-row", True )
+            , ( "career-story--editing", model.editing )
             ]
         ]
         [ H.div
@@ -37,7 +37,7 @@ view t model config user =
                     [ A.class "col-xs-12" ]
                   <|
                     [ H.h3
-                        [ A.class "user-page__career-story-header" ]
+                        [ A.class "career-story-header" ]
                         [ H.text <| t "profile.careerStory.heading" ]
                     ]
                         ++ ifEditing (hint t)
@@ -54,9 +54,9 @@ view t model config user =
 addButton : Position -> H.Html Msg
 addButton position =
     H.div
-        [ A.class "col-xs-12 user-page__career-story-add-button-container" ]
+        [ A.class "col-xs-12 career-story__add-button-container" ]
         [ H.span
-            [ A.class "user-page__career-story-add-button"
+            [ A.class "career-story__add-button"
             , E.onClick <| AddCareerStoryStep position
             ]
             [ H.span [] [ H.text "+" ] ]
@@ -65,7 +65,7 @@ addButton position =
 
 hint : T -> H.Html msg
 hint t =
-    H.p [ A.class "user-page__career-story-hint" ] [ H.text <| t "profile.careerStory.hint" ]
+    H.p [ A.class "career-story__hint" ] [ H.text <| t "profile.careerStory.hint" ]
 
 
 viewStoryStep t model config step index isEven =
@@ -110,8 +110,8 @@ viewStoryStep t model config step index isEven =
             ]
 
         else
-            [ H.p [] [ H.text step.title ]
+            [ H.p [ A.class "career-story__step-heading" ] [ H.text step.title ]
             ]
-                ++ Maybe.withDefault [] (Maybe.map (\text -> [ H.p [] [ H.text text ] ]) step.domain)
-                ++ Maybe.withDefault [] (Maybe.map (\text -> [ H.p [] [ H.text text ] ]) step.position)
-                ++ PlainTextFormat.view step.description
+                ++ Maybe.withDefault [] (Maybe.map (\text -> [ H.p [ A.class "career-story__step-domain" ] [ H.text text ] ]) step.domain)
+                ++ Maybe.withDefault [] (Maybe.map (\text -> [ H.p [ A.class "career-story__step-domain" ] [ H.text text ] ]) step.position)
+                ++ [ H.div [ A.class "career-story__step-description" ] (PlainTextFormat.view step.description) ]

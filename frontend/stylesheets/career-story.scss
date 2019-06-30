@@ -1,0 +1,47 @@
+.career-story {
+  @include padded-header;
+  @include base-padding;
+  &--editing {
+    background-color: $light-grey;
+  }
+  &__hint {
+    font-size: 16px;
+  }
+  &__add-button {
+    &-container {
+      display: flex;
+      justify-content: center;
+    }
+    background-color: $primary;
+    color: $white;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    text-align: center;
+    font-size: 2em;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    & span {
+      position: relative;
+      top: 1px;
+    }
+  }
+  &__step {
+    &-heading {
+      font-weight: bold;
+      font-size: 1.2em;
+      margin-bottom: 20px;
+    }
+    &-domain {
+      color: $primary;
+      font-weight: bold;
+      margin: 0;
+      margin-bottom: 5px;
+    }
+    &-description {
+      margin-top: 30px;
+    }
+  }
+}
