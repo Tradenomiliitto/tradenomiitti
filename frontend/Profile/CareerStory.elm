@@ -94,6 +94,7 @@ viewStoryStep t model config step index isEven isLast =
             , H.input
                 [ A.placeholder <| t "profile.careerStory.titlePlaceholder"
                 , A.value step.title
+                , A.class "career-story__title-input"
                 , E.onInput (ChangeCareerStoryTitle index)
                 ]
                 []
@@ -107,6 +108,7 @@ viewStoryStep t model config step index isEven isLast =
                 (t "profile.careerStory.selectPositionHint")
             , H.textarea
                 [ A.value step.description
+                , A.class "career-story__description-input"
                 , A.placeholder <| t "profile.careerStory.descriptionPlaceholder"
                 , E.onInput (ChangeCareerStoryDescription index)
                 ]

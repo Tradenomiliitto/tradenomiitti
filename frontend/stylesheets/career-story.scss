@@ -11,6 +11,7 @@
     &-container {
       display: flex;
       justify-content: center;
+      padding: 25px;
     }
     background-color: $primary;
     color: $white;
@@ -27,6 +28,16 @@
       position: relative;
       top: 1px;
     }
+  }
+  &__description-input, &__title-input {
+    padding: .5em;
+    width: 80%;
+  }
+  &__description-input {
+    margin-top: 20px;
+  }
+  &__title-input {
+    font-weight: bold;
   }
   &__step {
     padding: 0;
