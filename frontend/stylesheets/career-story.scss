@@ -29,6 +29,15 @@
     }
   }
   &__step {
+    padding: 0;
+
+    $ballclearance: 70px;
+    &--left {
+      padding-left: 15px;
+    }
+    &--right {
+      padding-right: 15px;
+    }
     &-heading {
       font-weight: bold;
       font-size: 1.2em;
@@ -42,6 +51,75 @@
     }
     &-description {
       margin-top: 30px;
+    }
+    $size: 34px;
+    $sizefirst: 52px;
+    &-top {
+      &--left {
+        padding-right: $ballclearance;
+      }
+      &--right {
+        padding-left: $ballclearance;
+      }
+      &-ruler {
+        border-color: #bbb;
+        margin: #{$size / 2} 0 20px 0;
+        &--first {
+          margin: #{$sizefirst / 2} 0 20px 0;
+        }
+      }
+      &-ball {
+        width: $size;
+        height: $size;
+        background-color: $primary;
+        border-radius: 50%;
+        display: inline-block;
+        position: absolute;
+        top: 0;
+
+        &--left {
+          transform: translateX(50%);
+          right: 0;
+        }
+
+        &--right {
+          transform: translateX(-50%);
+          left: 0;
+        }
+        &--first {
+          background-color: $secondary;
+          width: $sizefirst;
+          height: $sizefirst;
+        }
+      }
+    }
+    &-border {
+      & div {
+        width: 1px;
+        height: calc(100% - 5px);
+        background-color: $primary;
+      }
+      padding-top: 5px;
+      &--first {
+        padding-top: 10px;
+      }
+      &--left {
+      }
+      &--right {
+      }
+      &--last {
+        display: none;
+      }
+    }
+    &-content {
+      display: flex;
+      flex-direction: row;
+      &--left {
+        padding-right: $ballclearance;
+      }
+      &--right {
+        padding-left: $ballclearance;
+      }
     }
   }
 }

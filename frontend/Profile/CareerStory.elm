@@ -15,6 +15,9 @@ import Translation exposing (T)
 view : T -> Model -> Config.Model -> User -> H.Html Msg
 view t model config user =
     let
+        lastIndex =
+            List.length user.careerStory - 1
+
         ifEditing el =
             if model.editing then
                 [ el ]
@@ -44,7 +47,7 @@ view t model config user =
                 ]
                     ++ ifEditing
                         (addButton Top)
-                    ++ List.indexedMap (\i step -> viewStoryStep t model config step i (modBy 2 (i + 1) == 0)) user.careerStory
+                    ++ List.indexedMap (\i step -> viewStoryStep t model config step i (modBy 2 (i + 1) == 0) (i == lastIndex)) user.careerStory
                     ++ ifEditing
                         (addButton Bottom)
             ]
@@ -68,13 +71,14 @@ hint t =
     H.p [ A.class "career-story__hint" ] [ H.text <| t "profile.careerStory.hint" ]
 
 
-viewStoryStep t model config step index isEven =
+viewStoryStep t model config step index isEven isLast =
     H.div
         [ A.classList
             [ ( "col-sm-6 col-xs-11", True )
             , ( "col-sm-offset-6 col-xs-offset-1", isEven )
-            , ( "user-page__coreer-story-step--left", not isEven )
-            , ( "user-page__coreer-story-step--right", isEven )
+            , ( "career-story__step", True )
+            , ( "career-story__step--left", not isEven )
+            , ( "career-story__step--right", isEven )
             ]
         ]
     <|
@@ -110,8 +114,63 @@ viewStoryStep t model config step index isEven =
             ]
 
         else
-            [ H.p [ A.class "career-story__step-heading" ] [ H.text step.title ]
+            [ H.div
+                [ A.classList
+                    [ ( "career-story__step-top", True )
+                    , ( "career-story__step-top--left", not isEven )
+                    , ( "career-story__step-top--right", isEven )
+                    ]
+                ]
+                [ H.hr
+                    [ A.classList
+                        [ ( "career-story__step-top-ruler", True )
+                        , ( "career-story__step-top-ruler--first", index == 0 )
+                        ]
+                    ]
+                    []
+                , H.span
+                    [ A.classList
+                        [ ( "career-story__step-top-ball", True )
+                        , ( "career-story__step-top-ball--first", index == 0 )
+                        , ( "career-story__step-top-ball--left", not isEven )
+                        , ( "career-story__step-top-ball--right", isEven )
+                        ]
+                    ]
+                    []
+                ]
+            , H.div
+                [ A.classList
+                    [ ( "career-story__step-content", True )
+                    ]
+                ]
+                ((if isEven then
+                    identity
+
+                  else
+                    List.reverse
+                 )
+                    [ H.div
+                        [ A.classList
+                            [ ( "career-story__step-border", True )
+                            , ( "career-story__step-border--first", index == 0 )
+                            , ( "career-story__step-border--left", not isEven )
+                            , ( "career-story__step-border--right", isEven )
+                            , ( "career-story__step-border--last", isLast )
+                            ]
+                        ]
+                        [ H.div [] [] ]
+                    , H.div
+                        [ A.classList
+                            [ ( "career-story__step-content--left", not isEven )
+                            , ( "career-story__step-content--right", isEven )
+                            ]
+                        ]
+                      <|
+                        [ H.p [ A.class "career-story__step-heading" ] [ H.text step.title ]
+                        ]
+                            ++ Maybe.withDefault [] (Maybe.map (\text -> [ H.p [ A.class "career-story__step-domain" ] [ H.text text ] ]) step.domain)
+                            ++ Maybe.withDefault [] (Maybe.map (\text -> [ H.p [ A.class "career-story__step-domain" ] [ H.text text ] ]) step.position)
+                            ++ [ H.div [ A.class "career-story__step-description" ] (PlainTextFormat.view step.description) ]
+                    ]
+                )
             ]
-                ++ Maybe.withDefault [] (Maybe.map (\text -> [ H.p [ A.class "career-story__step-domain" ] [ H.text text ] ]) step.domain)
-                ++ Maybe.withDefault [] (Maybe.map (\text -> [ H.p [ A.class "career-story__step-domain" ] [ H.text text ] ]) step.position)
-                ++ [ H.div [ A.class "career-story__step-description" ] (PlainTextFormat.view step.description) ]
