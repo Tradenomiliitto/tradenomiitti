@@ -127,6 +127,7 @@
       flex-direction: row;
       &--left {
         padding-right: $ballclearance;
+        flex-grow: 1;
       }
       &--right {
         padding-left: $ballclearance;
