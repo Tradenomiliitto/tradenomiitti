@@ -1,4 +1,4 @@
-module Models.User exposing (BusinessCard, Contact, Education, Extra, PictureEditing, Settings, User, businessCardDecoder, businessCardEncode, contactDecoder, educationDecoder, educationEncode, encode, isAdmin, pictureEditingDecoder, pictureEditingEncode, settingsDecoder, settingsEncode, userDecoder, userExtraDecoder)
+module Models.User exposing (BusinessCard, CareerStoryStep, Contact, Education, Extra, PictureEditing, Settings, User, businessCardDecoder, businessCardEncode, contactDecoder, educationDecoder, educationEncode, emptyCareerStoryStep, encode, isAdmin, pictureEditingDecoder, pictureEditingEncode, settingsDecoder, settingsEncode, userDecoder, userExtraDecoder)
 
 import Date
 import Json.Decode as Json
@@ -9,10 +9,8 @@ import Skill
 import Time
 
 
-
--- data in Extra comes from the api
-
-
+{-| data in Extra comes from the api
+-}
 type alias Extra =
     { first_name : String
     , nick_name : String
@@ -67,6 +65,7 @@ type alias User =
     , businessCard : Maybe BusinessCard
     , contacted : Bool
     , education : List Education
+    , careerStory : List CareerStoryStep
     , isAdmin : Bool
     , memberId : Maybe Int
     , contributionStatus : String
@@ -78,6 +77,22 @@ type alias Education =
     , degree : Maybe String
     , major : Maybe String
     , specialization : Maybe String
+    }
+
+
+type alias CareerStoryStep =
+    { title : String
+    , domain : Maybe String
+    , position : Maybe String
+    , description : String
+    }
+
+
+emptyCareerStoryStep =
+    { title = ""
+    , domain = Nothing
+    , position = Nothing
+    , description = ""
     }
 
 
@@ -119,6 +134,7 @@ userDecoder =
         |> P.optional "business_card" (Json.map Just businessCardDecoder) Nothing
         |> P.optional "contacted" Json.bool False
         |> P.required "education" (Json.list educationDecoder)
+        |> P.required "career_story" (Json.list careerStoryStepDecoder)
         |> P.optional "is_admin" Json.bool False
         |> P.optional "member_id" (Json.map Just Json.int) Nothing
         |> P.optional "contribution" Json.string ""
@@ -130,13 +146,14 @@ encode user =
         [ ( "name", JS.string user.name )
         , ( "description", JS.string user.description )
         , ( "title", JS.string user.title )
-        , ( "domains", JS.list identity (List.map Skill.encode user.domains) )
-        , ( "positions", JS.list identity (List.map Skill.encode user.positions) )
+        , ( "domains", JS.list Skill.encode user.domains )
+        , ( "positions", JS.list Skill.encode user.positions )
         , ( "location", JS.string user.location )
         , ( "contribution", JS.string user.contributionStatus )
         , ( "cropped_picture", JS.string (user.croppedPictureFileName |> Maybe.withDefault "") )
-        , ( "special_skills", JS.list identity (List.map JS.string user.skills) )
-        , ( "education", educationEncode user.education )
+        , ( "special_skills", JS.list JS.string user.skills )
+        , ( "education", JS.list educationEncode user.education )
+        , ( "career_story", JS.list careerStoryStepEncode user.careerStory )
         ]
             ++ (user.pictureEditingDetails
                     |> Maybe.map
@@ -154,22 +171,28 @@ encode user =
                )
 
 
-educationEncode : List Education -> JS.Value
-educationEncode educationList =
-    let
-        encodeOne education =
-            JS.object <|
-                [ ( "institute", JS.string education.institute )
+careerStoryStepEncode : CareerStoryStep -> JS.Value
+careerStoryStepEncode step =
+    JS.object <|
+        [ ( "title", JS.string step.title )
+        , ( "description", JS.string step.description )
+        ]
+            ++ List.filterMap identity
+                [ Maybe.map (\value -> ( "domain", JS.string value )) step.domain
+                , Maybe.map (\value -> ( "position", JS.string value )) step.position
                 ]
-                    ++ List.filterMap identity
-                        [ Maybe.map (\value -> ( "degree", JS.string value )) education.degree
-                        , Maybe.map (\value -> ( "major", JS.string value )) education.major
-                        , Maybe.map (\value -> ( "specialization", JS.string value )) education.specialization
-                        ]
-    in
-    educationList
-        |> List.map encodeOne
-        |> JS.list identity
+
+
+educationEncode : Education -> JS.Value
+educationEncode education =
+    JS.object <|
+        [ ( "institute", JS.string education.institute )
+        ]
+            ++ List.filterMap identity
+                [ Maybe.map (\value -> ( "degree", JS.string value )) education.degree
+                , Maybe.map (\value -> ( "major", JS.string value )) education.major
+                , Maybe.map (\value -> ( "specialization", JS.string value )) education.specialization
+                ]
 
 
 settingsEncode : Settings -> JS.Value
@@ -266,6 +289,15 @@ educationDecoder =
         |> P.optional "degree" (Json.map Just Json.string) Nothing
         |> P.optional "major" (Json.map Just Json.string) Nothing
         |> P.optional "specialization" (Json.map Just Json.string) Nothing
+
+
+careerStoryStepDecoder : Json.Decoder CareerStoryStep
+careerStoryStepDecoder =
+    Json.succeed CareerStoryStep
+        |> P.required "title" Json.string
+        |> P.optional "domain" (Json.map Just Json.string) Nothing
+        |> P.optional "position" (Json.map Just Json.string) Nothing
+        |> P.required "description" Json.string
 
 
 isAdmin : Maybe User -> Bool

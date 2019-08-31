@@ -567,7 +567,11 @@ view model =
             T.get model.translations
     in
     { title = t "common.title"
-    , body = [ viewHtml model t ]
+    , body =
+        [ H.div [ A.id "app" ] [ viewHtml model t ]
+        , H.div [ A.id "image-upload", A.class "image-upload" ] []
+        , H.div [ A.id "error-messages", A.class "error-messages" ] []
+        ]
     }
 
 

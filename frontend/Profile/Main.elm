@@ -1,16 +1,21 @@
-port module Profile.Main exposing (BusinessCardField(..), Msg(..), getAds, getMe, imageSave, imageUpload, initTasks, subscriptions, typeAheadToMsg, typeahead, typeaheadResult, typeaheads, update, updateBusinessCard, updateConsent, updateMe, updateSkillList, updateUser)
+port module Profile.Main exposing (BusinessCardField(..), Msg(..), Position(..), getAds, getMe, imageSave, imageUpload, initTasks, subscriptions, typeAheadToMsg, typeahead, typeaheadResult, typeaheads, update, updateBusinessCard, updateConsent, updateMe, updateSkillList, updateUser)
 
 import Http
 import Json.Decode as Json
 import Json.Encode as JS
 import List.Extra as List
 import Models.Ad
-import Models.User exposing (BusinessCard, PictureEditing, User)
+import Models.User exposing (BusinessCard, CareerStoryStep, PictureEditing, User)
 import Removal
 import Skill
 import State.Config as Config
 import State.Profile exposing (Model)
 import Util exposing (UpdateMessage(..))
+
+
+type Position
+    = Top
+    | Bottom
 
 
 type Msg
@@ -48,6 +53,12 @@ type Msg
     | AddEducation String
     | DeleteEducation Int
     | RemovalMessage Removal.Msg
+    | AddCareerStoryStep Position
+    | RemoveCareerStoryStep Int
+    | ChangeCareerStoryTitle Int String
+    | ChangeCareerStoryDomainSelect Int String
+    | ChangeCareerStoryPositionSelect Int String
+    | ChangeCareerStoryDescription Int String
     | NoOp
 
 
@@ -161,6 +172,29 @@ updateSkillList index skillLevel list =
 updateUser : (User -> User) -> Model -> Model
 updateUser updater model =
     { model | user = Maybe.map updater model.user }
+
+
+updateCareerStoryStep : Int -> (CareerStoryStep -> CareerStoryStep) -> Model -> Model
+updateCareerStoryStep index updater model =
+    { model
+        | user =
+            Maybe.map
+                (\u ->
+                    { u
+                        | careerStory =
+                            List.indexedMap
+                                (\i step ->
+                                    if i == index then
+                                        updater step
+
+                                    else
+                                        step
+                                )
+                                u.careerStory
+                    }
+                )
+                model.user
+    }
 
 
 type BusinessCardField
@@ -442,6 +476,56 @@ update msg model config =
             in
             ( { model | removal = newRemoval }
             , Util.localMap RemovalMessage cmd
+            )
+
+        AddCareerStoryStep position ->
+            ( updateUser
+                (\u ->
+                    let
+                        oldCareerStory =
+                            u.careerStory
+
+                        newCareerStory =
+                            case position of
+                                Top ->
+                                    Models.User.emptyCareerStoryStep :: oldCareerStory
+
+                                Bottom ->
+                                    oldCareerStory ++ [ Models.User.emptyCareerStoryStep ]
+                    in
+                    { u | careerStory = newCareerStory }
+                )
+                model
+            , Cmd.none
+            )
+
+        RemoveCareerStoryStep i ->
+            ( updateUser
+                (\u ->
+                    { u | careerStory = List.removeAt i u.careerStory }
+                )
+                model
+            , Cmd.none
+            )
+
+        ChangeCareerStoryTitle i str ->
+            ( updateCareerStoryStep i (\step -> { step | title = String.slice 0 70 str }) model
+            , Cmd.none
+            )
+
+        ChangeCareerStoryDomainSelect i str ->
+            ( updateCareerStoryStep i (\step -> { step | domain = Just str }) model
+            , Cmd.none
+            )
+
+        ChangeCareerStoryPositionSelect i str ->
+            ( updateCareerStoryStep i (\step -> { step | position = Just str }) model
+            , Cmd.none
+            )
+
+        ChangeCareerStoryDescription i str ->
+            ( updateCareerStoryStep i (\step -> { step | description = String.slice 0 400 str }) model
+            , Cmd.none
             )
 
         NoOp ->

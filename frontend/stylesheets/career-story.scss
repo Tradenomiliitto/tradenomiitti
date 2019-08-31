@@ -1,0 +1,137 @@
+.career-story {
+  @include padded-header;
+  @include base-padding;
+  &--editing {
+    background-color: $light-grey;
+  }
+  &__hint {
+    font-size: 16px;
+  }
+  &__add-button {
+    &-container {
+      display: flex;
+      justify-content: center;
+      padding: 25px;
+    }
+    background-color: $primary;
+    color: $white;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    text-align: center;
+    font-size: 2em;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    & span {
+      position: relative;
+      top: 1px;
+    }
+  }
+  &__description-input, &__title-input {
+    padding: .5em;
+    width: 80%;
+  }
+  &__description-input {
+    margin-top: 20px;
+  }
+  &__title-input {
+    font-weight: bold;
+  }
+  &__step {
+    padding: 0;
+
+    $ballclearance: 70px;
+    &--left {
+      padding-left: 15px;
+    }
+    &--right {
+      padding-right: 15px;
+    }
+    &-heading {
+      font-weight: bold;
+      font-size: 1.2em;
+      margin-bottom: 20px;
+    }
+    &-domain {
+      color: $primary;
+      font-weight: bold;
+      margin: 0;
+      margin-bottom: 5px;
+    }
+    &-description {
+      margin-top: 30px;
+    }
+    $size: 34px;
+    $sizefirst: 52px;
+    &-top {
+      &--left {
+        padding-right: $ballclearance;
+      }
+      &--right {
+        padding-left: $ballclearance;
+      }
+      &-ruler {
+        border-color: #bbb;
+        margin: #{$size / 2} 0 20px 0;
+        &--first {
+          margin: #{$sizefirst / 2} 0 20px 0;
+        }
+      }
+      &-ball {
+        width: $size;
+        height: $size;
+        background-color: $primary;
+        border-radius: 50%;
+        display: inline-block;
+        position: absolute;
+        top: 0;
+
+        &--left {
+          transform: translateX(50%);
+          right: 0;
+        }
+
+        &--right {
+          transform: translateX(-50%);
+          left: 0;
+        }
+        &--first {
+          background-color: $secondary;
+          width: $sizefirst;
+          height: $sizefirst;
+        }
+      }
+    }
+    &-border {
+      & div {
+        width: 1px;
+        height: calc(100% - 5px);
+        background-color: $primary;
+      }
+      padding-top: 5px;
+      &--first {
+        padding-top: 10px;
+      }
+      &--left {
+      }
+      &--right {
+      }
+      &--last {
+        display: none;
+      }
+    }
+    &-content {
+      display: flex;
+      flex-direction: row;
+      &--left {
+        padding-right: $ballclearance;
+        flex-grow: 1;
+      }
+      &--right {
+        padding-left: $ballclearance;
+      }
+    }
+  }
+}
