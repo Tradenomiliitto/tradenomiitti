@@ -138,17 +138,23 @@ if (testLogin) {
 
 // locally login as 'Tradenomi1' test user, in production redirect to Avoine's authentication
 app.get('/kirjaudu', (req, res) => {
-  if (!testLogin) {
-    let encodedPath = '';
-    if (req.query.path) {
-      encodedPath = encodeURIComponent(`?path=${req.query.path}`);
-    }
-    const encodedParam = encodeURIComponent(req.query.base) + encodedPath;
-    const url = `https://tunnistus.avoine.fi/sso-login/?service=tradenomiitti&return=${encodedParam}`;
-    res.redirect(url);
-  } else {
-    res.redirect('/kirjaudu/1');
+  if (testLogin) {
+    return res.redirect('/kirjaudu/1');
   }
+  return util
+    .loggedIn(req)
+    .then(loggedIn => {
+      if (loggedIn) {
+        return res.redirect(req.query.path);
+      }
+      let encodedPath = '';
+      if (req.query.path) {
+        encodedPath = encodeURIComponent(`?path=${req.query.path}`);
+      }
+      const encodedParam = encodeURIComponent(req.query.base) + encodedPath;
+      const url = `https://tunnistus.avoine.fi/sso-login/?service=tradenomiitti&return=${encodedParam}`;
+      return res.redirect(url);
+    });
 });
 
 app.post('/kirjaudu', urlEncoded, logon.login);
