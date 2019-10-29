@@ -568,7 +568,8 @@ view model =
     in
     { title = t "common.title"
     , body =
-        [ H.div [ A.id "app" ] [ viewHtml model t ]
+        [ H.div [ A.id "tral-memberbar" ] []
+        , H.div [ A.id "app" ] [ viewHtml model t ]
         , H.div [ A.id "image-upload", A.class "image-upload" ] []
         , H.div [ A.id "error-messages", A.class "error-messages" ] []
         ]

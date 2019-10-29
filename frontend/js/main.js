@@ -9,6 +9,7 @@ import initFooterVisibleListener from './footer-visible';
 import initCloseMobileMenu from './mobile-menu';
 import initShowAlerts from './show-alerts';
 import initTypeahead from './typeahead';
+import initMemberbar from './memberbar';
 import translations from './translations';
 
 const app = Elm.Main.init({
@@ -25,3 +26,4 @@ initFooterVisibleListener(app.ports.footerAppeared);
 initCloseMobileMenu(app.ports.closeMenu);
 initShowAlerts(app.ports.showAlert);
 initTypeahead(app.ports.typeahead, app.ports.typeaheadResult);
+initMemberbar();
