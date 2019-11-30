@@ -40,6 +40,9 @@
     "promise/no-return-wrap": "error",
     "promise/param-names": "error",
     "promise/catch-or-return": "error",
-    "promise/no-native": "off"
+    "promise/no-native": "off",
+    "promise/no-return-wrap": "off",
+    "prefer-object-spread": "off",
+    "no-redeclare": "off"
   }
 }

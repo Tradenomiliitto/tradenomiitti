@@ -1,6 +1,6 @@
 // We don't delete or restore skills to user.data either in ups or downs
 
-exports.up = function(knex, Promise) {
+exports.up = function(knex) {
   return knex.schema.createTable('skills', function (table) {
     table.integer('user_id').references('id').inTable('users').onDelete('CASCADE');
     table.enum('type', [ 'domain', 'position' ]).index();
@@ -34,6 +34,6 @@ exports.up = function(knex, Promise) {
 
 };
 
-exports.down = function(knex, Promise) {
+exports.down = function(knex) {
   return knex.schema.dropTable('skills');
 };

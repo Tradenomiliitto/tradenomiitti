@@ -1,5 +1,5 @@
 
-exports.up = function(knex, Promise) {
+exports.up = function(knex) {
   return knex.schema.createTable('education', function (table) {
     table.increments('id');
     table.enum('type', [ 'institute', 'degree', 'major', 'specialization' ]).notNullable().index();
@@ -210,6 +210,6 @@ exports.up = function(knex, Promise) {
   });
 };
 
-exports.down = function(knex, Promise) {
+exports.down = function(knex) {
   return knex.schema.dropTable('education');
 };
