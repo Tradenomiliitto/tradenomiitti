@@ -84,8 +84,8 @@ const source = {
   },
   footer: {
     link1: {
-      url: 'http://tral.fi',
-      text: 'tral.fi',
+      url: 'http://tradenomi.fi',
+      text: 'tradenomi.fi',
     },
     link2: {
       url: 'http://liity.tral.fi/#liity',
@@ -99,11 +99,11 @@ const source = {
       text: 'Tilastoja',
     },
     socialButton: {
-      facebookUrl: 'https://www.facebook.com/tradenomiliitto',
-      twitterUrl: 'https://twitter.com/Tradenomiliitto',
-      instagramUrl: 'https://www.instagram.com/tradenomiliitto/',
+      facebookUrl: 'https://www.facebook.com/tradenomit',
+      twitterUrl: 'https://twitter.com/Tradenomit',
+      instagramUrl: 'https://www.instagram.com/tradenomit/',
       linkedinUrl:
-        'http://www.linkedin.com/groups/Tradenomiliitto-TRAL-ry-2854058/about',
+      'https://www.linkedin.com/company/tradenomit',
       githubUrl: 'https://github.com/tradenomiliitto/tradenomiitti',
     },
   },
