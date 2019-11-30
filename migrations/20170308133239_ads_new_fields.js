@@ -1,5 +1,5 @@
 
-exports.up = function(knex, Promise) {
+exports.up = function(knex) {
   return Promise.all([
     knex.schema.table('ads', function (table) {
       table.timestamp('created_at').defaultTo(knex.fn.now());
@@ -14,7 +14,7 @@ exports.up = function(knex, Promise) {
   ])
 };
 
-exports.down = function(knex, Promise) {
+exports.down = function(knex) {
   return Promise.all([
     knex.schema.table('ads', function (table){ 
       table.dropColumn('created_at');

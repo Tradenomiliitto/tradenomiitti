@@ -1,4 +1,4 @@
-exports.up = function(knex, Promise) {
+exports.up = function(knex) {
   return knex.schema.createTable('user_special_skills', function (table) {
     table.integer('user_id').references('id').inTable('users').onDelete('CASCADE');
     table.string('heading').index();
@@ -34,7 +34,7 @@ exports.up = function(knex, Promise) {
     });
 };
 
-exports.down = function(knex, Promise) {
+exports.down = function(knex) {
   return Promise.all([
     knex.schema.dropTable('user_special_skills'),
     knex.schema.dropTable('user_educations')

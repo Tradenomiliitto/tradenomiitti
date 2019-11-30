@@ -1,9 +1,9 @@
 {
     "type": "application",
     "source-directories": [
-        "."
+        "src"
     ],
-    "elm-version": "0.19.0",
+    "elm-version": "0.19.1",
     "dependencies": {
         "direct": {
             "NoRedInk/elm-json-decode-pipeline": "1.0.0",
@@ -21,7 +21,6 @@
             "elm-community/list-extra": "8.1.0",
             "elm-community/maybe-extra": "5.0.0",
             "elm-explorations/markdown": "1.0.0",
-            "elm-explorations/test": "1.2.1",
             "justinmimbs/date": "3.1.2",
             "sporto/qs": "1.0.1"
         },
@@ -32,7 +31,9 @@
         }
     },
     "test-dependencies": {
-        "direct": {},
+        "direct": {
+            "elm-explorations/test": "1.2.2"
+        },
         "indirect": {}
     }
 }
