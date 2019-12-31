@@ -15,6 +15,7 @@ import Profile.Expertise as Expertise
 import Profile.Main exposing (BusinessCardField(..), Msg(..))
 import Profile.Membership as Membership
 import Profile.PublicInfo as PublicInfo
+import Profile.RemoveProfile as RemoveProfile
 import State.Config as Config
 import State.Main as RootState
 import State.Profile exposing (Model)
@@ -48,6 +49,7 @@ editProfileView t model user rootState =
         , H.map LocalViewMessage (Expertise.competences t model rootState.config user)
         , H.map LocalViewMessage (Education.editing t model rootState.config user)
         , H.map LocalViewMessage (CareerStory.view t model rootState.config user)
+        , RemoveProfile.view t model
         ]
 
 

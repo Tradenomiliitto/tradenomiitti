@@ -27,6 +27,7 @@ type alias Model =
 type RemovalTarget
     = Ad
     | Answer
+    | Profile
 
 
 init : RemovalTarget -> Model
@@ -54,6 +55,12 @@ deleteAnswer id =
         |> Util.errorHandlingSend (always SuccesfullyRemoved)
 
 
+deleteProfile : Cmd (UpdateMessage Msg)
+deleteProfile =
+    Util.delete "/api/profiilit/oma"
+        |> Util.errorHandlingSend (always SuccesfullyRemoved)
+
+
 update : Msg -> Model -> ( Model, Cmd (UpdateMessage Msg) )
 update msg model =
     case msg of
@@ -76,6 +83,9 @@ update msg model =
 
                         Answer ->
                             deleteAnswer id
+
+                        Profile ->
+                            deleteProfile
             in
             ( model
             , cmd
@@ -87,14 +97,36 @@ update msg model =
             )
 
 
-type alias AdLike a =
+type alias AdLike a b =
     { a
         | id : Int
-        , createdBy : User
+        , createdBy : { b | id : Int }
     }
 
 
-view : T -> Maybe User -> Int -> AdLike a -> Model -> List (H.Html (ViewMessage Msg))
+confirmationBox t confirmationText iWantToRemoveMy cancelMsg confirmMsg =
+    H.div
+        [ A.class "removal__confirmation" ]
+        [ H.p
+            [ A.class "removal__confirmation-text" ]
+            [ H.text confirmationText ]
+        , H.div
+            [ A.class "removal__confirmation-buttons" ]
+            [ H.button
+                [ A.class "btn removal__confirmation-button-cancel"
+                , E.onClick << LocalViewMessage <| cancelMsg
+                ]
+                [ H.text <| t "common.cancel" ]
+            , H.button
+                [ A.class "btn btn-primary removal__confirmation-button-confirm"
+                , E.onClick << LocalViewMessage <| confirmMsg
+                ]
+                [ H.text <| iWantToRemoveMy ]
+            ]
+        ]
+
+
+view : T -> Maybe User -> Int -> AdLike a b -> Model -> List (H.Html (ViewMessage Msg))
 view t userMaybe index ad model =
     let
         ( removeYour, iWantToRemoveMy, confirmationText ) =
@@ -109,6 +141,12 @@ view t userMaybe index ad model =
                     ( t "removal.iWantToRemoveMy.answer"
                     , t "removal.removeYour.answer"
                     , t "removal.confirmationText.answer"
+                    )
+
+                Profile ->
+                    ( t "removal.iWantToRemoveMy.profile"
+                    , t "removal.removeYour.profile"
+                    , t "removal.confirmationText.profile"
                     )
 
         removals =
@@ -127,36 +165,15 @@ view t userMaybe index ad model =
             removals
                 |> List.find (\removal -> removal.index == index)
                 |> Maybe.isJust
-
-        confirmationBox =
-            H.div
-                [ A.class "removal__confirmation" ]
-                [ H.p
-                    [ A.class "removal__confirmation-text" ]
-                    [ H.text confirmationText ]
-                , H.div
-                    [ A.class "removal__confirmation-buttons" ]
-                    [ H.button
-                        [ A.class "btn removal__confirmation-button-cancel"
-                        , E.onClick << LocalViewMessage <| CancelRemoval index
-                        ]
-                        [ H.text <| t "common.cancel" ]
-                    , H.button
-                        [ A.class "btn btn-primary removal__confirmation-button-confirm"
-                        , E.onClick << LocalViewMessage <| ConfirmRemoval ad.id
-                        ]
-                        [ H.text <| iWantToRemoveMy ]
-                    ]
-                ]
     in
-    if Models.User.isAdmin userMaybe || Maybe.map .id userMaybe == Just ad.createdBy.id then
+    if Models.User.isAdmin userMaybe || Maybe.map .id userMaybe == Just ad.createdBy.id || model.target == Profile then
         [ H.div
             [ A.class "removal" ]
             [ if not isBeingRemoved then
                 icon
 
               else
-                confirmationBox
+                confirmationBox t confirmationText iWantToRemoveMy (CancelRemoval index) (ConfirmRemoval ad.id)
             ]
         ]
 

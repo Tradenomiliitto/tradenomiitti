@@ -27,7 +27,8 @@ view t model config user =
     in
     H.div
         [ A.classList
-            [ ( "career-story last-row", True )
+            [ ( "career-story", True )
+            , ( "last-row", not model.editing )
             , ( "career-story--editing", model.editing )
             ]
         ]

@@ -16,6 +16,7 @@ type alias Model =
     , selectedMajor : Maybe String
     , selectedSpecialization : Maybe String
     , removal : Removal.Model
+    , profileRemoval : Removal.Model
     }
 
 
@@ -31,4 +32,5 @@ init =
     , selectedMajor = Nothing
     , selectedSpecialization = Nothing
     , removal = Removal.init Removal.Ad
+    , profileRemoval = Removal.init Removal.Profile
     }

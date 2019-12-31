@@ -319,20 +319,28 @@ const source = {
       location: 'Maakunta',
       missingData: 'Jäsentiedot puuttuvat',
     },
+    removeProfile: {
+      heading: "Poista oma profiilisi",
+      description: "Vaaravyöhyke! Tästä pääset poistamaan profiilisi, kaikki ilmoituksesi, niihin tulleet vastaukset, ja omat vastauksesi muiden ilmoituksiin.",
+      button: "Poista profiili",
+    }
   },
   removal: {
     removeYour: {
       ad: 'Poista oma ilmoituksesi',
       answer: 'Poista oma vastauksesi',
+      profile: 'Poista oma profiilisi',
     },
     iWantToRemoveMy: {
       ad: 'Haluan poistaa ilmoitukseni',
       answer: 'Haluan poistaa vastaukseni',
+      profile: 'Poista profiili, kaikki ilmoitukseni, ja muiden vastaukset niihin'
     },
     confirmationText: {
       ad:
         'Tämä poistaa ilmoituksen ja kaikki siihen tulleet vastaukset pysyvästi. Oletko varma?',
       answer: 'Tämä poistaa vastauksen pysyvästi. Oletko varma?',
+      profile: 'Tämä poistaa profiilisi, kaikki ilmoituksesi, kaikki vastauksesi muiden ilmoituksiin, ja muiden vastaukset omiin ilmoituksiisi. Oletko aivan varma?',
     },
   },
   settings: {

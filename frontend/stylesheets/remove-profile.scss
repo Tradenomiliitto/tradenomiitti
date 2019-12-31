@@ -1,0 +1,16 @@
+.remove-profile {
+  @include padded-header;
+  @include base-padding;
+  &__button {
+    position: relative;
+    & .removal {
+      left: 0;
+      &__confirmation {
+        left: 0 !important;
+      }
+      &__icon {
+        display: none;
+      }
+    }
+  }
+}
