@@ -155,6 +155,10 @@ module.exports = function initialize(params) {
                 ].filter(x => x);
               });
               const insertObjects = [].concat(...insertObjectLists);
+              // Check for a list of educations with only institutes chosen
+              if (insertObjects.length === 0) {
+                return null;
+              }
               const insertPart = knex('education')
                 .insert(insertObjects)
                 .toString();
