@@ -379,8 +379,9 @@ module.exports = function initialize(params) {
             ];
             return Promise.all(promises).then(([contactExists, isAdmin]) => {
               formattedUser.contacted = contactExists;
-              if (isAdmin)
+              if (isAdmin) {
                 formattedUser.member_id = parseInt(user.remote_id, 10);
+              }
               return formattedUser;
             });
           });

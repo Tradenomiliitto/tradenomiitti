@@ -36,6 +36,8 @@
     "no-confusing-arrow": "off",
     "prefer-promise-reject-errors": "off",
     "prefer-destructuring": "off",
+    "implicit-arrow-linebreak": "off",
+    "indent": "off",
     "promise/always-return": "error",
     "promise/no-return-wrap": "error",
     "promise/param-names": "error",
