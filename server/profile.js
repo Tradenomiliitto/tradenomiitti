@@ -241,7 +241,9 @@ module.exports = function initialize(params) {
           type: 'delete_user',
           data: { user_id: user.id },
         }),
-      ]).then(() => res.sendStatus(200))
+      ])
+        .then(() => res.sendStatus(200))
+        .catch(next)
     );
   }
 
