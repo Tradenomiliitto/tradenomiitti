@@ -396,6 +396,6 @@ function logError(req, err) {
   return errorHash;
 }
 
-module.exports = app.listen(3000, () => {
+module.exports = app.listen(3000, '127.0.0.1', () => {
   console.log('Listening on 3000');
 });
