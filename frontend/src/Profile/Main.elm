@@ -53,6 +53,7 @@ type Msg
     | AddEducation String
     | DeleteEducation Int
     | RemovalMessage Removal.Msg
+    | ProfileRemovalMessage Removal.Msg
     | AddCareerStoryStep Position
     | RemoveCareerStoryStep Int
     | ChangeCareerStoryTitle Int String
@@ -476,6 +477,15 @@ update msg model config =
             in
             ( { model | removal = newRemoval }
             , Util.localMap RemovalMessage cmd
+            )
+
+        ProfileRemovalMessage innerMsg ->
+            let
+                ( newRemoval, cmd ) =
+                    Removal.update innerMsg model.profileRemoval
+            in
+            ( { model | profileRemoval = newRemoval }
+            , Util.localMap ProfileRemovalMessage cmd
             )
 
         AddCareerStoryStep position ->

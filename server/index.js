@@ -163,6 +163,7 @@ app.get('/uloskirjautuminen', logon.logout);
 app.get('/api/profiilit/oma', profile.getMe);
 app.put('/api/profiilit/oma', jsonParser, profile.putMe);
 app.put('/api/profiilit/oma/kuva', fileParser, profile.putImage);
+app.delete('/api/profiilit/oma', profile.deleteMe);
 app.put('/api/profiilit/oma/kuva/rajattu', fileParser, profile.putCroppedImage);
 app.post('/api/profiilit/luo', profile.consentToProfileCreation);
 app.get('/api/profiilit', profile.listProfiles);
@@ -395,6 +396,6 @@ function logError(req, err) {
   return errorHash;
 }
 
-module.exports = app.listen(3000, () => {
+module.exports = app.listen(3000, '127.0.0.1', () => {
   console.log('Listening on 3000');
 });

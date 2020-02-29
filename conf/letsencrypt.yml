@@ -4,8 +4,8 @@
   become: yes
 
   roles:
-    - { role: nickjj.letsencrypt, tags: letsencrypt }
-
-  vars:
-    letsencrypt_domains: [ "{{server_name}}" ]
-    letsencrypt_default_ca: 'https://acme-v01.api.letsencrypt.org'
+    - role: thefinn93.letsencrypt
+      tags: letsencrypt
+      letsencrypt_email: "{{letsencrypt_email_addr}}"
+      letsencrypt_cert_domains: [ "{{server_name}}" ]
+      letsencrypt_renewal_command_args: '--renew-hook "systemctl restart nginx"'
