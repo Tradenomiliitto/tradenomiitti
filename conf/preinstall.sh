@@ -10,4 +10,4 @@ then
   done
 fi
 
-ansible-galaxy install nickjj.letsencrypt,v0.3.1 --force --roles-path conf/roles
+ansible-galaxy install thefinn93.letsencrypt --force --roles-path conf/roles
