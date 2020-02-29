@@ -1,6 +1,6 @@
 const supportEmail = 'tradenomiitti@tral.fi';
 
-const source = {
+export const source = {
   common: {
     supportEmail,
     dateFormat: 'd.M.y',
@@ -323,6 +323,7 @@ const source = {
       heading: "Poista oma profiilisi",
       description: "Vaaravyöhyke! Tästä pääset poistamaan profiilisi, kaikki ilmoituksesi, niihin tulleet vastaukset, ja omat vastauksesi muiden ilmoituksiin.",
       button: "Poista profiili",
+      success: "Profiilin poisto onnistui.",
     }
   },
   removal: {

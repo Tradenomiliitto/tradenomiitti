@@ -92,8 +92,20 @@ update msg model =
             )
 
         SuccesfullyRemoved ->
+            let
+                cmd =
+                    case model.target of
+                        Ad ->
+                            Browser.Navigation.reload
+
+                        Answer ->
+                            Browser.Navigation.reload
+
+                        Profile ->
+                            Browser.Navigation.load "/?profile-removed"
+            in
             ( model
-            , Browser.Navigation.reload
+            , cmd
             )
 
 
