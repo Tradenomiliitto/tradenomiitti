@@ -9,3 +9,12 @@
       letsencrypt_email: "{{letsencrypt_email_addr}}"
       letsencrypt_cert_domains: [ "{{server_name}}" ]
       letsencrypt_renewal_command_args: '--renew-hook "systemctl restart nginx"'
+
+  tasks:
+    - name: Remove renewal jobs installed by letsencrypt package
+      file:
+        state: absent
+        path: "{{item}}"
+      loop:
+        - /etc/systemd/system/timers.target.wants/certbot.timer
+        - /etc/cron.d/certbot
