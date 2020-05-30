@@ -9,7 +9,7 @@
         hour: "2"
         minute: "0"
         name: dump_db
-        job: pg_dump --clean tradenomiitti >/tmp/dbdump
+        job: pg_dump --clean tradenomiitti >/tmp/dbdump && {{ hostvars[ groups['prod'][0] ].cron_health_command_1 }}
 
     - name: setup cron job to tar up images
       cron:
@@ -17,7 +17,7 @@
         hour: "2"
         minute: "0"
         name: tar_images
-        job: tar czfP /tmp/images.tar.gz /srv/static/images
+        job: tar czfP /tmp/images.tar.gz /srv/static/images && {{ hostvars[ groups['prod'][0] ].cron_health_command_2 }}
 
 
 - hosts: qa
@@ -37,7 +37,7 @@
         hour: "3"
         minute: "0"
         name: download backups
-        job: scp {{ hostvars[groups['prod'][0]].server_name }}:/tmp/images.tar.gz {{ hostvars[groups['prod'][0]].server_name }}:/tmp/dbdump /home/ubuntu && mkdir -p backups && mv --backup=numbered images.tar.gz dbdump backups
+        job: scp {{ hostvars[groups['prod'][0]].server_name }}:/tmp/images.tar.gz {{ hostvars[groups['prod'][0]].server_name }}:/tmp/dbdump /home/ubuntu && mkdir -p backups && mv --backup=numbered images.tar.gz dbdump backups && {{ hostvars[ groups['qa'][0] ].cron_health_command_1 }}
 
 - hosts: [ prod ]
   remote_user: ubuntu
