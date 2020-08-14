@@ -14,9 +14,29 @@
         repo: deb https://deb.nodesource.com/node_7.x xenial main
         state: absent
 
+    - name: remove node 8 repo
+      apt_repository:
+        repo: deb https://deb.nodesource.com/node_8.x bionic main
+        state: absent
+
     - name: install node repo
       apt_repository:
-        repo: deb https://deb.nodesource.com/node_8.x xenial main
+        repo: deb https://deb.nodesource.com/node_12.x bionic main
+
+    - name: node-8-to-12 update script
+      copy:
+        dest: /srv/node-8-to-12-update.sh
+        content: |
+          apt-get update && apt-get -y upgrade
+          cd /srv/checkout/tradenomiitti && sudo -u ubuntu npm rebuild node-sass
+          sudo -u ubuntu bash /srv/checkout/tradenomiitti/conf/deploy.sh
+          systemctl restart tradenomiitti
+          touch /srv/node-8-to-12-updated.stamp
+
+    - name: do one-time updates for node release upgrade
+      command: bash /srv/node-8-to-12-update.sh
+      args:
+        creates: /srv/node-8-to-12-updated.stamp
 
     - name: install system dependencies
       apt: pkg={{item}} state=present
