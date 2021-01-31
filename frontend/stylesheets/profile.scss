@@ -120,7 +120,8 @@
 
   &__top-row-edit-button,
   &__edit-button {
-    min-width: 16em;
+    min-width: 14em;
+    font-size: $fontsize12;
     @include button-colors;
   }
 
