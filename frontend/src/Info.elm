@@ -32,4 +32,4 @@ sectionView block =
                 |> List.map (\a -> H.h3 [] [ H.text a ])
     in
     heading
-        ++ [ Markdown.toHtml [] block.content ]
+        ++ Markdown.toHtml Nothing block.content

@@ -31,4 +31,4 @@ viewSingleSection i { heading, content } =
                 |> Maybe.toList
     in
     sectionHeading
-        ++ [ Markdown.toHtml [] content ]
+        ++ Markdown.toHtml Nothing content
