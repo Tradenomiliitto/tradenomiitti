@@ -9,5 +9,3 @@ then
     sed -e "s/@ENV@/$env/" conf/inventory-template.ini >> conf/inventory.ini
   done
 fi
-
-ansible-galaxy install thefinn93.letsencrypt --force --roles-path conf/roles
