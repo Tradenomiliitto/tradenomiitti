@@ -44,7 +44,7 @@
         - postgresql
         - nodejs
         - git
-        - python-psycopg2
+        - python3-psycopg2
         - graphicsmagick
         - fail2ban
         - mailutils
