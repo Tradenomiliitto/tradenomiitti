@@ -40,7 +40,7 @@ $navbar-element-height: 35px;
 .navbar__inverse-button {
   height: $navbar-height;
   $inverse-button-height: $navbar-element-height;
-  font-size: 15px;
+  font-size: $fontsize15;
 
   @include heading-font;
 
@@ -70,10 +70,10 @@ $navbar-element-height: 35px;
 
 .navbar {
   @include navbar-font;
-  font-size: 18px;
+  font-size: $fontsize18;
 
   @media (max-width: $screen-sm-max) {
-    font-size: 16px;
+    font-size: $fontsize16;
   }
 
   &-fixed-top,

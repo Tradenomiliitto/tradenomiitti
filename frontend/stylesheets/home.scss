@@ -24,19 +24,19 @@
       }
       @include heading-font;
       text-transform: uppercase;
-      font-size: 42px;
+      font-size: $fontsize42;
       color: $primary
     }
     &--content {
       margin-top: 40px;
       margin-bottom: 60px;
-      font-size: 20px;
+      font-size: $fontsize20;
     }
     &--button {
       &-container {
         z-index: 10;
       }
-      font-size: 18px;
+      font-size: $fontsize18;
       @include button-paddings;
       @include button-colors;
     }
@@ -67,7 +67,7 @@
       text-transform: uppercase;
       @include heading-font;
       &--text {
-        font-size: 28px;
+        font-size: $fontsize28;
       }
       &--buttons {
         text-align: right;
@@ -136,14 +136,14 @@
         color: $primary;
         @include heading-font;
         text-transform: uppercase;
-        font-size: 42px;
+        font-size: $fontsize42;
       }
       &-content {
         margin-top: 40px;
         margin-bottom: 40px;
       }
       &-text {
-        font-size: 20px;
+        font-size: $fontsize20;
       }
       &--read-more-button {
         border-width: 2px !important;

@@ -1,7 +1,17 @@
+$fontsize14: 16px;
+$fontsize15: 17px;
+$fontsize12: 14px;
+$fontsize17: 19px;
+$fontsize18: 20px;
+$fontsize28: 30px;
+$fontsize36: 38px;
+$fontsize42: 44px;
+$fontsize16: 18px;
+$fontsize20: 22px;
 
 // Font definitions for the main content
 $font-family-sans-serif: regular, Helvetica, Arial, sans-serif;
-$font-size-base: 14px;
+$font-size-base: $fontsize14;
 
 $italic-font: lightItalic, Helvetica, Arial, sans-serif;
 
@@ -31,3 +41,4 @@ $italic-font: lightItalic, Helvetica, Arial, sans-serif;
   font-family: bold;
   src: url("/static/BarlowCondensed-Bold.ttf");
 }
+

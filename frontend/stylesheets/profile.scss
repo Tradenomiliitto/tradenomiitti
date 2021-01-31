@@ -7,12 +7,12 @@
       &--title {
         text-transform: uppercase;
         color: $primary;
-        font-size: 36px;
+        font-size: $fontsize36;
         @include heading-font;
         margin-bottom: 50px;
       }
       &--content {
-        font-size: 16px;
+        font-size: $fontsize16;
       }
     }
     &--membership {
@@ -50,14 +50,14 @@
       &--info {
         padding: 40px;
         &--text {
-          font-size: 16px;
+          font-size: $fontsize16;
           margin-bottom: 30px;
         }
         &--button {
           @include inverse-button-colors;
           @include button-paddings;
           border-width: 2px;
-          font-size: 12px !important;
+          font-size: $fontsize12 !important;
         }
       }
     }
@@ -71,7 +71,7 @@
         @include heading-font;
       }
       &--text {
-        font-size: 16px;
+        font-size: $fontsize16;
         margin-top: 30px;
         margin-bottom: 30px;
       }
@@ -91,19 +91,19 @@
         }
         &--text {
           margin-top: 30px;
-          font-size: 16px;
+          font-size: $fontsize16;
         }
       }
 
       &--text {
         margin-top: 35px;
         margin-bottom: 35px;
-        font-size: 16px;
+        font-size: $fontsize16;
       }
     }
   &--bold {
     font-weight: bold;
-    font-size: 16px;
+    font-size: $fontsize16;
   }
   }
   &__buttons {
@@ -178,7 +178,7 @@
 
     & p {
       margin-top: 40px;
-      font-size: 20px;
+      font-size: $fontsize20;
     }
   }
 
@@ -207,7 +207,7 @@
 
   &__marker {
     width: 20px;
-    font-size: 20px;
+    font-size: $fontsize20;
     margin-right: $marker-margin-right;
     display: flex;
     align-items: center;
@@ -242,7 +242,7 @@
         @include ie-only {
           height: 20px; // not exactly correct, but good enough for IE
         }
-        font-size: 18px;
+        font-size: $fontsize18;
         margin-right: 10px;
         display: inline-block;
         text-align: center;
@@ -250,7 +250,7 @@
 
       input {
         width: calc(100% - 30px);
-        font-size: 12px;
+        font-size: $fontsize12;
         @include placeholder-color-primary;
       }
       svg {

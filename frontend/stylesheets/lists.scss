@@ -48,7 +48,7 @@
       text-transform: uppercase;
       margin-right: 15px;
       padding: 14px 20px;
-      font-size: 12px;
+      font-size: $fontsize12;
     }
 
     & i {
@@ -86,7 +86,7 @@
       margin-top: 10px;
     }
     &-content {
-      font-size: 16px;
+      font-size: $fontsize16;
       color: $main-text;
     }
     > hr {

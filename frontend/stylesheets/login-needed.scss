@@ -27,14 +27,14 @@
     }
     & > p {
       text-align: center;
-      font-size: 20px;
+      font-size: $fontsize20;
     }
   }
   &__actionable-items {
     margin-top: 40px;
     &-join {
       float: left;
-      font-size: 18px;
+      font-size: $fontsize18;
       &-link {
         text-decoration: underline;
         font-weight: bold;
