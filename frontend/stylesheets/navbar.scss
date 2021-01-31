@@ -70,7 +70,7 @@ $navbar-element-height: 35px;
 
 .navbar {
   @include navbar-font;
-  font-size: $fontsize18;
+  font-size: $fontsize20;
 
   @media (max-width: $screen-sm-max) {
     font-size: $fontsize16;
