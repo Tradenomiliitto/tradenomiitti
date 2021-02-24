@@ -45,6 +45,7 @@
     "promise/no-native": "off",
     "promise/no-return-wrap": "off",
     "prefer-object-spread": "off",
+    "no-multiple-empty-lines": "off",
     "no-redeclare": "off"
   }
 }
