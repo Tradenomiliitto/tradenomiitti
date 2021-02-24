@@ -33,7 +33,7 @@
     }
     &-prompt {
       @include heading-font;
-      font-size: 16px;
+      font-size: $fontsize16;
       margin-bottom: 40px;
       color: $dark-grey;
     }
@@ -90,7 +90,7 @@
 
   &__description {
     margin-top: 22px;
-    font-size: 17px;
+    font-size: $fontsize17;
 
     &-input {
       width: 100% !important;
@@ -111,7 +111,7 @@
       }
     }
     &-hint {
-      font-size: 16px;
+      font-size: $fontsize16;
     }
     &--editing {
       background-color: $white;

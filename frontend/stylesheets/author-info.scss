@@ -14,13 +14,13 @@
     font-weight: bold;
     @include heading-font;
     color: $secondary;
-    font-size: 16px;
+    font-size: $fontsize16;
     word-wrap: break-word;
   }
   &__title {
     font-weight: bold;
     @include heading-font;
-    font-size:12px;
+    font-size: $fontsize12;
     color: $primary;
     word-wrap: break-word;
   }

@@ -1,13 +1,23 @@
+$fontsize14: 16px;
+$fontsize15: 17px;
+$fontsize12: 14px;
+$fontsize17: 19px;
+$fontsize18: 20px;
+$fontsize28: 30px;
+$fontsize36: 38px;
+$fontsize42: 44px;
+$fontsize16: 18px;
+$fontsize20: 22px;
 
 // Font definitions for the main content
-$font-family-sans-serif: mundoSansRegular, Helvetica, Arial, sans-serif;
-$font-size-base: 14px;
+$font-family-sans-serif: regular, Helvetica, Arial, sans-serif;
+$font-size-base: 18px;
 
-$italic-font: mundoSansLightItalic, Helvetica, Arial, sans-serif;
+$italic-font: lightItalic, Helvetica, Arial, sans-serif;
 
 // The font for various headings
 @mixin heading-font {
-  font-family: "Gotham A","Gotham B", Helvetica, Arial, sans-serif;
+  font-family: bold, Helvetica, Arial, sans-serif;
   font-weight: 700 !important;
 }
 
@@ -18,11 +28,17 @@ $italic-font: mundoSansLightItalic, Helvetica, Arial, sans-serif;
 
 // Import custom fonts
 @font-face  {
-  font-family: mundoSansRegular;
-  src: url("/static/MundoSansStd.otf");
+  font-family: regular;
+  src: url("/static/BarlowCondensed-Regular.ttf");
 }
 
 @font-face  {
-  font-family: mundoSansLightItalic;
-  src: url("/static/MundoSansStd-LightItalic.otf");
+  font-family: lightItalic;
+  src: url("/static/BarlowCondensed-LightItalic.ttf");
 }
+
+@font-face {
+  font-family: bold;
+  src: url("/static/BarlowCondensed-Bold.ttf");
+}
+
