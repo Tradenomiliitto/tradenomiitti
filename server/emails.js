@@ -1,8 +1,8 @@
 const emailjs = require('emailjs');
-const scssToJson = require('scss-to-json');
+// const scssToJson = require('scss-to-json');
 
-const colorsFilepath = `${__dirname}/../frontend/stylesheets/colors.scss`;
-const scssVars = scssToJson(colorsFilepath);
+// eslint-disable-next-line import/no-dynamic-require
+const scssVars = require(`${__dirname}/../frontend/stylesheets/colors.json`);
 const email_translations = require('./email_translations');
 
 module.exports = function init(params) {
@@ -98,8 +98,8 @@ module.exports = function init(params) {
 
     if (!(allow_sending && email_address && email_address.includes('@'))) { return; }
 
-    const server = emailjs.server.connect(smtp);
-    server.send({
+    const client = new emailjs.SMTPClient(smtp);
+    client.send({
       from: mailFrom,
       to: email_address,
       text: text,
