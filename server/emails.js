@@ -1,5 +1,4 @@
 const emailjs = require('emailjs');
-// const scssToJson = require('scss-to-json');
 
 // eslint-disable-next-line import/no-dynamic-require
 const scssVars = require(`${__dirname}/../frontend/stylesheets/colors.json`);
