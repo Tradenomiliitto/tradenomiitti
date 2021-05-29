@@ -14,6 +14,7 @@ const staticDir = nonLocal ? '/srv/static' : `${rootDir}/static`;
 const app = express();
 
 // knex
+// eslint-disable-next-line import/extensions
 const knex_config = require('../knexfile.js');
 const knex = require('knex')(knex_config[process.env.environment]);
 

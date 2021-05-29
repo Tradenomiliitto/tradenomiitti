@@ -22,9 +22,9 @@
       height: $diameter;
       border-radius: #{$diameter / 2};
       position: relative;
-      top: -9px; // By trial and error
+      top: -14px; // By trial and error again
       @include ie-only {
-        top: -11px;
+        top: -16px;
       }
     }
     display: inline-block;

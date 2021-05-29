@@ -5,3 +5,4 @@ node_modules/
 elm-stuff/
 dev.sqlite3
 frontend/static/
+frontend/stylesheets/jsoncolors.scss
