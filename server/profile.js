@@ -1,6 +1,7 @@
 const crypto = require('crypto');
 const gm = require('gm'); // Graphics Magick
-const getFileType = require('file-type');
+const getFileType = require('file-type').fromBuffer;
+
 
 module.exports = function initialize(params) {
   const knex = params.knex;
@@ -265,9 +266,8 @@ module.exports = function initialize(params) {
     });
   }
 
-  function putAnyimage(req, res, size, originalBuffer, crop) {
-    const fileType = getFileType(originalBuffer);
-    const extension = fileType && fileType.ext;
+  async function putAnyimage(req, res, size, originalBuffer, crop) {
+    const extension = await getFileType(originalBuffer).then(ftype => ftype.ext);
     if (!['png', 'jpg', 'jpeg'].includes(extension)) {
       return Promise.resolve(res.status(400).send('Wrong file format'));
     }
