@@ -46,7 +46,7 @@
         hour: "3"
         minute: "0"
         name: download backups
-        job: scp {{ hostvars[groups['prod'][0]].server_name }}:/tmp/images.tar.gz {{ hostvars[groups['prod'][0]].server_name }}:/tmp/dbdump /home/ubuntu && mkdir -p backups/db backups/images && mv images.tar.gz backups/images/images.tar.gz.$(date '+%Y-%m-%d') && mv dbdump backups/db/dbdump.$(date '+%Y-%m-%d') && ~/.local/bin/rotate-backups --daily 7 --weekly 4 --monthly 6 --yearly always backups/db && ~/.local/bin/rotate-backups --daily 7 --weekly 4 --monthly 6 --yearly always backups/images && {{ hostvars[ groups['qa'][0] ].cron_health_command_1 }}
+        job: scp {{ hostvars[groups['prod'][0]].server_name }}:/tmp/images.tar.gz {{ hostvars[groups['prod'][0]].server_name }}:/tmp/dbdump /home/ubuntu && mkdir -p backups/db backups/images && mv images.tar.gz backups/images/images.tar.gz.$(date '+%Y-%m-%d') && mv dbdump backups/db/dbdump.$(date '+%Y-%m-%d') && /home/ubuntu/.local/bin/rotate-backups --daily 7 --weekly 4 --monthly 6 --yearly always backups/db && /home/ubuntu/.local/bin/rotate-backups --daily 7 --weekly 4 --monthly 6 --yearly always backups/images && {{ hostvars[ groups['qa'][0] ].cron_health_command_1 }}
 
 - hosts: [ prod ]
   remote_user: ubuntu
